@@ -42,10 +42,10 @@ module KSU::Thongke::Xuat
   def self.num(v)
     v.is_a?(Numeric) ? v : v.to_s
   end
-  def self.build_cells(title, sweep, _c41450bb = nil)
+  def self.build_cells(title, total, _c41450bb = nil)
     cells = [["", ST_HEAD], [title.to_s, ST_SEC_TEXT]]
     5.times { cells << ["", ST_SEC_TEXT] }
-    cells << [num(sweep), ST_SEC_NUM, _c41450bb]
+    cells << [num(total), ST_SEC_NUM, _c41450bb]
     cells
   end
   def self._a105a0f4(cls2)
@@ -71,8 +71,8 @@ module KSU::Thongke::Xuat
         }
       end
     end
-    sweep = arr2.empty? ? nil : "SUM(#{arr2.join(",")})"
-    rows << { cells: build_cells("Tổng chi phí", cls2["tong"], sweep) }
+    total = arr2.empty? ? nil : "SUM(#{arr2.join(",")})"
+    rows << { cells: build_cells("Tổng chi phí", cls2["tong"], total) }
     { name: "Chi phí", cols: CHI_PHI_COLS, rows: rows }
   end
   def self._31eafa5f(arr)

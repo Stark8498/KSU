@@ -146,22 +146,22 @@ module KSU::Arrange
     end
     false
   end
-  def _ce446adc(_c04fb39c)
+  def _ce446adc(dir)
     return unless @flag37 && @flag37.valid?
     bbox = false
-    case _c04fb39c
+    case dir
     when :first then bbox = true while _e1a83eaf(:prev)
     when :last then bbox = true while _e1a83eaf(:next)
-    else bbox = _e1a83eaf(_c04fb39c)
+    else bbox = _e1a83eaf(dir)
     end
     return unless bbox
     _1817fa46
   end
-  def _e1a83eaf(_c04fb39c)
+  def _e1a83eaf(dir)
     sheets = KSU::Sheet.row_of(@flag37, @arr23)
     ix = sheets.index(@flag37)
     return false unless ix
-    target = case _c04fb39c
+    target = case dir
       when :prev then ix > 0 ? sheets[ix - 1] : nil
       when :next then ix < sheets.length - 1 ? sheets[ix + 1] : nil
       end
@@ -245,10 +245,10 @@ module KSU::Arrange
       shift_cached_polys(arr)
     end
   end
-  def _c574b8db(_c04fb39c)
+  def _c574b8db(dir)
     return unless @flag37 && @flag37.valid?
     return if KSU::Sheet.hidden?(@flag37)
-    forward = _c04fb39c == :up
+    forward = dir == :up
     unless @flag37.get_attribute("KSU", "phan").nil?
       _3d652c2e(forward)
       return

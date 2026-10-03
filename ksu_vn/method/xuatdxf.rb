@@ -47,10 +47,10 @@ module KSU::Xuatdxf
     end
     title = _2b17a799(Sketchup.active_model.title)
     title = "KSU" if title.empty?
-    _c04fb39c = UI.savepanel("Xuất DXF", KSU.model_dir, title + "__" + Time.now.strftime("%H-%M-%S"))
-    return unless _c04fb39c
-    ok = _4db09033(_c04fb39c, collect_in_rect, sheets)
-    UI.openURL("file:///" + _c04fb39c.gsub("\\", "/")) if ok
+    dir = UI.savepanel("Xuất DXF", KSU.model_dir, title + "__" + Time.now.strftime("%H-%M-%S"))
+    return unless dir
+    ok = _4db09033(dir, collect_in_rect, sheets)
+    UI.openURL("file:///" + dir.gsub("\\", "/")) if ok
   rescue StandardError => ent
     UI.messagebox("Lỗi xuất DXF: #{ent.message}")
   end
@@ -117,8 +117,8 @@ module KSU::Xuatdxf
     normal += s[:bottom] ? "_01" : "_02" if arr[s[:key]]
     normal + ".dxf"
   end
-  def self._4db09033(_c04fb39c, collect_in_rect, sheets)
-    FileUtils.mkdir_p(_c04fb39c)
+  def self._4db09033(dir, collect_in_rect, sheets)
+    FileUtils.mkdir_p(dir)
     arr2 = sheets.map { |s| s[:key] }.uniq
     h = {}
     sheets.each { |s| h[s[:key]] = true if s[:bottom] }
@@ -126,7 +126,7 @@ module KSU::Xuatdxf
     ok = true
     arr2.each_with_index do |key, i|
       node = sheets.select { |s| s[:key] == key }
-      str = File.join(_c04fb39c, (i + 1).to_s.rjust(3, "0") + "_" + _091b9335(node.first))
+      str = File.join(dir, (i + 1).to_s.rjust(3, "0") + "_" + _091b9335(node.first))
       FileUtils.mkdir_p(str)
       str3 = str
       str2 = str

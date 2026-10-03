@@ -123,9 +123,9 @@ module KSU::Nesting
         cb = @on_progress
         cb.call(progress.to_i) if cb
       end
-      @dlg2.add_action_callback("on_place_progress") do |dlg, done, sweep|
+      @dlg2.add_action_callback("on_place_progress") do |dlg, done, total|
         cb = @on_place_progress
-        cb.call(done.to_i, sweep.to_i) if cb
+        cb.call(done.to_i, total.to_i) if cb
       end
       @dlg2.add_action_callback("on_fail_to_nest_parts") do |dlg, ix, parts|
         @arr24 << [ix, parts]
@@ -145,9 +145,9 @@ module KSU::Nesting
         cb = @on_job_progress
         cb.call(j.to_i, progress.to_i) if cb
       end
-      @dlg2.add_action_callback("on_job_place_progress") do |dlg, j, done, sweep|
+      @dlg2.add_action_callback("on_job_place_progress") do |dlg, j, done, total|
         cb = @on_job_place_progress
-        cb.call(j.to_i, done.to_i, sweep.to_i) if cb
+        cb.call(j.to_i, done.to_i, total.to_i) if cb
       end
       @dlg2.add_action_callback("on_job_fail") do |dlg, j, parts|
         @h10[j.to_i] = parts

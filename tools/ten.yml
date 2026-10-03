@@ -1194,7 +1194,7 @@ ten:
   _9dbd0455: pen              # dang ha but hay nhac but
   _b161fef6: ccw
   _e31f7604: a0
-  _4fb511c1: sweep
+  _4fb511c1: total                 # tong so: x*100.0/no ra phan tram, va /Size #{no} trong trailer PDF
   _980d12b1: chord
   _953f3a4a: nx
   _43cd1441: ny
@@ -1809,6 +1809,65 @@ ten:
   _70bb0001: try_resume_ix       # @: het gio thi lan sau xet tiep tu day
   _84aff668: tried_keys          # @: khoa [bw, bh, xoay duoc, khong co con] da thu hong
   _b1189fd0: sheet_cache         # @
+
+  # ===== ME 45: method/chongbay/shape.rb -- danh thu tu lop chong bay =====
+  # Quet mot chieu qua cac chi tiet roi danh so lop theo thu tu gap. Chieu quet
+  # hoac do nguoi dung keo chuot, hoac suy tu canh van ma vung keo cham vao
+  # nhieu nhat (forced_dir).
+  _e69b41c0: sweep               # :left_to_right / :right_to_left / :top_to_bottom / :bottom_to_top
+  _c04fb39c: dir                 # thu muc O NHIEU FILE, va mot cho la huong (== :up).
+                                 # `dir` dung ca hai nghia -- co le vi the tac gia dung lai no.
+  _2f6fa959: rank_by_layer       # cac chi tiet cach nhau duoi 1mm theo truc quet thi cung mot lop
+  _46fe09d2: rank_free
+  _26d5057d: rank_drag
+  _9ce21378: number_parts
+  _fd0f50e4: number_by_sheet
+  _50dde264: rank_band
+  _a2ff747d: rank_nearest_edge
+  _faee8634: side_nearest        # chongbay.rb da giu `nearest_side`
+  _e2a7df81: rect_of             # [x nho, x lon, y nho, y lon] cua top_corners
+  _6c8674a4: edge_overlaps       # do dai chong lan cua vung keo len tung canh van
+  _3e91ed31: layer_prefix
+  _ae380730: finish_drag_rank
+  _ac93239a: rank_lasso
+  _18bac9b5: rank_b              # @: diem thu hai cua thao tac danh so
+  _0a3334e9: track_ids           # @: thu tu da chot, giu nguyen giua cac lan tinh lai
+  _11ac6e3c: lasso_pts           # @
+
+  # ===== ME 46: method/gannhan.rb -- gan / sua / kiem nhan =====
+  # Ba che do dung chung mot cong cu: MODE_GAN dat nhan moi, MODE_SUA xoay hoac
+  # lat nhan da co, MODE_KIEM loc ra nhung thuc the khong hop le roi co lap.
+  _7db4c267: mode                # @
+  _04adac52: switch_mode       # chongbay.rb giu `set_mode`, mot cho khac giu `pick_mode`
+  _ad11f375: attach_mode?        # MODE_GAN
+  _9bd847a3: edit_mode?          # MODE_SUA
+
+  # Bam: di nguoc path cua pick_helper tu trong ra ngoai, lay cai dau tien
+  # thoa dieu kien. best_picked chi la nuoc cuoi.
+  _a599c8e1: walk_pick
+  _6b0ff197: board_at
+  _e33f3af2: labelable?          # co board_faces thi moi gan nhan duoc
+  _ecb7d46e: pick_boards_in_rect
+  _0e8c07bf: pick_board_at
+  _bf70553d: label_pair_at
+  _7e760d59: label_pair_of       # [tam, nhan] hoac nil
+  _bd2ac306: pair_from_label
+  _b9550635: board_of_label      # nhan nam trong definition, tim lai the hien mang board-index
+  _383d85a8: selected_pairs
+  _06ab970a: pick_labels_in_rect
+  _ec7bbbdc: click_label
+  _963d9525: hover_label
+  _4e044a5e: label_sel           # @: dang chon nhan chu khong phai tam
+
+  _d6e2c8ac: relabel_each        # khung chung: moi cap [tam, nhan] cho block quyet dinh mat va goc
+  _02008df0: rotate_labels
+  _30902429: flip_label_face
+  _a69a67a0: clear_cnc_marks
+  _66203d05: run_attach
+  _67d3090f: stop_labelling
+  _b32edef9: label_timer         # @
+  _5e857f97: isolate_bad
+  _e1a73e79: scope               # @: vung quet, mac dinh la ca mo hinh neu khong chon gi
 
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,

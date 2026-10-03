@@ -24,7 +24,7 @@ class KSU::Netcatcuoi
     load_overlay_settings
     @presets = get("presets", nil)
     @label_section_hidden = []
-    @num11 = get("che_do", 0).to_i
+    @mode = get("che_do", 0).to_i
     @arr10 = []
     @h3 = {}
     @nesting = nil
@@ -56,7 +56,7 @@ class KSU::Netcatcuoi
       @label_section_hidden = _b849fe49
       @h5 = {}
       @arr11 = KSU::Nesting.error_points(@nesting)
-      _e4147f27 if @num11 == 1
+      _e4147f27 if @mode == 1
       @label_section_hidden = KSU::Cutting.apply_label_hiding(
         @nesting, @an_nhan_tiet_dien, @label_section_hidden
       )
@@ -76,8 +76,8 @@ class KSU::Netcatcuoi
     @_x_bi_lan_polys = nil
     init_modes(
       ["Thủ công", "Tự động"],
-      active_proc: -> { @num11 },
-      on_click: ->(i) { _04adac52(i) }
+      active_proc: -> { @mode },
+      on_click: ->(i) { switch_mode(i) }
     )
     setup_fields(
       "Chiều rộng tối thiểu" => {
@@ -92,7 +92,7 @@ class KSU::Netcatcuoi
     restore_selected_preset
     @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, @an_nhan_tiet_dien, @label_section_hidden)
     _52c178c0(true)
-    _e4147f27 if @num11 == 1
+    _e4147f27 if @mode == 1
     update_status
     KSU::View.view.invalidate
   end
@@ -107,12 +107,12 @@ class KSU::Netcatcuoi
   def reload_settings
     super
     @h5 = {}
-    _e4147f27 if @num11 == 1
+    _e4147f27 if @mode == 1
     KSU::View.refresh
   end
   def commit_field_input(view)
     answer = super
-    _e4147f27 if @num11 == 1
+    _e4147f27 if @mode == 1
     view&.invalidate
     answer
   end
@@ -126,7 +126,7 @@ class KSU::Netcatcuoi
       UI.set_cursor(_3c174b26(@arr65[:edge]))
       return true
     end
-    if @num11 == 0
+    if @mode == 0
       UI.set_cursor(KSU::Const::CURSOR_PENCIL)
       return true
     end
@@ -143,7 +143,7 @@ class KSU::Netcatcuoi
       return
     end
     if key == 9
-      _04adac52(1 - @num11)
+      switch_mode(1 - @mode)
       return
     end
     return unless key == 32
@@ -183,7 +183,7 @@ class KSU::Netcatcuoi
     return if click_outside(x, y, view)
     return if click_mode(x, y, view)
     return if _14e05dda(view, x, y)
-    if @num11 == 1
+    if @mode == 1
       arr = _bb230f13(view, x, y)
       if arr
         ctrl = (rot & MK_SHIFT) != 0
@@ -234,7 +234,7 @@ class KSU::Netcatcuoi
     draw_overlay(view, @nesting)
     _b6a93f39(view)
     _786169a2(view)
-    if @num11 == 1
+    if @mode == 1
       _8964db66(view)
     else
       _f7ec2498(view)
@@ -246,10 +246,10 @@ class KSU::Netcatcuoi
     draw_fields(view)
   end
   private
-  def _04adac52(i)
-    @num11 = i
-    set("che_do", @num11)
-    if @num11 == 1
+  def switch_mode(i)
+    @mode = i
+    set("che_do", @mode)
+    if @mode == 1
       _e4147f27
       @flag56 = false
       @pt9 = nil
@@ -335,7 +335,7 @@ class KSU::Netcatcuoi
     @tam_cach_le.to_f
   end
   def _63677f15(view, x, y)
-    return nil unless @num11 == 0 && @pt11
+    return nil unless @mode == 0 && @pt11
     rec = _0ed68c30(view, x, y)
     return nil unless rec
     _d204c38c(@pt11, _c34290e2(rec), view)

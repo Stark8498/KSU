@@ -116,15 +116,15 @@ module KSU::Reorder
     num = 0
     materials.each do |normal|
       arr2 = groups[normal].each_slice(per_row).to_a
-      flag17 = arr2.size > 1
+      label_sel = arr2.size > 1
       arr2.each_with_index do |arr3, _14ea4fab|
-        flag = flag17 ? "#{normal}-#{suffix}#{_14ea4fab + 1}" : normal
+        flag = label_sel ? "#{normal}-#{suffix}#{_14ea4fab + 1}" : normal
         arr3.each do |id|
           [arr[id], bot[id]].each do |g|
             next unless g && g.valid?
             num += 1 if g.get_attribute("ABF", "sheet-type").to_s != flag
             g.set_attribute("ABF", "sheet-type", flag)
-            if flag17
+            if label_sel
               g.set_attribute("KSU", "sheet-type", normal)
               g.set_attribute("KSU", "phan", _14ea4fab + 1)
             else

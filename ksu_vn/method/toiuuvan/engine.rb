@@ -43,9 +43,9 @@ module KSU::Engine
           KSU::View.view&.invalidate
         end
       end,
-      on_place_progress: lambda do |done, sweep|
+      on_place_progress: lambda do |done, total|
         @str = "Đang xếp tấm"
-        @num12 = sweep > 0 ? (done * 100.0 / sweep).round : 100
+        @num12 = total > 0 ? (done * 100.0 / total).round : 100
         KSU::View.view&.invalidate
       end,
       on_done: lambda do |data, arr24|

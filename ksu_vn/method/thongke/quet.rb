@@ -61,8 +61,8 @@ module KSU::Thongke::Quet
     arr ? arr[0] : nil
   end
   def self.extent_along(pts, axis)
-    _c04fb39c = axis[1].normalize
-    lo, hi = pts.map { |_23505ef9| axis[0].vector_to(_23505ef9).dot(_c04fb39c) }.minmax
+    dir = axis[1].normalize
+    lo, hi = pts.map { |_23505ef9| axis[0].vector_to(_23505ef9).dot(dir) }.minmax
     lo ? hi - lo : 0.0
   end
   def self.add_edgebands(rec, node, tf, vec, thick_mm, lbl)

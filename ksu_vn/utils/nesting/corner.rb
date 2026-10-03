@@ -378,7 +378,7 @@ module KSU::Corner
   def _bca72a10(half, arr4, _b00ea38a, gap2, cache)
     per_row = [(_b00ea38a ? half[:u0] : half[:v0]) + gap2 * 0.5, 0.0].max
     return 0.0 if per_row <= 1e-9
-    _c04fb39c = _b00ea38a ? [-1.0, 0.0] : [0.0, -1.0]
+    dir = _b00ea38a ? [-1.0, 0.0] : [0.0, -1.0]
     pen = gap2 * 2
     num = 1.0 / 0.0
     arr4.each do |arr|
@@ -401,12 +401,12 @@ module KSU::Corner
         rings.each do |arr2|
           n = arr2.length
           n.times do |i|
-            thick = _3caaabb9(_23505ef9, _c04fb39c, arr2[i], arr2[(i + 1) % n], pen)
+            thick = _3caaabb9(_23505ef9, dir, arr2[i], arr2[(i + 1) % n], pen)
             num = thick if thick && thick < num
           end
         end
       else
-        len2d = _7edd7b75(half[:poly], arr[:poly], _c04fb39c)
+        len2d = _7edd7b75(half[:poly], arr[:poly], dir)
         num = len2d if len2d < num
       end
       break if num <= 1e-9
@@ -499,16 +499,16 @@ module KSU::Corner
       poly
     end
   end
-  def _3caaabb9(arr3, _c04fb39c, arr, b, pen)
+  def _3caaabb9(arr3, dir, arr, b, pen)
     rx = b[0] - arr[0]
     ry = b[1] - arr[1]
-    _621a105c = _c04fb39c[0] * ry - _c04fb39c[1] * rx
+    _621a105c = dir[0] * ry - dir[1] * rx
     return nil if _621a105c > -1e-12
     dx = arr[0] - arr3[0]
     dy = arr[1] - arr3[1]
     thick = (dx * ry - dy * rx) / _621a105c
     return nil if thick < -pen
-    s = -(_c04fb39c[0] * dy - _c04fb39c[1] * dx) / _621a105c
+    s = -(dir[0] * dy - dir[1] * dx) / _621a105c
     len = Math.sqrt(rx * rx + ry * ry)
     return nil if s * len < -0.04 || (s - 1.0) * len > 0.04
     thick
@@ -551,7 +551,7 @@ module KSU::Corner
   def _39ad1aa8(half, arr2, _b00ea38a, gap2)
     per_row = [(_b00ea38a ? half[:u0] : half[:v0]) + gap2 * 0.5, 0.0].max
     return 0.0 if per_row <= 1e-9
-    _c04fb39c = _b00ea38a ? [-1.0, 0.0] : [0.0, -1.0]
+    dir = _b00ea38a ? [-1.0, 0.0] : [0.0, -1.0]
     num = 1.0 / 0.0
     arr2.each do |arr|
       if _b00ea38a
@@ -563,10 +563,10 @@ module KSU::Corner
       end
       if half[:rect] && arr[:rect]
         len2d = _b00ea38a ? half[:u0] - arr[:u1] : half[:v0] - arr[:v1]
-        len2d = _7edd7b75(half[:poly], arr[:poly], _c04fb39c) if len2d < -1e-9
+        len2d = _7edd7b75(half[:poly], arr[:poly], dir) if len2d < -1e-9
         len2d = 0.0 if len2d < 0.0
       else
-        len2d = _7edd7b75(half[:poly], arr[:poly], _c04fb39c)
+        len2d = _7edd7b75(half[:poly], arr[:poly], dir)
       end
       if len2d < num
         num = len2d
@@ -576,15 +576,15 @@ module KSU::Corner
     _bd0102dd = [per_row, num].min
     [_bd0102dd, 0.0].max
   end
-  def _7edd7b75(arr, panel, _c04fb39c)
-    _a1abb318 = [-_c04fb39c[0], -_c04fb39c[1]]
+  def _7edd7b75(arr, panel, dir)
+    _a1abb318 = [-dir[0], -dir[1]]
     best = 1.0 / 0.0
     num3 = panel.length
     num3.times do |i|
       _9710d820 = panel[i]
       b = panel[(i + 1) % num3]
       arr.each do |_23505ef9|
-        thick = _ebae3e53(_23505ef9, _c04fb39c, _9710d820, b)
+        thick = _ebae3e53(_23505ef9, dir, _9710d820, b)
         if thick && thick < best
           best = thick
           return best if best <= 1e-9
@@ -605,15 +605,15 @@ module KSU::Corner
     end
     best
   end
-  def _ebae3e53(arr3, _c04fb39c, arr, b)
+  def _ebae3e53(arr3, dir, arr, b)
     rx = b[0] - arr[0]
     ry = b[1] - arr[1]
-    num = _c04fb39c[0] * ry - _c04fb39c[1] * rx
+    num = dir[0] * ry - dir[1] * rx
     return nil if num.abs < 1e-12
     dx = arr[0] - arr3[0]
     dy = arr[1] - arr3[1]
     thick = (dx * ry - dy * rx) / num
-    s = -(_c04fb39c[0] * dy - _c04fb39c[1] * dx) / num
+    s = -(dir[0] * dy - dir[1] * dx) / num
     return nil if thick < -1e-9 || s < -1e-9 || s > 1.0 + 1e-9
     thick
   end

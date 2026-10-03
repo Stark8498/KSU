@@ -22,10 +22,10 @@ module KSU::Collect
     @_d3fa94d5 = UI.start_timer(0, true) { _41789749 }
   end
   def _41789749
-    sweep = @arr30.length
-    return _b3aa40f8 if @num9 >= sweep
+    total = @arr30.length
+    return _b3aa40f8 if @num9 >= total
     _b32f69ac = Time.now
-    while @num9 < sweep && Time.now - _b32f69ac < 0.05
+    while @num9 < total && Time.now - _b32f69ac < 0.05
       g = @arr30[@num9]
       @num9 += 1
       next unless g && g.valid?
@@ -46,7 +46,7 @@ module KSU::Collect
         @arr59 << g.name.to_s
       end
     end
-    @num12 = (@num9 * 100.0 / sweep).round
+    @num12 = (@num9 * 100.0 / total).round
     KSU::View.view.invalidate
   rescue StandardError => ent
     _a762c251

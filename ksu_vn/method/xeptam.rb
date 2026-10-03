@@ -287,12 +287,12 @@ class KSU::Xeptam
       case key
       when VK_LEFT, VK_RIGHT
         _b5af8dbf = @flag25 || (rot & CONSTRAIN_MODIFIER_MASK) != 0
-        _c04fb39c = if key == VK_LEFT
+        dir = if key == VK_LEFT
             _b5af8dbf ? :first : :prev
           else
             _b5af8dbf ? :last : :next
           end
-        _ce446adc(_c04fb39c)
+        _ce446adc(dir)
         view.invalidate
         return
       when VK_UP, VK_DOWN

@@ -5,16 +5,16 @@ module KSU::Shape
       clear_ranks(band_parts)
       return
     end
-    _e69b41c0 = sweep_dir
-    return unless _e69b41c0
-    apply_ranks(rank_plan(_e69b41c0))
+    sweep = sweep_dir
+    return unless sweep
+    apply_ranks(rank_plan(sweep))
   end
   def sweep_dir
     return @sweep_memo if @flag55 && @sweep_memo
     return nil if @flag55 && band_parts.empty?
-    _c04fb39c = forced_dir || dir_of(@pt4, @pt6)
-    @sweep_memo = _c04fb39c if @flag55 && _c04fb39c
-    _c04fb39c
+    dir = forced_dir || dir_of(@pt4, @pt6)
+    @sweep_memo = dir if @flag55 && dir
+    dir
   end
   def band_parts
     return [] unless @pt4 && @pt6
@@ -60,31 +60,31 @@ module KSU::Shape
     return false unless KSU::View.in_poly?(x, y, arr[:polygon])
     (arr[:holes] || []).none? { |arr52| KSU::View.in_poly?(x, y, arr52) }
   end
-  def rank_plan(_e69b41c0 = sweep_dir)
-    return [] unless _e69b41c0
+  def rank_plan(sweep = sweep_dir)
+    return [] unless sweep
     sel = eligible(band_parts)
     return [] if sel.empty?
-    track_order(sel, _e69b41c0)
-    assign_ranks(sel, _e69b41c0)
+    track_order(sel, sweep)
+    assign_ranks(sel, sweep)
   end
-  def track_order(parts, _e69b41c0)
-    @arr5 ||= []
+  def track_order(parts, sweep)
+    @track_ids ||= []
     cur = {}
     parts.each { |arr| cur[arr[:part].entityID] = true }
-    @arr5.select! { |id| cur[id] }
+    @track_ids.select! { |id| cur[id] }
     seen = {}
-    @arr5.each { |id| seen[id] = true }
+    @track_ids.each { |id| seen[id] = true }
     arr2 = parts.reject { |arr| seen[arr[:part].entityID] }
     return if arr2.empty?
     flag = @layer_theo_vung ?
-                   cross_sorter_band(_e69b41c0) : cross_sorter(_e69b41c0)
-    arr2.sort_by { |arr| [sweep_key(arr, _e69b41c0), flag.call(arr)] }.each do |arr|
-      @arr5 << arr[:part].entityID
+                   cross_sorter_band(sweep) : cross_sorter(sweep)
+    arr2.sort_by { |arr| [sweep_key(arr, sweep), flag.call(arr)] }.each do |arr|
+      @track_ids << arr[:part].entityID
     end
   end
-  def sweep_key(arr, _e69b41c0)
-    horizontal = _e69b41c0 == :left_to_right || _e69b41c0 == :right_to_left
-    flag2 = (_e69b41c0 == :left_to_right || _e69b41c0 == :bottom_to_top) ? 1.0 : -1.0
+  def sweep_key(arr, sweep)
+    horizontal = sweep == :left_to_right || sweep == :right_to_left
+    flag2 = (sweep == :left_to_right || sweep == :bottom_to_top) ? 1.0 : -1.0
     center = (horizontal ? arr[:center].x.to_f : arr[:center].y.to_f) * flag2
     if @che_do_chon == 1
       best = nil
@@ -112,16 +112,16 @@ module KSU::Shape
       arr52.each { |pt| yield(pt.x.to_f, pt.y.to_f) }
     end
   end
-  def assign_ranks(parts, _e69b41c0)
-    side = side_of(_e69b41c0)
-    order = order_of(_e69b41c0)
+  def assign_ranks(parts, sweep)
+    side = side_of(sweep)
+    order = order_of(sweep)
     flag = @layer_theo_vung ?
-                   cross_sorter_band(_e69b41c0) : cross_sorter(_e69b41c0)
+                   cross_sorter_band(sweep) : cross_sorter(sweep)
     materials = {}
-    (@arr5 || []).each_with_index { |id, i| materials[id] = i }
+    (@track_ids || []).each_with_index { |id, i| materials[id] = i }
     parts = parts.reject { |arr| arr[:rank] } unless @cho_phep_ghi_de
     parts.group_by { |arr| arr[:sheet] }.flat_map do |sheet, arr2|
-      _9ce21378(arr2.sort_by { |arr|
+      number_parts(arr2.sort_by { |arr|
         i = materials[arr[:part].entityID]
         i ? [0, i, 0.0] : [1, order.call(arr), flag.call(arr)]
       }, side, start_rank(sheet, side, arr2))
@@ -129,7 +129,7 @@ module KSU::Shape
   end
   def start_rank(sheet, side, arr2)
     return 1 unless @danh_so_thu_tu
-    _e2b5ea25 = _3e91ed31(side)
+    _e2b5ea25 = layer_prefix(side)
     ref_p1 = {}
     arr2.each { |arr| ref_p1[arr[:part].entityID] = true }
     hi = @so_layer_tu - 1
@@ -141,15 +141,15 @@ module KSU::Shape
     end
     hi + 1
   end
-  def cross_sorter(_e69b41c0)
-    case _e69b41c0
+  def cross_sorter(sweep)
+    case sweep
     when :left_to_right, :right_to_left then ->(arr) { -arr[:center].y.to_f }
     when :top_to_bottom, :bottom_to_top then ->(arr) { arr[:center].x.to_f }
     end
   end
-  def cross_sorter_band(_e69b41c0)
-    return cross_sorter(_e69b41c0) unless @pt4 && @pt6
-    case _e69b41c0
+  def cross_sorter_band(sweep)
+    return cross_sorter(sweep) unless @pt4 && @pt6
+    case sweep
     when :left_to_right, :right_to_left
       @pt6.y.to_f >= @pt4.y.to_f ?
         ->(arr) { arr[:center].y.to_f } : ->(arr) { -arr[:center].y.to_f }
@@ -158,12 +158,12 @@ module KSU::Shape
         ->(arr) { arr[:center].x.to_f } : ->(arr) { -arr[:center].x.to_f }
     end
   end
-  def _2f6fa959(parts, _e69b41c0)
-    side = side_of(_e69b41c0)
-    order2 = order_of(_e69b41c0)
+  def rank_by_layer(parts, sweep)
+    side = side_of(sweep)
+    order2 = order_of(sweep)
     tol = 1.mm.to_f
     parts = parts.reject { |arr| arr[:rank] } unless @cho_phep_ghi_de
-    return _fd0f50e4(parts, side) unless @danh_so_thu_tu
+    return number_by_sheet(parts, side) unless @danh_so_thu_tu
     parts.group_by { |arr| arr[:sheet] }.flat_map do |sheet, arr3|
       layers = start_rank(sheet, side, arr3) - 1
       prev = nil
@@ -180,20 +180,20 @@ module KSU::Shape
       answer
     end
   end
-  def _46fe09d2(parts)
-    return _50dde264(parts) if @layer_theo_vung
-    _a2ff747d(parts)
+  def rank_free(parts)
+    return rank_band(parts) if @layer_theo_vung
+    rank_nearest_edge(parts)
   end
-  def _26d5057d(parts)
+  def rank_drag(parts)
     if @layer_theo_vung
-      arr = parts.sort_by { |_23505ef9| _1b630104(@_cd7eef1c, @flag8, _23505ef9) }
-      _50dde264(arr)
+      arr = parts.sort_by { |_23505ef9| _1b630104(@_cd7eef1c, @rank_b, _23505ef9) }
+      rank_band(arr)
     else
-      _e69b41c0 = dir_of(@_cd7eef1c, @flag8)
-      _e69b41c0 ? _2f6fa959(parts, _e69b41c0) : []
+      sweep = dir_of(@_cd7eef1c, @rank_b)
+      sweep ? rank_by_layer(parts, sweep) : []
     end
   end
-  def _9ce21378(arr, side, layers2 = @so_layer_tu)
+  def number_parts(arr, side, layers2 = @so_layer_tu)
     return arr.map { |_23505ef9| { part: _23505ef9, rank: 1, side: side } } unless @danh_so_thu_tu
     layers = layers2 - 1
     answer = []
@@ -204,24 +204,24 @@ module KSU::Shape
     end
     answer
   end
-  def _fd0f50e4(parts, side)
+  def number_by_sheet(parts, side)
     parts.group_by { |arr| arr[:sheet] }.flat_map do |sheet, _93bc4084|
-      _9ce21378(_93bc4084, side, start_rank(sheet, side, _93bc4084))
+      number_parts(_93bc4084, side, start_rank(sheet, side, _93bc4084))
     end
   end
-  def _50dde264(parts)
+  def rank_band(parts)
     parts = parts.reject { |arr| arr[:rank] } unless @cho_phep_ghi_de
     return [] if parts.empty?
-    _fd0f50e4(parts, @side)
+    number_by_sheet(parts, @side)
   end
-  def _a2ff747d(parts)
+  def rank_nearest_edge(parts)
     parts = parts.reject { |arr3| arr3[:rank] } unless @cho_phep_ghi_de
     return [] if parts.empty?
     arr2 = parts.first
     arr = KSU::Sheet.record_for(@sheets, arr2[:sheet])
-    _fd0f50e4(parts, _faee8634(arr2[:bbox], arr && arr[:bbox]))
+    number_by_sheet(parts, side_nearest(arr2[:bbox], arr && arr[:bbox]))
   end
-  def _faee8634(_9fda117b, bbox)
+  def side_nearest(_9fda117b, bbox)
     return nil unless bbox
     [:tren, :duoi, :trai, :phai].min_by { |s| threshold(_9fda117b, bbox, s).to_f }
   end
@@ -229,8 +229,8 @@ module KSU::Shape
     return parts unless @gioi_han_kich_thuoc
     parts.reject { |arr| [arr[:bbox].max.x.to_f - arr[:bbox].min.x.to_f, arr[:bbox].max.y.to_f - arr[:bbox].min.y.to_f].min > @chieu_rong_toi_da }
   end
-  def order_of(_e69b41c0)
-    case _e69b41c0
+  def order_of(sweep)
+    case sweep
     when :left_to_right then ->(arr) { arr[:center].x.to_f }
     when :right_to_left then ->(arr) { -arr[:center].x.to_f }
     when :top_to_bottom then ->(arr) { -arr[:center].y.to_f }
@@ -256,8 +256,8 @@ module KSU::Shape
     return nil if (x2 - x1) < 1.mm.to_f && (y2 - y1) < 1.mm.to_f
     arr = []
     @sheets.each do |rec|
-      _78088f46, _fb746155, _24cbb6f3, _8e929fea = _e2a7df81(rec)
-      _6c8674a4(_78088f46, _fb746155, _24cbb6f3, _8e929fea, x1, x2, y1, y2).each do |edge, len|
+      _78088f46, _fb746155, _24cbb6f3, _8e929fea = rect_of(rec)
+      edge_overlaps(_78088f46, _fb746155, _24cbb6f3, _8e929fea, x1, x2, y1, y2).each do |edge, len|
         next if len <= 0
         arr << { edge: edge, len: len, dist: dist(_78088f46, _fb746155, _24cbb6f3, _8e929fea, edge) }
       end
@@ -271,13 +271,13 @@ module KSU::Shape
     when :right  then :right_to_left
     end
   end
-  def _e2a7df81(rec)
+  def rect_of(rec)
     pts = rec[:top_corners]
     arr2 = pts.map { |pt| pt.x.to_f }
     arr3 = pts.map { |pt| pt.y.to_f }
     [*arr2.minmax, *arr3.minmax]
   end
-  def _6c8674a4(_78088f46, _fb746155, _24cbb6f3, _8e929fea, _d059d485, _99115cc0, _364ea681, _cdb8e631)
+  def edge_overlaps(_78088f46, _fb746155, _24cbb6f3, _8e929fea, _d059d485, _99115cc0, _364ea681, _cdb8e631)
     _6fb93270 = [[_fb746155, _99115cc0].min - [_78088f46, _d059d485].max, 0].max
     _aeb18298   = [[_8e929fea, _cdb8e631].min - [_24cbb6f3, _364ea681].max, 0].max
     {
@@ -298,8 +298,8 @@ module KSU::Shape
     when :right  then (start_x - _fb746155).abs
     end
   end
-  def side_of(_e69b41c0)
-    case _e69b41c0
+  def side_of(sweep)
+    case sweep
     when :left_to_right then :trai
     when :right_to_left then :phai
     when :top_to_bottom then :tren
@@ -315,7 +315,7 @@ module KSU::Shape
     when :phai then @ten_phai
     end
   end
-  def _3e91ed31(side, theo_vung = @layer_theo_vung)
+  def layer_prefix(side, theo_vung = @layer_theo_vung)
     side ? layer_for_side(side, theo_vung).to_s : "Lớp"
   end
   def side_color(side, theo_vung = @layer_theo_vung)
@@ -327,19 +327,19 @@ module KSU::Shape
     when :phai then @mau_phai
     end
   end
-  def _ae380730
-    return unless @_cd7eef1c && @flag8
-    parts = _9b7885a4(@_cd7eef1c, @flag8)
-    apply_ranks(_26d5057d(parts)) unless parts.empty?
+  def finish_drag_rank
+    return unless @_cd7eef1c && @rank_b
+    parts = _9b7885a4(@_cd7eef1c, @rank_b)
+    apply_ranks(rank_drag(parts)) unless parts.empty?
     @_cd7eef1c = nil
-    @flag8 = nil
+    @rank_b = nil
   end
-  def _ac93239a
-    return if @arr8.length < 2
-    parts = _d01131b1(@arr8)
-    apply_ranks(_46fe09d2(parts)) unless parts.empty?
-    @arr8 = []
-    @flag8 = nil
+  def rank_lasso
+    return if @lasso_pts.length < 2
+    parts = _d01131b1(@lasso_pts)
+    apply_ranks(rank_free(parts)) unless parts.empty?
+    @lasso_pts = []
+    @rank_b = nil
   end
   def clear_ranks(parts)
     arr2 = []
@@ -356,8 +356,8 @@ module KSU::Shape
     commit_changes(arr2)
   end
   def _e7ce91ab
-    pts = @arr8.dup
-    pts << @flag8 if @flag8 && pts.any? && pts.last != @flag8
+    pts = @lasso_pts.dup
+    pts << @rank_b if @rank_b && pts.any? && pts.last != @rank_b
     pts
   end
   def _d01131b1(pts2)
@@ -487,18 +487,18 @@ module KSU::Shape
   end
   def _d1cfc672(view)
     return if @flag40
-    _e69b41c0 = sweep_dir
-    return unless _e69b41c0
+    sweep = sweep_dir
+    return unless sweep
     s = view.screen_coords(@pt4)
     ent = view.screen_coords(@pt6)
-    extent_along = case _e69b41c0
+    extent_along = case sweep
               when :left_to_right, :right_to_left then (ent.x - s.x).abs
               else (ent.y - s.y).abs
               end
     return if extent_along < 24
     px = (s.x + ent.x) / 2.0
     py = (s.y + ent.y) / 2.0
-    case _e69b41c0
+    case sweep
     when :left_to_right
       _ab6ad32b, _04e2c501 = [s.x, ent.x].minmax
       KSU::View._0b8e9c29(view, _ab6ad32b + 10, py, _04e2c501 - 12, py, :right)
@@ -514,11 +514,11 @@ module KSU::Shape
     end
   end
   def _b066035d(view)
-    return unless @_cd7eef1c && @flag8
-    KSU::View.draw_lines([@_cd7eef1c, @flag8], guide: false, width: 1)
+    return unless @_cd7eef1c && @rank_b
+    KSU::View.draw_lines([@_cd7eef1c, @rank_b], guide: false, width: 1)
   end
   def _990148f1(view)
-    return if @arr8.empty?
+    return if @lasso_pts.empty?
     pts = _e7ce91ab
     return if pts.length < 2
     arr = []

@@ -27,10 +27,10 @@ class KSU::Chongbay
     @pt4 = nil
     @pt6 = nil
     @sweep_memo = nil
-    @arr5 = []
+    @track_ids = []
     @_cd7eef1c = nil
-    @flag8 = nil
-    @arr8 = []
+    @rank_b = nil
+    @lasso_pts = []
     @arr46 = nil
     @flag28 = nil
     @arr64 = []
@@ -211,10 +211,10 @@ class KSU::Chongbay
       set_mode((@che_do + 1) % 2)
       view&.invalidate
     when 13
-      if @kieu_chon_tam == 2 && @arr8.any?
-        _ac93239a
+      if @kieu_chon_tam == 2 && @lasso_pts.any?
+        rank_lasso
         view&.invalidate
-      elsif !@flag40 && !(@flag55 || !@_cd7eef1c.nil? || @arr8.any?)
+      elsif !@flag40 && !(@flag55 || !@_cd7eef1c.nil? || @lasso_pts.any?)
         KSU.select_tool(nil)
         view&.invalidate
       end
@@ -272,7 +272,7 @@ class KSU::Chongbay
     end
     @pt11 = KSU::View.pick_on_plane(view, x, y, @num13)
     @pt12 = Geom::Point3d.new(x, y, 0)
-    if !@flag55 && !@_cd7eef1c && @arr8.empty?
+    if !@flag55 && !@_cd7eef1c && @lasso_pts.empty?
       _b1c23df1, cur_sheet, _10b8f37f, _3ab5da25 = @hover_sheet, @arr46, @flag28, @arr64
       @hover_sheet = hit_header(view, x, y)
       sheet, joint = hit_button(view, x, y)
@@ -293,9 +293,9 @@ class KSU::Chongbay
       when 0
         @pt6 = @pt11 if @flag55
       when 1
-        @flag8 = @pt11 if @_cd7eef1c
+        @rank_b = @pt11 if @_cd7eef1c
       when 2
-        @flag8 = @pt11 if @arr8.any?
+        @rank_b = @pt11 if @lasso_pts.any?
       end
     end
     view.invalidate
@@ -304,7 +304,7 @@ class KSU::Chongbay
     return if click_field(x, y, view)
     return if click_mode(x, y, view)
     return if click_outside(x, y, view)
-    if !@flag55 && @_cd7eef1c.nil? && @arr8.empty?
+    if !@flag55 && @_cd7eef1c.nil? && @lasso_pts.empty?
       hit = hit_at(x, y)
       if hit
         begin_edit(hit, view)
@@ -335,18 +335,18 @@ class KSU::Chongbay
       @pt4 = _d41bb15d
       @pt6 = _d41bb15d
       @sweep_memo = nil
-      @arr5 = []
+      @track_ids = []
     when 1
       if @_cd7eef1c.nil?
         @_cd7eef1c = _d41bb15d
-        @flag8 = _d41bb15d
+        @rank_b = _d41bb15d
       else
-        @flag8 = _d41bb15d
-        _ae380730
+        @rank_b = _d41bb15d
+        finish_drag_rank
       end
     when 2
-      @arr8 << _d41bb15d
-      @flag8 = _d41bb15d
+      @lasso_pts << _d41bb15d
+      @rank_b = _d41bb15d
     end
     view.invalidate
   end
@@ -608,7 +608,7 @@ class KSU::Chongbay
     flag = (side == :tren || side == :duoi) ?
               ->(i) { i[:part][:center].x.to_f } : ->(i) { i[:part][:center].y.to_f }
     items.sort_by! { |i| [i[:threshold], flag.call(i)] }
-    _9ce21378(items.map { |i| i[:part] }, side, layers2)
+    number_parts(items.map { |i| i[:part] }, side, layers2)
   end
   def gap_for_side(side)
     case side
@@ -727,22 +727,22 @@ class KSU::Chongbay
   end
   def _c915a205
     return [] unless @kieu_chon_tam == 0 && @flag55
-    _e69b41c0 = sweep_dir
-    _e69b41c0 ? rank_plan(_e69b41c0) : []
+    sweep = sweep_dir
+    sweep ? rank_plan(sweep) : []
   end
   def _ed847bcd
-    return [] unless @kieu_chon_tam == 1 && @_cd7eef1c && @flag8
-    parts = _9b7885a4(@_cd7eef1c, @flag8)
+    return [] unless @kieu_chon_tam == 1 && @_cd7eef1c && @rank_b
+    parts = _9b7885a4(@_cd7eef1c, @rank_b)
     return [] if parts.empty?
-    _26d5057d(parts)
+    rank_drag(parts)
   end
   def _c174cba6
-    return [] unless @kieu_chon_tam == 2 && @arr8.any?
+    return [] unless @kieu_chon_tam == 2 && @lasso_pts.any?
     pts = _e7ce91ab
     return [] if pts.length < 2
     parts = _d01131b1(pts)
     return [] if parts.empty?
-    _46fe09d2(parts)
+    rank_free(parts)
   end
   private
   def update_status
@@ -762,8 +762,8 @@ class KSU::Chongbay
   end
   def _9935b535
     return @side unless @kieu_chon_tam == 0
-    _c04fb39c = sweep_dir
-    _c04fb39c ? side_of(_c04fb39c) : _b7735d5c
+    dir = sweep_dir
+    dir ? side_of(dir) : _b7735d5c
   end
   def _b7735d5c
     return @side unless @pt11
@@ -817,10 +817,10 @@ class KSU::Chongbay
     @pt4 = nil
     @pt6 = nil
     @sweep_memo = nil
-    @arr5 = []
+    @track_ids = []
     @_cd7eef1c = nil
-    @flag8 = nil
-    @arr8 = []
+    @rank_b = nil
+    @lasso_pts = []
     @_04b8b9d9 = nil
     @str3 = ""
     if @arr49

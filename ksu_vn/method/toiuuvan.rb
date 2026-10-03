@@ -127,12 +127,12 @@ class KSU::Toiuuvan
     when VK_LEFT, VK_RIGHT
       return if @sel.empty?
       _b5af8dbf = (rot & CONSTRAIN_MODIFIER_MASK) != 0
-      _c04fb39c = if key == VK_LEFT
+      dir = if key == VK_LEFT
           _b5af8dbf ? :first : :prev
         else
           _b5af8dbf ? :last : :next
         end
-      _d0431df5(_c04fb39c)
+      _d0431df5(dir)
       view&.invalidate
     when 192 then KSU::Settings.open_settings("toi_uu_van")
     when 27, 32
@@ -360,14 +360,14 @@ class KSU::Toiuuvan
       hover[:sheet] == sheet && hover[:idx] == i
     end
   end
-  def _c211b5aa(sheet, ix, ctrl, num11)
+  def _c211b5aa(sheet, ix, ctrl, mode)
     arr = (ctrl ? @sel.dup : [sheet]).select { |s| s && s.valid? }
     return if arr.empty?
     KSU.start
     arr.each do |s|
       rec = @sheets.find { |i| i[:instance] == s }
       next unless rec
-      if num11 == :corner
+      if mode == :corner
         KSU::Nesting.pack_to_corner(@nesting, s, rec, ix, @tam_cach_le.to_f, @tam_cach_nhau.to_f)
       else
         KSU::Nesting.pack_to_edge(@nesting, s, rec, ix, @tam_cach_le.to_f, @tam_cach_nhau.to_f)
@@ -379,7 +379,7 @@ class KSU::Toiuuvan
   rescue StandardError
     KSU.abort_op
   end
-  def _d0431df5(_c04fb39c)
+  def _d0431df5(dir)
     _9535dc0b = @sel.select { |s| s && s.valid? }
     return if _9535dc0b.empty?
     arr3 = []
@@ -390,7 +390,7 @@ class KSU::Toiuuvan
       arr2 = arr.each_index.select { |i| _9535dc0b.include?(arr[i]) }
       next if arr2.empty?
       arr4.concat(arr2.map { |i| arr[i] })
-      materials = _ea9e841c(arr.length, arr2, _c04fb39c)
+      materials = _ea9e841c(arr.length, arr2, dir)
       arr3 << [arr, arr2, materials] if materials
     end
     return if arr3.empty?
@@ -411,12 +411,12 @@ class KSU::Toiuuvan
   rescue StandardError
     KSU.abort_op
   end
-  def _ea9e841c(n, arr, _c04fb39c)
+  def _ea9e841c(n, arr, dir)
     materials = (0...n).to_a
     _9535dc0b = Array.new(n, false)
     arr.each { |i| _9535dc0b[i] = true }
-    flag = (_c04fb39c == :prev || _c04fb39c == :first) ? :prev : :next
-    _4ce596b6 = _c04fb39c == :first || _c04fb39c == :last
+    flag = (dir == :prev || dir == :first) ? :prev : :next
+    _4ce596b6 = dir == :first || dir == :last
     bbox = false
     loop do
       _8bb0188d = _44a5d1aa(materials, _9535dc0b, flag)

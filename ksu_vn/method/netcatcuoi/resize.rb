@@ -340,7 +340,7 @@ module KSU::Resize
     end
   end
   def draw_sheet_buttons(view)
-    flag28 = @num11 == 1 && @flag29 && @id ? @id[0] : nil
+    flag28 = @mode == 1 && @flag29 && @id ? @id[0] : nil
     _0183b2c7.each do |arr|
       hover = @id == arr[:id] || (flag28 && arr[:kind] == flag28)
       if arr[:kind] == :remove

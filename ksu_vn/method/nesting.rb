@@ -13,9 +13,9 @@ module KSU::Nest
     end
     def draw(view)
       if KSU::Nest.labelling
-        sweep = KSU::Nest.label_total
+        total = KSU::Nest.label_total
         done = KSU::Nest.label_done
-        draw_mode_hint(view, "Đang gắn nhãn... #{[done + 1, sweep].min}/#{sweep}", 10)
+        draw_mode_hint(view, "Đang gắn nhãn... #{[done + 1, total].min}/#{total}", 10)
         return
       end
       progress = KSU::Nest.num12
@@ -249,10 +249,10 @@ module KSU::Nest
           KSU::View.view.invalidate
         end
       },
-      on_job_place_progress: lambda { |j, done, sweep|
+      on_job_place_progress: lambda { |j, done, total|
         if j == @num4
           @str = "Đang xếp tấm"
-          @num12 = sweep > 0 ? (done * 100.0 / sweep).round : 100
+          @num12 = total > 0 ? (done * 100.0 / total).round : 100
           KSU::View.view.invalidate
         end
       },
@@ -560,7 +560,7 @@ module KSU::Nest
     KSU.select_tool(Progress) unless model.tools.active_tool.instance_of?(Progress)
     KSU.start(true)
     model.active_view.invalidate
-    @_b32edef9 = UI.start_timer(0, true) { label_step }
+    @label_timer = UI.start_timer(0, true) { label_step }
   end
   def label_step
     return _0c3a8be0 if @label_done >= @label_total
@@ -594,8 +594,8 @@ module KSU::Nest
     UI.messagebox("Lỗi gắn nhãn: #{msg2}")
   end
   def _37cfb2cb
-    UI.stop_timer(@_b32edef9) if @_b32edef9
-    @_b32edef9 = nil
+    UI.stop_timer(@label_timer) if @label_timer
+    @label_timer = nil
     @labelling = false
     @_a7e29efc = nil
     @_576fddc0 = nil

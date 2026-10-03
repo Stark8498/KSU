@@ -183,13 +183,13 @@ module KSU::Font
     a0 = start * (Math::PI / 4.0)
     px = x - half * Math.cos(a0)
     py = y - half * Math.sin(a0)
-    sweep = num * (Math::PI / 4.0)
-    sweep = -sweep if ccw
+    total = num * (Math::PI / 4.0)
+    total = -total if ccw
     _2f3325c7 = num * 3
     trai = x
     duoi = y
     (1.._2f3325c7).each do |k|
-      num2 = a0 + sweep * (k.to_f / _2f3325c7)
+      num2 = a0 + total * (k.to_f / _2f3325c7)
       nx = px + half * Math.cos(num2)
       ny = py + half * Math.sin(num2)
       snap_edges << [trai, duoi, nx, ny] if pen

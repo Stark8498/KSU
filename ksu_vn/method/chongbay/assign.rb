@@ -15,7 +15,7 @@ module KSU::Assign
         str = slot["side"].to_s
         arr[:side] = str.empty? ? nil : str.to_sym
         arr[:theo_vung] = slot.key?("theo_vung") ? !!slot["theo_vung"] : true
-        arr[:prefix] = slot["prefix"] || _3e91ed31(arr[:side], arr[:theo_vung])
+        arr[:prefix] = slot["prefix"] || layer_prefix(arr[:side], arr[:theo_vung])
         arr[:base_color] = slot["color"] ? KSU::View.parse_color(slot["color"]) : nil
       else
         arr[:rank] = _481463cd(arr[:cutting])
@@ -108,7 +108,7 @@ module KSU::Assign
       arr[:rank] = arr2[:rank]
       arr[:side] = arr2[:side]
       arr[:theo_vung] = @layer_theo_vung
-      arr[:prefix] = _3e91ed31(arr2[:side])
+      arr[:prefix] = layer_prefix(arr2[:side])
       arr[:base_color] = arr2[:side] ? side_color(arr2[:side], @layer_theo_vung) : nil
       arr[:changed] = true
       arr[:fill_color] = _67c06000(arr)

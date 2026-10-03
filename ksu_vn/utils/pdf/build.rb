@@ -93,10 +93,10 @@ module KSU::Pdf
       out << "\nendobj\n"
     end
     xref_at = out.bytesize
-    sweep = arr.size + 1
-    out << "xref\n0 #{sweep}\n0000000000 65535 f \n"
+    total = arr.size + 1
+    out << "xref\n0 #{total}\n0000000000 65535 f \n"
     arr2.each { |_65570dfe| out << format("%010d 00000 n \n", _65570dfe) }
-    out << "trailer\n<< /Size #{sweep} /Root 1 0 R >>\nstartxref\n#{xref_at}\n%%EOF"
+    out << "trailer\n<< /Size #{total} /Root 1 0 R >>\nstartxref\n#{xref_at}\n%%EOF"
     out
   end
   def num(v)

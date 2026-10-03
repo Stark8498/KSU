@@ -47,8 +47,8 @@ module KSU::Intem
       end
       next if parts.empty?
       if str2
-        _c04fb39c = descent ? -1 : 1
-        parts.sort_by! { |i| [parts2[i][:lk] ? 1 : 0, _c04fb39c * parts2[i][:id].to_i] }
+        dir = descent ? -1 : 1
+        parts.sort_by! { |i| [parts2[i][:lk] ? 1 : 0, dir * parts2[i][:id].to_i] }
       else
         px = seed.include?("phai") ? num3 : 0.0
         py = seed.include?("tren") ? arr52 : 0.0

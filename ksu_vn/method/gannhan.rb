@@ -15,9 +15,9 @@ class KSU::Gannhan
     s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, i| b ^ (i * 0x57 + 0x3D) }.pack("C*")
     k = s[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 0x99 }.pack("C*")
     return unless k =~ /\Ak[0-9a-z]{3}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}\z/i
-    @num11 ||= 0
+    @mode ||= 0
     @labelling = false
-    @flag17 = false
+    @label_sel = false
     @label_total = 0
     @label_done = 0
     @bo_qua_kich_thuoc = !!get("bo_qua_kich_thuoc", false)
@@ -35,16 +35,16 @@ class KSU::Gannhan
     @goc_xoay_nhan = get("goc_xoay_nhan", 90).to_i
     @presets = get("presets", nil)
     if Sketchup.active_model.tools.active_tool == self
-      @arr58 ||= []
+      @scope ||= []
       @arr4 ||= []
-      collect_in_rect if @num11 == MODE_KIEM
+      collect_in_rect if @mode == MODE_KIEM
       nesting = KSU::Nesting.find_nesting(notify: false)
       @arr11 = KSU::Nesting.error_points(nesting)
       @_x_bi_lan_polys = nil
       @label_section_hidden = KSU::Cutting.apply_label_hiding(nesting, @an_nhan_tiet_dien, @label_section_hidden)
     else
       @label_section_hidden = []
-      @arr58 = []
+      @scope = []
       @arr4 = []
       @arr11 = []
       @_x_bi_lan_polys = nil
@@ -53,42 +53,42 @@ class KSU::Gannhan
   def activate
     KSU::Chongbay.check_license
     KSU::Netcatcuoi.assert_license
-    @num11 = MODE_GAN
+    @mode = MODE_GAN
     reload
     model = Sketchup.active_model
-    @arr58 = model.selection.empty? ? model.entities.to_a : model.selection.to_a
+    @scope = model.selection.empty? ? model.entities.to_a : model.selection.to_a
     @arr4 = []
     KSU::View.load_colors
     KSU::Preset.load_cfg
     init_modes(
       ["Gắn nhãn", "Sửa nhãn", "Kiểm nhãn"],
-      active_proc: -> { @num11 },
-      on_click: ->(i) { _04adac52(i) },
+      active_proc: -> { @mode },
+      on_click: ->(i) { switch_mode(i) },
     )
     setup_fields(
       "Tên mặc định" => {
-        ten_mac_dinh: [:text, "Tên mặc định", -> { @num11 == MODE_GAN }],
+        ten_mac_dinh: [:text, "Tên mặc định", -> { @mode == MODE_GAN }],
       },
       "Chuẩn hóa vật liệu" => {
-        chuan_hoa_vat_lieu: [:switch, "Chuẩn hóa vật liệu", -> { @num11 != MODE_KIEM }],
+        chuan_hoa_vat_lieu: [:switch, "Chuẩn hóa vật liệu", -> { @mode != MODE_KIEM }],
       },
       "Cập nhật nhãn đã có" => {
-        cap_nhat_nhan_da_co: [:switch, "Cập nhật nhãn đã có", -> { @num11 == MODE_GAN }],
+        cap_nhat_nhan_da_co: [:switch, "Cập nhật nhãn đã có", -> { @mode == MODE_GAN }],
       },
       "Gắn nhãn" => {
-        nhan_dat_trong_tam: [:switch, "Nhãn đặt trong tấm", -> { @num11 != MODE_KIEM }],
-        kich_thuoc_nhan: [:mm, "Kích thước nhãn", -> { @num11 != MODE_KIEM }, 0, 10000],
-        chieu_rong_chu: [:value, "Chiều rộng chữ", -> { @num11 == MODE_GAN }, 10, 200],
-        do_gian_chu: [:select, "Độ giãn chữ", { 0.1 => "Thưa", 0.0 => "Vừa", -0.1 => "Hẹp" }, -> { @num11 == MODE_GAN }],
-        kieu_tieu_de: [:select, "Định dạng chữ", { "upper" => "AA", "title" => "Aa", "lower" => "aa", "none" => "Không" }, -> { @num11 == MODE_GAN }],
+        nhan_dat_trong_tam: [:switch, "Nhãn đặt trong tấm", -> { @mode != MODE_KIEM }],
+        kich_thuoc_nhan: [:mm, "Kích thước nhãn", -> { @mode != MODE_KIEM }, 0, 10000],
+        chieu_rong_chu: [:value, "Chiều rộng chữ", -> { @mode == MODE_GAN }, 10, 200],
+        do_gian_chu: [:select, "Độ giãn chữ", { 0.1 => "Thưa", 0.0 => "Vừa", -0.1 => "Hẹp" }, -> { @mode == MODE_GAN }],
+        kieu_tieu_de: [:select, "Định dạng chữ", { "upper" => "AA", "title" => "Aa", "lower" => "aa", "none" => "Không" }, -> { @mode == MODE_GAN }],
       },
       "Sửa nhãn" => {
-        goc_xoay_nhan: [:value, "Góc xoay nhãn", -> { @num11 == MODE_SUA }, 1, 359],
+        goc_xoay_nhan: [:value, "Góc xoay nhãn", -> { @mode == MODE_SUA }, 1, 359],
       },
       "Kiểm nhãn" => {
-        bo_qua_kich_thuoc: [:switch, "Bỏ qua kích thước", -> { @num11 == MODE_KIEM }],
-        bo_qua_net_dung: [:switch, "Bỏ qua nét dựng", -> { @num11 == MODE_KIEM }],
-        bo_qua_chu: [:switch, "Bỏ qua chữ", -> { @num11 == MODE_KIEM }],
+        bo_qua_kich_thuoc: [:switch, "Bỏ qua kích thước", -> { @mode == MODE_KIEM }],
+        bo_qua_net_dung: [:switch, "Bỏ qua nét dựng", -> { @mode == MODE_KIEM }],
+        bo_qua_chu: [:switch, "Bỏ qua chữ", -> { @mode == MODE_KIEM }],
       },
       "Phủ màu tấm" => KSU::Const::OVERLAY_SETTINGS,
     )
@@ -100,7 +100,7 @@ class KSU::Gannhan
   end
   def deactivate(view)
     reset
-    _67d3090f(true) if @labelling
+    stop_labelling(true) if @labelling
     save_selected_preset
     @label_section_hidden = KSU::Cutting.apply_label_hiding(nil, false, @label_section_hidden)
     view&.invalidate
@@ -118,32 +118,32 @@ class KSU::Gannhan
     hover_field(x, y, view)
     hover_mode(x, y, view)
     hover_preset(x, y, view)
-    return unless _9bd847a3 || _ad11f375
+    return unless edit_mode? || attach_mode?
     return update_drag(x, y, view) if started?
-    return unless _9bd847a3
-    _963d9525(x, y, view)
+    return unless edit_mode?
+    hover_label(x, y, view)
   end
   def onLButtonDown(kflags, x, y, view)
     return if click_field(x, y, view)
     return if click_mode(x, y, view)
     return if click_outside(x, y, view)
-    return unless _9bd847a3 || _ad11f375
+    return unless edit_mode? || attach_mode?
     begin_drag(x, y)
   end
   def onLButtonUp(kflags, x, y, view)
-    return unless _9bd847a3 || _ad11f375
+    return unless edit_mode? || attach_mode?
     arr = end_drag(x, y)
     return unless arr
-    if _ad11f375
+    if attach_mode?
       if arr[0] == :rect
-        _ecb7d46e(view, arr[1], arr[2])
+        pick_boards_in_rect(view, arr[1], arr[2])
       else
-        _0e8c07bf(view, x, y)
+        pick_board_at(view, x, y)
       end
     elsif arr[0] == :rect
-      _06ab970a(view, arr[1], arr[2])
+      pick_labels_in_rect(view, arr[1], arr[2])
     else
-      _ec7bbbdc(view, x, y)
+      click_label(view, x, y)
     end
   end
   def onKeyDown(key, rep, rot, view)
@@ -152,16 +152,16 @@ class KSU::Gannhan
     when 192
       KSU::Settings.open_settings("gan_nhan")
     when 9
-      if _9bd847a3 && _383d85a8.any?
-        _02008df0
+      if edit_mode? && selected_pairs.any?
+        rotate_labels
       else
-        _04adac52((@num11 + 1) % 3)
+        switch_mode((@mode + 1) % 3)
       end
     when 13
-      if @num11 == MODE_KIEM
-        _5e857f97
-      elsif @num11 == MODE_GAN
-        _66203d05((rot & CONSTRAIN_MODIFIER_MASK) != 0)
+      if @mode == MODE_KIEM
+        isolate_bad
+      elsif @mode == MODE_GAN
+        run_attach((rot & CONSTRAIN_MODIFIER_MASK) != 0)
       end
     when 27
       KSU.select_tool(nil)
@@ -169,26 +169,26 @@ class KSU::Gannhan
     end
   end
   private
-  def _9bd847a3
-    @num11 == MODE_SUA && !@labelling
+  def edit_mode?
+    @mode == MODE_SUA && !@labelling
   end
-  def _ad11f375
-    @num11 == MODE_GAN && !@labelling
+  def attach_mode?
+    @mode == MODE_GAN && !@labelling
   end
-  def _e33f3af2(ent)
+  def labelable?(ent)
     return false unless ent && ent.valid? && KSU.container?(ent)
     !KSU::Cutting.board_faces(ent, KSU::Label.world_tf(ent)).nil?
   end
-  def _ecb7d46e(view, rect, strict)
-    KSU.select_only(KSU::Quet.collect_in_rect(view, rect, strict) { |ent| _e33f3af2(ent) })
+  def pick_boards_in_rect(view, rect, strict)
+    KSU.select_only(KSU::Quet.collect_in_rect(view, rect, strict) { |ent| labelable?(ent) })
     view.invalidate
   end
-  def _0e8c07bf(view, x, y)
-    board = _6b0ff197(view, x, y)
+  def pick_board_at(view, x, y)
+    board = board_at(view, x, y)
     KSU.select_only(board || [])
     view.invalidate
   end
-  def _a599c8e1(view, x, y)
+  def walk_pick(view, x, y)
     ph = view.pick_helper
     ph.do_pick(x, y)
     (0...ph.count).each do |i|
@@ -201,15 +201,15 @@ class KSU::Gannhan
     end
     yield(ph.best_picked)
   end
-  def _6b0ff197(view, x, y)
-    _a599c8e1(view, x, y) { |_310b620e| _e33f3af2(_310b620e) ? _310b620e : nil }
+  def board_at(view, x, y)
+    walk_pick(view, x, y) { |_310b620e| labelable?(_310b620e) ? _310b620e : nil }
   end
-  def _04adac52(i)
-    return if @num11 == i
-    @num11 = i
-    @flag17 = false
+  def switch_mode(i)
+    return if @mode == i
+    @mode = i
+    @label_sel = false
     reset
-    if @num11 == MODE_KIEM
+    if @mode == MODE_KIEM
       collect_in_rect
     else
       @arr4 = []
@@ -219,7 +219,7 @@ class KSU::Gannhan
     Sketchup.active_model&.active_view&.invalidate
   end
   def update_status
-    case @num11
+    case @mode
     when MODE_KIEM
       KSU.set_status("Nhấn Tab để chuyển sang chế độ gắn nhãn. Nhấn Enter để bắt đầu kiểm nhãn.")
     when MODE_SUA
@@ -228,10 +228,10 @@ class KSU::Gannhan
       KSU.set_status("Nhấn chuột hoặc kéo quét để chọn ván cần gắn nhãn. Nhấn Tab để chuyển sang chế độ sửa nhãn. Nhấn Enter để bắt đầu gắn nhãn.")
     end
   end
-  def _963d9525(x, y, view)
-    return if @flag17
+  def hover_label(x, y, view)
+    return if @label_sel
     return if busy?
-    fld = _bf70553d(view, x, y)
+    fld = label_pair_at(view, x, y)
     model = Sketchup.active_model
     unless fld
       return if model.selection.empty?
@@ -243,47 +243,47 @@ class KSU::Gannhan
     KSU.select_only(fld[1])
     view.invalidate
   end
-  def _06ab970a(view, rect, strict)
-    labels = KSU::Quet.collect_in_rect(view, rect, strict, nil, nil, 4) { |ent| !_bd2ac306(ent).nil? }
-    @flag17 = !labels.empty?
+  def pick_labels_in_rect(view, rect, strict)
+    labels = KSU::Quet.collect_in_rect(view, rect, strict, nil, nil, 4) { |ent| !pair_from_label(ent).nil? }
+    @label_sel = !labels.empty?
     KSU.select_only(labels)
     view.invalidate
   end
-  def _ec7bbbdc(view, x, y)
-    fld = _bf70553d(view, x, y)
-    if @flag17
-      return _30902429 if fld && Sketchup.active_model.selection.contains?(fld[1])
-      @flag17 = false
+  def click_label(view, x, y)
+    fld = label_pair_at(view, x, y)
+    if @label_sel
+      return flip_label_face if fld && Sketchup.active_model.selection.contains?(fld[1])
+      @label_sel = false
       KSU.select_only(fld ? fld[1] : [])
       view.invalidate
     end
-    _30902429 if fld
+    flip_label_face if fld
   end
-  def _bf70553d(view, x, y)
-    _a599c8e1(view, x, y) { |_310b620e| _7e760d59(_310b620e) }
+  def label_pair_at(view, x, y)
+    walk_pick(view, x, y) { |_310b620e| label_pair_of(_310b620e) }
   end
-  def _7e760d59(grp)
+  def label_pair_of(grp)
     return nil unless grp && grp.valid? && KSU.container?(grp)
     return nil unless grp.get_attribute(KSU::Label::DICT, KSU::Label::K_BOARD_INDEX)
     lbl = KSU::Cutting.label_of(grp)
     (lbl && lbl.valid?) ? [grp, lbl] : nil
   end
-  def _383d85a8
-    KSU.selection.map { |ent| _bd2ac306(ent) }.compact
+  def selected_pairs
+    KSU.selection.map { |ent| pair_from_label(ent) }.compact
   end
-  def _bd2ac306(entity)
+  def pair_from_label(entity)
     return nil unless KSU.container?(entity) && entity.valid?
     return nil unless entity.get_attribute(KSU::Label::DICT, KSU::Label::K_IS_LABEL) || entity.name.to_s == KSU::Label::GROUP_NAME
-    board = _b9550635(entity)
+    board = board_of_label(entity)
     board ? [board, entity] : nil
   end
-  def _b9550635(lbl)
+  def board_of_label(lbl)
     _49fd085d = lbl.parent
     return nil unless _49fd085d.is_a?(Sketchup::ComponentDefinition)
     _49fd085d.instances.find { |i| i.valid? && i.get_attribute(KSU::Label::DICT, KSU::Label::K_BOARD_INDEX) }
   end
-  def _d6e2c8ac
-    items = _383d85a8
+  def relabel_each
+    items = selected_pairs
     return if items.empty?
     KSU.start(false)
     items.each do |board, lbl|
@@ -300,25 +300,25 @@ class KSU::Gannhan
     KSU.commit
     KSU::View.view.invalidate
   end
-  def _02008df0
-    _d6e2c8ac do |_256b4519, src, _7e53f420, rot|
+  def rotate_labels
+    relabel_each do |_256b4519, src, _7e53f420, rot|
       [_7e53f420 || src[0], (rot + @goc_xoay_nhan) % 360]
     end
   end
-  def _30902429
-    _d6e2c8ac do |board, src, _7e53f420, rot|
+  def flip_label_face
+    relabel_each do |board, src, _7e53f420, rot|
       font = src[0] == _7e53f420 ? src[1] : src[0]
-      _a69a67a0(board)
+      clear_cnc_marks(board)
       KSU::Label._f612f2b9(board, font)
       [font, rot]
     end
   end
-  def _a69a67a0(board)
+  def clear_cnc_marks(board)
     (KSU.entities_in(board) || []).grep(Sketchup::Face).each do |f|
       f.delete_attribute(KSU::Label::DICT, KSU::Label::K_IS_CNCED_FACE)
     end
   end
-  def _66203d05(flag = false)
+  def run_attach(flag = false)
     return if @labelling
     _9535dc0b = flag ? [] : KSU.selection
     renumber = KSU::Label.plan(_9535dc0b)
@@ -347,7 +347,7 @@ class KSU::Gannhan
     @labelling = true
     KSU.start(true)
     KSU::View.view.invalidate
-    @_b32edef9 = UI.start_timer(0, true) { _8692db05 }
+    @label_timer = UI.start_timer(0, true) { _8692db05 }
   end
   def _8692db05
     return _ed0aba0e if @label_done >= @label_total
@@ -366,17 +366,17 @@ class KSU::Gannhan
     _feede56d(ent.message)
   end
   def _ed0aba0e
-    _67d3090f(true)
+    stop_labelling(true)
     KSU::View.view.invalidate
   end
   def _feede56d(msg2)
-    _67d3090f(false)
+    stop_labelling(false)
     UI.messagebox("Lỗi gắn nhãn: #{msg2}")
     KSU::View.view.invalidate
   end
-  def _67d3090f(commit)
-    UI.stop_timer(@_b32edef9) if @_b32edef9
-    @_b32edef9 = nil
+  def stop_labelling(commit)
+    UI.stop_timer(@label_timer) if @label_timer
+    @label_timer = nil
     @labelling = false
     if commit
       KSU.commit
@@ -384,13 +384,13 @@ class KSU::Gannhan
       KSU.abort_op
     end
   end
-  def _5e857f97
+  def isolate_bad
     return if @arr4.nil? || @arr4.empty?
     KSU::Isolate.start(@arr4)
     KSU.select_tool(nil)
   end
   def collect_in_rect
-    @arr4 = @arr58.select(&:valid?).reject do |ent|
+    @arr4 = @scope.select(&:valid?).reject do |ent|
       next true if @bo_qua_kich_thuoc && ent.is_a?(Sketchup::Dimension)
       next true if @bo_qua_net_dung && (ent.is_a?(Sketchup::ConstructionLine) || ent.is_a?(Sketchup::ConstructionPoint))
       next true if @bo_qua_chu && ent.is_a?(Sketchup::Text)
