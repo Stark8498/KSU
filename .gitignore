@@ -4,3 +4,7 @@ __pycache__/
 # Rebuilt by tools/codegraph.py on demand and holds this machine's absolute
 # paths, so it differs per checkout and is never worth a merge.
 tools/graph.json
+
+# Native libraries copied from the installed plugin so the tree can be loaded
+# in SketchUp. Binary, unchanged by this work, and not ours to redistribute.
+ksu_vn/clibs/

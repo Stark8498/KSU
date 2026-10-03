@@ -1,0 +1,2857 @@
+{
+ "calls": [
+  {
+   "ns": "KSU::Addon",
+   "m": "import",
+   "f": "ksu_vn/main.rb",
+   "l": 5
+  },
+  {
+   "ns": "KSU",
+   "m": "with_license",
+   "f": "ksu_vn/main.rb",
+   "l": 48
+  },
+  {
+   "ns": "KSU",
+   "m": "select_tool",
+   "f": "ksu_vn/main.rb",
+   "l": 48
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "open",
+   "f": "ksu_vn/main.rb",
+   "l": 57
+  },
+  {
+   "ns": "KSU::Thongke",
+   "m": "open",
+   "f": "ksu_vn/main.rb",
+   "l": 58
+  },
+  {
+   "ns": "KSU::Intem",
+   "m": "open",
+   "f": "ksu_vn/main.rb",
+   "l": 59
+  },
+  {
+   "ns": "KSU::Xuatdxf",
+   "m": "open",
+   "f": "ksu_vn/main.rb",
+   "l": 60
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "open_settings",
+   "f": "ksu_vn/main.rb",
+   "l": 61
+  },
+  {
+   "ns": "KSU::Addon",
+   "m": "labels",
+   "f": "ksu_vn/main.rb",
+   "l": 70
+  },
+  {
+   "ns": "KSU::Addon",
+   "m": "keys",
+   "f": "ksu_vn/main.rb",
+   "l": 73
+  },
+  {
+   "ns": "KSU::Addon",
+   "m": "launch",
+   "f": "ksu_vn/main.rb",
+   "l": 74
+  },
+  {
+   "ns": "KSU::Flip",
+   "m": "prompt_activate",
+   "f": "ksu_vn/main.rb",
+   "l": 79
+  },
+  {
+   "ns": "KSU::Drag",
+   "m": "licensed?",
+   "f": "ksu_vn/main.rb",
+   "l": 79
+  },
+  {
+   "ns": "KSU::Addon",
+   "m": "icon_of",
+   "f": "ksu_vn/main.rb",
+   "l": 83
+  },
+  {
+   "ns": "KSU::Addon",
+   "m": "visible?",
+   "f": "ksu_vn/main.rb",
+   "l": 89
+  },
+  {
+   "ns": "KSU::Addon",
+   "m": "known?",
+   "f": "ksu_vn/main.rb",
+   "l": 89
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "tool_windows",
+   "f": "ksu_vn/main.rb",
+   "l": 91
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "dialog_open?",
+   "f": "ksu_vn/main.rb",
+   "l": 94
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "open_tab",
+   "f": "ksu_vn/main.rb",
+   "l": 96
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "startup_flags",
+   "f": "ksu_vn/main.rb",
+   "l": 128
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "get_raw",
+   "f": "ksu_vn/main.rb",
+   "l": 129
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "ensure_file",
+   "f": "ksu_vn/main.rb",
+   "l": 141
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "get",
+   "f": "ksu_vn/method/caidat.rb",
+   "l": 605
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "_f92a626b",
+   "f": "ksu_vn/method/caidat.rb",
+   "l": 627
+  },
+  {
+   "ns": "KSU::Detail",
+   "m": "_90be1fb4",
+   "f": "ksu_vn/method/caidat.rb",
+   "l": 628
+  },
+  {
+   "ns": "KSU::Chontam",
+   "m": "volume_id",
+   "f": "ksu_vn/method/caidat.rb",
+   "l": 629
+  },
+  {
+   "ns": "KSU::Update",
+   "m": "disk_id2",
+   "f": "ksu_vn/method/caidat.rb",
+   "l": 631
+  },
+  {
+   "ns": "KSU::View",
+   "m": "parse_color",
+   "f": "ksu_vn/method/chongbay/assign.rb",
+   "l": 19
+  },
+  {
+   "ns": "KSU::View",
+   "m": "shade",
+   "f": "ksu_vn/method/chongbay/assign.rb",
+   "l": 98
+  },
+  {
+   "ns": "KSU::View",
+   "m": "_feb12e90",
+   "f": "ksu_vn/method/chongbay/assign.rb",
+   "l": 99
+  },
+  {
+   "ns": "KSU",
+   "m": "start",
+   "f": "ksu_vn/method/chongbay/assign.rb",
+   "l": 128
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "layer",
+   "f": "ksu_vn/method/chongbay/assign.rb",
+   "l": 146
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "set_layer",
+   "f": "ksu_vn/method/chongbay/assign.rb",
+   "l": 153
+  },
+  {
+   "ns": "KSU",
+   "m": "commit",
+   "f": "ksu_vn/method/chongbay/assign.rb",
+   "l": 156
+  },
+  {
+   "ns": "KSU",
+   "m": "abort_op",
+   "f": "ksu_vn/method/chongbay/assign.rb",
+   "l": 160
+  },
+  {
+   "ns": "KSU::Chongbay",
+   "m": "include",
+   "f": "ksu_vn/method/chongbay/assign.rb",
+   "l": 168
+  },
+  {
+   "ns": "KSU::Xephang",
+   "m": "normalize_id",
+   "f": "ksu_vn/method/chongbay/assign.rb",
+   "l": 171
+  },
+  {
+   "ns": "KSU::Gannhan",
+   "m": "license_field",
+   "f": "ksu_vn/method/chongbay/assign.rb",
+   "l": 171
+  },
+  {
+   "ns": "KSU::Chontam",
+   "m": "_4edb8ec1",
+   "f": "ksu_vn/method/chongbay/assign.rb",
+   "l": 173
+  },
+  {
+   "ns": "KSU::View",
+   "m": "in_poly?",
+   "f": "ksu_vn/method/chongbay/shape.rb",
+   "l": 60
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "record_for",
+   "f": "ksu_vn/method/chongbay/shape.rb",
+   "l": 221
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_polys",
+   "f": "ksu_vn/method/chongbay/shape.rb",
+   "l": 466
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_polygon2d",
+   "f": "ksu_vn/method/chongbay/shape.rb",
+   "l": 485
+  },
+  {
+   "ns": "KSU::View",
+   "m": "to_screen",
+   "f": "ksu_vn/method/chongbay/shape.rb",
+   "l": 485
+  },
+  {
+   "ns": "KSU::View",
+   "m": "_0b8e9c29",
+   "f": "ksu_vn/method/chongbay/shape.rb",
+   "l": 504
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_lines",
+   "f": "ksu_vn/method/chongbay/shape.rb",
+   "l": 518
+  },
+  {
+   "ns": "KSU::Widget",
+   "m": "_fa64094f",
+   "f": "ksu_vn/method/chongbay/shape.rb",
+   "l": 535
+  },
+  {
+   "ns": "KSU::Netcatcuoi",
+   "m": "check_license",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 6
+  },
+  {
+   "ns": "KSU::Toiuuvan",
+   "m": "assert_license",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 7
+  },
+  {
+   "ns": "KSU",
+   "m": "prepare_model",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 8
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "error_points",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 78
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "apply_label_hiding",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 79
+  },
+  {
+   "ns": "KSU::View",
+   "m": "view",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 118
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "enter_edit",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 123
+  },
+  {
+   "ns": "KSU::View",
+   "m": "on_change",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 130
+  },
+  {
+   "ns": "KSU::View",
+   "m": "off_change",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 179
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "leave_edit",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 182
+  },
+  {
+   "ns": "KSU::View",
+   "m": "pick_on_plane",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 273
+  },
+  {
+   "ns": "KSU::View",
+   "m": "refresh_now",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 365
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_label",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 402
+  },
+  {
+   "ns": "KSU::View",
+   "m": "_6ced5498",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 424
+  },
+  {
+   "ns": "KSU::View",
+   "m": "panel_normal_color",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 483
+  },
+  {
+   "ns": "KSU::View",
+   "m": "panel_two_color",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 484
+  },
+  {
+   "ns": "KSU::View",
+   "m": "button_center",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 499
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_outline",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 501
+  },
+  {
+   "ns": "KSU::View",
+   "m": "warn_color",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 501
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_warn_button",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 502
+  },
+  {
+   "ns": "KSU::View",
+   "m": "main_face_color",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 504
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_button",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 505
+  },
+  {
+   "ns": "KSU::View",
+   "m": "button_hit?",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 529
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_poly_holes",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 652
+  },
+  {
+   "ns": "KSU",
+   "m": "set_status",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 750
+  },
+  {
+   "ns": "KSU",
+   "m": "set_vcb",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 751
+  },
+  {
+   "ns": "KSU::View",
+   "m": "edge_color",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 801
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "sheet_list",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 832
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "two_sided_set",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 837
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "panel?",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 842
+  },
+  {
+   "ns": "KSU::Geom",
+   "m": "_c7b0bc62",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 845
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "outline",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 846
+  },
+  {
+   "ns": "KSU::View",
+   "m": "top_corners",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 850
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "cutting_group",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 859
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "mark?",
+   "f": "ksu_vn/method/chongbay.rb",
+   "l": 875
+  },
+  {
+   "ns": "KSU::Flip",
+   "m": "hit_targets",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 16
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "find_nesting",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 19
+  },
+  {
+   "ns": "KSU::Flip",
+   "m": "hit_panel",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 21
+  },
+  {
+   "ns": "KSU",
+   "m": "container?",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 51
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "bottom_sheet?",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 53
+  },
+  {
+   "ns": "KSU",
+   "m": "entities_in",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 54
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "bottom_face?",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 58
+  },
+  {
+   "ns": "KSU",
+   "m": "select_only",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 73
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "_27ecfdd1",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 131
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "label_pts",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 158
+  },
+  {
+   "ns": "KSU::Quet",
+   "m": "rect_hit?",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 216
+  },
+  {
+   "ns": "KSU::View",
+   "m": "cam_sig",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 223
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "hidden?",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 487
+  },
+  {
+   "ns": "KSU",
+   "m": "wmi_connect",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 520
+  },
+  {
+   "ns": "KSU::Label",
+   "m": "_f58dcea4",
+   "f": "ksu_vn/method/chontam/pick.rb",
+   "l": 523
+  },
+  {
+   "ns": "KSU::Themtam",
+   "m": "check_license",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 7
+  },
+  {
+   "ns": "KSU::Xephang",
+   "m": "assert_license",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 8
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "overlap_polys",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 57
+  },
+  {
+   "ns": "KSU::Isolate",
+   "m": "start",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 70
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_faces",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 194
+  },
+  {
+   "ns": "KSU::Quet",
+   "m": "moved_enough?",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 211
+  },
+  {
+   "ns": "KSU::Flip",
+   "m": "partner_of",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 268
+  },
+  {
+   "ns": "KSU::Flip",
+   "m": "panel_fill",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 271
+  },
+  {
+   "ns": "KSU::View",
+   "m": "_2c42fd38",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 274
+  },
+  {
+   "ns": "KSU::Flip",
+   "m": "flip_pair",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 280
+  },
+  {
+   "ns": "KSU::View",
+   "m": "clear_cache",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 285
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_poly",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 295
+  },
+  {
+   "ns": "KSU::View",
+   "m": "face_color",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 295
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_loop",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 296
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "build_panel",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 304
+  },
+  {
+   "ns": "KSU::Const",
+   "m": "fetch_json",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 334
+  },
+  {
+   "ns": "KSU::Loop",
+   "m": "_107e6bdc",
+   "f": "ksu_vn/method/chontam.rb",
+   "l": 334
+  },
+  {
+   "ns": "KSU::Gannhan",
+   "m": "check_license",
+   "f": "ksu_vn/method/danhsovan.rb",
+   "l": 5
+  },
+  {
+   "ns": "KSU::Chongbay",
+   "m": "assert_license",
+   "f": "ksu_vn/method/danhsovan.rb",
+   "l": 6
+  },
+  {
+   "ns": "KSU::View",
+   "m": "enter_top_view",
+   "f": "ksu_vn/method/danhsovan.rb",
+   "l": 39
+  },
+  {
+   "ns": "KSU::View",
+   "m": "load_colors",
+   "f": "ksu_vn/method/danhsovan.rb",
+   "l": 40
+  },
+  {
+   "ns": "KSU::Preset",
+   "m": "load_cfg",
+   "f": "ksu_vn/method/danhsovan.rb",
+   "l": 41
+  },
+  {
+   "ns": "KSU::View",
+   "m": "restore_perspective",
+   "f": "ksu_vn/method/danhsovan.rb",
+   "l": 61
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "number_plan",
+   "f": "ksu_vn/method/danhsovan.rb",
+   "l": 112
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "apply_numbers",
+   "f": "ksu_vn/method/danhsovan.rb",
+   "l": 119
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "warm_up_network",
+   "f": "ksu_vn/method/danhsovan.rb",
+   "l": 129
+  },
+  {
+   "ns": "KSU::Chongbay",
+   "m": "check_license",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 9
+  },
+  {
+   "ns": "KSU::Netcatcuoi",
+   "m": "assert_license",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 10
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "board_faces",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 180
+  },
+  {
+   "ns": "KSU::Label",
+   "m": "world_tf",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 180
+  },
+  {
+   "ns": "KSU::Quet",
+   "m": "collect_in_rect",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 183
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "label_of",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 268
+  },
+  {
+   "ns": "KSU",
+   "m": "selection",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 272
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "face_with",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 293
+  },
+  {
+   "ns": "KSU::Label",
+   "m": "label_box",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 296
+  },
+  {
+   "ns": "KSU::Chuanhoa",
+   "m": "normalize_group",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 298
+  },
+  {
+   "ns": "KSU::Label",
+   "m": "_f612f2b9",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 312
+  },
+  {
+   "ns": "KSU::Label",
+   "m": "plan",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 324
+  },
+  {
+   "ns": "KSU::Label",
+   "m": "draw_label_on",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 358
+  },
+  {
+   "ns": "KSU::Lastcut",
+   "m": "_af392092",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 406
+  },
+  {
+   "ns": "KSU::Postproc",
+   "m": "_75f2a016",
+   "f": "ksu_vn/method/gannhan.rb",
+   "l": 407
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "_d7b62fb6",
+   "f": "ksu_vn/method/intem/scan.rb",
+   "l": 4
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "edit_offset",
+   "f": "ksu_vn/method/intem/scan.rb",
+   "l": 134
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "edgeband_list",
+   "f": "ksu_vn/method/intem/scan.rb",
+   "l": 154
+  },
+  {
+   "ns": "KSU::Label",
+   "m": "label_text",
+   "f": "ksu_vn/method/intem/scan.rb",
+   "l": 172
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "outer?",
+   "f": "ksu_vn/method/intem/scan.rb",
+   "l": 280
+  },
+  {
+   "ns": "KSU::Xuatdxf",
+   "m": "check_license",
+   "f": "ksu_vn/method/intem.rb",
+   "l": 3
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "assert_license",
+   "f": "ksu_vn/method/intem.rb",
+   "l": 4
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "open_window",
+   "f": "ksu_vn/method/intem.rb",
+   "l": 5
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "set",
+   "f": "ksu_vn/method/intem.rb",
+   "l": 14
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "parse_value",
+   "f": "ksu_vn/method/intem.rb",
+   "l": 14
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "_1582b880",
+   "f": "ksu_vn/method/intem.rb",
+   "l": 16
+  },
+  {
+   "ns": "KSU::Xuatdxf",
+   "m": "_2b17a799",
+   "f": "ksu_vn/method/intem.rb",
+   "l": 47
+  },
+  {
+   "ns": "KSU",
+   "m": "model_dir",
+   "f": "ksu_vn/method/intem.rb",
+   "l": 50
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "send_to_dialog",
+   "f": "ksu_vn/method/intem.rb",
+   "l": 57
+  },
+  {
+   "ns": "KSU::Ttf",
+   "m": "import",
+   "f": "ksu_vn/method/intem.rb",
+   "l": 71
+  },
+  {
+   "ns": "KSU::Pdf",
+   "m": "build_pdf",
+   "f": "ksu_vn/method/intem.rb",
+   "l": 82
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "tf_of",
+   "f": "ksu_vn/method/nesting/collect.rb",
+   "l": 108
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "kids_with_attr",
+   "f": "ksu_vn/method/nesting/collect.rb",
+   "l": 132
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "front_face",
+   "f": "ksu_vn/method/nesting/collect.rb",
+   "l": 140
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "edgeband_spec",
+   "f": "ksu_vn/method/nesting/collect.rb",
+   "l": 149
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "_f7a09903",
+   "f": "ksu_vn/method/nesting/collect.rb",
+   "l": 153
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "_e4e88386",
+   "f": "ksu_vn/method/nesting/collect.rb",
+   "l": 154
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "_4605a894",
+   "f": "ksu_vn/method/nesting/collect.rb",
+   "l": 155
+  },
+  {
+   "ns": "KSU::Simplify",
+   "m": "_c71fe5d3",
+   "f": "ksu_vn/method/nesting/collect.rb",
+   "l": 158
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "_32f2e5fc",
+   "f": "ksu_vn/method/nesting/collect.rb",
+   "l": 176
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "_babeb881",
+   "f": "ksu_vn/method/nesting/collect.rb",
+   "l": 184
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "d",
+   "f": "ksu_vn/method/nesting/collect.rb",
+   "l": 231
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "extend",
+   "f": "ksu_vn/method/nesting/collect.rb",
+   "l": 265
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "margins_of",
+   "f": "ksu_vn/method/nesting/draw.rb",
+   "l": 6
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "_edd17adf",
+   "f": "ksu_vn/method/nesting/draw.rb",
+   "l": 31
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "_babc606e",
+   "f": "ksu_vn/method/nesting/draw.rb",
+   "l": 102
+  },
+  {
+   "ns": "KSU::Avail",
+   "m": "two_sided_margin",
+   "f": "ksu_vn/method/nesting/draw.rb",
+   "l": 107
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "_56b0abb5",
+   "f": "ksu_vn/method/nesting/draw.rb",
+   "l": 137
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "_c6e26747",
+   "f": "ksu_vn/method/nesting/draw.rb",
+   "l": 158
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "save_edgeband_desc",
+   "f": "ksu_vn/method/nesting/draw.rb",
+   "l": 159
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "_81410e9d",
+   "f": "ksu_vn/method/nesting/draw.rb",
+   "l": 164
+  },
+  {
+   "ns": "KSU::Clipper",
+   "m": "union",
+   "f": "ksu_vn/method/nesting/draw.rb",
+   "l": 347
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "_b39e8694",
+   "f": "ksu_vn/method/nesting/draw.rb",
+   "l": 364
+  },
+  {
+   "ns": "KSU::Preset",
+   "m": "global_key?",
+   "f": "ksu_vn/method/nesting/launch.rb",
+   "l": 10
+  },
+  {
+   "ns": "KSU::View",
+   "m": "refresh",
+   "f": "ksu_vn/method/nesting/launch.rb",
+   "l": 18
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "_b2c4c1d5",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 9
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "_2d469ec2",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 10
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "abort_unless_done",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 11
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "labelling",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 15
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "label_total",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 16
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "label_done",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 17
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "num12",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 21
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "str",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 24
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "finish",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 39
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "rotate_by_name",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 46
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "refine_parts",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 50
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "abort_run",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 63
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "refine_name",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 68
+  },
+  {
+   "ns": "KSU::Intem",
+   "m": "check_license",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 119
+  },
+  {
+   "ns": "KSU::Xuatdxf",
+   "m": "assert_license",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 120
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "sort_key",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 208
+  },
+  {
+   "ns": "KSU::Nesting::Engine",
+   "m": "instance",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 244
+  },
+  {
+   "ns": "KSU::Avail",
+   "m": "sides_mm",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 501
+  },
+  {
+   "ns": "KSU::Geom",
+   "m": "bounds",
+   "f": "ksu_vn/method/netcatcuoi/lastcut.rb",
+   "l": 69
+  },
+  {
+   "ns": "KSU::Geom",
+   "m": "_a404e7b6",
+   "f": "ksu_vn/method/netcatcuoi/lastcut.rb",
+   "l": 95
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "build_loops",
+   "f": "ksu_vn/method/netcatcuoi/lastcut.rb",
+   "l": 120
+  },
+  {
+   "ns": "KSU::Avail",
+   "m": "sides",
+   "f": "ksu_vn/method/netcatcuoi/lastcut.rb",
+   "l": 130
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "drawable?",
+   "f": "ksu_vn/method/netcatcuoi/lastcut.rb",
+   "l": 210
+  },
+  {
+   "ns": "KSU::Netcatcuoi",
+   "m": "include",
+   "f": "ksu_vn/method/netcatcuoi/lastcut.rb",
+   "l": 283
+  },
+  {
+   "ns": "KSU::Font",
+   "m": "read_license",
+   "f": "ksu_vn/method/netcatcuoi/lastcut.rb",
+   "l": 286
+  },
+  {
+   "ns": "KSU::Avail",
+   "m": "sides_for",
+   "f": "ksu_vn/method/netcatcuoi/resize.rb",
+   "l": 12
+  },
+  {
+   "ns": "KSU::Geom",
+   "m": "centroid",
+   "f": "ksu_vn/method/netcatcuoi/resize.rb",
+   "l": 109
+  },
+  {
+   "ns": "KSU::Geom",
+   "m": "dist2_to_seg",
+   "f": "ksu_vn/method/netcatcuoi/resize.rb",
+   "l": 164
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_loop2d",
+   "f": "ksu_vn/method/netcatcuoi/resize.rb",
+   "l": 309
+  },
+  {
+   "ns": "KSU::View",
+   "m": "warning_color",
+   "f": "ksu_vn/method/netcatcuoi/resize.rb",
+   "l": 309
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_fill2d",
+   "f": "ksu_vn/method/netcatcuoi/resize.rb",
+   "l": 317
+  },
+  {
+   "ns": "KSU::Toiuuvan",
+   "m": "check_license",
+   "f": "ksu_vn/method/netcatcuoi.rb",
+   "l": 6
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "assert_license",
+   "f": "ksu_vn/method/netcatcuoi.rb",
+   "l": 7
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_cross",
+   "f": "ksu_vn/method/netcatcuoi.rb",
+   "l": 242
+  },
+  {
+   "ns": "KSU::Mirror",
+   "m": "_4b6ac4b0",
+   "f": "ksu_vn/method/netcatcuoi.rb",
+   "l": 430
+  },
+  {
+   "ns": "KSU::Field",
+   "m": "activation_ok?",
+   "f": "ksu_vn/method/netcatcuoi.rb",
+   "l": 432
+  },
+  {
+   "ns": "KSU::Corner",
+   "m": "_4ac4c12f",
+   "f": "ksu_vn/method/netcatcuoi.rb",
+   "l": 432
+  },
+  {
+   "ns": "KSU::Store",
+   "m": "set_binding",
+   "f": "ksu_vn/method/netcatcuoi.rb",
+   "l": 433
+  },
+  {
+   "ns": "KSU::Toiuuvan",
+   "m": "_e899e740",
+   "f": "ksu_vn/method/netcatcuoi.rb",
+   "l": 435
+  },
+  {
+   "ns": "KSU::Xephang",
+   "m": "check_license",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 5
+  },
+  {
+   "ns": "KSU::Danhsovan",
+   "m": "assert_license",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 6
+  },
+  {
+   "ns": "KSU::View",
+   "m": "sub_face_color",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 213
+  },
+  {
+   "ns": "KSU::View",
+   "m": "_d64f2233",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 215
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "row_of",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 225
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "_7b0a38ee",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 235
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "row_offset",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 244
+  },
+  {
+   "ns": "KSU::View",
+   "m": "_bb1a9bd8",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 245
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "board_index",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 265
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "_ed46427a",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 290
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "_c5ab406d",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 320
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "apply_offsets",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 334
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "invalidate_cache",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 335
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "_339f1198",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 336
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "empty?",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 354
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "sheet_no",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 401
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "clone_panel",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 513
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "sheet_labels",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 532
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "shift_dims",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 538
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "bottom",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 539
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "shift_sheets",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 544
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "_f74b0a99",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 545
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "_a9a86c81",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 551
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "_ba804f88",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 552
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "world_bbox",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 561
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "label_rect",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 627
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "point_in_poly?",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 649
+  },
+  {
+   "ns": "KSU::View",
+   "m": "hit?",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 708
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "_02ce5169",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 722
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "_34135bd8",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 725
+  },
+  {
+   "ns": "KSU::Preset",
+   "m": "http_get_curl",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 758
+  },
+  {
+   "ns": "KSU::Isolate",
+   "m": "http_get",
+   "f": "ksu_vn/method/themtam.rb",
+   "l": 760
+  },
+  {
+   "ns": "KSU::Thongke",
+   "m": "round_len",
+   "f": "ksu_vn/method/thongke/phukien.rb",
+   "l": 64
+  },
+  {
+   "ns": "KSU::Thongke::Quet",
+   "m": "all_roots",
+   "f": "ksu_vn/method/thongke/phukien.rb",
+   "l": 149
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "_b344f39a",
+   "f": "ksu_vn/method/thongke/quet.rb",
+   "l": 57
+  },
+  {
+   "ns": "KSU::Thongke::Quet",
+   "m": "each_sheet",
+   "f": "ksu_vn/method/thongke/tonghop.rb",
+   "l": 28
+  },
+  {
+   "ns": "KSU::Thongke::Quet",
+   "m": "selected_roots",
+   "f": "ksu_vn/method/thongke/tonghop.rb",
+   "l": 82
+  },
+  {
+   "ns": "KSU::Thongke::Phukien",
+   "m": "make_unique_all",
+   "f": "ksu_vn/method/thongke/tonghop.rb",
+   "l": 84
+  },
+  {
+   "ns": "KSU::Thongke::Quet",
+   "m": "list_boards",
+   "f": "ksu_vn/method/thongke/tonghop.rb",
+   "l": 85
+  },
+  {
+   "ns": "KSU::Thongke::Phukien",
+   "m": "list_minifix",
+   "f": "ksu_vn/method/thongke/tonghop.rb",
+   "l": 86
+  },
+  {
+   "ns": "KSU::Thongke::Phukien",
+   "m": "list_hinge",
+   "f": "ksu_vn/method/thongke/tonghop.rb",
+   "l": 86
+  },
+  {
+   "ns": "KSU::Thongke::Phukien",
+   "m": "list_intersect",
+   "f": "ksu_vn/method/thongke/tonghop.rb",
+   "l": 90
+  },
+  {
+   "ns": "KSU::Thongke::Phukien",
+   "m": "list_statistical",
+   "f": "ksu_vn/method/thongke/tonghop.rb",
+   "l": 91
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "depth",
+   "f": "ksu_vn/method/thongke.rb",
+   "l": 9
+  },
+  {
+   "ns": "KSU::Thongke::Phukien",
+   "m": "set_unit",
+   "f": "ksu_vn/method/thongke.rb",
+   "l": 33
+  },
+  {
+   "ns": "KSU::Thongke::Xuat",
+   "m": "export_file",
+   "f": "ksu_vn/method/thongke.rb",
+   "l": 37
+  },
+  {
+   "ns": "KSU::Thongke::Xuat",
+   "m": "_beb63a90",
+   "f": "ksu_vn/method/thongke.rb",
+   "l": 39
+  },
+  {
+   "ns": "KSU::Thongke::Quet",
+   "m": "boards_by_index",
+   "f": "ksu_vn/method/thongke.rb",
+   "l": 48
+  },
+  {
+   "ns": "KSU::Thongke::Tonghop",
+   "m": "round_sums",
+   "f": "ksu_vn/method/thongke.rb",
+   "l": 71
+  },
+  {
+   "ns": "KSU::Thongke::Tonghop",
+   "m": "round_parts",
+   "f": "ksu_vn/method/thongke.rb",
+   "l": 72
+  },
+  {
+   "ns": "KSU::Thongke::Tonghop",
+   "m": "_984ac2f3",
+   "f": "ksu_vn/method/thongke.rb",
+   "l": 76
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "move_to_sheet",
+   "f": "ksu_vn/method/toiuuvan/back.rb",
+   "l": 39
+  },
+  {
+   "ns": "KSU::View",
+   "m": "_66e14707",
+   "f": "ksu_vn/method/toiuuvan/back.rb",
+   "l": 47
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "first_bottom",
+   "f": "ksu_vn/method/toiuuvan/back.rb",
+   "l": 61
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "top_of",
+   "f": "ksu_vn/method/toiuuvan/back.rb",
+   "l": 63
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "inset_of",
+   "f": "ksu_vn/method/toiuuvan/back.rb",
+   "l": 109
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "mark_corner",
+   "f": "ksu_vn/method/toiuuvan/back.rb",
+   "l": 110
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "_5134c34c",
+   "f": "ksu_vn/method/toiuuvan/back.rb",
+   "l": 114
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "cut_outline",
+   "f": "ksu_vn/method/toiuuvan/back.rb",
+   "l": 125
+  },
+  {
+   "ns": "KSU::Toiuuvan",
+   "m": "include",
+   "f": "ksu_vn/method/toiuuvan/back.rb",
+   "l": 132
+  },
+  {
+   "ns": "KSU::Collide",
+   "m": "_f812d741",
+   "f": "ksu_vn/method/toiuuvan/back.rb",
+   "l": 138
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "pack_to_corner",
+   "f": "ksu_vn/method/toiuuvan/engine.rb",
+   "l": 93
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "prune_bottoms",
+   "f": "ksu_vn/method/toiuuvan/engine.rb",
+   "l": 165
+  },
+  {
+   "ns": "KSU::Nfp",
+   "m": "_5762df6e",
+   "f": "ksu_vn/method/toiuuvan/engine.rb",
+   "l": 250
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "poly_area",
+   "f": "ksu_vn/method/toiuuvan/engine.rb",
+   "l": 262
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "poly_bounds",
+   "f": "ksu_vn/method/toiuuvan/engine.rb",
+   "l": 275
+  },
+  {
+   "ns": "KSU::Xeptam",
+   "m": "include",
+   "f": "ksu_vn/method/toiuuvan/engine.rb",
+   "l": 390
+  },
+  {
+   "ns": "KSU::Bottom",
+   "m": "_016675b8",
+   "f": "ksu_vn/method/toiuuvan/engine.rb",
+   "l": 395
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "last_cut?",
+   "f": "ksu_vn/method/toiuuvan/postproc.rb",
+   "l": 47
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "apply_moves",
+   "f": "ksu_vn/method/toiuuvan/postproc.rb",
+   "l": 328
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "plan_corner",
+   "f": "ksu_vn/method/toiuuvan/postproc.rb",
+   "l": 335
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "plan_edge",
+   "f": "ksu_vn/method/toiuuvan/postproc.rb",
+   "l": 337
+  },
+  {
+   "ns": "KSU::Avail",
+   "m": "gaps_for",
+   "f": "ksu_vn/method/toiuuvan/postproc.rb",
+   "l": 538
+  },
+  {
+   "ns": "KSU::Back",
+   "m": "_f7eacb3a",
+   "f": "ksu_vn/method/toiuuvan/postproc.rb",
+   "l": 608
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "_ecf7ba06",
+   "f": "ksu_vn/method/toiuuvan/postproc.rb",
+   "l": 614
+  },
+  {
+   "ns": "KSU::Reorder",
+   "m": "_b25875c4",
+   "f": "ksu_vn/method/toiuuvan/postproc.rb",
+   "l": 620
+  },
+  {
+   "ns": "KSU::Push",
+   "m": "_33a88aa5",
+   "f": "ksu_vn/method/toiuuvan/postproc.rb",
+   "l": 621
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "check_license",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 6
+  },
+  {
+   "ns": "KSU::Intem",
+   "m": "assert_license",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 7
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_brackets",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 279
+  },
+  {
+   "ns": "KSU::View",
+   "m": "_2873a79b",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 280
+  },
+  {
+   "ns": "KSU::View",
+   "m": "_919af578",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 309
+  },
+  {
+   "ns": "KSU::View",
+   "m": "center_of",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 322
+  },
+  {
+   "ns": "KSU::View",
+   "m": "bracket_hit",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 347
+  },
+  {
+   "ns": "KSU::View",
+   "m": "edge_hit",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 349
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "pack_to_edge",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 373
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "_88f4d2bb",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 449
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "bottom_for",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 450
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "_d78e0ff0",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 454
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "remove_sheet",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 465
+  },
+  {
+   "ns": "KSU::Quet",
+   "m": "rect",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 473
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_rect2d",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 485
+  },
+  {
+   "ns": "KSU::Reorder",
+   "m": "_f9ff0de9",
+   "f": "ksu_vn/method/toiuuvan.rb",
+   "l": 494
+  },
+  {
+   "ns": "KSU::Danhsovan",
+   "m": "check_license",
+   "f": "ksu_vn/method/xephang.rb",
+   "l": 6
+  },
+  {
+   "ns": "KSU::Gannhan",
+   "m": "assert_license",
+   "f": "ksu_vn/method/xephang.rb",
+   "l": 7
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "sheet_maps",
+   "f": "ksu_vn/method/xephang.rb",
+   "l": 141
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "part_suffix",
+   "f": "ksu_vn/method/xephang.rb",
+   "l": 144
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "part_re",
+   "f": "ksu_vn/method/xephang.rb",
+   "l": 145
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "base_type",
+   "f": "ksu_vn/method/xephang.rb",
+   "l": 149
+  },
+  {
+   "ns": "KSU::View",
+   "m": "expand_corners",
+   "f": "ksu_vn/method/xephang.rb",
+   "l": 179
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "layout_rows",
+   "f": "ksu_vn/method/xephang.rb",
+   "l": 209
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "renumber_all",
+   "f": "ksu_vn/method/xephang.rb",
+   "l": 211
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "sort_sheets",
+   "f": "ksu_vn/method/xephang.rb",
+   "l": 214
+  },
+  {
+   "ns": "KSU::View",
+   "m": "in_rect?",
+   "f": "ksu_vn/method/xeptam/arrange.rb",
+   "l": 10
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "erase_sheet",
+   "f": "ksu_vn/method/xeptam/arrange.rb",
+   "l": 59
+  },
+  {
+   "ns": "KSU::View",
+   "m": "near_seg?",
+   "f": "ksu_vn/method/xeptam/arrange.rb",
+   "l": 145
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "next_type",
+   "f": "ksu_vn/method/xeptam/arrange.rb",
+   "l": 258
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "swap_type_block",
+   "f": "ksu_vn/method/xeptam/arrange.rb",
+   "l": 260
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "_de0a88d4",
+   "f": "ksu_vn/method/xeptam/arrange.rb",
+   "l": 265
+  },
+  {
+   "ns": "KSU::View",
+   "m": "sig_of",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 7
+  },
+  {
+   "ns": "KSU::View",
+   "m": "refresh_panels",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 36
+  },
+  {
+   "ns": "KSU::Nfp",
+   "m": "_a6cf3d0d",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 98
+  },
+  {
+   "ns": "KSU::Method",
+   "m": "contact_refine",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 106
+  },
+  {
+   "ns": "KSU::Avail",
+   "m": "shrink_poly",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 174
+  },
+  {
+   "ns": "KSU::Avail",
+   "m": "clamp_move",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 176
+  },
+  {
+   "ns": "KSU::Geom",
+   "m": "convex_hull",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 187
+  },
+  {
+   "ns": "KSU::Nfp",
+   "m": "_78849fa5",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 195
+  },
+  {
+   "ns": "KSU::Geom",
+   "m": "point_in?",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 217
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "area",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 218
+  },
+  {
+   "ns": "KSU::Nfp",
+   "m": "simplify_pts",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 287
+  },
+  {
+   "ns": "KSU::Nfp",
+   "m": "_3ea4c8e4",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 312
+  },
+  {
+   "ns": "KSU::Nfp",
+   "m": "simplify",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 326
+  },
+  {
+   "ns": "KSU::Nfp",
+   "m": "_8c9066f6",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 331
+  },
+  {
+   "ns": "KSU::Method",
+   "m": "nfp_snap",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 374
+  },
+  {
+   "ns": "KSU::Nfp",
+   "m": "_4ec2a6e7",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 378
+  },
+  {
+   "ns": "KSU::Method",
+   "m": "polygons_overlap?",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 402
+  },
+  {
+   "ns": "KSU::Geom",
+   "m": "segments_cross?",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 417
+  },
+  {
+   "ns": "KSU::Geom",
+   "m": "seg_dist2",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 418
+  },
+  {
+   "ns": "KSU::Geom",
+   "m": "_0c91518b",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 430
+  },
+  {
+   "ns": "KSU::Geom",
+   "m": "translate",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 455
+  },
+  {
+   "ns": "KSU::Geom",
+   "m": "boxes_overlap?",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 486
+  },
+  {
+   "ns": "KSU::Geom",
+   "m": "sat_mtv",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 488
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "data_dir",
+   "f": "ksu_vn/method/xeptam/collide.rb",
+   "l": 503
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "dist_to_box",
+   "f": "ksu_vn/method/xeptam/drag.rb",
+   "l": 190
+  },
+  {
+   "ns": "KSU::View",
+   "m": "_bbaa2919",
+   "f": "ksu_vn/method/xeptam/drag.rb",
+   "l": 221
+  },
+  {
+   "ns": "KSU::View",
+   "m": "set_pen",
+   "f": "ksu_vn/method/xeptam/drag.rb",
+   "l": 226
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "mirror_tf",
+   "f": "ksu_vn/method/xeptam/drag.rb",
+   "l": 362
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "reset_hiding",
+   "f": "ksu_vn/method/xeptam/drag.rb",
+   "l": 447
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "_b98c616b",
+   "f": "ksu_vn/method/xeptam/drag.rb",
+   "l": 485
+  },
+  {
+   "ns": "KSU::Xeptam",
+   "m": "_3d509e12",
+   "f": "ksu_vn/method/xeptam/drag.rb",
+   "l": 487
+  },
+  {
+   "ns": "KSU::View",
+   "m": "refresh_groups",
+   "f": "ksu_vn/method/xeptam/group.rb",
+   "l": 14
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "outer_pts",
+   "f": "ksu_vn/method/xeptam/mirror.rb",
+   "l": 342
+  },
+  {
+   "ns": "KSU::View",
+   "m": "tris",
+   "f": "ksu_vn/method/xeptam/mirror.rb",
+   "l": 368
+  },
+  {
+   "ns": "KSU::Arrange",
+   "m": "_9fcc1956",
+   "f": "ksu_vn/method/xeptam/mirror.rb",
+   "l": 467
+  },
+  {
+   "ns": "KSU::Caidat",
+   "m": "machine_fingerprint",
+   "f": "ksu_vn/method/xeptam/mirror.rb",
+   "l": 467
+  },
+  {
+   "ns": "KSU::Clipper",
+   "m": "minkowski",
+   "f": "ksu_vn/method/xeptam/nfp.rb",
+   "l": 67
+  },
+  {
+   "ns": "KSU::Clipper",
+   "m": "simplify",
+   "f": "ksu_vn/method/xeptam/nfp.rb",
+   "l": 85
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "inflate",
+   "f": "ksu_vn/method/xeptam/nfp.rb",
+   "l": 134
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "nfp",
+   "f": "ksu_vn/method/xeptam/nfp.rb",
+   "l": 144
+  },
+  {
+   "ns": "KSU::Method",
+   "m": "compute_push_back",
+   "f": "ksu_vn/method/xeptam/push.rb",
+   "l": 37
+  },
+  {
+   "ns": "KSU::Nfp",
+   "m": "_3b7ac698",
+   "f": "ksu_vn/method/xeptam/push.rb",
+   "l": 214
+  },
+  {
+   "ns": "KSU::Clipper",
+   "m": "offset",
+   "f": "ksu_vn/method/xeptam/push.rb",
+   "l": 215
+  },
+  {
+   "ns": "KSU::View",
+   "m": "_fa674c93",
+   "f": "ksu_vn/method/xeptam/push.rb",
+   "l": 228
+  },
+  {
+   "ns": "KSU::Query",
+   "m": "_8578b687",
+   "f": "ksu_vn/method/xeptam/push.rb",
+   "l": 404
+  },
+  {
+   "ns": "KSU::Chontam",
+   "m": "check_license",
+   "f": "ksu_vn/method/xeptam.rb",
+   "l": 6
+  },
+  {
+   "ns": "KSU::Themtam",
+   "m": "assert_license",
+   "f": "ksu_vn/method/xeptam.rb",
+   "l": 7
+  },
+  {
+   "ns": "KSU::Avail",
+   "m": "set_override",
+   "f": "ksu_vn/method/xeptam.rb",
+   "l": 152
+  },
+  {
+   "ns": "KSU::View",
+   "m": "draw_error_dots",
+   "f": "ksu_vn/method/xeptam.rb",
+   "l": 596
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "draw_borders",
+   "f": "ksu_vn/method/xeptam.rb",
+   "l": 601
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "corner_index",
+   "f": "ksu_vn/method/xeptam.rb",
+   "l": 646
+  },
+  {
+   "ns": "KSU::Netcatcuoi",
+   "m": "_8e3f5229",
+   "f": "ksu_vn/method/xeptam.rb",
+   "l": 706
+  },
+  {
+   "ns": "KSU::Engine",
+   "m": "_45e9b533",
+   "f": "ksu_vn/method/xeptam.rb",
+   "l": 707
+  },
+  {
+   "ns": "KSU::Assign",
+   "m": "_91d00075",
+   "f": "ksu_vn/method/xeptam.rb",
+   "l": 708
+  },
+  {
+   "ns": "KSU::Xuatdxf",
+   "m": "layer_spec",
+   "f": "ksu_vn/method/xuatdxf/dxf.rb",
+   "l": 10
+  },
+  {
+   "ns": "KSU::Xuatdxf",
+   "m": "true_color_of",
+   "f": "ksu_vn/method/xuatdxf/dxf.rb",
+   "l": 12
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "_5d9dd503",
+   "f": "ksu_vn/method/xuatdxf/entry.rb",
+   "l": 140
+  },
+  {
+   "ns": "KSU::Xuatdxf",
+   "m": "_302ced66",
+   "f": "ksu_vn/method/xuatdxf/scan.rb",
+   "l": 66
+  },
+  {
+   "ns": "KSU::Xuatdxf",
+   "m": "_c57d63ae",
+   "f": "ksu_vn/method/xuatdxf/scan.rb",
+   "l": 78
+  },
+  {
+   "ns": "KSU::Font",
+   "m": "import",
+   "f": "ksu_vn/method/xuatdxf/scan.rb",
+   "l": 214
+  },
+  {
+   "ns": "KSU::Font",
+   "m": "half_width",
+   "f": "ksu_vn/method/xuatdxf/scan.rb",
+   "l": 224
+  },
+  {
+   "ns": "KSU::Font",
+   "m": "_1ff4cc8f",
+   "f": "ksu_vn/method/xuatdxf/scan.rb",
+   "l": 227
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "check_license",
+   "f": "ksu_vn/method/xuatdxf.rb",
+   "l": 5
+  },
+  {
+   "ns": "KSU::Xeptam",
+   "m": "assert_license",
+   "f": "ksu_vn/method/xuatdxf.rb",
+   "l": 6
+  },
+  {
+   "ns": "KSU::Avail",
+   "m": "reset3",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 294
+  },
+  {
+   "ns": "KSU::Caidat",
+   "m": "build_html",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 398
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "export_file",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 450
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "import_file",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 453
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "reset2",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 456
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "reset_section",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 462
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "export_online",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 539
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "import_online",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 542
+  },
+  {
+   "ns": "KSU::Postproc",
+   "m": "_7b2b347d",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 553
+  },
+  {
+   "ns": "KSU::Update",
+   "m": "check_update",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 558
+  },
+  {
+   "ns": "KSU::Update",
+   "m": "restore_from_backup",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 561
+  },
+  {
+   "ns": "KSU::Update",
+   "m": "uninstall",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 569
+  },
+  {
+   "ns": "KSU::Nest",
+   "m": "handle_action",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 607
+  },
+  {
+   "ns": "KSU::Intem",
+   "m": "handle_action",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 609
+  },
+  {
+   "ns": "KSU::Xuatdxf",
+   "m": "handle_action",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 611
+  },
+  {
+   "ns": "KSU::Thongke",
+   "m": "handle_action",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 613
+  },
+  {
+   "ns": "KSU::Addon",
+   "m": "dispatch",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 615
+  },
+  {
+   "ns": "KSU::Xeptam",
+   "m": "check_license",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 638
+  },
+  {
+   "ns": "KSU::Chontam",
+   "m": "assert_license",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 639
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "_7314dc1a",
+   "f": "ksu_vn/system/setting.rb",
+   "l": 678
+  },
+  {
+   "ns": "KSU::Themtam",
+   "m": "http_fetch",
+   "f": "ksu_vn/system/update.rb",
+   "l": 80
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "unscale",
+   "f": "ksu_vn/utils/chuanhoa.rb",
+   "l": 7
+  },
+  {
+   "ns": "KSU::Flip",
+   "m": "sheet_of",
+   "f": "ksu_vn/utils/cutting/detail.rb",
+   "l": 117
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "extend",
+   "f": "ksu_vn/utils/cutting/detail.rb",
+   "l": 453
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "sheet?",
+   "f": "ksu_vn/utils/cutting/loop.rb",
+   "l": 128
+  },
+  {
+   "ns": "KSU::Method",
+   "m": "build_loops",
+   "f": "ksu_vn/utils/cutting/loop.rb",
+   "l": 179
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "partner_panel",
+   "f": "ksu_vn/utils/flip.rb",
+   "l": 37
+  },
+  {
+   "ns": "KSU::Chongbay",
+   "m": "_7b49f69e",
+   "f": "ksu_vn/utils/flip.rb",
+   "l": 140
+  },
+  {
+   "ns": "KSU::Collide",
+   "m": "_2b15ac41",
+   "f": "ksu_vn/utils/flip.rb",
+   "l": 140
+  },
+  {
+   "ns": "KSU::Widget",
+   "m": "_e4d69360",
+   "f": "ksu_vn/utils/flip.rb",
+   "l": 154
+  },
+  {
+   "ns": "KSU::View",
+   "m": "show_activation_result",
+   "f": "ksu_vn/utils/flip.rb",
+   "l": 156
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "activate_key",
+   "f": "ksu_vn/utils/flip.rb",
+   "l": 156
+  },
+  {
+   "ns": "KSU::View",
+   "m": "seed_license_file",
+   "f": "ksu_vn/utils/font/data.rb",
+   "l": 7
+  },
+  {
+   "ns": "KSU::Shape",
+   "m": "decrypt",
+   "f": "ksu_vn/utils/font/data.rb",
+   "l": 8
+  },
+  {
+   "ns": "KSU::Cutting",
+   "m": "license_path",
+   "f": "ksu_vn/utils/font/data.rb",
+   "l": 8
+  },
+  {
+   "ns": "KSU::Method",
+   "m": "convex_hull",
+   "f": "ksu_vn/utils/geom.rb",
+   "l": 3
+  },
+  {
+   "ns": "KSU::Method",
+   "m": "sat_mtv",
+   "f": "ksu_vn/utils/geom.rb",
+   "l": 65
+  },
+  {
+   "ns": "KSU::Font",
+   "m": "ready?",
+   "f": "ksu_vn/utils/label.rb",
+   "l": 28
+  },
+  {
+   "ns": "KSU::Font",
+   "m": "_1589cfd8",
+   "f": "ksu_vn/utils/label.rb",
+   "l": 151
+  },
+  {
+   "ns": "KSU::Font",
+   "m": "_068ebc81",
+   "f": "ksu_vn/utils/label.rb",
+   "l": 154
+  },
+  {
+   "ns": "KSU::Avail",
+   "m": "margins",
+   "f": "ksu_vn/utils/nesting/avail.rb",
+   "l": 4
+  },
+  {
+   "ns": "KSU::Avail",
+   "m": "override",
+   "f": "ksu_vn/utils/nesting/avail.rb",
+   "l": 42
+  },
+  {
+   "ns": "KSU::Avail",
+   "m": "two_sided?",
+   "f": "ksu_vn/utils/nesting/avail.rb",
+   "l": 57
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "marks_of",
+   "f": "ksu_vn/utils/nesting/avail.rb",
+   "l": 91
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "include",
+   "f": "ksu_vn/utils/nesting/avail.rb",
+   "l": 109
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "extend",
+   "f": "ksu_vn/utils/nesting/bilan.rb",
+   "l": 198
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "pack",
+   "f": "ksu_vn/utils/nesting/corner.rb",
+   "l": 78
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "clear_offsets",
+   "f": "ksu_vn/utils/nesting/edit.rb",
+   "l": 25
+  },
+  {
+   "ns": "KSU::Mode",
+   "m": "write_binding_key",
+   "f": "ksu_vn/utils/nesting/edit.rb",
+   "l": 265
+  },
+  {
+   "ns": "KSU::Nfp",
+   "m": "_b66f0915",
+   "f": "ksu_vn/utils/nesting/optimize.rb",
+   "l": 262
+  },
+  {
+   "ns": "KSU::Method",
+   "m": "pack_bl",
+   "f": "ksu_vn/utils/nesting/pack.rb",
+   "l": 7
+  },
+  {
+   "ns": "KSU::Ttf",
+   "m": "advance",
+   "f": "ksu_vn/utils/pdf/build.rb",
+   "l": 37
+  },
+  {
+   "ns": "KSU::Svg",
+   "m": "_3c7812cc",
+   "f": "ksu_vn/utils/pdf/build.rb",
+   "l": 74
+  },
+  {
+   "ns": "KSU::Ttf",
+   "m": "gid",
+   "f": "ksu_vn/utils/pdf/svg.rb",
+   "l": 175
+  },
+  {
+   "ns": "KSU::Preset",
+   "m": "cfg",
+   "f": "ksu_vn/utils/preset/field.rb",
+   "l": 15
+  },
+  {
+   "ns": "KSU::View",
+   "m": "ui_scale",
+   "f": "ksu_vn/utils/preset/field.rb",
+   "l": 330
+  },
+  {
+   "ns": "KSU::Preset",
+   "m": "colors",
+   "f": "ksu_vn/utils/preset/field.rb",
+   "l": 348
+  },
+  {
+   "ns": "KSU::View",
+   "m": "_8a0d2500",
+   "f": "ksu_vn/utils/preset/field.rb",
+   "l": 397
+  },
+  {
+   "ns": "KSU::Preset",
+   "m": "include",
+   "f": "ksu_vn/utils/preset/field.rb",
+   "l": 579
+  },
+  {
+   "ns": "KSU::Optimize",
+   "m": "write_license",
+   "f": "ksu_vn/utils/preset/mode.rb",
+   "l": 107
+  },
+  {
+   "ns": "KSU::Settings",
+   "m": "push_to_dialog",
+   "f": "ksu_vn/utils/preset/store.rb",
+   "l": 26
+  },
+  {
+   "ns": "KSU::Push",
+   "m": "_b277371c",
+   "f": "ksu_vn/utils/preset/store.rb",
+   "l": 374
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "overlaps",
+   "f": "ksu_vn/utils/preset.rb",
+   "l": 85
+  },
+  {
+   "ns": "KSU::View",
+   "m": "in_front?",
+   "f": "ksu_vn/utils/quet.rb",
+   "l": 62
+  },
+  {
+   "ns": "KSU::Sheet",
+   "m": "extend",
+   "f": "ksu_vn/utils/sheet/bottom.rb",
+   "l": 340
+  },
+  {
+   "ns": "KSU::View",
+   "m": "edge_weight",
+   "f": "ksu_vn/utils/sheet/overlay.rb",
+   "l": 61
+  },
+  {
+   "ns": "KSU::Back",
+   "m": "_cd99bb15",
+   "f": "ksu_vn/utils/sheet/reorder.rb",
+   "l": 415
+  },
+  {
+   "ns": "KSU::View",
+   "m": "extend",
+   "f": "ksu_vn/utils/view/query.rb",
+   "l": 255
+  },
+  {
+   "ns": "KSU::View",
+   "m": "invalidate",
+   "f": "ksu_vn/utils/view.rb",
+   "l": 41
+  },
+  {
+   "ns": "KSU::Nesting",
+   "m": "panel_list",
+   "f": "ksu_vn/utils/view.rb",
+   "l": 92
+  },
+  {
+   "ns": "KSU::Flip",
+   "m": "_8351e254",
+   "f": "ksu_vn/utils/view.rb",
+   "l": 503
+  },
+  {
+   "ns": "KSU::Nfp",
+   "m": "_a737195f",
+   "f": "ksu_vn/utils/view.rb",
+   "l": 518
+  },
+  {
+   "ns": "KSU::Shape",
+   "m": "_142b3e3b",
+   "f": "ksu_vn/utils/view.rb",
+   "l": 519
+  }
+ ],
+ "modules": [
+  "KSU",
+  "KSU::Arrange",
+  "KSU::Assign",
+  "KSU::Avail",
+  "KSU::Back",
+  "KSU::Bilan",
+  "KSU::Bottom",
+  "KSU::Caidat",
+  "KSU::Chongbay",
+  "KSU::Chontam",
+  "KSU::Chuanhoa",
+  "KSU::Collect",
+  "KSU::Collide",
+  "KSU::Const",
+  "KSU::Corner",
+  "KSU::Cutting",
+  "KSU::Danhsovan",
+  "KSU::Detail",
+  "KSU::Drag",
+  "KSU::Draw",
+  "KSU::Edit",
+  "KSU::Engine",
+  "KSU::Field",
+  "KSU::Flip",
+  "KSU::Font",
+  "KSU::Gannhan",
+  "KSU::Geom",
+  "KSU::Group",
+  "KSU::Intem",
+  "KSU::Isolate",
+  "KSU::Label",
+  "KSU::Lastcut",
+  "KSU::Launch",
+  "KSU::Loop",
+  "KSU::Mark",
+  "KSU::Mirror",
+  "KSU::Mode",
+  "KSU::Nest",
+  "KSU::Nesting",
+  "KSU::Netcatcuoi",
+  "KSU::Nfp",
+  "KSU::Optimize",
+  "KSU::Overlay",
+  "KSU::Pack",
+  "KSU::Pdf",
+  "KSU::Postproc",
+  "KSU::Preset",
+  "KSU::Push",
+  "KSU::Query",
+  "KSU::Quet",
+  "KSU::Reorder",
+  "KSU::Resize",
+  "KSU::Settings",
+  "KSU::Shape",
+  "KSU::Sheet",
+  "KSU::Simplify",
+  "KSU::Store",
+  "KSU::Svg",
+  "KSU::Themtam",
+  "KSU::Thongke",
+  "KSU::Thongke::Phukien",
+  "KSU::Thongke::Quet",
+  "KSU::Thongke::Tonghop",
+  "KSU::Thongke::Xuat",
+  "KSU::Toiuuvan",
+  "KSU::Ttf",
+  "KSU::Update",
+  "KSU::View",
+  "KSU::Widget",
+  "KSU::Xephang",
+  "KSU::Xeptam",
+  "KSU::Xuatdxf",
+  "KSU::Xuatdxf::Dxf"
+ ]
+}
