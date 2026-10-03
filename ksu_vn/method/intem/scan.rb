@@ -236,16 +236,16 @@ module KSU::Intem
       next unless KSU.container?(ent)
       tr = tf * ent.transformation
       if ent.get_attribute("ABF", "is-hinge-part-b")
-        arr = nil
+        best = nil
         _f0ab79c9(ent, tr).each do |arr5|
           arr3 = arr5.map { |arr4| arr4[0] }
           arr2 = arr5.map { |arr4| arr4[1] }
           rsz = [arr3.max - arr3.min, arr2.max - arr2.min].max.round(2)
-          next if arr && arr[0] >= rsz
+          next if best && best[0] >= rsz
           num2 = [((arr3.min + arr3.max) / 2).round(2), ((arr2.min + arr2.max) / 2).round(2)]
-          arr = [rsz, num2, arr5]
+          best = [rsz, num2, arr5]
         end
-        out << arr if arr
+        out << best if best
       else
         cups(ent, tr, depth + 1, out)
       end

@@ -40,7 +40,7 @@ module KSU::Xuatdxf
     return unless nesting && nesting.valid?
     _1cb4f865(nesting)
     collect_in_rect = collect_in_rect(nesting)
-    sheets = _319513d3(collect_in_rect[:sheets], _3c8ec851)
+    sheets = set_selection(collect_in_rect[:sheets], _3c8ec851)
     if sheets.empty?
       UI.messagebox("Chưa chọn loại ván nào để xuất.")
       return
@@ -81,7 +81,7 @@ module KSU::Xuatdxf
   rescue StandardError
     KSU.abort_op
   end
-  def self._319513d3(sheets, str)
+  def self.set_selection(sheets, str)
     _9535dc0b = begin
       JSON.parse(str.to_s)
     rescue StandardError

@@ -357,7 +357,7 @@ module KSU::Label
     start2 = Array.new(num2, 0.0)
     arr5 = Array.new(num2, 0.0)
     active_ix = Array.new(num2, false)
-    arr = nil
+    best = nil
     area = 0.0
     rows.times do |half|
       _57f116a2 = arr3[half + 1]
@@ -385,16 +385,16 @@ module KSU::Label
           _5fb96e91 = arr52 * (arr2[num] - arr2[flag])
           if arr52 > 0 && _5fb96e91 > area
             area = _5fb96e91
-            arr = [arr2[flag], arr2[num], _57f116a2 - arr52, _57f116a2]
+            best = [arr2[flag], arr2[num], _57f116a2 - arr52, _57f116a2]
           end
         end
       end
     end
-    return nil unless arr
-    _b0f47b06 = (arr[0] + arr[1]) / 2.0
-    _f79423d2 = (arr[2] + arr[3]) / 2.0
-    large = arr[1] - arr[0]
-    small = arr[3] - arr[2]
+    return nil unless best
+    _b0f47b06 = (best[0] + best[1]) / 2.0
+    _f79423d2 = (best[2] + best[3]) / 2.0
+    large = best[1] - best[0]
+    small = best[3] - best[2]
     center = color + Geom::Vector3d.new(
       ax.x * _b0f47b06 + pt.x * _f79423d2,
       ax.y * _b0f47b06 + pt.y * _f79423d2,
@@ -494,8 +494,8 @@ module KSU::Label
   end
 end
 module KSU::Label
-  def self._f58dcea4(_359b005a, grp)
-    rows = _359b005a.ExecQuery("ASSOCIATORS OF {Win32_DiskPartition.DeviceID='" + grp.DeviceID.to_s + "'} WHERE AssocClass=Win32_DiskDriveToDiskPartition")
+  def self._f58dcea4(wmi, grp)
+    rows = wmi.ExecQuery("ASSOCIATORS OF {Win32_DiskPartition.DeviceID='" + grp.DeviceID.to_s + "'} WHERE AssocClass=Win32_DiskDriveToDiskPartition")
     rows.each do |row2|
       next unless row2.SerialNumber
       return KSU::Xephang.normalize_id(row2.SerialNumber)

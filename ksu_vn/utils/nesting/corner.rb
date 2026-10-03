@@ -307,8 +307,8 @@ module KSU::Corner
             KSU::Clipper.offset([arr], _4bc14589, 0, 1)
           end
         if arr3 && !arr3.empty?
-          arr4 = arr3.max_by { |half| KSU::Nesting.poly_area(half) }
-          return arr4.map { |arr2| [arr2[0] / 25.4, arr2[1] / 25.4] } if arr4 && arr4.length >= 3
+          best = arr3.max_by { |half| KSU::Nesting.poly_area(half) }
+          return best.map { |arr2| [arr2[0] / 25.4, arr2[1] / 25.4] } if best && best.length >= 3
         end
       rescue StandardError
       end
@@ -578,16 +578,16 @@ module KSU::Corner
   end
   def _7edd7b75(arr, panel, _c04fb39c)
     _a1abb318 = [-_c04fb39c[0], -_c04fb39c[1]]
-    num = 1.0 / 0.0
+    best = 1.0 / 0.0
     num3 = panel.length
     num3.times do |i|
       _9710d820 = panel[i]
       b = panel[(i + 1) % num3]
       arr.each do |_23505ef9|
         thick = _ebae3e53(_23505ef9, _c04fb39c, _9710d820, b)
-        if thick && thick < num
-          num = thick
-          return num if num <= 1e-9
+        if thick && thick < best
+          best = thick
+          return best if best <= 1e-9
         end
       end
     end
@@ -597,13 +597,13 @@ module KSU::Corner
       b = arr[(i + 1) % name]
       panel.each do |_23505ef9|
         thick = _ebae3e53(_23505ef9, _a1abb318, _9710d820, b)
-        if thick && thick < num
-          num = thick
-          return num if num <= 1e-9
+        if thick && thick < best
+          best = thick
+          return best if best <= 1e-9
         end
       end
     end
-    num
+    best
   end
   def _ebae3e53(arr3, _c04fb39c, arr, b)
     rx = b[0] - arr[0]

@@ -270,7 +270,7 @@ module KSU::Mirror
     view.invalidate if _13d621f9 != prev
   end
   def _b01ddcaf(view, x, y)
-    _477c927d = nil
+    best = nil
     area = Float::INFINITY
     screen_items(view).each do |arr|
       next unless x.between?(arr[:sxmin], arr[:sxmax]) && y.between?(arr[:symin], arr[:symax])
@@ -282,9 +282,9 @@ module KSU::Mirror
         next if arr[:holes].any? { |arr52| arr52.length >= 3 && KSU::View.in_poly?(x, y, arr52) }
       end
       area = arr[:area]
-      _477c927d = { panel: arr[:panel], sheet: arr[:sheet] }
+      best = { panel: arr[:panel], sheet: arr[:sheet] }
     end
-    _477c927d
+    best
   end
   def _101ef2e3(view, x219, _60000b16, x2, y2)
     _2cf18878, _d6439c88 = [x219, x2].minmax

@@ -214,9 +214,9 @@ module KSU::Push
     arr.reverse! if KSU::Nfp._3b7ac698(arr) < 0
     arr2 = KSU::Clipper.offset([arr], -(tol.to_f * 25.4), 0, 1)
     return poly unless arr2 && !arr2.empty?
-    arr3 = arr2.max_by { |half| KSU::Nesting.poly_area(half) }
-    return poly unless arr3 && arr3.length >= 3
-    arr3.map { |pt| Geom::Point3d.new(pt[0] / 25.4, pt[1] / 25.4, 0) }
+    best = arr2.max_by { |half| KSU::Nesting.poly_area(half) }
+    return poly unless best && best.length >= 3
+    best.map { |pt| Geom::Point3d.new(pt[0] / 25.4, pt[1] / 25.4, 0) }
   rescue StandardError
     poly
   end

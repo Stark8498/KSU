@@ -37,13 +37,13 @@ class KSU::Chontam
   def activate
     KSU::Themtam.check_license
     KSU::Xephang.assert_license
-    self.class._3f9bbe5e
+    self.class.clear_caches
     nesting = KSU::Nesting.find_nesting
     return KSU.select_tool(nil) unless nesting
     KSU.select_only(nil)
     @flag14 = true
     model = Sketchup.active_model
-    self.class._cb453c89(model, nesting, self)
+    self.class.cache_build(model, nesting, self)
     _d597cb2a
     setup_fields(
       "Khi thoát" => {
@@ -61,10 +61,10 @@ class KSU::Chontam
   def deactivate(view)
     save_selected_preset
     @label_section_hidden = KSU::Cutting.apply_label_hiding(nil, false, @label_section_hidden)
-    self.class._133b289c
+    self.class.cancel_cache_build
     _8081f07a
     model = Sketchup.active_model
-    self.class._4d27616b(model)
+    self.class.keep_non_containers(model)
     if @co_lap_doi_tuong
       container = model.selection.to_a
       KSU::Isolate.start(container) if container.any?
@@ -81,9 +81,9 @@ class KSU::Chontam
     KSU.set_vcb("Nhập ID", "")
   end
   def onUserText(text, view)
-    keys = self.class._3fd8e206(text)
-    _506e8e1a = self.class._e0b932ea(keys)
-    self.class._319513d3(Sketchup.active_model, _506e8e1a, additive: false, clear_on_empty: false)
+    keys = self.class.parse_indices(text)
+    _506e8e1a = self.class.panels_by_index(keys)
+    self.class.set_selection(Sketchup.active_model, _506e8e1a, additive: false, clear_on_empty: false)
     update_status
     view&.invalidate
   end
@@ -126,7 +126,7 @@ class KSU::Chontam
       return
     end
     begin_drag(x, y)
-    @flag41 = self.class._cb355156(rot)
+    @flag41 = self.class.modifier_down?(rot)
     view.invalidate
   end
   def onLButtonUp(rot, x, y, view)
@@ -152,13 +152,13 @@ class KSU::Chontam
     arr = end_drag(x, y)
     return unless arr
     model = Sketchup.active_model
-    additive = @flag41 || self.class._cb355156(rot)
+    additive = @flag41 || self.class.modifier_down?(rot)
     if arr[0] == :click
-      _506e8e1a = self.class._6a98efb9(view, x, y)
-      self.class._319513d3(model, _506e8e1a, additive: additive, clear_on_empty: !additive)
+      _506e8e1a = self.class.twins_at(view, x, y)
+      self.class.set_selection(model, _506e8e1a, additive: additive, clear_on_empty: !additive)
     else
-      _506e8e1a = self.class._94a6f47d(view, arr[1], arr[2])
-      self.class._319513d3(model, _506e8e1a, additive: additive, clear_on_empty: false)
+      _506e8e1a = self.class.panels_in_rect(view, arr[1], arr[2])
+      self.class.set_selection(model, _506e8e1a, additive: additive, clear_on_empty: false)
     end
     @_043e7a32 = nil
     @arr34 = []
@@ -211,7 +211,7 @@ class KSU::Chontam
     !!_d45630d6 && !KSU::Quet.moved_enough?(_d45630d6, [x, y])
   end
   def _0ea29105(view, x, y)
-    answer = self.class._4deaf565(view, x, y)
+    answer = self.class.pick_at(view, x, y)
     if answer && answer[:kind] == :label
       if @arr13.nil? || @arr13[:panel] != answer[:panel]
         _8081f07a
@@ -230,17 +230,17 @@ class KSU::Chontam
   def _b33cf558(view, target)
     return if target == @_043e7a32
     model = Sketchup.active_model
-    self.class._4a670cfd(model, @arr34)
+    self.class.drop_from_selection(model, @arr34)
     @_043e7a32 = target
     @arr34 = []
     if target
-      _506e8e1a = self.class._720fed6e(target)
+      _506e8e1a = self.class.twins_of(target)
       @arr34 = self.class._34feb22a(model, _506e8e1a)
     end
     view.invalidate
   end
   def _8081f07a
-    self.class._4a670cfd(Sketchup.active_model, @arr34) if @arr34.any?
+    self.class.drop_from_selection(Sketchup.active_model, @arr34) if @arr34.any?
     @_043e7a32 = nil
     @arr34 = []
   end
@@ -283,10 +283,10 @@ class KSU::Chontam
   end
   def _d0fd0398(nesting)
     KSU::View.clear_cache
-    self.class._3f9bbe5e
+    self.class.clear_caches
     @flag14 = true
     _d597cb2a
-    self.class._cb453c89(Sketchup.active_model, nesting, self)
+    self.class.cache_build(Sketchup.active_model, nesting, self)
     KSU::View.view.invalidate
   end
   def _a436f886(view)
@@ -306,7 +306,7 @@ class KSU::Chontam
       KSU.commit
       _d597cb2a
       KSU::View.clear_cache
-      self.class._4df86912
+      self.class.clear_screen_cache
       KSU::View.view.invalidate
     else
       KSU.abort_op
@@ -317,12 +317,12 @@ class KSU::Chontam
   def _7596df47(panel)
     ix = panel.respond_to?(:get_attribute) ? panel.get_attribute("ABF", "board-index") : nil
     unless ix.nil?
-      g = self.class._ce0f89bb(ix).find { |ent| ent.valid? && ent != panel }
+      g = self.class.external_by_index(ix).find { |ent| ent.valid? && ent != panel }
       return g if g
     end
-    name = self.class._6ae56a12(panel)
+    name = self.class.name_of(panel)
     return nil if name.empty?
-    self.class._7c845e31(name, panel).find { |ent| ent.valid? }
+    self.class.external_by_name(name, panel).find { |ent| ent.valid? }
   end
   def _d597cb2a
     @arr11 = KSU::Nesting.error_points(KSU::Nesting.find_nesting(notify: false))

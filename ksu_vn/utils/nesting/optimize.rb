@@ -145,7 +145,7 @@ module KSU::Optimize
     arr
   end
   def rightmost(out)
-    _477c927d = nil
+    best = nil
     max_x = nil
     out.each do |s|
       next unless s && s.valid?
@@ -154,10 +154,10 @@ module KSU::Optimize
       x = rec[:bbox].max.x
       if max_x.nil? || x > max_x
         max_x = x
-        _477c927d = s
+        best = s
       end
     end
-    _477c927d
+    best
   end
   def max_sheet_no
     hi = 0

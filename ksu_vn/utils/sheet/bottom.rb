@@ -131,7 +131,7 @@ module KSU::Bottom
     return nil unless sheet && sheet.valid? && nesting && nesting.valid?
     arr = index_set(sheet)
     return nil if arr.empty?
-    _477c927d = nil
+    best = nil
     num = 0
     nesting.definition.entities.each do |ent|
       next unless ent.respond_to?(:get_attribute) && ent != sheet
@@ -139,10 +139,10 @@ module KSU::Bottom
       n = index_set(ent).keys.count { |k| arr[k] }
       if n > num
         num = n
-        _477c927d = ent
+        best = ent
       end
     end
-    _477c927d
+    best
   end
   def sync_ids(nesting)
     return unless nesting && nesting.valid?
@@ -166,9 +166,9 @@ module KSU::Bottom
         arr2[_e305cedd] += 1 if _e305cedd
       end
       next if arr2.empty?
-      _477c927d = arr2.max_by { |arr3| arr3[1] }[0]
-      next if _477c927d.nil?
-      b.set_attribute("ABF", "sheet-id", _477c927d) if b.get_attribute("ABF", "sheet-id") != _477c927d
+      best = arr2.max_by { |arr3| arr3[1] }[0]
+      next if best.nil?
+      b.set_attribute("ABF", "sheet-id", best) if b.get_attribute("ABF", "sheet-id") != best
     end
   end
   def _de0a88d4(nesting, sheet, forward)

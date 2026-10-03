@@ -26,12 +26,12 @@ module KSU::Nfp
     true
   end
   def self.lowest_ix(arr3)
-    num = 0
+    best = 0
     arr3.each_with_index do |arr2, i|
-      b = arr3[num]
-      num = i if arr2[1] < b[1] || (arr2[1] == b[1] && arr2[0] < b[0])
+      b = arr3[best]
+      best = i if arr2[1] < b[1] || (arr2[1] == b[1] && arr2[0] < b[0])
     end
-    num
+    best
   end
   def self.minkowski_convex(arr4, b)
     num3 = arr4.length
@@ -183,18 +183,18 @@ module KSU::Nfp
     _16ff81f7(arr, dx, dy, _496e1356)
   end
   def self._16ff81f7(arr3, trai, duoi, pt)
-    arr = nil
+    best = nil
     _be50781d = nil
     arr3[:snap_edges].each do |pts|
       arr2 = _8c307bb8(trai, duoi, pts[0], pts[1])
       d2 = (arr2[0] - trai) ** 2 + (arr2[1] - duoi) ** 2
       if _be50781d.nil? || d2 < _be50781d
         _be50781d = d2
-        arr = arr2
+        best = arr2
       end
     end
-    return pt unless arr
-    Geom::Point3d.new(arr[0], arr[1], pt.z.to_f)
+    return pt unless best
+    Geom::Point3d.new(best[0], best[1], pt.z.to_f)
   end
   def self._8c307bb8(trai, duoi, pt2, b)
     ax = pt2.x.to_f

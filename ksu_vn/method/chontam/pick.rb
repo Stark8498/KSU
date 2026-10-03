@@ -1,14 +1,14 @@
 class KSU::Chontam
   class << self
-    def _5a9a8666(msg2)
+    def log(msg2)
       puts "[chontam] #{msg2}" if DBG
     end
-    def _4e410601(thick)
+    def ms_since(thick)
       ((Time.now - thick) * 1000.0).round(1)
     end
-    def _3f9bbe5e
+    def clear_caches
       @cache = nil
-      @_c7423e40 = nil
+      @build = nil
       @arr3 = nil
       @hit_targets = nil
     end
@@ -20,13 +20,13 @@ class KSU::Chontam
       return nil unless nesting
       KSU::Flip.hit_panel(view, hit_targets(nesting), x, y)
     end
-    def _4df86912
+    def clear_screen_cache
       @arr3 = nil
     end
-    def _133b289c
-      @_c7423e40 = nil
+    def cancel_cache_build
+      @build = nil
     end
-    def _3fd8e206(text)
+    def parse_indices(text)
       keys = []
       text.to_s.split(",").each do |grp|
         grp = grp.strip
@@ -42,7 +42,7 @@ class KSU::Chontam
       end
       keys.uniq
     end
-    def _e0b932ea(keys)
+    def panels_by_index(keys)
       return [] if keys.nil? || keys.empty?
       nesting = KSU::Nesting.find_nesting(notify: false)
       return [] unless nesting
@@ -56,23 +56,23 @@ class KSU::Chontam
         ents.each do |entity|
           next unless KSU.container?(entity)
           next if KSU::Cutting.bottom_face?(entity)
-          next unless _977c7789(entity, 2)
+          next unless panel_at_depth?(entity, 2)
           ix = entity.get_attribute("ABF", "board-index")
           next if ix.nil?
           next unless keys.include?(ix.to_i)
-          arr2.concat(_720fed6e(entity))
+          arr2.concat(twins_of(entity))
         end
       end
       arr2.compact.select(&:valid?).uniq
     end
-    def _4d27616b(model)
-      keys = _0a50b01c(KSU::Nesting.find_nesting(notify: false))
+    def keep_non_containers(model)
+      keys = container_ids(KSU::Nesting.find_nesting(notify: false))
       keep_existing = model.selection.to_a.reject do |ent|
-        !_d195e9f1(ent).nil? || keys.key?(ent.entityID)
+        !root_of(ent).nil? || keys.key?(ent.entityID)
       end
       KSU.select_only(keep_existing)
     end
-    def _0a50b01c(nesting)
+    def container_ids(nesting)
       keys = {}
       return keys unless nesting && nesting.valid?
       keys[nesting.entityID] = true
@@ -89,7 +89,7 @@ class KSU::Chontam
       end
       keys
     end
-    def _319513d3(model, arr, additive:, clear_on_empty:)
+    def set_selection(model, arr, additive:, clear_on_empty:)
       arr = Array(arr).compact.select(&:valid?).uniq
       cur = model.selection.to_a
       target = if additive
@@ -110,43 +110,43 @@ class KSU::Chontam
       model.selection.add(arr)
       arr
     end
-    def _4a670cfd(model, container)
+    def drop_from_selection(model, container)
       arr = Array(container).select { |ent| ent.valid? && model.selection.contains?(ent) }
       return if arr.empty?
       model.selection.remove(arr)
     end
-    def _cb355156(rot)
+    def modifier_down?(rot)
       (rot & MK_SHIFT) != 0 || (rot & MK_CONTROL) != 0
     end
-    def _6a98efb9(view, x, y)
-      answer = _4deaf565(view, x, y)
+    def twins_at(view, x, y)
+      answer = pick_at(view, x, y)
       return [] unless answer && answer[:kind] == :panel
-      _720fed6e(answer[:entity])
+      twins_of(answer[:entity])
     end
-    def _4deaf565(view, x, y)
+    def pick_at(view, x, y)
       ph = view.pick_helper
       ph.do_pick(x, y)
-      _477c927d = ph.best_picked
-      if _477c927d && KSU.container?(_477c927d) &&
-         !_07d87f58(_477c927d) && !KSU::Sheet._27ecfdd1(_477c927d)
-        return { kind: :panel, entity: _477c927d }
+      best = ph.best_picked
+      if best && KSU.container?(best) &&
+         !nesting_root?(best) && !KSU::Sheet._27ecfdd1(best)
+        return { kind: :panel, entity: best }
       end
       (0...ph.count).each do |i|
         next unless ph.leaf_at(i).is_a?(Sketchup::Edge)
         path = ph.path_at(i)
-        lbl = _827d4a81(path)
+        lbl = label_hit(path)
         return lbl if lbl
-        panel = _1db77630(path)
+        panel = panel_from_path(path)
         return { kind: :panel, entity: panel } if panel
       end
-      entity = _24c54f2a(view, x, y)
+      entity = smallest_at(view, x, y)
       entity ? { kind: :panel, entity: entity } : nil
     end
-    def _827d4a81(path)
+    def label_hit(path)
       return nil unless path
       path.each_with_index do |_310b620e, i|
         next if i.zero?
-        next unless KSU.container?(_310b620e) && _6d620197(_310b620e)
+        next unless KSU.container?(_310b620e) && label_group?(_310b620e)
         panel = path[i - 1]
         return nil unless panel && KSU.container?(panel)
         transform = Geom::Transformation.new
@@ -160,19 +160,19 @@ class KSU::Chontam
       end
       nil
     end
-    def _6d620197(grp)
+    def label_group?(grp)
       name = grp.respond_to?(:name) ? grp.name.to_s : ""
       def_name = (grp.respond_to?(:definition) && grp.definition) ? grp.definition.name.to_s : ""
       name.include?("_ABF_Label") || def_name.include?("_ABF_Label")
     end
-    def _24c54f2a(view, x, y)
+    def smallest_at(view, x, y)
       pt = KSU::View.pick_on_plane(view, x, y, 0)
       return nil unless pt
       num2 = pt.x.to_f
       num = pt.y.to_f
-      _477c927d = nil
+      best = nil
       area = Float::INFINITY
-      _34c552fc.each do |color|
+      candidates.each do |color|
         next unless color[:external]
         entity = color[:entity]
         next unless entity.valid?
@@ -183,47 +183,47 @@ class KSU::Chontam
         _5fb96e91 = (x2 - x1) * (y2 - y1)
         next unless _5fb96e91 < area
         area = _5fb96e91
-        _477c927d = entity
+        best = entity
       end
-      _477c927d
+      best
     end
-    def _1db77630(path)
+    def panel_from_path(path)
       return nil unless path
       path.each_with_index do |_310b620e, i|
         next if i.zero?
-        next unless KSU.container?(_310b620e) && _08a03619(_310b620e)
+        next unless KSU.container?(_310b620e) && cutting_lines?(_310b620e)
         return path[i - 1]
       end
       nil
     end
-    def _08a03619(grp)
+    def cutting_lines?(grp)
       return false unless grp.respond_to?(:get_attribute)
       return true if grp.get_attribute("ABF", "is-cutting-lines")
       name = grp.respond_to?(:name) ? grp.name.to_s : ""
       def_name = (grp.respond_to?(:definition) && grp.definition) ? grp.definition.name.to_s : ""
       name.include?("_ABF_cuttingLines") || def_name.include?("_ABF_cuttingLines")
     end
-    def _94a6f47d(view, rect, strict)
+    def panels_in_rect(view, rect, strict)
       arr = []
-      _5e1e3d1e(view, rect, strict).each do |color|
-        arr.concat(_720fed6e(color[:entity]))
+      items_in_rect(view, rect, strict).each do |color|
+        arr.concat(twins_of(color[:entity]))
       end
       arr.compact.select(&:valid?).uniq
     end
-    def _5e1e3d1e(view, rect, strict)
+    def items_in_rect(view, rect, strict)
       screen_items(view).select do |arr|
         next false unless arr[:entity].valid?
         KSU::Quet.rect_hit?([arr[:sxmin], arr[:symin], arr[:sxmax], arr[:symax]], rect, strict)
       end
     end
-    def _34c552fc
+    def candidates
       @cache ? @cache[:candidates] : []
     end
     def screen_items(view)
       sig = KSU::View.cam_sig(view)
       return @arr3[:items] if @arr3 && @arr3[:sig] == sig
       items = []
-      _34c552fc.each do |color|
+      candidates.each do |color|
         entity = color[:entity]
         next unless entity && entity.valid?
         begin
@@ -242,116 +242,116 @@ class KSU::Chontam
       @arr3 = { sig: sig, items: items }
       items
     end
-    def _720fed6e(_9535dc0b)
+    def twins_of(_9535dc0b)
       return [] unless _9535dc0b && _9535dc0b.valid? && KSU.container?(_9535dc0b)
       ix = _9535dc0b.respond_to?(:get_attribute) ? _9535dc0b.get_attribute("ABF", "board-index") : nil
       unless ix.nil?
-        arr = _ab38749c(ix)
+        arr = by_index(ix)
         arr << _9535dc0b
         return arr.compact.select(&:valid?).uniq
       end
-      _d94409b2(_9535dc0b)
+      twins_by_name(_9535dc0b)
     end
-    def _d94409b2(_9535dc0b)
-      name = _6ae56a12(_9535dc0b)
+    def twins_by_name(_9535dc0b)
+      name = name_of(_9535dc0b)
       return [] if name.empty?
-      nesting = _d195e9f1(_9535dc0b)
+      nesting = root_of(_9535dc0b)
       arr = []
       if nesting
-        return [] unless _d3318a1a(_9535dc0b, nesting)
+        return [] unless panel_under?(_9535dc0b, nesting)
         arr << _9535dc0b
-        arr.concat(_7c845e31(name, _9535dc0b))
+        arr.concat(external_by_name(name, _9535dc0b))
       else
         arr << _9535dc0b
-        arr.concat(_670981eb(name))
+        arr.concat(nesting_by_name(name))
       end
       arr.compact.select(&:valid?).uniq
     end
-    def _ab38749c(ix)
+    def by_index(ix)
       return [] if ix.nil? || @cache.nil?
       h = @cache[:index_map]
       return [] unless h
       h.fetch(ix.to_i, []).select { |ent| ent && ent.valid? }
     end
-    def _7c845e31(name, sel_panels = nil)
+    def external_by_name(name, sel_panels = nil)
       return [] unless @cache
       (@cache[:external_map][name] || []).reject { |ent| ent == sel_panels || !ent.valid? }
     end
-    def _670981eb(name)
+    def nesting_by_name(name)
       return [] unless @cache
       (@cache[:nesting_map][name] || []).select(&:valid?)
     end
-    def _d195e9f1(entity)
+    def root_of(entity)
       return nil unless @cache && entity && entity.valid?
       nesting = @cache[:roots_map][entity.entityID]
       nesting if nesting&.valid?
     end
-    def _d25f9b1c(entity)
-      name = _6ae56a12(entity)
+    def pickable?(entity)
+      name = name_of(entity)
       return false if name.empty?
       return false if name.start_with?("_ABF_")
-      return false if _9744ab6f(entity)
-      return false if _cba1c244(entity)
+      return false if cutting_layer?(entity)
+      return false if sheet_meta?(entity)
       !KSU::Sheet._27ecfdd1(entity)
     end
-    def _d3318a1a(entity, nesting)
+    def panel_under?(entity, nesting)
       return false unless entity && nesting
       return false if entity == nesting
-      return false if _20decd88(entity, nesting).length != 2
-      return false unless _d25f9b1c(entity)
+      return false if path_to(entity, nesting).length != 2
+      return false unless pickable?(entity)
       defn = entity.parent
       defn.is_a?(Sketchup::ComponentDefinition) || defn.is_a?(Sketchup::Entities)
     end
-    def _20decd88(entity, nesting)
+    def path_to(entity, nesting)
       return [] unless entity && nesting
       return [entity] if entity == nesting
       arr = KSU.entities_in(nesting)
       return [] unless arr
       arr.each do |entity2|
         next unless KSU.container?(entity2)
-        answer = _824298f7(entity, entity2, [entity2])
+        answer = walk_to(entity, entity2, [entity2])
         return answer unless answer.empty?
       end
       []
     end
-    def _824298f7(target, cur, path)
+    def walk_to(target, cur, path)
       return path if cur == target
       arr = KSU.entities_in(cur)
       return [] unless arr
       arr.each do |entity|
         next unless KSU.container?(entity)
-        answer = _824298f7(target, entity, path + [entity])
+        answer = walk_to(target, entity, path + [entity])
         return answer unless answer.empty?
       end
       []
     end
-    def _07d87f58(entity)
-      _fc54e5ac(entity).any? { |n| n.strip == "__ABF_Nesting" }
+    def nesting_root?(entity)
+      names_of(entity).any? { |n| n.strip == "__ABF_Nesting" }
     end
-    def _6ae56a12(entity)
+    def name_of(entity)
       name = entity.respond_to?(:name) ? entity.name.to_s.strip : ""
       return name unless name.empty?
       return entity.definition.name.to_s.strip if entity.respond_to?(:definition) && entity.definition
       ""
     end
-    def _9744ab6f(entity)
-      arr = _fc54e5ac(entity)
+    def cutting_layer?(entity)
+      arr = names_of(entity)
       arr << entity.layer.name.to_s if entity.respond_to?(:layer) && entity.layer
       arr.any? { |n| n.strip == "ABF_cuttingLines" }
     end
-    def _cba1c244(entity)
-      _fc54e5ac(entity).any? { |n| ["ABF_sheetMaterial", "ABF_sheetId"].include?(n.strip) }
+    def sheet_meta?(entity)
+      names_of(entity).any? { |n| ["ABF_sheetMaterial", "ABF_sheetId"].include?(n.strip) }
     end
-    def _fc54e5ac(entity)
+    def names_of(entity)
       arr = []
       arr << entity.name.to_s if entity.respond_to?(:name)
       arr << entity.definition.name.to_s if entity.respond_to?(:definition) && entity.definition
       arr
     end
-    def _cb453c89(model, nesting, tool)
-      _133b289c
+    def cache_build(model, nesting, tool)
+      cancel_cache_build
       ents = model.entities.to_a
-      @_c7423e40 = {
+      @build = {
         model: model,
         tool: tool,
         nesting: nesting,
@@ -365,21 +365,21 @@ class KSU::Chontam
         ticks: 0,
         t_start: Time.now,
       }
-      _5a9a8666("cache_build start, top_entities=#{ents.length}, budget=200/tick @0.01s")
-      _62aaad2f
+      log("cache_build start, top_entities=#{ents.length}, budget=200/tick @0.01s")
+      cache_next_tick
     end
-    def _62aaad2f
-      return unless @_c7423e40
-      UI.start_timer(0.01, false) { _5dc0e0f4 }
+    def cache_next_tick
+      return unless @build
+      UI.start_timer(0.01, false) { cache_tick }
     end
-    def _5dc0e0f4
-      arr = @_c7423e40
+    def cache_tick
+      arr = @build
       return unless arr
       model = arr[:model]
       tool = arr[:tool]
       unless model.valid? && Sketchup.active_model == model && model.tools.active_tool == tool
-        _5a9a8666("cache_build huy o tick=#{arr[:ticks]} (doi tool/model)")
-        _133b289c
+        log("cache_build huy o tick=#{arr[:ticks]} (doi tool/model)")
+        cancel_cache_build
         return
       end
       num = 200
@@ -393,33 +393,33 @@ class KSU::Chontam
             end
             entity, transform, depth = arr[:ext_queue].shift
             num -= 1
-            _416f815d(arr, entity, transform, depth)
+            scan_external(arr, entity, transform, depth)
           when :nesting
             if arr[:queue].empty?
-              _d426c5bf(arr)
+              cache_finish(arr)
               return
             end
             ents3, _9a88c1a2, depth = arr[:queue].shift
             num -= 1
-            _46f413d0(arr, ents3, _9a88c1a2, depth)
+            scan_nesting(arr, ents3, _9a88c1a2, depth)
           end
         end
       rescue => ent
-        _5a9a8666("cache_build loi tick=#{arr[:ticks]}: #{ent.class} #{ent.message}")
-        _133b289c
+        log("cache_build loi tick=#{arr[:ticks]}: #{ent.class} #{ent.message}")
+        cancel_cache_build
         return
       ensure
         arr[:ticks] += 1
         model.active_view.invalidate if model.valid? && (arr[:ticks] % 3).zero?
       end
-      _62aaad2f if @_c7423e40
+      cache_next_tick if @build
     end
-    def _416f815d(arr, entity, transform, depth)
+    def scan_external(arr, entity, transform, depth)
       return unless KSU.container?(entity)
       return unless entity.valid?
-      return if _07d87f58(entity)
+      return if nesting_root?(entity)
       transform2 = transform ? transform * entity.transformation : entity.transformation
-      name = _6ae56a12(entity)
+      name = name_of(entity)
       ix = entity.get_attribute("ABF", "board-index")
       if (depth.zero? || !ix.nil?) && !(name.empty? && ix.nil?)
         arr[:candidates] << { entity: entity, transform: transform2, external: true }
@@ -433,7 +433,7 @@ class KSU::Chontam
         arr[:ext_queue] << [entity3, transform2, depth + 1]
       end
     end
-    def _46f413d0(arr, ents3, _9a88c1a2, depth)
+    def scan_nesting(arr, ents3, _9a88c1a2, depth)
       arr2 = KSU.entities_in(ents3)
       return unless arr2
       nesting = arr[:nesting]
@@ -442,8 +442,8 @@ class KSU::Chontam
         next if KSU::Sheet.bottom_sheet?(entity) || KSU::Cutting.bottom_face?(entity)
         transform = _9a88c1a2 * entity.transformation
         arr[:roots_map][entity.entityID] = nesting
-        if _977c7789(entity, depth + 1)
-          name = _6ae56a12(entity)
+        if panel_at_depth?(entity, depth + 1)
+          name = name_of(entity)
           unless name.empty?
             arr[:candidates] << { entity: entity, transform: transform, external: false }
             arr[:nesting_map][name] << entity
@@ -452,10 +452,10 @@ class KSU::Chontam
         arr[:queue] << [entity, transform, depth + 1] if depth + 1 < 2
       end
     end
-    def _977c7789(entity, depth)
-      depth == 2 && _d25f9b1c(entity)
+    def panel_at_depth?(entity, depth)
+      depth == 2 && pickable?(entity)
     end
-    def _d426c5bf(arr)
+    def cache_finish(arr)
       @cache = {
         candidates: arr[:candidates].uniq { |fld| fld[:entity].entityID },
         external_map: arr[:external_map],
@@ -465,10 +465,10 @@ class KSU::Chontam
         external_index_map: external_index_map(arr),
       }
       @arr3 = nil
-      @_c7423e40 = nil
+      @build = nil
       entity = arr[:external_map].values.inject(0) { |s, v| s + v.length }
       arr2 = arr[:nesting_map].values.inject(0) { |s, v| s + v.length }
-      _5a9a8666("cache_build XONG, ticks=#{arr[:ticks]}, t=#{_4e410601(arr[:t_start])}ms, candidates=#{@cache[:candidates].length}, ext_3d=#{entity}, tam_nesting=#{arr2}, roots=#{arr[:roots_map].length}")
+      log("cache_build XONG, ticks=#{arr[:ticks]}, t=#{ms_since(arr[:t_start])}ms, candidates=#{@cache[:candidates].length}, ext_3d=#{entity}, tam_nesting=#{arr2}, roots=#{arr[:roots_map].length}")
       tool = arr[:tool]
       tool._723ded7c if tool == arr[:model].tools.active_tool
     end
@@ -507,7 +507,7 @@ class KSU::Chontam
       end
       h
     end
-    def _ce0f89bb(ix)
+    def external_by_index(ix)
       return [] if ix.nil? || @cache.nil?
       h = @cache[:external_index_map]
       return [] unless h
@@ -516,11 +516,11 @@ class KSU::Chontam
   end
 end
 class KSU::Chontam
-  def self._e36340ce
-    _359b005a = KSU.wmi_connect
-    parts = _359b005a.ExecQuery("ASSOCIATORS OF {Win32_LogicalDisk.DeviceID='C:'} WHERE AssocClass=Win32_LogicalDiskToPartition")
+  def self.volume_id
+    wmi = KSU.wmi_connect
+    parts = wmi.ExecQuery("ASSOCIATORS OF {Win32_LogicalDisk.DeviceID='C:'} WHERE AssocClass=Win32_LogicalDiskToPartition")
     parts.each do |grp|
-      id = KSU::Label._f58dcea4(_359b005a, grp)
+      id = KSU::Label._f58dcea4(wmi, grp)
       return id if id
     end
     nil

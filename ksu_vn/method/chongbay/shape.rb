@@ -87,24 +87,24 @@ module KSU::Shape
     flag2 = (_e69b41c0 == :left_to_right || _e69b41c0 == :bottom_to_top) ? 1.0 : -1.0
     center = (horizontal ? arr[:center].x.to_f : arr[:center].y.to_f) * flag2
     if @che_do_chon == 1
-      flag = nil
+      best = nil
       each_point(arr) do |trai, duoi|
         v = (horizontal ? trai : duoi) * flag2
-        flag = v if flag.nil? || v > flag
+        best = v if best.nil? || v > best
       end
-      return flag || center
+      return best || center
     end
     s = @pt4
     num = s ? (horizontal ? s.x.to_f : s.y.to_f) * flag2 : nil
     return num if s && point_in_part?(s.x.to_f, s.y.to_f, arr)
     tol = 1.mm.to_f
-    flag = nil
+    best = nil
     each_point(arr) do |trai, duoi|
       v = (horizontal ? trai : duoi) * flag2
       next if num && v < num - tol
-      flag = v if flag.nil? || v < flag
+      best = v if best.nil? || v < best
     end
-    flag || center
+    best || center
   end
   def each_point(arr)
     arr[:polygon].each { |pt| yield(pt.x.to_f, pt.y.to_f) }
@@ -263,8 +263,8 @@ module KSU::Shape
       end
     end
     return nil if arr.empty?
-    arr3 = arr.max_by { |color| [color[:len], -color[:dist]] }
-    case arr3[:edge]
+    best = arr.max_by { |color| [color[:len], -color[:dist]] }
+    case best[:edge]
     when :top    then :top_to_bottom
     when :bottom then :bottom_to_top
     when :left   then :left_to_right
@@ -422,25 +422,25 @@ module KSU::Shape
   end
   def _1b630104(p1, p2, arr)
     return 0.0 if point_in_part?(p1.x.to_f, p1.y.to_f, arr)
-    flag = _5410b01c(p1, p2, arr[:polygon])
+    best = _5410b01c(p1, p2, arr[:polygon])
     (arr[:holes] || []).each do |arr52|
       thick = _5410b01c(p1, p2, arr52)
-      flag = thick if thick && (flag.nil? || thick < flag)
+      best = thick if thick && (best.nil? || thick < best)
     end
-    flag || _9707d4ab(p1, p2, arr[:center])
+    best || _9707d4ab(p1, p2, arr[:center])
   end
   def _5410b01c(p1, p2, poly)
     x29, num3 = p1.x.to_f, p1.y.to_f
     x2, y2 = p2.x.to_f, p2.y.to_f
-    flag = nil
+    best = nil
     n = poly.length
     n.times do |i|
       pt2 = poly[i]
       b = poly[(i + 1) % n]
       thick = _e817297d(x29, num3, x2, y2, pt2.x.to_f, pt2.y.to_f, b.x.to_f, b.y.to_f)
-      flag = thick if thick && (flag.nil? || thick < flag)
+      best = thick if thick && (best.nil? || thick < best)
     end
-    flag
+    best
   end
   def _e817297d(x210, _60000b16, x2, y2, _abaa0311, _d84dfb87, _820de0a4, _77e79d7d)
     num = (x210 - x2) * (_d84dfb87 - _77e79d7d) - (_60000b16 - y2) * (_abaa0311 - _820de0a4)

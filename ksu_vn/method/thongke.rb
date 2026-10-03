@@ -51,10 +51,10 @@ module KSU::Thongke
       return KSU.select_only(nil)
     end
     groups = partner.group_by { |_part, path| path.map(&:entityID) }
-    arr = groups.values.max_by(&:size)
-    path = arr[0][1]
+    best = groups.values.max_by(&:size)
+    path = best[0][1]
     model.active_path = path.empty? ? nil : Sketchup::InstancePath.new(path)
-    KSU.select_only(arr.map(&:first))
+    KSU.select_only(best.map(&:first))
   rescue StandardError
     nil
   end

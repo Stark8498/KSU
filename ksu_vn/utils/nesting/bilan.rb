@@ -164,9 +164,9 @@ module KSU::Bilan
     arr.reverse! if num2 < 0
     arr2 = KSU::Clipper.offset([arr], -(tol.to_f * 25.4), 0, 1)
     return poly unless arr2 && !arr2.empty?
-    arr3 = arr2.max_by { |half| poly_area(half) }
-    return poly unless arr3 && arr3.length >= 3
-    arr3.map { |_23505ef9| Geom::Point3d.new(_23505ef9[0] / 25.4, _23505ef9[1] / 25.4, 0) }
+    best = arr2.max_by { |half| poly_area(half) }
+    return poly unless best && best.length >= 3
+    best.map { |_23505ef9| Geom::Point3d.new(_23505ef9[0] / 25.4, _23505ef9[1] / 25.4, 0) }
   rescue StandardError
     poly
   end

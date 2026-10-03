@@ -51,12 +51,12 @@ module KSU::Cutting
     pts.length >= 3 ? pts : nil
   end
   def self.largest_face(src, arr, skip1 = nil, skip2 = nil, skip3 = nil)
-    flag = nil
+    best = nil
     src.each_with_index do |f, i|
       next if f == skip1 || f == skip2 || f == skip3
-      flag = [f, arr[i]] if flag.nil? || arr[i] > flag[1]
+      best = [f, arr[i]] if best.nil? || arr[i] > best[1]
     end
-    flag
+    best
   end
   def self.board_faces(g, tf)
     src = (KSU.entities_in(g) || []).grep(Sketchup::Face)

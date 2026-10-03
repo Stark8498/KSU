@@ -1654,15 +1654,125 @@ ten:
   # no chi noi day la mot thu khac cung loai.
   _4fd9a20e: reset2                # system/setting.rb; quet.rb giu `reset`
 
+  # ========== ME 42: method/chontam/pick.rb -- bam chon tam ==========
+  # Cach bam: pick_helper truoc; khong trung thi di nguoc path tim nhan hoac
+  # nhom duong cat; van khong co thi chieu xuong mat phang z=0 va lay hinh
+  # bao NHO NHAT trum diem do.
+  _4deaf565: pick_at             # tra { kind: :panel | :label, ... } hoac nil
+  _6a98efb9: twins_at
+  _827d4a81: label_hit           # nhan ra container ten "_ABF_Label" tren path
+  _6d620197: label_group?
+  _1db77630: panel_from_path     # cha cua nhom "_ABF_cuttingLines" chinh la tam
+  _08a03619: cutting_lines?
+  _24c54f2a: smallest_at
+  _94a6f47d: panels_in_rect
+  _5e1e3d1e: items_in_rect
+
+  # Mot tam co the hien dien nhieu noi (ban sao ngoai mo hinh, mat duoi...).
+  # Chon mot cai la chon ca ho cua no.
+  _720fed6e: twins_of
+  _d94409b2: twins_by_name
+  _ab38749c: by_index
+  _ce0f89bb: external_by_index
+  _7c845e31: external_by_name
+  _670981eb: nesting_by_name
+  _d195e9f1: root_of             # @cache[:roots_map][id] -- khoa hash dat ten
+  _34c552fc: candidates          # @cache[:candidates] -- khoa hash dat ten
+
+  # Dung cache theo NHIP: moi 0.01s lam 200 buoc roi nhuong lai cho SketchUp,
+  # nen quet ca mo hinh khong lam treo giao dien. Ten lay tu chuoi log con
+  # sot: "cache_build start, top_entities=..., budget=200/tick @0.01s".
+  _cb453c89: cache_build
+  _62aaad2f: cache_next_tick
+  _5dc0e0f4: cache_tick
+  _416f815d: scan_external
+  _46f413d0: scan_nesting
+  _d426c5bf: cache_finish
+  _c7423e40: build               # @: trang thai dang dung do, nil khi xong
+  _3f9bbe5e: clear_caches
+  _4df86912: clear_screen_cache
+  _133b289c: cancel_cache_build
+
+  _d25f9b1c: pickable?           # khong phai "_ABF_", khong phai duong cat, khong phai van
+  _977c7789: panel_at_depth?
+  _d3318a1a: panel_under?
+  _20decd88: path_to             # day container tu nesting xuong toi entity
+  _824298f7: walk_to
+  _07d87f58: nesting_root?       # ten chua "__ABF_Nesting"
+  _6ae56a12: name_of             # ten group, khong co thi lay ten definition
+  _fc54e5ac: names_of
+  _9744ab6f: cutting_layer?
+  _cba1c244: sheet_meta?         # ten la "ABF_sheetMaterial" hoac "ABF_sheetId"
+
+  _3fd8e206: parse_indices       # doc chuoi kieu "1-5, 8, 11-12"
+  _e0b932ea: panels_by_index
+  _4d27616b: keep_non_containers
+  _0a50b01c: container_ids
+  _319513d3: set_selection
+  _4a670cfd: drop_from_selection
+  _cb355156: modifier_down?      # MK_SHIFT hoac MK_CONTROL
+  _5a9a8666: log
+  _4e410601: ms_since
+  _e36340ce: volume_id           # WMI: id phan vung dia C:
+  _359b005a: wmi
+  _477c927d: best                # cai tot nhat tim duoc cho toi luc nay
+
+  # ========== ME 43: method/themtam.rb -- them tam roi vao so do ==========
+  # Tam "roi" la group nam ngoai nesting nhung mang du ba thuoc tinh ABF
+  # sheet-dimension / sheet-thickness / sheet-type. Cong cu quet chung ra, cho
+  # chon, roi hoac them vao cuoi mot hang van, hoac GHI DE len tam cu cung
+  # board-index.
+  _31a26815: scan_loose
+  _d4e74544: sheet_like?         # du ca ba thuoc tinh ABF moi tinh la van
+  _ec568b6f: record_of           # { instance:, bbox:, transform:, top_corners: }
+  _9478d701: pick_from_selection
+  _5244f367: loose_at
+  _ebbc195f: toggle_chosen
+  _04350067: track_hover
+  _68ad34e6: draw_loose
+  _b649743e: loose               # @: ban ghi cua moi tam roi trong mo hinh
+  _0c2ff740: chosen              # @: nhung tam roi dang duoc chon
+  _caae55e4: hover_loose         # @
+  _12bf081e: hidden_sheet?       # KSU::Sheet.hidden? la method khac, con nguyen ten
+
+  # Nut "+" o cuoi moi hang van: bam vao la them cac tam dang chon vao hang do.
+  _27632a1f: sheet_rows
+  _f76c691a: build_add_buttons
+  _7a8b1fdd: button_at
+  _db5b60a0: track_button_hover
+  _c94f299d: draw_add_buttons
+  _844eb55a: add_after_row
+  _b879ab4b: add_buttons         # @: { row:, bbox:, center: }
+  _6f13129a: refresh_overlays
+  _c720c277: visible_chosen
+
+  # Ghi de: doi chieu board-index cua tam roi voi tam da nam trong so do, ve
+  # chong hai duong vien len nhau de xem truoc, bam thi thay hang.
+  _8a8f9cdc: overwrite?
+  _eb2b4ec7: build_overwrite_preview
+  _e9b99ede: overwrite_preview   # @: { index:, loose_fill:, nest_fill: }
+  _de7745a2: overwrite_at
+  _f5891d4d: slot_map            # [board-index, mat duoi?] -> { panel:, sheet: }
+  _650afd59: overwrite_panels
+  _4736e3ff: face_presence       # index -> { top: co mat tren?, bottom: co mat duoi? }
+  _42a83442: overwritable_indices
+
+  # Dat tam vao so do. Ba duong: mot mat, hai mat (phai keo ca mat sau sang),
+  # va duong ghi de.
+  _3d0d70ad: place_one
+  _edc53964: place_pair
+  _d0b68421: place_overwrite
+  _ad557b93: pair_jobs           # ghep tam truoc voi tam sau theo sheet-id
+  _5771caa6: sheet_id_of         # get_attribute("ABF","sheet-id"), khong co thi doc tu ten
+  _3f9f6f46: panels_of
+
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,
   # hoac voi mot dinh danh chua bi lam roi. Gop lai la mat mot thu. Chung
   # cho dot dat ten THEO PHAM VI; tu gio den do cu de nguyen hex.
   - _0895e188
-  - _20decd88
   - _2bff4638
-  - _416f815d
   - _5c6a1c61
   - _727b63c7
   - _7c10a028

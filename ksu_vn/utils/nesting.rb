@@ -43,7 +43,7 @@ module KSU::Nesting
     pack_fallback(items, width_mm, height_mm, gap2)
   end
   def pack_fallback(items, width_mm, height_mm, gap2)
-    arr4 = []
+    best = []
     arr2 = [-1, 0.0]
     arr3 = [
       items.sort_by { |len2d| -len2d[:h] },
@@ -62,9 +62,9 @@ module KSU::Nesting
       score = [arr.size, -arr5]
       next unless score[0] > arr2[0] || (score[0] == arr2[0] && score[1] > arr2[1])
       arr2 = score
-      arr4 = arr
+      best = arr
     end
-    arr4
+    best
   end
   def pack_sequence(ordered, width_mm, height_mm, gap2)
     arr = []

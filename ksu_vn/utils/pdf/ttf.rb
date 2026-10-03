@@ -36,7 +36,7 @@ module KSU::Ttf
   end
   def cmap(data, _4bcb6213)
     num = data[_4bcb6213 + 2, 2].unpack1("n")
-    flag = nil
+    best = nil
     num.times do |i|
       normal = _4bcb6213 + 4 + i * 8
       pid = data[normal, 2].unpack1("n")
@@ -46,10 +46,10 @@ module KSU::Ttf
                  elsif pid == 3 && _507dcc2d == 1 then 4
                  elsif pid == 0 then 3
                  else 0 end
-      flag = [score, _4bcb6213 + kids] if score > 0 && (flag.nil? || score > flag[0])
+      best = [score, _4bcb6213 + kids] if score > 0 && (best.nil? || score > best[0])
     end
-    return {} unless flag
-    _a3257134(data, flag[1])
+    return {} unless best
+    _a3257134(data, best[1])
   end
   def _a3257134(data, _4bcb6213)
     fmt = data[_4bcb6213, 2].unpack1("n")

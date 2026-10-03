@@ -46,20 +46,20 @@ module KSU::Pack
   def try_place(arr4, grp, width_mm, height_mm, gap2, allow_rot)
     arr5 = [{ w: grp[:w], h: grp[:h], rot: 0 }]
     arr5 << { w: grp[:h], h: grp[:w], rot: 90 } if allow_rot && grp[:rotatable] && (grp[:w] - grp[:h]).abs > 1e-6
-    arr3 = nil
+    best = nil
     arr5.each do |arr2|
       next if arr2[:w] > width_mm + 1e-6 || arr2[:h] > height_mm + 1e-6
       box = free_spot(arr4[:placements], arr2[:w], arr2[:h], width_mm, height_mm, gap2)
       next unless box
-      if arr3.nil? || box[:y] < arr3[:y] - 1e-6 || ((box[:y] - arr3[:y]).abs < 1e-6 && box[:x] < arr3[:x])
-        arr3 = { x: box[:x], y: box[:y], orient: arr2 }
+      if best.nil? || box[:y] < best[:y] - 1e-6 || ((box[:y] - best[:y]).abs < 1e-6 && box[:x] < best[:x])
+        best = { x: box[:x], y: box[:y], orient: arr2 }
       end
     end
-    return false unless arr3
-    arr2 = arr3[:orient]
+    return false unless best
+    arr2 = best[:orient]
     arr4[:placements] << {
       panel: grp[:panel], source_sheet: grp[:sheet], bbox: grp[:bbox],
-      lx: arr3[:x], ly: arr3[:y], w: arr2[:w], h: arr2[:h], rot: arr2[:rot],
+      lx: best[:x], ly: best[:y], w: arr2[:w], h: arr2[:h], rot: arr2[:rot],
     }
     true
   end

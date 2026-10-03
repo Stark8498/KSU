@@ -13,10 +13,10 @@ class KSU::Themtam
     return unless k =~ /\Ak[0-9a-z]{3}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}\z/i
     @nesting = nil
     @sheets = []
-    @arr42 = []
-    @arr7 = []
-    @_caae55e4 = nil
-    @arr43 = []
+    @loose = []
+    @chosen = []
+    @hover_loose = nil
+    @add_buttons = []
     @hover_side = nil
     @grp = nil
     @them_tam_tu_do = !!get("them_tam_tu_do", true)
@@ -28,10 +28,10 @@ class KSU::Themtam
     @arr20 = []
     @arr11 = []
     @_x_bi_lan_polys = nil
-    @arr62 = []
+    @overwrite_preview = []
     @arr38 = nil
     if Sketchup.active_model.tools.active_tool == self
-      _6f13129a
+      refresh_overlays
       @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, @an_nhan_tiet_dien, @label_section_hidden)
     end
   end
@@ -41,8 +41,8 @@ class KSU::Themtam
     @nesting = KSU::Nesting.enter_edit
     return KSU.select_tool(nil) unless @nesting
     sheet_list
-    _31a26815
-    _9478d701
+    scan_loose
+    pick_from_selection
     setup_fields(
       "Thêm tấm" => {
         them_tam_tu_do: [:switch, "Thêm tấm tự do"]
@@ -58,7 +58,7 @@ class KSU::Themtam
     load_presets(@presets)
     restore_selected_preset
     @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, @an_nhan_tiet_dien, @label_section_hidden)
-    _6f13129a
+    refresh_overlays
     @arr20 = KSU::Nesting.overlap_polys(@nesting)
     @arr11 = KSU::Nesting.error_points(@nesting)
     @_x_bi_lan_polys = nil
@@ -94,33 +94,33 @@ class KSU::Themtam
   def onMouseMove(kflags, x, y, view)
     hover_preset(x, y, view)
     return if hover_field(x, y, view)
-    _435dfd9d(view, x, y) if @arr62.any?
-    if @arr7.any?
-      _db5b60a0(view, x, y)
+    _435dfd9d(view, x, y) if @overwrite_preview.any?
+    if @chosen.any?
+      track_button_hover(view, x, y)
     end
-    _04350067(view, x, y)
+    track_hover(view, x, y)
   end
   def onLButtonDown(rot, x, y, view)
     return if click_field(x, y, view)
     return if click_outside(x, y, view)
-    if @arr62.any?
+    if @overwrite_preview.any?
       arr = _26cf11cf(view, x, y)
       if arr
-        _de7745a2(arr[:index])
+        overwrite_at(arr[:index])
         return
       end
     end
-    if @arr7.any?
-      prev = _7a8b1fdd(view, x, y)
+    if @chosen.any?
+      prev = button_at(view, x, y)
       if prev
-        _844eb55a(prev[:row])
+        add_after_row(prev[:row])
         return
       end
     end
-    sheet = _5244f367(view, x, y)
+    sheet = loose_at(view, x, y)
     return unless sheet
-    _ebbc195f(sheet)
-    _6f13129a
+    toggle_chosen(sheet)
+    refresh_overlays
     view.invalidate
   end
   def draw(view)
@@ -128,14 +128,14 @@ class KSU::Themtam
     _c9bca5df(view)
     draw_overlay(view, @nesting)
     _6ae58d17(view)
-    _68ad34e6(view)
-    _c94f299d(view) if @arr7.any?
+    draw_loose(view)
+    draw_add_buttons(view) if @chosen.any?
     draw_presets(view)
     draw_fields(view)
   end
   private
   def update_status
-    if _c720c277.any?
+    if visible_chosen.any?
       KSU.set_status("Nhấn dấu + ở hàng muốn thêm. Nhấn vào tấm rời để chọn thêm hoặc bỏ chọn.")
     else
       KSU.set_status("Chọn một hoặc nhiều tấm rời hợp lệ để thêm vào sơ đồ nesting.")
@@ -144,22 +144,22 @@ class KSU::Themtam
   def sheet_list
     @sheets = KSU::Sheet.sheet_list(@nesting, include_bottom: true)
   end
-  def _31a26815
-    @arr42 = []
+  def scan_loose
+    @loose = []
     Sketchup.active_model.entities.each do |ent|
       next unless KSU.container?(ent)
       next if ent == @nesting
-      next unless _d4e74544(ent)
-      @arr42 << _ec568b6f(ent)
+      next unless sheet_like?(ent)
+      @loose << record_of(ent)
     end
   end
-  def _d4e74544(entity)
+  def sheet_like?(entity)
     return false unless entity.respond_to?(:get_attribute)
     %w[sheet-dimension sheet-thickness sheet-type].all? do |key|
       !entity.get_attribute("ABF", key).nil?
     end
   end
-  def _ec568b6f(sheet)
+  def record_of(sheet)
     transform = sheet.transformation
     bd2 = sheet.definition.entities.find { |color| KSU.container?(color) && color.name.to_s == "__ABF_sheetBorder" }
     if bd2 && bd2.respond_to?(:definition) && bd2.definition
@@ -173,14 +173,14 @@ class KSU::Themtam
     arr.each { |_23505ef9| box.add(_23505ef9) }
     { instance: sheet, bbox: box, transform: transform, top_corners: [arr[4], arr[5], arr[7], arr[6]] }
   end
-  def _9478d701
+  def pick_from_selection
     arr = KSU.selection.select do |ent|
-      KSU.container?(ent) && ent != @nesting && _d4e74544(ent)
+      KSU.container?(ent) && ent != @nesting && sheet_like?(ent)
     end
-    @arr7 = arr
+    @chosen = arr
   end
-  def _5244f367(view, x, y)
-    @arr42.each do |rec|
+  def loose_at(view, x, y)
+    @loose.each do |rec|
       next unless rec[:instance].valid?
       pts = (0..7).map { |i| view.screen_coords(rec[:bbox].corner(i)) }
       arr3 = pts.map(&:x)
@@ -189,25 +189,25 @@ class KSU::Themtam
     end
     nil
   end
-  def _ebbc195f(sheet)
-    if @arr7.include?(sheet)
-      @arr7.delete(sheet)
+  def toggle_chosen(sheet)
+    if @chosen.include?(sheet)
+      @chosen.delete(sheet)
     else
-      @arr7 << sheet
+      @chosen << sheet
     end
   end
-  def _04350067(view, x, y)
-    prev_key = @_caae55e4
-    @_caae55e4 = _5244f367(view, x, y)
-    view.invalidate if prev_key != @_caae55e4
+  def track_hover(view, x, y)
+    prev_key = @hover_loose
+    @hover_loose = loose_at(view, x, y)
+    view.invalidate if prev_key != @hover_loose
   end
-  def _68ad34e6(view)
-    @arr42.each do |rec|
+  def draw_loose(view)
+    @loose.each do |rec|
       sheet = rec[:instance]
       next unless sheet.valid?
-      color = if @arr7.include?(sheet)
+      color = if @chosen.include?(sheet)
                 KSU::View.main_face_color
-              elsif @_caae55e4 == sheet
+              elsif @hover_loose == sheet
                 KSU::View.face_color
               else
                 KSU::View.sub_face_color
@@ -215,7 +215,7 @@ class KSU::Themtam
       KSU::View._d64f2233(rec[:top_corners], thickness: 50.mm.to_f, position: :outside, color: color)
     end
   end
-  def _27632a1f
+  def sheet_rows
     rows = []
     seen = []
     @sheets.each do |rec|
@@ -229,11 +229,11 @@ class KSU::Themtam
     end
     rows
   end
-  def _f76c691a
-    @arr43 = []
-    return if _c720c277.empty? || @sheets.empty?
-    keys = _c720c277.map { |s| KSU::Sheet._7b0a38ee(s) }.uniq
-    _27632a1f.each do |arr|
+  def build_add_buttons
+    @add_buttons = []
+    return if visible_chosen.empty? || @sheets.empty?
+    keys = visible_chosen.map { |s| KSU::Sheet._7b0a38ee(s) }.uniq
+    sheet_rows.each do |arr|
       rect = arr.last
       rec = @sheets.find { |s| s[:instance] == rect }
       next unless rec
@@ -243,25 +243,25 @@ class KSU::Themtam
       ix = arr.index(rect)
       offset = KSU::Sheet.row_offset(rec, arr, ix, @sheets)
       bbox = KSU::View._bb1a9bd8(rec[:bbox], offset)
-      @arr43 << { row: arr, bbox: bbox, center: Geom::Point3d.new((bbox.min.x + bbox.max.x) / 2.0, (bbox.min.y + bbox.max.y) / 2.0, bbox.max.z) }
+      @add_buttons << { row: arr, bbox: bbox, center: Geom::Point3d.new((bbox.min.x + bbox.max.x) / 2.0, (bbox.min.y + bbox.max.y) / 2.0, bbox.max.z) }
     end
   end
-  def _6f13129a
-    _f76c691a
-    _eb2b4ec7
+  def refresh_overlays
+    build_add_buttons
+    build_overwrite_preview
   end
-  def _8a8f9cdc
+  def overwrite?
     @ghi_de_tam_cu
   end
-  def _eb2b4ec7
-    @arr62 = []
+  def build_overwrite_preview
+    @overwrite_preview = []
     @arr38 = nil
-    return unless _8a8f9cdc
-    arr = @arr7.select { |s| s && s.valid? }
+    return unless overwrite?
+    arr = @chosen.select { |s| s && s.valid? }
     return if arr.empty?
-    arr2 = _f5891d4d
+    arr2 = slot_map
     arr.each do |sheet|
-      _3f9f6f46(sheet).each do |panel|
+      panels_of(sheet).each do |panel|
         ix = KSU::Cutting.board_index(panel)
         next if ix.nil?
         slot = arr2[[ix, KSU::Cutting.bottom_face?(panel)]]
@@ -271,7 +271,7 @@ class KSU::Themtam
         next unless slot_panel && slot_panel.valid? && cur_sheet && cur_sheet.valid?
         tr2 = sheet.transformation * panel.transformation
         tr = @nesting.transformation * cur_sheet.transformation * slot_panel.transformation
-        @arr62 << {
+        @overwrite_preview << {
           index: ix,
           loose_fill: KSU::Cutting.outline(panel, tr2),
           nest_fill: KSU::Cutting.outline(slot_panel, tr)
@@ -279,7 +279,7 @@ class KSU::Themtam
       end
     end
   end
-  def _f5891d4d
+  def slot_map
     h = {}
     return h unless @nesting && @nesting.valid?
     @nesting.definition.entities.each do |sheet|
@@ -296,25 +296,25 @@ class KSU::Themtam
     end
     h
   end
-  def _c720c277
-    @arr7.select { |s| s && s.valid? && !_12bf081e(s) }
+  def visible_chosen
+    @chosen.select { |s| s && s.valid? && !hidden_sheet?(s) }
   end
-  def _db5b60a0(view, x, y)
+  def track_button_hover(view, x, y)
     prev_key = @hover_side
-    @hover_side = _7a8b1fdd(view, x, y)
+    @hover_side = button_at(view, x, y)
     view.invalidate if prev_key != @hover_side
   end
-  def _7a8b1fdd(view, x, y)
-    @arr43.find { |prev| KSU::View.button_hit?(view, prev[:center], x, y) }
+  def button_at(view, x, y)
+    @add_buttons.find { |prev| KSU::View.button_hit?(view, prev[:center], x, y) }
   end
-  def _c94f299d(view)
-    @arr43.each do |prev|
+  def draw_add_buttons(view)
+    @add_buttons.each do |prev|
       KSU::View.draw_loop(KSU::View.top_corners(prev[:bbox]), guide: true)
       KSU::View.draw_button(view, prev[:center], hover: @hover_side == prev)
     end
   end
-  def _844eb55a(arr3)
-    arr2 = _ad557b93
+  def add_after_row(arr3)
+    arr2 = pair_jobs
     return unless arr2
     return if arr2.empty?
     @_dfd63ec2 = KSU::Nesting._c5ab406d(@nesting) + 1
@@ -322,22 +322,22 @@ class KSU::Themtam
     flag = arr3.last
     arr2.each do |arr|
       break unless flag && flag.valid?
-      vec = if _8a8f9cdc
-          _d0b68421(flag, arr)
+      vec = if overwrite?
+          place_overwrite(flag, arr)
         elsif arr[:bottom]
-          _edc53964(flag, arr[:top], arr[:bottom])
+          place_pair(flag, arr[:top], arr[:bottom])
         else
-          _3d0d70ad(flag, arr[:top])
+          place_one(flag, arr[:top])
         end
       flag = vec if vec && vec.valid?
     end
     KSU::Sheet.apply_offsets(@nesting)
     KSU::Sheet.invalidate_cache
     KSU::Nesting._339f1198 if @them_tem_nhan
-    @arr7 = []
+    @chosen = []
     sheet_list
-    _31a26815
-    _6f13129a
+    scan_loose
+    refresh_overlays
     @arr20 = KSU::Nesting.overlap_polys(@nesting)
     @arr11 = KSU::Nesting.error_points(@nesting)
     @_x_bi_lan_polys = nil
@@ -345,18 +345,18 @@ class KSU::Themtam
     KSU::View.view&.invalidate
     update_status
   end
-  def _de7745a2(ix)
-    arr = @arr7.select { |s| s && s.valid? }
+  def overwrite_at(ix)
+    arr = @chosen.select { |s| s && s.valid? }
     return if arr.empty?
     KSU.start
-    _9195f5ac = _f5891d4d
-    arr.each { |sheet| _650afd59(sheet, [ix], _9195f5ac) }
+    _9195f5ac = slot_map
+    arr.each { |sheet| overwrite_panels(sheet, [ix], _9195f5ac) }
     arr.each { |sheet| sheet.erase! if sheet.valid? && KSU::Sheet.empty?(sheet) }
     KSU.commit
-    @arr7 = @arr7.select { |s| s && s.valid? }
+    @chosen = @chosen.select { |s| s && s.valid? }
     sheet_list
-    _31a26815
-    _6f13129a
+    scan_loose
+    refresh_overlays
     @arr20 = KSU::Nesting.overlap_polys(@nesting)
     @arr11 = KSU::Nesting.error_points(@nesting)
     @_x_bi_lan_polys = nil
@@ -366,16 +366,16 @@ class KSU::Themtam
   rescue StandardError
     KSU.abort_op
   end
-  def _ad557b93
-    arr4 = @arr7.select { |s| s && s.valid? }
+  def pair_jobs
+    arr4 = @chosen.select { |s| s && s.valid? }
     arr2 = []
     arr = []
     arr4.each do |s|
-      _12bf081e(s) ? arr << s : arr2 << s
+      hidden_sheet?(s) ? arr << s : arr2 << s
     end
-    arr3 = arr.map { |b| _5771caa6(b) }.compact.uniq.any? do |id|
-      arr2.count { |thick| _5771caa6(thick) == id } > 1 ||
-        arr.count { |b| _5771caa6(b) == id } > 1
+    arr3 = arr.map { |b| sheet_id_of(b) }.compact.uniq.any? do |id|
+      arr2.count { |thick| sheet_id_of(thick) == id } > 1 ||
+        arr.count { |b| sheet_id_of(b) == id } > 1
     end
     if arr3
       UI.messagebox(
@@ -386,21 +386,21 @@ class KSU::Themtam
       return nil
     end
     arr2.map do |thick|
-      id = _5771caa6(thick)
-      bot = id ? arr.find { |b| _5771caa6(b) == id } : nil
+      id = sheet_id_of(thick)
+      bot = id ? arr.find { |b| sheet_id_of(b) == id } : nil
       { top: thick, bottom: bot }
     end
   end
-  def _12bf081e(sheet)
+  def hidden_sheet?(sheet)
     KSU::Sheet.hidden?(sheet)
   end
-  def _5771caa6(sheet)
+  def sheet_id_of(sheet)
     return nil unless sheet && sheet.respond_to?(:get_attribute)
     id = sheet.get_attribute("ABF", "sheet-id")
     return id.to_i if id
     KSU::Sheet.sheet_no(sheet.name.to_s)
   end
-  def _3d0d70ad(vec2, grp)
+  def place_one(vec2, grp)
     return nil unless vec2 && vec2.valid? && grp && grp.valid?
     KSU.start
     vec, = _5c6a1c61(vec2)
@@ -416,8 +416,8 @@ class KSU::Themtam
     KSU.abort_op
     nil
   end
-  def _edc53964(vec2, top, bottom)
-    return _3d0d70ad(vec2, top) unless bottom && bottom.valid?
+  def place_pair(vec2, top, bottom)
+    return place_one(vec2, top) unless bottom && bottom.valid?
     return nil unless vec2 && vec2.valid? && top && top.valid?
     KSU.start
     vec, new_id = _5c6a1c61(vec2)
@@ -437,17 +437,17 @@ class KSU::Themtam
     KSU.abort_op
     nil
   end
-  def _d0b68421(_08248783, arr)
+  def place_overwrite(_08248783, arr)
     top = arr[:top]
     bottom = arr[:bottom]
     return nil unless top && top.valid?
     KSU.start
-    _9195f5ac = _f5891d4d
-    _8904ee37 = _42a83442(top, bottom, _9195f5ac)
-    _650afd59(top, _8904ee37, _9195f5ac)
-    _650afd59(bottom, _8904ee37, _9195f5ac) if bottom && bottom.valid?
-    flag = top.valid? && _3f9f6f46(top).any?
-    flag2 = bottom && bottom.valid? && _3f9f6f46(bottom).any?
+    _9195f5ac = slot_map
+    _8904ee37 = overwritable_indices(top, bottom, _9195f5ac)
+    overwrite_panels(top, _8904ee37, _9195f5ac)
+    overwrite_panels(bottom, _8904ee37, _9195f5ac) if bottom && bottom.valid?
+    flag = top.valid? && panels_of(top).any?
+    flag2 = bottom && bottom.valid? && panels_of(bottom).any?
     vec = nil
     if flag && flag2
       vec, new_id = _5c6a1c61(_08248783)
@@ -469,11 +469,11 @@ class KSU::Themtam
     KSU.abort_op
     nil
   end
-  def _4736e3ff(top, bottom)
+  def face_presence(top, bottom)
     src = Hash.new { |arr52, k| arr52[k] = { top: false, bottom: false } }
     [top, bottom].each do |sheet|
       next unless sheet && sheet.valid?
-      _3f9f6f46(sheet).each do |panel|
+      panels_of(sheet).each do |panel|
         ix = KSU::Cutting.board_index(panel)
         next if ix.nil?
         if KSU::Cutting.bottom_face?(panel)
@@ -485,9 +485,9 @@ class KSU::Themtam
     end
     src
   end
-  def _42a83442(top, bottom, h)
+  def overwritable_indices(top, bottom, h)
     out = []
-    _4736e3ff(top, bottom).each do |ix, f|
+    face_presence(top, bottom).each do |ix, f|
       flag = h.key?([ix, false])
       flag2 = h.key?([ix, true])
       next unless flag || flag2
@@ -496,10 +496,10 @@ class KSU::Themtam
     end
     out
   end
-  def _650afd59(grp2, arr, arr2)
+  def overwrite_panels(grp2, arr, arr2)
     return if arr.empty?
     return unless grp2 && grp2.valid?
-    _3f9f6f46(grp2).each do |panel|
+    panels_of(grp2).each do |panel|
       next unless panel.valid?
       ix = KSU::Cutting.board_index(panel)
       next if ix.nil? || !arr.include?(ix)
@@ -559,8 +559,8 @@ class KSU::Themtam
     grp = KSU::Sheet._f74b0a99(bottom, tr, @nesting)
     return nil unless grp && grp.valid?
     bb2 = KSU::Sheet.world_bbox(grp2, @nesting)
-    bbox = _ec568b6f(top)[:bbox]
-    bbox2 = _ec568b6f(bottom)[:bbox]
+    bbox = record_of(top)[:bbox]
+    bbox2 = record_of(bottom)[:bbox]
     bb = KSU::Sheet.world_bbox(grp, @nesting)
     if bb2 && bbox && bbox2 && bb
       pt = Geom::Point3d.new(
@@ -587,7 +587,7 @@ class KSU::Themtam
   end
   def _596e474d(top, bottom)
     h = {}
-    (_3f9f6f46(top) + _3f9f6f46(bottom)).each do |panel|
+    (panels_of(top) + panels_of(bottom)).each do |panel|
       prev_key = panel.get_attribute("ABF", "board-index")
       next if prev_key.nil? || h.key?(prev_key)
       h[prev_key] = @_dfd63ec2
@@ -597,7 +597,7 @@ class KSU::Themtam
   end
   def _a761a084(_cd21b913, grp, index_map: nil, back: false)
     return unless grp && grp.valid?
-    _3f9f6f46(_cd21b913).each do |panel|
+    panels_of(_cd21b913).each do |panel|
       next unless panel.valid?
       tr = KSU::Nesting.clone_panel(grp.definition.entities, panel, panel.transformation)
       next unless tr
@@ -687,9 +687,9 @@ class KSU::Themtam
     KSU::View.draw_polys(@arr20, color: KSU::View.warn_color, line: false)
   end
   def _6ae58d17(view)
-    return if @arr62.nil? || @arr62.empty?
+    return if @overwrite_preview.nil? || @overwrite_preview.empty?
     ref_p2 = []
-    @arr62.each do |arr|
+    @overwrite_preview.each do |arr|
       next if arr.equal?(@arr38)
       ref_p2 << arr[:loose_fill]
       ref_p2 << arr[:nest_fill]
@@ -704,12 +704,12 @@ class KSU::Themtam
     view.invalidate unless prev_key.equal?(@arr38)
   end
   def _26cf11cf(view, x, y)
-    @arr62.find do |arr|
+    @overwrite_preview.find do |arr|
       KSU::View.hit?(view, arr[:loose_fill], x, y) ||
         KSU::View.hit?(view, arr[:nest_fill], x, y)
     end
   end
-  def _3f9f6f46(_cd21b913)
+  def panels_of(_cd21b913)
     ents = KSU.entities_in(_cd21b913)
     return [] unless ents
     ents.to_a.select do |ent|

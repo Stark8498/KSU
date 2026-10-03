@@ -182,7 +182,7 @@ module KSU::Drag
     inst if inst && inst.valid?
   end
   def nearest_sheet(pt)
-    _477c927d = nil
+    best = nil
     _aa866019 = nil
     @arr23.each do |s|
       inst = s[:instance]
@@ -190,10 +190,10 @@ module KSU::Drag
       len2d = KSU::Sheet.dist_to_box(pt, s[:bbox])
       if _aa866019.nil? || len2d < _aa866019
         _aa866019 = len2d
-        _477c927d = s
+        best = s
       end
     end
-    [_477c927d, _aa866019]
+    [best, _aa866019]
   end
   def sheet_list(nesting, flag = false)
     @arr23 = KSU::Sheet.sheet_list(nesting, include_bottom: true)

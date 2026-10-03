@@ -143,7 +143,7 @@ module KSU::Sheet
     model = Sketchup.active_model
     ents << model.entities if model
     ents.uniq!
-    _477c927d = nil
+    best = nil
     _f84bb2e3 = Float::INFINITY
     ents.each do |container|
       container.grep(Sketchup::DimensionLinear).each do |ent2|
@@ -156,7 +156,7 @@ module KSU::Sheet
         ent = to_point(ent2.end)
         next unless s && ent
         _f84bb2e3 = len2d
-        _477c927d = {
+        best = {
           dim: ent2,
           container: container,
           start_local: Geom::Point3d.new(s.x, s.y, s.z),
@@ -165,7 +165,7 @@ module KSU::Sheet
         }
       end
     end
-    _477c927d ? [_477c927d] : []
+    best ? [best] : []
   end
 end
 require "digest"

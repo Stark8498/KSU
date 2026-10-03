@@ -42,7 +42,7 @@ module KSU::Resize
   def _ff3778ab(_7b2f9929, _328de04c, _38e0f0c5, _24c1c612, arr3, _a0976be2)
     tol = 1e-6
     arr2 = KSU::Geom._a404e7b6([_7b2f9929, _38e0f0c5] + arr3.flat_map { |b| [b[:x1], b[:x2]] }.select { |v| v > _7b2f9929 + tol && v < _38e0f0c5 - tol })
-    _477c927d = nil
+    best = nil
     area = 0.0
     (0...arr2.length - 1).each do |i|
       ((i + 1)...arr2.length).each do |j|
@@ -62,11 +62,11 @@ module KSU::Resize
         _5fb96e91 = num3 * gap2[:len]
         if _5fb96e91 > area + tol
           area = _5fb96e91
-          _477c927d = { x1: x213, y1: gap2[:y1], x2: x2, y2: gap2[:y2] }
+          best = { x1: x213, y1: gap2[:y1], x2: x2, y2: gap2[:y2] }
         end
       end
     end
-    _477c927d
+    best
   end
   def _786ab544(_e8649a72, _e25dbacd, arr2)
     return { len: _e25dbacd - _e8649a72, y1: _e8649a72, y2: _e25dbacd } if arr2.empty?
@@ -157,7 +157,7 @@ module KSU::Resize
     ]
   end
   def _78f40bb3(view, x, y)
-    _477c927d = nil
+    best = nil
     _aa866019 = KSU::Const::EDGE_HIT_PX * KSU::Const::EDGE_HIT_PX
     @arr10.each do |slot|
       _fc31c198(slot).each do |ent|
@@ -165,10 +165,10 @@ module KSU::Resize
         next unless len2d < _aa866019
         next if _23b18b68(slot, ent[:edge])
         _aa866019 = len2d
-        _477c927d = { entry: slot, edge: ent[:edge], sheet: slot[:sheet] }
+        best = { entry: slot, edge: ent[:edge], sheet: slot[:sheet] }
       end
     end
-    _477c927d
+    best
   end
   def _23b18b68(slot, edge)
     return false unless @pt11

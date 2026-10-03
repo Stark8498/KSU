@@ -340,15 +340,15 @@ module KSU::Postproc
     return nil if arr.empty?
     return arr.first if arr.length == 1
     str2 = node ? _06a8054e(sheet, node, gap_for).first(12) : []
-    _477c927d = arr.first
-    _488638cf = _c4f153fd(sheet, gap_for, _477c927d, str2)
+    best = arr.first
+    _488638cf = _c4f153fd(sheet, gap_for, best, str2)
     arr[1..].each do |members|
       score = _c4f153fd(sheet, gap_for, members, str2)
       next unless score > _488638cf + 1e-6
-      _477c927d = members
+      best = members
       _488638cf = score
     end
-    _477c927d
+    best
   end
   def _c4f153fd(sheet, gap_for, plan, str2)
     return 0.0 if str2.nil? || str2.empty?
