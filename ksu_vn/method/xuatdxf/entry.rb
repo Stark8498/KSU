@@ -54,9 +54,9 @@ module KSU::Xuatdxf
   end
   def _bb40b229(bounds, _8ddd8c6f, _68165b06)
     min_x, min_y, _a4beb817, _9deb3cee = bounds
-    num3 = _a4beb817 - min_x
-    arr52 = _9deb3cee - min_y
-    if num3 > 1.5 * arr52 && arr52 < 200 / 25.4
+    w = _a4beb817 - min_x
+    h = _9deb3cee - min_y
+    if w > 1.5 * h && h < 200 / 25.4
       return [1, (min_y + _9deb3cee) / 2.0 > _68165b06 / 2.0 ? -1 : 1]
     end
     (min_x + _a4beb817) / 2.0 >= _8ddd8c6f / 2.0 ? [-1, -1] : [1, 1]
@@ -91,16 +91,16 @@ module KSU::Xuatdxf
   def _de556708(pts, _9535dc0b, _8ddd8c6f, _68165b06, len2d, seed = nil)
     bounds = KSU::Nesting.poly_bounds(pts)
     min_x, min_y, _a4beb817, _9deb3cee = bounds
-    num3 = _a4beb817 - min_x
-    arr52 = _9deb3cee - min_y
+    w = _a4beb817 - min_x
+    h = _9deb3cee - min_y
     x2, dy = seed || _bb40b229(bounds, _8ddd8c6f, _68165b06)
-    if num3 > 1.5 * arr52 && arr52 < 200 / 25.4
+    if w > 1.5 * h && h < 200 / 25.4
       ry = dy > 0 ? _9deb3cee : min_y
-      rx = x2 > 0 ? _a4beb817 - [len2d, num3].min : min_x + [len2d, num3].min
+      rx = x2 > 0 ? _a4beb817 - [len2d, w].min : min_x + [len2d, w].min
       return _727b63c7(_9535dc0b, rx, ry, len2d)
     end
     rx = x2 > 0 ? _a4beb817 : min_x
-    _4bcb6213 = [len2d, arr52 / 2.0].min
+    _4bcb6213 = [len2d, h / 2.0].min
     ry = dy > 0 ? _9deb3cee - _4bcb6213 : min_y + _4bcb6213
     _727b63c7(_9535dc0b, rx, ry, len2d)
   end

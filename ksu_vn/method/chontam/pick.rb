@@ -359,8 +359,8 @@ class KSU::Chontam
         ext_queue: ents.map { |ent| [ent, nil, 0] },
         queue: [[nesting, nesting.transformation, 0]],
         candidates: [],
-        external_map: Hash.new { |arr52, k| arr52[k] = [] },
-        nesting_map: Hash.new { |arr52, k| arr52[k] = [] },
+        external_map: Hash.new { |h, k| h[k] = [] },
+        nesting_map: Hash.new { |h, k| h[k] = [] },
         roots_map: {},
         ticks: 0,
         t_start: Time.now,
@@ -473,12 +473,12 @@ class KSU::Chontam
       tool._723ded7c if tool == arr[:model].tools.active_tool
     end
     def index_map(arr)
-      h = Hash.new { |arr52, k| arr52[k] = [] }
+      h9 = Hash.new { |h, k| h[k] = [] }
       arr[:candidates].each do |fld|
         ent = fld[:entity]
         next unless ent && ent.valid?
         board_index = ent.get_attribute("ABF", "board-index")
-        h[board_index.to_i] << ent unless board_index.nil?
+        h9[board_index.to_i] << ent unless board_index.nil?
       end
       nesting = arr[:nesting]
       if nesting && nesting.valid?
@@ -490,22 +490,22 @@ class KSU::Chontam
           ents.each do |panel|
             next unless KSU.container?(panel)
             board_index = panel.get_attribute("ABF", "board-index")
-            h[board_index.to_i] << panel unless board_index.nil?
+            h9[board_index.to_i] << panel unless board_index.nil?
           end
         end
       end
-      h
+      h9
     end
     def external_index_map(arr)
-      h = Hash.new { |arr52, k| arr52[k] = [] }
+      h18 = Hash.new { |h, k| h[k] = [] }
       arr[:candidates].each do |fld|
         next unless fld[:external]
         ent = fld[:entity]
         next unless ent && ent.valid?
         board_index = ent.get_attribute("ABF", "board-index")
-        h[board_index.to_i] << ent unless board_index.nil?
+        h18[board_index.to_i] << ent unless board_index.nil?
       end
-      h
+      h18
     end
     def external_by_index(ix)
       return [] if ix.nil? || @cache.nil?

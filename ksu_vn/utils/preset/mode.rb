@@ -24,10 +24,10 @@ module KSU::Mode
   def draw_mode_hint(view, text, y = 10)
     view.line_stipple = ""
     pad_x = size * 5
-    arr52 = size * 3.5
+    h = size * 3.5
     topts = { size: size, font: font_name }
-    num3 = view.text_bounds(Geom::Point3d.new(0, 0, 0), text, topts).width + pad_x
-    box2 = { x: (view.vpwidth - num3) / 2.0, y: (y * KSU::View.ui_scale).round, width: num3, height: arr52 }
+    w = view.text_bounds(Geom::Point3d.new(0, 0, 0), text, topts).width + pad_x
+    box2 = { x: (view.vpwidth - w) / 2.0, y: (y * KSU::View.ui_scale).round, width: w, height: h }
     bd2, fill, text_color, lw = field_colors(true, false)
     draw_round_rect(view, box2, radius, border: bd2, fill: fill, line_width: lw, outset: 1)
     draw_text(view, text, box2[:x] + box2[:width] / 2.0,
@@ -82,7 +82,7 @@ module KSU::Mode
   end
   private
   def mode_layout(view)
-    arr52 = size * 3.5
+    h = size * 3.5
     gap2 = gap
     pad_x = size * 5
     topts = { size: size, font: font_name }
@@ -93,7 +93,7 @@ module KSU::Mode
     y = margin_top
     x = start_x
     @modes.map do
-      box = { x: x, y: y, width: arr, height: arr52 }
+      box = { x: x, y: y, width: arr, height: h }
       x += arr + gap2
       box
     end

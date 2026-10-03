@@ -7,13 +7,13 @@ module KSU::Pack
     id_str = KSU::Method.pack_bl(parts.map { |len2d| len2d[:w] }, parts.map { |len2d| len2d[:h] },
                                  width_mm, height_mm, gap2, arr, num2, num, seed)
     h = {}
-    id_str.each_with_index do |(placements, x, y, num3, arr52), i|
+    id_str.each_with_index do |(placements, x, y, w, h31), i|
       next if placements < 0
       len2d = parts[i]
-      rot = (num3 - len2d[:w]).abs > 1e-6 ? 90 : 0
+      rot = (w - len2d[:w]).abs > 1e-6 ? 90 : 0
       (h[placements] ||= []) << {
         panel: len2d[:panel], source_sheet: len2d[:sheet], bbox: len2d[:bbox],
-        lx: x, ly: y, w: num3, h: arr52, rot: rot,
+        lx: x, ly: y, w: w, h: h31, rot: rot,
       }
     end
     h.keys.sort.map { |k| h[k] }
@@ -80,12 +80,12 @@ module KSU::Pack
         y2 = y + ph
         flag = false
         arr4.each do |arr|
-          w = arr[:lx] + arr[:w]
-          h = arr[:ly] + arr[:h]
+          x_hi = arr[:lx] + arr[:w]
+          y_hi = arr[:ly] + arr[:h]
           unless x2 + gap2 <= arr[:lx] + 1e-6 ||
-                 w + gap2 <= x + 1e-6 ||
+                 x_hi + gap2 <= x + 1e-6 ||
                  y2 + gap2 <= arr[:ly] + 1e-6 ||
-                 h + gap2 <= y + 1e-6
+                 y_hi + gap2 <= y + 1e-6
             flag = true
             break
           end

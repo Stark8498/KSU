@@ -1,12 +1,12 @@
 module KSU::Collect
-  def _33959628(h18, _3ef84888, flag = nil)
+  def _33959628(cfg, _3ef84888, flag = nil)
     model = Sketchup.active_model
     flag = nil if flag && flag.empty?
     arr = []
     _17ee8011(flag || model.entities, arr, {})
-    return _9be3af68(:empty, h18, _3ef84888, flag) if arr.empty?
+    return _9be3af68(:empty, cfg, _3ef84888, flag) if arr.empty?
     @flag6 = true
-    @_20ca63d7 = h18
+    @_20ca63d7 = cfg
     @_aac687ed = _3ef84888
     @_a14b1f13 = flag
     @arr30 = arr
@@ -31,11 +31,11 @@ module KSU::Collect
       next unless g && g.valid?
       id = g.get_attribute("ABF", "board-index")
       if id && @h28[id]
-        h18 = @_20ca63d7
+        cfg = @_20ca63d7
         _3ef84888 = @_aac687ed
         _4effcb0e = @_a14b1f13
         _90d58cd9
-        return _9be3af68(:dup_ids, h18, _3ef84888, _4effcb0e)
+        return _9be3af68(:dup_ids, cfg, _3ef84888, _4effcb0e)
       end
       @h28[id] = true if id
       grp, @num7 = _dd36ed49(g, @_20ca63d7, @num7)
@@ -53,7 +53,7 @@ module KSU::Collect
     UI.messagebox("Lỗi nesting: #{ent.message}")
   end
   def _b3aa40f8
-    h18 = @_20ca63d7
+    cfg = @_20ca63d7
     _3ef84888 = @_aac687ed
     _4effcb0e = @_a14b1f13
     parts = @arr50
@@ -62,19 +62,19 @@ module KSU::Collect
     unless arr.empty?
       UI.messagebox("Cảnh báo! Có lỗi xảy ra khi tạo đường cắt của tấm.")
     end
-    return _9be3af68(:empty, h18, _3ef84888, _4effcb0e) if parts.empty?
-    start3(h18, _b0282735(parts, h18))
+    return _9be3af68(:empty, cfg, _3ef84888, _4effcb0e) if parts.empty?
+    start3(cfg, _b0282735(parts, cfg))
   rescue StandardError => ent
     _a762c251
     UI.messagebox("Lỗi nesting: #{ent.message}")
   end
-  def _9be3af68(err, h18, _3ef84888, _4effcb0e = nil)
+  def _9be3af68(err, cfg, _3ef84888, _4effcb0e = nil)
     clear_progress
     unless _3ef84888
       UI.messagebox("Có lỗi xảy ra khi nesting!")
       return
     end
-    run2(h18, _4effcb0e) if ask_relabel(err)
+    run2(cfg, _4effcb0e) if ask_relabel(err)
   end
   def _90d58cd9
     UI.stop_timer(@_d3fa94d5) if @_d3fa94d5
@@ -131,7 +131,7 @@ module KSU::Collect
     return true if ent.get_attribute("ABF", "is-board") || ent.get_attribute("ABF", "board-index")
     !!KSU::Cutting.kids_with_attr(ent, "is-label")
   end
-  def _dd36ed49(g, h18, _c348cdef)
+  def _dd36ed49(g, cfg, _c348cdef)
     tf = KSU::Cutting.tf_of(g)
     b2 = KSU::Cutting.board_faces(g, tf)
     return [nil, _c348cdef] unless b2
@@ -139,7 +139,7 @@ module KSU::Collect
     return [:skip, _c348cdef] if thickness_mm < 1.0 || thickness_mm > 50.0
     face = KSU::Cutting.front_face(g, b2)
     mat = _6f88583c(g, face)
-    return [:skip, _c348cdef] if h18[:materials] && !h18[:materials]["#{mat}#{thickness_mm}"]
+    return [:skip, _c348cdef] if cfg[:materials] && !cfg[:materials]["#{mat}#{thickness_mm}"]
     out = face.normal.transform(tf).axes
     tf_axes = Geom::Transformation.axes(ORIGIN, out[0], out[1], out[2]).inverse
     arr4 = KSU::Cutting.kids_with_attr(g, "is-label")
@@ -195,12 +195,12 @@ module KSU::Collect
       drills: drills, arrow: arr3, max_eb: max_eb[1],
       material: mat,
       thickness_mm: thickness_mm,
-      rotatable: rotatable(g, h18, mat, thickness_mm)
+      rotatable: rotatable(g, cfg, mat, thickness_mm)
     }
     [grp, _c348cdef]
   end
-  def rotatable(g, h18, mat, thickness_mm)
-    rotate_cfg = h18[:rotate_cfg]
+  def rotatable(g, cfg, mat, thickness_mm)
+    rotate_cfg = cfg[:rotate_cfg]
     return false unless rotate_cfg.is_a?(Hash)
     color = rotate_cfg["#{mat}#{thickness_mm}"]
     return false unless color
@@ -230,7 +230,7 @@ module KSU::Collect
     vec = b2[0].normal.transform(tf)
     KSU::Cutting.d(bb.distance_to_plane([bb2, vec]))
   end
-  def _b0282735(parts, h18 = nil)
+  def _b0282735(parts, cfg = nil)
     h = {}
     materials = []
     parts.each do |arr|
@@ -243,7 +243,7 @@ module KSU::Collect
     end
     rows = materials.map { |k| h[k] }
     rows.sort_by! { |half| [half[:thickness_mm].to_f, half[:material].to_s.downcase] }
-    mat_order = h18 && h18[:mat_order]
+    mat_order = cfg && cfg[:mat_order]
     if mat_order.is_a?(Hash) && !mat_order.empty?
       rows = rows.each_with_index.sort_by do |half, i|
         [mat_order.fetch("#{half[:material]}#{half[:thickness_mm]}", 1 << 20), i]

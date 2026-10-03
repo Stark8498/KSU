@@ -53,10 +53,10 @@ module KSU::Arrange
   def delete_sheet
     return unless @flag37 && @flag37.valid?
     return unless KSU::Sheet.empty?(@flag37)
-    num19 = @flag37.get_attribute("ABF", "sheet-id")
-    return unless num19
+    sheet_ix = @flag37.get_attribute("ABF", "sheet-id")
+    return unless sheet_ix
     KSU.start
-    ok = KSU::Sheet.erase_sheet(@nesting, num19)
+    ok = KSU::Sheet.erase_sheet(@nesting, sheet_ix)
     KSU.commit
     return unless ok
     @flag12 = false
@@ -85,10 +85,10 @@ module KSU::Arrange
     arr2 = load_data[0]
     tr3 = load_data[1]
     _fde5708a = load_data[2]
-    arr4 = arr2.each_with_object({}) do |s, arr52|
-      arr52[s] = KSU::Sheet.sheet_labels(s, @nesting) if s && s.valid?
+    arr4 = arr2.each_with_object({}) do |s, h|
+      h[s] = KSU::Sheet.sheet_labels(s, @nesting) if s && s.valid?
     end
-    labels3 = KSU::Sheet.sheet_labels(sheet, @nesting)
+    labels = KSU::Sheet.sheet_labels(sheet, @nesting)
     KSU.start
     arr2.each do |s|
       next unless s && s.valid?
@@ -108,7 +108,7 @@ module KSU::Arrange
         grp2.set_attribute("ABF", "sheet-id", new_id)
       end
       pt = tr3.origin - tr2.origin
-      arr3 = KSU::Sheet._a9a86c81(labels3, pt, @nesting)
+      arr3 = KSU::Sheet._a9a86c81(labels, pt, @nesting)
       arr3.each { |len2d| KSU::Sheet._ba804f88(len2d, str) } if new_id
       if grp4 && _fde5708a
         grp3 = KSU::Sheet._f74b0a99(grp4, _fde5708a, @nesting)
@@ -253,11 +253,11 @@ module KSU::Arrange
       _3d652c2e(forward)
       return
     end
-    num19 = @flag37.get_attribute("ABF", "sheet-id")
-    return unless num19
-    return unless KSU::Sheet.next_type(@nesting, forward, num19)
+    sheet_ix = @flag37.get_attribute("ABF", "sheet-id")
+    return unless sheet_ix
+    return unless KSU::Sheet.next_type(@nesting, forward, sheet_ix)
     KSU.start
-    new_id = KSU::Sheet.swap_type_block(@nesting, forward, num19)
+    new_id = KSU::Sheet.swap_type_block(@nesting, forward, sheet_ix)
     KSU.commit
     _4daa2bb0(new_id)
   end

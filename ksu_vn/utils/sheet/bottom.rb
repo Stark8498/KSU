@@ -42,15 +42,15 @@ module KSU::Bottom
     return false unless nesting && nesting.valid?
     rec = arr23.find { |s| s[:instance] == sheet }
     return false unless rec
-    num19 = sheet_no(sheet.name.to_s)
+    sheet_ix = sheet_no(sheet.name.to_s)
     arr = row_of(sheet, arr23)
     ix = arr.index(sheet) || 0
     offset = row_offset(rec, arr, ix, arr23)
     vec = Geom::Vector3d.new(-offset.x, -offset.y, -offset.z)
     arr2 = arr[(ix + 1)..-1] || []
     arr4 = sheet_labels(sheet, nesting)
-    arr3 = arr2.each_with_object({}) do |s, arr52|
-      arr52[s] = sheet_labels(s, nesting) if s && s.valid?
+    arr3 = arr2.each_with_object({}) do |s, h|
+      h[s] = sheet_labels(s, nesting) if s && s.valid?
     end
     grp2 = bottom(sheet, nesting)
     KSU.start
@@ -64,7 +64,7 @@ module KSU::Bottom
       bottom5 = bottom(s, nesting)
       bottom5.transformation = Geom::Transformation.translation(vec) * bottom5.transformation if bottom5&.valid?
     end
-    shift_sheets(nesting, num19 + 1, -1, sort: true) if num19
+    shift_sheets(nesting, sheet_ix + 1, -1, sort: true) if sheet_ix
     KSU.commit
     true
   end

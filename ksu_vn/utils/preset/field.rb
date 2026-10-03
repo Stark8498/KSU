@@ -348,12 +348,12 @@ module KSU::Field
     KSU::Preset.colors
   end
   def draw_round_rect(view, half, r, border:, fill:, line_width: 1, outset: 0)
-    x, y, num3, arr52 = half[:x], half[:y], half[:width], half[:height]
+    x, y, w, h = half[:x], half[:y], half[:width], half[:height]
     scr = [
       [x + r, y + r, Math::PI],
-      [x + num3 - r, y + r, Math::PI * 1.5],
-      [x + num3 - r, y + arr52 - r, 0],
-      [x + r, y + arr52 - r, Math::PI / 2]
+      [x + w - r, y + r, Math::PI * 1.5],
+      [x + w - r, y + h - r, 0],
+      [x + r, y + h - r, Math::PI / 2]
     ]
     pts = scr.flat_map { |px, py, _709b21ed|
       9.times.map { |i|
@@ -538,18 +538,18 @@ module KSU::Field
   end
   def field_layout(items, view)
     rsz = row_size
-    num3 = rsz[:width]
-    arr52 = rsz[:height]
+    w = rsz[:width]
+    h = rsz[:height]
     gap_for = margin_top
-    x = view.vpwidth - gap_for - num3
+    x = view.vpwidth - gap_for - w
     y = gap_for + pad
     items.each_with_index.map do |fld, i|
       if i > 0
         y += pad + sec_gap + pad if fld[:group_start]
         y += _aeeff86b unless fld[:group_start]
       end
-      box = { x: x, y: y, width: num3, height: arr52 }
-      y += arr52
+      box = { x: x, y: y, width: w, height: h }
+      y += h
       box
     end
   end

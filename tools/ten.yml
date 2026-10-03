@@ -31,7 +31,7 @@ ten:
   _14d486f4: color
   _1acf2d40: ents
   _1b08104a: hull
-  _2354b759: h
+  _2354b759: y_hi                # `ly + h` -- canh TREN, khong phai chieu cao
   _3127e008: jobs
   _31340967: slot_panel    # lay tu `slot[:panel]`; _df507b9e moi la `panel` cua than ham
   _350b38b7: cur_sheet     # van tam DANG nam tren; @_c6dfd687 moi la van dich
@@ -47,7 +47,7 @@ ten:
   _46b63b3b: points
   _4ed2ca52: cells
   _506bc226: bbox
-  _5905ac8d: w
+  _5905ac8d: x_hi                # `lx + w` -- canh PHAI cua mot cho dat, khong phai be rong
   _5923aa9d: layer2                # bien cuc bo, khong phai method `layer` cua cutting.rb
   _5e179248: hover
   _62ef82e9: rows
@@ -1869,6 +1869,61 @@ ten:
   _5e857f97: isolate_bad
   _e1a73e79: scope               # @: vung quet, mac dinh la ca mo hinh neu khong chon gi
 
+  # ===== ME 47: method/netcatcuoi/resize.rb -- o cat cuoi tren van =====
+  # Tim o chu nhat trong lon nhat con lai tren van, de danh cho net cat cuoi.
+  # Cach tim: lay moi canh x cua vat can lam duong chia, thu tung cap (xi, xj),
+  # trong dai do gop cac doan y bi chiem roi lay khoang trong y dai nhat. Dien
+  # tich lon nhat thang. Lap toi 50 o moi van.
+  _e4147f27: find_free_rects
+  _ae3af84a: free_rects_of
+  _ff3778ab: largest_gap
+  _786ab544: longest_free_y       # gop cac doan chong nhau roi do khoang ho dai nhat
+  _8810a0b1: usable_rect          # tru cac le tu KSU::Avail.sides_for
+  _7b2f9929: ux1
+  _328de04c: uy1
+  _38e0f0c5: ux2
+  _24c1c612: uy2
+  _44798e5e: free_rects           # @: van -> cac o trong tim duoc
+  _21eae3f6: slots                # @: { sheet:, points: } cua cac o da chot
+  _0183b2c7: buttons              # nut :add cho o de xuat, :remove cho o da co
+  _d82a1555: add_all
+  _cca954c3: panel_boxes
+  _c34290e2: limits_of
+
+  # Keo canh o de chinh kich thuoc, co chan: khong cho canh di qua tam nao va
+  # khong cho dam vao o khac tren cung van.
+  _14e05dda: begin_resize
+  _fec87097: resize_to_cursor
+  _3066d644: clamp_to_panels
+  _78f40bb3: edge_at
+  _23b18b68: edge_blocked?
+  _fc31c198: slot_edges           # bon canh :x1 :x2 :y1 :y2 cua mot o
+  _fb89e43a: xy_bounds            # [x nho, x lon, y nho, y lon]
+  _3c174b26: cursor_for
+  _6126236a: hover_button
+
+  # ===== ME 48: method/nesting/draw.rb -- ve so do ra mo hinh =====
+  # Moi job ve mot dai van xuong duoi, moi van mot cot sang phai. Xong thi don
+  # ca cum ve goc (-1m, -1m) de khong de len mo hinh dang co.
+  _b09af5f8: cfg                 # @: cau hinh nesting (sheet_w, sheet_h, margin...)
+  _cefe7468: h                   # khoa hash `h:` x6 va `height:` x3 noi thang (216 lan)
+  _46a085c4: w                   # khoa hash `w:` x6 va `width:` x2 (89 lan)
+  _769d0bb8: m_left              # @: le trai; margins_of tra ve [trai, phai, tren, duoi]
+  _17fa94cb: m_right             # @
+  _b41d3c30: m_bottom            # @
+  _7bf167fa: errors              # @: ten cac chi tiet ve hong, bao mot the o cuoi
+  _e69c14dc: sheet_ix            # @: so thu tu van dang ve; sheet/bottom.rb giu `sheet_no`
+  _d6680ef6: root                # @: group "__ABF_Nesting"
+  _cafb77fc: drawn_panels        # @
+  _9aa4dce4: drawn_sheets        # @
+  _f8f8046f: reset_layout
+  _3279d040: ensure_root         # xoa cum cu neu con, roi dung cum moi
+  _146dab1a: draw_job
+  _e8139901: draw_sheet
+  _e85e6194: draw_panel
+  _2a453897: place_root          # dua goc lon nhat cua cum ve (-1m, -1m)
+  _9ce24ea4: finish_draw
+
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,
@@ -1882,7 +1937,6 @@ bo:
   - _884dee16
   - _9e1d7ab3
   - _d8a5a5cb
-  - _fec87097
   # Ban sinh doi ZSU goi hex nay la `arr`. Ben nay no la thu khac va doc theo
   # ngu canh thi ro hon. (_6e6c93db va _9535dc0b da co ten that: xem tren.)
   # `pts` -- o loop.rb la mot doan hai diem, o scan.rb la duong vien chu. Hai

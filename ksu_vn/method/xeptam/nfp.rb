@@ -95,7 +95,7 @@ module KSU::Nfp
   end
   def self.nfp_key(fixed, arr, moving, gap2)
     parts = [poly_key(fixed)]
-    arr.each { |arr52| parts << poly_key(arr52) }
+    arr.each { |h| parts << poly_key(h) }
     parts << poly_key(moving)
     parts << (gap2.to_f * 10000).round.to_s
     parts.join("#")
@@ -108,7 +108,7 @@ module KSU::Nfp
       ay = arr[1] if ay.nil? || arr[1] < ay
     end
     arr6 = fixed.map { |arr| [arr[0] - ax, arr[1] - ay] }
-    arr4 = arr7.map { |arr52| arr52.map { |arr| [arr[0] - ax, arr[1] - ay] } }
+    arr4 = arr7.map { |h| h.map { |arr| [arr[0] - ax, arr[1] - ay] } }
     ox = moving[0][0]
     oy = moving[0][1]
     arr5 = moving.map { |arr| [arr[0] - ox, arr[1] - oy] }
@@ -121,7 +121,7 @@ module KSU::Nfp
     end
     polys.each do |poly|
       _39341bf8 << poly[0].map { |arr| [arr[0] + ax, arr[1] + ay] }
-      poly[1].each { |arr52| _99491fe1 << arr52.map { |arr| [arr[0] + ax, arr[1] + ay] } }
+      poly[1].each { |h| _99491fe1 << h.map { |arr| [arr[0] + ax, arr[1] + ay] } }
     end
   rescue StandardError
     nil
@@ -129,13 +129,13 @@ module KSU::Nfp
   def self._00adeb53(fixed, arr2, moving, gap2)
     fixed = simplify(fixed)
     return [] if fixed.length < 3
-    arr2 = arr2.map { |arr52| simplify(arr52) }.select { |arr52| arr52.length >= 3 }
+    arr2 = arr2.map { |h| simplify(h) }.select { |h| h.length >= 3 }
     if gap2 > 0
       arr3 = KSU::Nesting.inflate(fixed, arr2, gap2)
       return [] if arr3.nil? || arr3.empty?
       fixed = simplify(arr3[0][0])
       return [] if fixed.length < 3
-      arr2 = (arr3[0][1] || []).map { |arr52| simplify(arr52) }.select { |arr52| arr52.length >= 3 }
+      arr2 = (arr3[0][1] || []).map { |h| simplify(h) }.select { |h| h.length >= 3 }
     end
     if arr2.empty?
       _aaba751b = nfp_of(fixed, moving)
@@ -147,7 +147,7 @@ module KSU::Nfp
     arr4.each do |poly|
       outer = poly[0]
       next unless outer && outer.length >= 3
-      out << [outer, (poly[1] || []).select { |arr52| arr52.length >= 3 }]
+      out << [outer, (poly[1] || []).select { |h| h.length >= 3 }]
     end
     out
   end
@@ -210,7 +210,7 @@ module KSU::Nfp
   end
   def self._78849fa5(items)
     cell_size = 200.mm.to_f
-    cells = Hash.new { |arr52, k| arr52[k] = [] }
+    cells = Hash.new { |h, k| h[k] = [] }
     items.each_with_index do |fld, ix|
       next if fld[:is_border]
       bbox = fld[:bbox]

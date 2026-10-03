@@ -31,26 +31,26 @@ module KSU::Mirror
     @h11 = {}
     @arr28 = []
     return unless @nesting
-    h = Hash.new { |arr52, k| arr52[k] = [] }
+    h26 = Hash.new { |h, k| h[k] = [] }
     @nesting.definition.entities.each do |sheet|
       next unless KSU.container?(sheet) && sheet.name.to_s.downcase.include?("sheet")
       sheet.definition.entities.each do |grp|
         next unless KSU.container?(grp)
         ix = KSU::Cutting.board_index(grp)
         next if ix.nil?
-        h[ix] << grp
+        h26[ix] << grp
       end
     end
-    h.each_value do |parts|
+    h26.each_value do |parts|
       arr2 = parts.reject { |_23505ef9| back_face2?(_23505ef9) }
       arr = parts.select { |_23505ef9| back_face2?(_23505ef9) }
       next if arr2.empty? || arr.empty?
-      arr2.each_with_index do |grp8, i|
+      arr2.each_with_index do |grp6, i|
         back = arr[i] || arr.first
-        next unless grp8 && back
-        @arr28 << grp8 << back
-        @h11[grp8.entityID] = { partner: back }
-        @h11[back.entityID] = { partner: grp8 }
+        next unless grp6 && back
+        @arr28 << grp6 << back
+        @h11[grp6.entityID] = { partner: back }
+        @h11[back.entityID] = { partner: grp6 }
       end
     end
   end
@@ -221,7 +221,7 @@ module KSU::Mirror
       view.line_width = 1
       view.drawing_color = edge_color3
       view.draw(GL_LINE_LOOP, poly)
-      (holes || []).each { |arr52| view.draw(GL_LINE_LOOP, arr52) if arr52 && arr52.length >= 3 }
+      (holes || []).each { |h| view.draw(GL_LINE_LOOP, h) if h && h.length >= 3 }
     end
   end
   def draw_rect2d(view)
@@ -279,7 +279,7 @@ module KSU::Mirror
       _9b1924b8(view, arr)
       if arr[:outer]
         next unless KSU::View.in_poly?(x, y, arr[:outer])
-        next if arr[:holes].any? { |arr52| arr52.length >= 3 && KSU::View.in_poly?(x, y, arr52) }
+        next if arr[:holes].any? { |h| h.length >= 3 && KSU::View.in_poly?(x, y, h) }
       end
       area = arr[:area]
       best = { panel: arr[:panel], sheet: arr[:sheet] }
@@ -313,9 +313,9 @@ module KSU::Mirror
       Geom::Point3d.new(_d6439c88, bot, 0), Geom::Point3d.new(_2cf18878, bot, 0),
     ]
     return true if _c949afeb(_2cf18878, _ab593548, _d6439c88, bot, scr, arr[:outer])
-    return true if arr[:holes].any? { |arr52| arr52.length >= 3 && _c949afeb(_2cf18878, _ab593548, _d6439c88, bot, scr, arr52) }
+    return true if arr[:holes].any? { |h| h.length >= 3 && _c949afeb(_2cf18878, _ab593548, _d6439c88, bot, scr, h) }
     return false unless KSU::View.in_poly?(_2cf18878, _ab593548, arr[:outer])
-    arr[:holes].none? { |arr52| arr52.length >= 3 && KSU::View.in_poly?(_2cf18878, _ab593548, arr52) }
+    arr[:holes].none? { |h| h.length >= 3 && KSU::View.in_poly?(_2cf18878, _ab593548, h) }
   end
   def _c949afeb(_2cf18878, _ab593548, _d6439c88, bot, scr, poly)
     n = poly.length
@@ -443,8 +443,8 @@ module KSU::Mirror
         min_y: bbox[:min_y] + dy, max_y: bbox[:max_y] + dy }
     end
     if @sel_hulls
-      @sel_hulls = @sel_hulls.map do |arr52|
-        arr52.nil? || arr52.length < 3 ? arr52 : KSU::Geom.translate(arr52, dx, dy)
+      @sel_hulls = @sel_hulls.map do |h|
+        h.nil? || h.length < 3 ? h : KSU::Geom.translate(h, dx, dy)
       end
     end
     @sel_hull = KSU::Geom.translate(@sel_hull, dx, dy) if @sel_hull

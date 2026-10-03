@@ -149,9 +149,9 @@ module KSU::Xuatdxf
           arr2 << ent
         end
       end
-      layer2 = arr2.first ? dxf_layer(arr2.first, normal) : "0"
+      layer = arr2.first ? dxf_layer(arr2.first, normal) : "0"
       _c73c2639(arr2).each do |_c9fa72f2|
-        ents << { layer: layer2, pts: pts(_c9fa72f2, _7bafc8a5),
+        ents << { layer: layer, pts: pts(_c9fa72f2, _7bafc8a5),
                      closed: true, via_module: true, bulge: true, pid: pid, sect: false }
       end
     elsif _27846c89 || _84dcc166

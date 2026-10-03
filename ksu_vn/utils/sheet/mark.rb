@@ -28,13 +28,13 @@ module KSU::Mark
     return nil if pts.length < 2
     min_x, arr = pts.map(&:x).minmax
     min_y, arr2 = pts.map(&:y).minmax
-    num3 = arr - min_x
-    arr52 = arr2 - min_y
-    return nil if num3 < 1e-6 || arr52 < 1e-6
+    w = arr - min_x
+    h = arr2 - min_y
+    return nil if w < 1e-6 || h < 1e-6
     z = pts.first.z.to_f
     scr = [[min_x, min_y], [arr, min_y], [arr, arr2], [min_x, arr2]]
-    pad = num3 * 0.25
-    _0cd9b30a = arr52 * 0.25
+    pad = w * 0.25
+    _0cd9b30a = h * 0.25
     arr4 = scr.map do |px, py|
       pts.any? { |pt| (pt.x - px).abs < pad && (pt.y - py).abs < _0cd9b30a }
     end

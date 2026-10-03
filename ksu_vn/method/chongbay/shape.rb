@@ -35,7 +35,7 @@ module KSU::Shape
   end
   def part_in_rect?(x1, y1, x2, y2, arr)
     return true if poly_hits_rect?(x1, y1, x2, y2, arr[:polygon])
-    return true if (arr[:holes] || []).any? { |arr52| poly_hits_rect?(x1, y1, x2, y2, arr52) }
+    return true if (arr[:holes] || []).any? { |h| poly_hits_rect?(x1, y1, x2, y2, h) }
     point_in_part?(x1, y1, arr)
   end
   def seg_hits_rect?(x24, _60000b16, x2, y2, x1, y1, x23, y22)
@@ -58,7 +58,7 @@ module KSU::Shape
   end
   def point_in_part?(x, y, arr)
     return false unless KSU::View.in_poly?(x, y, arr[:polygon])
-    (arr[:holes] || []).none? { |arr52| KSU::View.in_poly?(x, y, arr52) }
+    (arr[:holes] || []).none? { |h| KSU::View.in_poly?(x, y, h) }
   end
   def rank_plan(sweep = sweep_dir)
     return [] unless sweep
@@ -108,8 +108,8 @@ module KSU::Shape
   end
   def each_point(arr)
     arr[:polygon].each { |pt| yield(pt.x.to_f, pt.y.to_f) }
-    (arr[:holes] || []).each do |arr52|
-      arr52.each { |pt| yield(pt.x.to_f, pt.y.to_f) }
+    (arr[:holes] || []).each do |h|
+      h.each { |pt| yield(pt.x.to_f, pt.y.to_f) }
     end
   end
   def assign_ranks(parts, sweep)
@@ -370,12 +370,12 @@ module KSU::Shape
     end
     arr
   end
-  def _9707d4ab(pt, b, pt15)
+  def _9707d4ab(pt, b, pt8)
     dx = b.x.to_f - pt.x.to_f
     dy = b.y.to_f - pt.y.to_f
     len2 = dx * dx + dy * dy
     return 0.0 if len2 < 1e-9
-    ((pt15.x.to_f - pt.x.to_f) * dx + (pt15.y.to_f - pt.y.to_f) * dy) / len2
+    ((pt8.x.to_f - pt.x.to_f) * dx + (pt8.y.to_f - pt.y.to_f) * dy) / len2
   end
   def _9b7885a4(p1, p2)
     eligible(@parts.select { |_23505ef9| _f9c10539(p1, p2, _23505ef9) })
@@ -399,7 +399,7 @@ module KSU::Shape
     return true if point_in_part?(p1.x.to_f, p1.y.to_f, arr)
     return true if point_in_part?(p2.x.to_f, p2.y.to_f, arr)
     return true if _37ca7a0d(p1, p2, arr[:polygon])
-    (arr[:holes] || []).any? { |arr52| _37ca7a0d(p1, p2, arr52) }
+    (arr[:holes] || []).any? { |h| _37ca7a0d(p1, p2, h) }
   end
   def _79405863(p1, p2, poly)
     return false if KSU::View.in_poly?(p1.x.to_f, p1.y.to_f, poly)
@@ -423,8 +423,8 @@ module KSU::Shape
   def _1b630104(p1, p2, arr)
     return 0.0 if point_in_part?(p1.x.to_f, p1.y.to_f, arr)
     best = _5410b01c(p1, p2, arr[:polygon])
-    (arr[:holes] || []).each do |arr52|
-      thick = _5410b01c(p1, p2, arr52)
+    (arr[:holes] || []).each do |h|
+      thick = _5410b01c(p1, p2, h)
       best = thick if thick && (best.nil? || thick < best)
     end
     best || _9707d4ab(p1, p2, arr[:center])

@@ -470,7 +470,7 @@ class KSU::Themtam
     nil
   end
   def face_presence(top, bottom)
-    src = Hash.new { |arr52, k| arr52[k] = { top: false, bottom: false } }
+    src = Hash.new { |h, k| h[k] = { top: false, bottom: false } }
     [top, bottom].each do |sheet|
       next unless sheet && sheet.valid?
       panels_of(sheet).each do |panel|
@@ -528,10 +528,10 @@ class KSU::Themtam
     tr = grp.transformation
     tr2 = Geom::Transformation.translation(offset) * tr
     arr2 = arr[(ix + 1)..-1] || []
-    arr4 = arr2.each_with_object({}) do |s, arr52|
-      arr52[s] = KSU::Sheet.sheet_labels(s, @nesting) if s && s.valid?
+    arr4 = arr2.each_with_object({}) do |s, h|
+      h[s] = KSU::Sheet.sheet_labels(s, @nesting) if s && s.valid?
     end
-    labels2 = KSU::Sheet.sheet_labels(grp, @nesting)
+    labels = KSU::Sheet.sheet_labels(grp, @nesting)
     arr2.each do |s|
       next unless s && s.valid?
       s.transformation = Geom::Transformation.translation(offset) * s.transformation
@@ -548,7 +548,7 @@ class KSU::Themtam
       grp2.name = str2
       grp2.set_attribute("ABF", "sheet-id", new_id)
       pt = tr2.origin - tr.origin
-      arr3 = KSU::Sheet._a9a86c81(labels2, pt, @nesting)
+      arr3 = KSU::Sheet._a9a86c81(labels, pt, @nesting)
       arr3.each { |len2d| KSU::Sheet._ba804f88(len2d, str2) }
     end
     [grp2, new_id]
@@ -665,13 +665,13 @@ class KSU::Themtam
     end
   end
   def _1668ae28(ents, px, py, _9d8da98b, _8d05dd56, grp2)
-    arr52 = _8d05dd56
+    h = _8d05dd56
     center = Geom::Point3d.new(px, py, _9d8da98b)
     arr = [
-      ents.add_line(center, Geom::Point3d.new(px + arr52, py, _9d8da98b)),
-      ents.add_line(center, Geom::Point3d.new(px - arr52, py, _9d8da98b)),
-      ents.add_line(center, Geom::Point3d.new(px, py + arr52, _9d8da98b)),
-      ents.add_line(center, Geom::Point3d.new(px, py - arr52, _9d8da98b)),
+      ents.add_line(center, Geom::Point3d.new(px + h, py, _9d8da98b)),
+      ents.add_line(center, Geom::Point3d.new(px - h, py, _9d8da98b)),
+      ents.add_line(center, Geom::Point3d.new(px, py + h, _9d8da98b)),
+      ents.add_line(center, Geom::Point3d.new(px, py - h, _9d8da98b)),
     ]
     return unless grp2 && grp2.valid?
     _1dc6660d = grp2.layer

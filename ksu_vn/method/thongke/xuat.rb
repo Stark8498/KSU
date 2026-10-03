@@ -49,14 +49,14 @@ module KSU::Thongke::Xuat
     cells
   end
   def self._a105a0f4(cls2)
-    rows = [{ cells: CHI_PHI_HEAD.map { |arr52| [arr52, ST_HEAD] } }]
+    rows = [{ cells: CHI_PHI_HEAD.map { |h| [h, ST_HEAD] } }]
     arr2 = []
     (cls2["sections"] || []).each do |arr3|
-      num20 = rows.size + 1
-      arr2 << "H#{num20}"
+      num11 = rows.size + 1
+      arr2 << "H#{num11}"
       items = arr3["items"] || []
-      _a925e834 = num20 + 1
-      num2 = items.empty? ? nil : "SUM(H#{_a925e834}:H#{num20 + items.size})"
+      _a925e834 = num11 + 1
+      num2 = items.empty? ? nil : "SUM(H#{_a925e834}:H#{num11 + items.size})"
       rows << { cells: build_cells(arr3["title"], arr3["tong"], num2) }
       items.each_with_index do |arr, i|
         half = _a925e834 + i
@@ -78,7 +78,7 @@ module KSU::Thongke::Xuat
   def self._31eafa5f(arr)
     cells = arr["headers"] || []
     _5ffa637f = cells.index("Tên")
-    rows = [{ cells: cells.map { |arr52| [arr52.to_s, ST_HEAD] } }]
+    rows = [{ cells: cells.map { |h| [h.to_s, ST_HEAD] } }]
     (arr["rows"] || []).each do |arr2|
       rows << {
         cells: arr2.each_with_index.map { |v, color| [num(v), color == _5ffa637f ? ST_TEXT : ST_CENTER] },
@@ -110,8 +110,8 @@ module KSU::Thongke::Xuat
     "<c r=\"#{pt}\" s=\"#{_e7b2b17b}\" t=\"inlineStr\"><is><t xml:space=\"preserve\">#{_c9faf4c6(text)}</t></is></c>"
   end
   def self._278dd154(arr)
-    out = arr.each_with_index.map { |num3, i|
-      "<col min=\"#{i + 1}\" max=\"#{i + 1}\" width=\"#{num3}\" customWidth=\"1\"/>"
+    out = arr.each_with_index.map { |w, i|
+      "<col min=\"#{i + 1}\" max=\"#{i + 1}\" width=\"#{w}\" customWidth=\"1\"/>"
     }.join
     "<cols>#{out}</cols>"
   end

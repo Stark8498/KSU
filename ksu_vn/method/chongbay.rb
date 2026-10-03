@@ -366,8 +366,8 @@ class KSU::Chongbay
     _8f0a8c81
     @arr32 = _4868b3b3
     @arr54 = _2e1313e5
-    @h2 = @arr32.each_with_object({}) { |arr, arr52| arr52[arr[:part][:part]] = true }
-    @h16 = @arr54.each_with_object({}) { |arr2, arr52| arr52[arr2[:part]] = true }
+    @h2 = @arr32.each_with_object({}) { |arr, h| h[arr[:part][:part]] = true }
+    @h16 = @arr54.each_with_object({}) { |arr2, h| h[arr2[:part]] = true }
     _de1ac9fc if @phu_mau_tam || @phu_mau_tam_hai_mat
     draw_overlay(view, @nesting)
     _12d6c6da(view)
@@ -852,7 +852,7 @@ class KSU::Chongbay
         end
         z = (-0.1).mm
         overlay_polygon = polygon.map { |pt| Geom::Point3d.new(pt.x, pt.y, z) }
-        overlay_holes = holes.map { |arr52| arr52.map { |pt| Geom::Point3d.new(pt.x, pt.y, z) } }
+        overlay_holes = holes.map { |h| h.map { |pt| Geom::Point3d.new(pt.x, pt.y, z) } }
         @parts << {
           part: panel,
           sheet: sheet,

@@ -163,7 +163,7 @@ module KSU::Query
     draw_polys([{ outer: outer, holes: holes }], color: color, line: line)
   end
   def tris(outer, holes)
-    arr = (holes || []).select { |arr52| arr52 && arr52.length >= 3 }
+    arr = (holes || []).select { |h| h && h.length >= 3 }
     arr.empty? ? Geom.tesselate(outer) : Geom.tesselate(outer, *arr)
   rescue StandardError
     Geom.tesselate(outer)

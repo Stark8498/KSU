@@ -38,11 +38,11 @@ module KSU::Corner
     center = rec[:bbox].center
     start_x = px < center.x.to_f ? 1 : -1
     ly0 = py < center.y.to_f ? 1 : -1
-    flag26, flag7, top, arr40 = KSU::Avail.sides_for(sheet, gap_for)
-    width_mm = rec[:bbox].width.to_f - flag26 - flag7
-    height_mm = rec[:bbox].height.to_f - top - arr40
-    x = start_x > 0 ? flag26 : flag7
-    y = ly0 > 0 ? arr40 : top
+    m_left, m_right, top, m_bottom = KSU::Avail.sides_for(sheet, gap_for)
+    width_mm = rec[:bbox].width.to_f - m_left - m_right
+    height_mm = rec[:bbox].height.to_f - top - m_bottom
+    x = start_x > 0 ? m_left : m_right
+    y = ly0 > 0 ? m_bottom : top
     if (v = KSU::Sheet.edit_offset(sheet))
       px += (start_x > 0 ? [v[0], 0.0].max : [v[0], 0.0].min)
       py += (ly0 > 0 ? [v[1], 0.0].max : [v[1], 0.0].min)
@@ -107,9 +107,9 @@ module KSU::Corner
     y = (pt.y.to_f + b.y.to_f) * 0.5
     num4 = (b.x.to_f - pt.x.to_f).abs <= (b.y.to_f - pt.y.to_f).abs
     pt3 = rec[:bbox].min
-    flag26, flag7, top, arr40 = KSU::Avail.sides_for(sheet, gap_for)
-    width_mm = rec[:bbox].width.to_f - flag26 - flag7
-    height_mm = rec[:bbox].height.to_f - top - arr40
+    m_left, m_right, top, m_bottom = KSU::Avail.sides_for(sheet, gap_for)
+    width_mm = rec[:bbox].width.to_f - m_left - m_right
+    height_mm = rec[:bbox].height.to_f - top - m_bottom
     num2 = 0.0
     num = 0.0
     if (v = KSU::Sheet.edit_offset(sheet))
@@ -152,19 +152,19 @@ module KSU::Corner
     if num4
       start_x = x < center.x.to_f ? 1 : -1
       num7 = pt.x.to_f + (start_x > 0 ? [num2, 0.0].max : [num2, 0.0].min)
-      flag2 = start_x > 0 ? flag26 : flag7
+      flag2 = start_x > 0 ? m_left : m_right
       flag2 = g if g && (start_x > 0 ? num2 > 0 : num2 < 0)
       arr4 = arr2.map { |members| members[:ly] + members[:h] }.max
       _20704b8d = [(height_mm - arr4) * 0.5, 0.0].max
-      num5 = pt3.y.to_f + (g && num > 0 ? g : arr40) + [num, 0.0].max + _20704b8d
+      num5 = pt3.y.to_f + (g && num > 0 ? g : m_bottom) + [num, 0.0].max + _20704b8d
     else
       ly0 = y < center.y.to_f ? 1 : -1
       num8 = pt.y.to_f + (ly0 > 0 ? [num, 0.0].max : [num, 0.0].min)
-      flag = ly0 > 0 ? arr40 : top
+      flag = ly0 > 0 ? m_bottom : top
       flag = g if g && (ly0 > 0 ? num > 0 : num < 0)
       arr4 = arr2.map { |members| members[:lx] + members[:w] }.max
       _20704b8d = [(width_mm - arr4) * 0.5, 0.0].max
-      num12 = pt3.x.to_f + (g && num2 > 0 ? g : flag26) + [num2, 0.0].max + _20704b8d
+      num12 = pt3.x.to_f + (g && num2 > 0 ? g : m_left) + [num2, 0.0].max + _20704b8d
     end
     moves = arr2.map do |members|
       if num4
@@ -221,7 +221,7 @@ module KSU::Corner
     return hit if hit
     fill = KSU::Cutting.outline(arr[:panel], KSU::Cutting.tf_of(arr[:panel]))
     outer = fill && fill[:outer] && fill[:outer].length >= 3 ? fill[:outer] : box_pts(arr[:bbox])
-    holes = fill && fill[:holes] ? fill[:holes].select { |arr52| arr52 && arr52.length >= 3 } : []
+    holes = fill && fill[:holes] ? fill[:holes].select { |h| h && h.length >= 3 } : []
     h24[key] = { outer: outer, holes: holes }
   end
   def box_inside?(bb, outer, tol)
@@ -438,9 +438,9 @@ module KSU::Corner
           rings << arr
           holes = members[1]
           next unless holes.is_a?(Array)
-          holes.each do |arr52|
-            next unless arr52.is_a?(Array) && arr52.length >= 3
-            arr4 = arr52.map { |arr2| [arr2[0].to_f, arr2[1].to_f] }
+          holes.each do |h|
+            next unless h.is_a?(Array) && h.length >= 3
+            arr4 = h.map { |arr2| [arr2[0].to_f, arr2[1].to_f] }
             arr4 = arr4.reverse if _5d9dd503(arr4) > 0
             rings << arr4
           end

@@ -123,7 +123,7 @@ module KSU::Optimize
     ix = arr2.index(grp3) || (arr2.length - 1)
     pt = KSU::Sheet.row_offset(rec, arr2, ix, sheet_recs)
     base_tr = grp3.transformation
-    labels4 = KSU::Sheet.sheet_labels(anchor, @nesting)
+    labels = KSU::Sheet.sheet_labels(anchor, @nesting)
     pt3 = anchor.transformation.origin
     str = KSU::Sheet.sheet_no(anchor.name.to_s)
     KSU::Sheet.shift_sheets(@nesting, str + 1, want) if str
@@ -138,7 +138,7 @@ module KSU::Optimize
       grp2.name = str2
       grp2.set_attribute("ABF", "sheet-id", new_id)
       pt2 = tr.origin - pt3
-      arr3 = KSU::Sheet._a9a86c81(labels4, pt2, @nesting)
+      arr3 = KSU::Sheet._a9a86c81(labels, pt2, @nesting)
       arr3.each { |len2d| KSU::Sheet._ba804f88(len2d, str2) }
       arr << grp2
     end

@@ -35,8 +35,8 @@ module KSU::Nesting
                                    width_mm, height_mm, gap2, false, 1000, 0)
       unless id_str.empty?
         return [] unless id_str.all? { |ent| ent[0] == 0 }
-        return id_str.each_with_index.map do |(_bin, x, y, num3, arr52), i|
-                 items[i].merge(lx: x, ly: y, w: num3, h: arr52)
+        return id_str.each_with_index.map do |(_bin, x, y, w, h), i|
+                 items[i].merge(lx: x, ly: y, w: w, h: h)
                end
       end
     end
@@ -92,10 +92,10 @@ module KSU::Nesting
         x2 = x + pw
         y2 = y + ph
         flag = arr4.any? do |arr|
-          w = arr[:lx] + arr[:w]
-          h = arr[:ly] + arr[:h]
-          !(x2 + gap2 <= arr[:lx] + KSU::Const::EPS || w + gap2 <= x + KSU::Const::EPS ||
-            y2 + gap2 <= arr[:ly] + KSU::Const::EPS || h + gap2 <= y + KSU::Const::EPS)
+          x_hi = arr[:lx] + arr[:w]
+          y_hi = arr[:ly] + arr[:h]
+          !(x2 + gap2 <= arr[:lx] + KSU::Const::EPS || x_hi + gap2 <= x + KSU::Const::EPS ||
+            y2 + gap2 <= arr[:ly] + KSU::Const::EPS || y_hi + gap2 <= y + KSU::Const::EPS)
         end
         return [x, y] unless flag
       end

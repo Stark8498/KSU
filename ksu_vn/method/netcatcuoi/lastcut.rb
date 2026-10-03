@@ -26,7 +26,7 @@ module KSU::Lastcut
     sheets = sheets.compact.uniq
     return if sheets.empty?
     tag = KSU::Cutting.layer("ABF_lastCut")
-    h = @arr10.group_by { |ent| ent[:sheet] }
+    h = @slots.group_by { |ent| ent[:sheet] }
     KSU.start
     sheets.each do |sheet|
       next unless sheet && sheet.valid?
@@ -200,7 +200,7 @@ module KSU::Lastcut
     return true if entity.get_attribute("ABF", "is-last-cut")
     entity.name.to_s == "__ABF_lastCut"
   end
-  def _cca954c3(sheet, transform, flag2 = false)
+  def panel_boxes(sheet, transform, flag2 = false)
     arr = []
     sheet.definition.entities.each do |panel|
       next unless KSU.container?(panel)
@@ -225,7 +225,7 @@ module KSU::Lastcut
     fill = KSU::Cutting.outline(panel, panel_tr)
     outer = fill && fill[:outer]
     return nil unless outer && outer.length >= 3
-    holes = (fill[:holes] || []).select { |arr52| arr52 && arr52.length >= 3 }
+    holes = (fill[:holes] || []).select { |h| h && h.length >= 3 }
     loops = [outer] + holes
     arr2 = KSU::Geom._a404e7b6(loops.flat_map { |arr3| arr3.map { |pt| pt.x.to_f } })
     arr = KSU::Geom._a404e7b6(loops.flat_map { |arr3| arr3.map { |pt| pt.y.to_f } })
@@ -235,7 +235,7 @@ module KSU::Lastcut
     return nil if nx * ny > 6000
     cells = _c839dc19(arr2, arr) do |px, py|
       KSU::View.in_poly?(px, py, outer) &&
-        holes.none? { |arr52| KSU::View.in_poly?(px, py, arr52) }
+        holes.none? { |h| KSU::View.in_poly?(px, py, h) }
     end
     _b9371681(cells, arr2, arr)
   end

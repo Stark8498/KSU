@@ -103,7 +103,7 @@ module KSU::Nest
     @refine_parts
   end
   def rotate_by_name
-    color = @h18
+    color = @cfg
     color.is_a?(Hash) && color[:rotate_by_name].is_a?(Hash) ? color[:rotate_by_name] : {}
   end
   def labelling
@@ -132,8 +132,8 @@ module KSU::Nest
     _a762c251
     UI.messagebox("Lỗi nesting: #{ent.message}")
   end
-  def start3(h18, rows)
-    @h18 = h18
+  def start3(cfg, rows)
+    @cfg = cfg
     @arr61 = rows
     @arr45 = []
     @arr39 = []
@@ -167,7 +167,7 @@ module KSU::Nest
       end
       jobs << members
     end
-    _f8f8046f
+    reset_layout
     hide_all
     _47d154e7(jobs)
   rescue StandardError => ent
@@ -175,12 +175,12 @@ module KSU::Nest
     UI.messagebox("Lỗi nesting: #{ent.message}")
   end
   def split_two?(job)
-    !!job[:two] && @h18[:tach_nhom] != false
+    !!job[:two] && @cfg[:tach_nhom] != false
   end
   def sheet_area(job)
-    _b41d8800, half, thick, b = margins_of(@h18)
-    width_mm = @h18[:sheet_w] - _b41d8800 - half
-    height_mm = @h18[:sheet_h] - thick - b
+    _b41d8800, half, thick, b = margins_of(@cfg)
+    width_mm = @cfg[:sheet_w] - _b41d8800 - half
+    height_mm = @cfg[:sheet_h] - thick - b
     if job[:two] && !split_two?(job)
       len2d = KSU::Avail.two_sided_margin
       width_mm -= len2d
@@ -197,13 +197,13 @@ module KSU::Nest
   def build_parts(job)
     width_mm, height_mm = sheet_area(job)
     return nil if width_mm <= 0 || height_mm <= 0
-    h18 = @h18
+    cfg = @cfg
     flat = []
     rot = []
     arr3 = []
     arr4 = []
     layers = {}
-    if h18[:by_name]
+    if cfg[:by_name]
       job[:parts].each_with_index
                     .sort_by { |arr, i| [KSU::Nesting.sort_key(arr[:group].name), i] }
                     .each_with_index { |(_56afdcfc, _b57e5a96), half| layers[_b57e5a96] = half }
@@ -226,13 +226,13 @@ module KSU::Nest
       h: _e84e5dc5 ? width_mm : height_mm,
       w2: _e84e5dc5 ? h2 : w2,
       h2: _e84e5dc5 ? w2 : h2,
-      sp: h18[:spacing],
+      sp: cfg[:spacing],
       rot: rot,
       holes: true,
       parts: groups[0],
-      two: h18[:tach_nhom] ? arr3 : [],
-      ord: h18[:by_name] ? arr4 : [],
-      pair: h18[:ghep_cap] != false
+      two: cfg[:tach_nhom] ? arr3 : [],
+      ord: cfg[:by_name] ? arr4 : [],
+      pair: cfg[:ghep_cap] != false
     }
   end
   def _47d154e7(jobs)
@@ -260,14 +260,14 @@ module KSU::Nest
     )
   end
   def _77cf09ee(j, data, _c11be090)
-    return unless @h18 && @h22
+    return unless @cfg && @h22
     @h22[j] = [data, _c11be090]
     _37275936
   end
   def _37275936
     return if @flag42 || @flag58
     @flag58 = true
-    while @h18 && @h22 && @h22.key?(@num4)
+    while @cfg && @h22 && @h22.key?(@num4)
       data, arr2 = @h22.delete(@num4)
       job = @arr47[@num4]
       @num4 += 1
@@ -278,8 +278,8 @@ module KSU::Nest
       next unless job[:last]
       arr3 = @arr51
       @arr51 = []
-      flag = arr3.empty? ? [] : _146dab1a(job, arr3)
-      next unless @h18[:hau_ky] && !flag.empty?
+      flag = arr3.empty? ? [] : draw_job(job, arr3)
+      next unless @cfg[:hau_ky] && !flag.empty?
       @refine_parts = flag
       @refine_name = job[:type][:name]
       @flag42 = true
@@ -288,7 +288,7 @@ module KSU::Nest
       return
     end
     @flag58 = false
-    return unless @h18
+    return unless @cfg
     if @num4 >= @arr47.length
       _3bfa2532
     else
@@ -326,10 +326,10 @@ module KSU::Nest
     @name = nil
     @num12 = nil
     @str = nil
-    _9ce24ea4
+    finish_draw
     restore_view
     _741ca308
-    @h18 = nil
+    @cfg = nil
     @arr61 = nil
     @arr45 = nil
     @arr39 = nil
@@ -345,11 +345,11 @@ module KSU::Nest
     @flag58 = false
     @arr51 = nil
     @name = nil
-    @h18 = nil
+    @cfg = nil
     @arr61 = nil
     @arr45 = nil
     @arr39 = nil
-    @grp2 = nil
+    @root = nil
     @num12 = nil
     @str = nil
   end
@@ -439,7 +439,7 @@ module KSU::Nest
     sheets
   end
   def corner_code
-    case @h18[:corner]
+    case @cfg[:corner]
     when "phai_duoi" then 1
     when "phai_tren" then 2
     when "trai_tren" then 3
@@ -486,10 +486,10 @@ module KSU::Nest
       end
     end
   end
-  def margins_of(h18)
-    meta = h18[:margins]
+  def margins_of(cfg)
+    meta = cfg[:margins]
     return meta if meta.is_a?(Array) && meta.length == 4
-    [h18[:margin].to_f] * 4
+    [cfg[:margin].to_f] * 4
   end
   def job_settings
     edge = KSU::Settings.get("tam_cach_le", 3.5, "cai_dat").to_f
@@ -527,7 +527,7 @@ module KSU::Nest
     return true unless err == :dup_ids
     UI.messagebox("Có vấn đề với dữ liệu nhãn. Tự động gắn lại nhãn?", MB_YESNO) == IDYES
   end
-  def run2(h18, arr = nil)
+  def run2(cfg, arr = nil)
     flag = arr && !arr.empty?
     arr2 = []
     _17ee8011(arr, arr2, {}) if flag
@@ -549,7 +549,7 @@ module KSU::Nest
       center: !_e25d94df,
       renumber: renumber[:renumber]
     }
-    @_a7e29efc = h18
+    @_a7e29efc = cfg
     @_576fddc0 = arr
     @jobs = renumber[:jobs]
     @layer2 = renumber[:layer]
@@ -576,13 +576,13 @@ module KSU::Nest
     _a3c31f39(ent.message)
   end
   def _0c3a8be0
-    h18 = @_a7e29efc
+    cfg = @_a7e29efc
     _4effcb0e = @_576fddc0
     _37cfb2cb
     KSU.commit
     KSU::View.view.invalidate
-    h18.delete(:materials) if h18.is_a?(Hash)
-    _33959628(h18, false, _4effcb0e)
+    cfg.delete(:materials) if cfg.is_a?(Hash)
+    _33959628(cfg, false, _4effcb0e)
   rescue StandardError => ent
     _a762c251
     UI.messagebox("Lỗi nesting: #{ent.message}")

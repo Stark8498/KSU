@@ -25,8 +25,8 @@ class KSU::Netcatcuoi
     @presets = get("presets", nil)
     @label_section_hidden = []
     @mode = get("che_do", 0).to_i
-    @arr10 = []
-    @h3 = {}
+    @slots = []
+    @free_rects = {}
     @nesting = nil
     @sheets = []
     @flag56 = false
@@ -56,7 +56,7 @@ class KSU::Netcatcuoi
       @label_section_hidden = _b849fe49
       @h5 = {}
       @arr11 = KSU::Nesting.error_points(@nesting)
-      _e4147f27 if @mode == 1
+      find_free_rects if @mode == 1
       @label_section_hidden = KSU::Cutting.apply_label_hiding(
         @nesting, @an_nhan_tiet_dien, @label_section_hidden
       )
@@ -92,7 +92,7 @@ class KSU::Netcatcuoi
     restore_selected_preset
     @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, @an_nhan_tiet_dien, @label_section_hidden)
     _52c178c0(true)
-    _e4147f27 if @mode == 1
+    find_free_rects if @mode == 1
     update_status
     KSU::View.view.invalidate
   end
@@ -107,23 +107,23 @@ class KSU::Netcatcuoi
   def reload_settings
     super
     @h5 = {}
-    _e4147f27 if @mode == 1
+    find_free_rects if @mode == 1
     KSU::View.refresh
   end
   def commit_field_input(view)
     answer = super
-    _e4147f27 if @mode == 1
+    find_free_rects if @mode == 1
     view&.invalidate
     answer
   end
   def onSetCursor
     return false if busy?
     if @flag19
-      UI.set_cursor(_3c174b26(@edge))
+      UI.set_cursor(cursor_for(@edge))
       return true
     end
     if !@flag56 && @arr65
-      UI.set_cursor(_3c174b26(@arr65[:edge]))
+      UI.set_cursor(cursor_for(@arr65[:edge]))
       return true
     end
     if @mode == 0
@@ -166,14 +166,14 @@ class KSU::Netcatcuoi
     hover_preset(x, y, view)
     @pt11 = KSU::View.pick_on_plane(view, x, y, @num13)
     if @flag19 && @pt11
-      _fec87097(view)
+      resize_to_cursor(view)
     elsif @flag56 && @inst3 && @pt11
       @pt = _d204c38c(@pt11, @_1cb11a43, view)
       @pt = _81184680(@pt9, @pt) if @pt9
       @flag60 = @pt
     else
-      _6126236a(view, x, y)
-      @arr65 = _78f40bb3(view, x, y)
+      hover_button(view, x, y)
+      @arr65 = edge_at(view, x, y)
       @flag60 = @arr65 ? nil : _63677f15(view, x, y)
     end
     view.invalidate
@@ -182,19 +182,19 @@ class KSU::Netcatcuoi
     return if click_field(x, y, view)
     return if click_outside(x, y, view)
     return if click_mode(x, y, view)
-    return if _14e05dda(view, x, y)
+    return if begin_resize(view, x, y)
     if @mode == 1
       arr = _bb230f13(view, x, y)
       if arr
         ctrl = (rot & MK_SHIFT) != 0
         if arr[:kind] == :remove
-          ctrl ? @arr10.clear : @arr10.delete(arr[:entry])
+          ctrl ? @slots.clear : @slots.delete(arr[:entry])
         elsif ctrl
-          _d82a1555
+          add_all
         else
-          @arr10 << { sheet: arr[:sheet], points: arr[:points] }
+          @slots << { sheet: arr[:sheet], points: arr[:points] }
         end
-        _e4147f27
+        find_free_rects
         view.invalidate
       end
       return
@@ -206,14 +206,14 @@ class KSU::Netcatcuoi
     end
     arr = _bb230f13(view, x, y)
     if arr && arr[:kind] == :remove
-      @arr10.delete(arr[:entry])
+      @slots.delete(arr[:entry])
       view.invalidate
       return
     end
     rec = _0ed68c30(view, x, y)
     return unless rec
-    @_1cb11a43 = _c34290e2(rec)
-    @arr26 = _cca954c3(rec[:instance], rec[:transform])
+    @_1cb11a43 = limits_of(rec)
+    @arr26 = panel_boxes(rec[:instance], rec[:transform])
     _d41bb15d = KSU::View.pick_on_plane(view, x, y, @num13)
     _d41bb15d = _d204c38c(_d41bb15d, @_1cb11a43, view)
     return unless _d41bb15d
@@ -250,14 +250,14 @@ class KSU::Netcatcuoi
     @mode = i
     set("che_do", @mode)
     if @mode == 1
-      _e4147f27
+      find_free_rects
       @flag56 = false
       @pt9 = nil
       @pt = nil
       @inst3 = nil
       @arr26 = nil
     else
-      @h3 = {}
+      @free_rects = {}
     end
     @flag60 = nil
     Sketchup.active_model&.active_view&.invalidate
@@ -278,13 +278,13 @@ class KSU::Netcatcuoi
       x.between?(arr2.min, arr2.max) && y.between?(arr.min, arr.max)
     end
   end
-  def _c34290e2(rec)
+  def limits_of(rec)
     @h5[rec[:instance].entityID] ||= _c6224ad4(rec)
   end
   def _c6224ad4(rec)
     bbox = rec[:bbox]
     gap2 = @tam_cach_nhau.to_f
-    num2, num, _7ebf0e82, _b51d21a5 = _8810a0b1(rec)
+    num2, num, _7ebf0e82, _b51d21a5 = usable_rect(rec)
     if num2 > _7ebf0e82
       num2 = _7ebf0e82 = (bbox.min.x.to_f + bbox.max.x.to_f) / 2.0
     end
@@ -312,7 +312,7 @@ class KSU::Netcatcuoi
     }
   end
   def _93f5a81b(rec, gap2)
-    arr2 = _cca954c3(rec[:instance], rec[:transform]).map do |bb|
+    arr2 = panel_boxes(rec[:instance], rec[:transform]).map do |bb|
       points({ x1: bb.min.x.to_f - gap2, y1: bb.min.y.to_f - gap2, x2: bb.max.x.to_f + gap2, y2: bb.max.y.to_f + gap2 })
     end
     return [] if arr2.empty?
@@ -338,12 +338,12 @@ class KSU::Netcatcuoi
     return nil unless @mode == 0 && @pt11
     rec = _0ed68c30(view, x, y)
     return nil unless rec
-    _d204c38c(@pt11, _c34290e2(rec), view)
+    _d204c38c(@pt11, limits_of(rec), view)
   end
   def _d4767c0f
     rect = _d5a5cc33
     return unless rect && _a9ca2ebd(rect)
-    @arr10 << { sheet: @inst3, points: rect }
+    @slots << { sheet: @inst3, points: rect }
     @flag56 = false
     @inst3 = nil
     @pt9 = nil
@@ -368,7 +368,7 @@ class KSU::Netcatcuoi
     bbox.width > lo && bbox.height > lo
   end
   def _ca5147c6
-    @arr10 = []
+    @slots = []
     @sheets.each do |rec|
       sheet = rec[:instance]
       next unless sheet && sheet.valid?
@@ -380,7 +380,7 @@ class KSU::Netcatcuoi
       end
     end
   rescue
-    @arr10 = []
+    @slots = []
   end
   def _1bba59fa(sheet, rec, id_str)
     data = begin
@@ -397,10 +397,10 @@ class KSU::Netcatcuoi
       next unless half.is_a?(Array) && half.length >= 4
       x = num2 + half[0].to_f
       y = num4 + half[1].to_f
-      num3 = half[2].to_f
-      arr52 = half[3].to_f
-      next if num3 <= 0 || arr52 <= 0
-      @arr10 << { sheet: sheet, points: points({ x1: x, y1: y, x2: x + num3, y2: y + arr52 }) }
+      w = half[2].to_f
+      h = half[3].to_f
+      next if w <= 0 || h <= 0
+      @slots << { sheet: sheet, points: points({ x1: x, y1: y, x2: x + w, y2: y + h }) }
     end
   end
   def _ca2351da(sheet, rec)
@@ -415,7 +415,7 @@ class KSU::Netcatcuoi
       next if out.empty?
       bbox = Geom::BoundingBox.new
       out.each { |_23505ef9| bbox.add(_23505ef9) }
-      @arr10 << {
+      @slots << {
         sheet: sheet,
         points: points({ x1: bbox.min.x, y1: bbox.min.y, x2: bbox.max.x, y2: bbox.max.y })
       }

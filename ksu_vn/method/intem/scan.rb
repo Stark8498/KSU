@@ -14,16 +14,16 @@ module KSU::Intem
     h3 = {}
     h2 = {}
     _e12462c7(model.entities, h3, {}, 0, h2)
-    h = {}
+    h19 = {}
     src.grep(Sketchup::Group).each do |sheet|
       next unless sheet.get_attribute("ABF", "sheet-id")
       next unless KSU::Sheet.hidden?(sheet)
-      sheet.entities.grep(Sketchup::Group).each do |grp5|
-        board_index = grp5.get_attribute("ABF", "board-index")
+      sheet.entities.grep(Sketchup::Group).each do |grp|
+        board_index = grp.get_attribute("ABF", "board-index")
         next unless board_index
-        next if h[board_index]
-        _14954c73 = hinge(grp5)
-        h[board_index] = _14954c73 if _14954c73
+        next if h19[board_index]
+        _14954c73 = hinge(grp)
+        h19[board_index] = _14954c73 if _14954c73
       end
     end
     src.grep(Sketchup::Group).each do |sheet|
@@ -33,10 +33,10 @@ module KSU::Intem
       sheet_type = sheet.get_attribute("ABF", "sheet-type").to_s
       mat = sheet.get_attribute("KSU", "sheet-material").to_s
       mat = sheet_type if mat.empty?
-      num3, arr52 = _acf1b201(sheet)
+      w, h = _acf1b201(sheet)
       parts = []
-      sheet.entities.grep(Sketchup::Group).each do |grp5|
-        rec = _cbfbfd78(grp5, sheet_id, mat, h3, h, h2)
+      sheet.entities.grep(Sketchup::Group).each do |grp|
+        rec = _cbfbfd78(grp, sheet_id, mat, h3, h19, h2)
         next unless rec
         parts2 << rec
         parts << parts2.length - 1
@@ -50,15 +50,15 @@ module KSU::Intem
         dir = descent ? -1 : 1
         parts.sort_by! { |i| [parts2[i][:lk] ? 1 : 0, dir * parts2[i][:id].to_i] }
       else
-        px = seed.include?("phai") ? num3 : 0.0
-        py = seed.include?("tren") ? arr52 : 0.0
+        px = seed.include?("phai") ? w : 0.0
+        py = seed.include?("tren") ? h : 0.0
         parts.sort_by! do |i|
           pt = _f0de9fe3(parts2[i][:poly], px, py)
           [parts2[i][:lk] ? 1 : 0, (pt[1] - py).abs.round, (pt[0] - px).abs, parts2[i][:id].to_i]
         end
       end
       num4 = sheet.get_attribute("ABF", "sheet-thickness").to_f
-      sheets[sheet_id] = { w: num3, h: arr52, th: num4, parts: parts }
+      sheets[sheet_id] = { w: w, h: h, th: num4, parts: parts }
       unless materials2[sheet_type]
         materials2[sheet_type] = { key: sheet_type, name: sheet_type, th: num4, sheets: [] }
         materials << sheet_type

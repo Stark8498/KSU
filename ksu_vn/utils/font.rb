@@ -207,7 +207,7 @@ module KSU::Font
     end
     chord = Math.hypot(rx - x, ry - y)
     return [rx, ry] if chord < 1e-9
-    arr52 = (bulge.to_f / 127.0) * (chord / 2.0)
+    h = (bulge.to_f / 127.0) * (chord / 2.0)
     nx = -(ry - y) / chord
     ny = (rx - x) / chord
     num2 = 8
@@ -217,7 +217,7 @@ module KSU::Font
       thick = k.to_f / num2
       bx2 = x + (rx - x) * thick
       by2 = y + (ry - y) * thick
-      _80ce9d04 = arr52 * (1.0 - (2.0 * thick - 1.0) ** 2)
+      _80ce9d04 = h * (1.0 - (2.0 * thick - 1.0) ** 2)
       _4208cdd3 = bx2 + nx * _80ce9d04
       _b570767e = by2 + ny * _80ce9d04
       snap_edges << [trai, duoi, _4208cdd3, _b570767e] if pen
@@ -290,23 +290,23 @@ module KSU::Font
     return 0.0 unless ready?
     stream = text.to_s.unicode_normalize
     gap2 = _48cc9611 || (flag2 ? TIGHT_GAP : CHAR_PADDING)
-    num3 = 0.0
+    w = 0.0
     stream.each_char do |color|
       _65570dfe = color.ord
       if _65570dfe == 32 || _65570dfe == 9
-        num3 += SPACE
+        w += SPACE
         next
       end
       if flag2
         entity = bounds_of(_65570dfe)
-        num3 += (entity[1] - entity[0]) + gap2
+        w += (entity[1] - entity[0]) + gap2
       else
         flag = width_of(_65570dfe)
         flag = width_of(0) if @snap_edges[_65570dfe].nil?
-        num3 += flag + gap2
+        w += flag + gap2
       end
     end
-    num3 > gap2 ? num3 - gap2 : 0.0
+    w > gap2 ? w - gap2 : 0.0
   end
   def _1ff4cc8f(text, box, upm, flag = false, _48cc9611 = nil, xf = 1.0)
     import

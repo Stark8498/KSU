@@ -97,10 +97,10 @@ module KSU::Simplify
   def _92674c1b(arr2, b)
     arr2[0] * b[1] - arr2[1] * b[0]
   end
-  def _03ea1bb7(arr, v, arr2, num3)
-    num = v[0] * num3[1] - v[1] * num3[0]
+  def _03ea1bb7(arr, v, arr2, w)
+    num = v[0] * w[1] - v[1] * w[0]
     return nil if num.abs < 1e-12
-    thick = ((arr2[0] - arr[0]) * num3[1] - (arr2[1] - arr[1]) * num3[0]) / num
+    thick = ((arr2[0] - arr[0]) * w[1] - (arr2[1] - arr[1]) * w[0]) / num
     [arr[0] + thick * v[0], arr[1] + thick * v[1]]
   end
   def _578e7a65(_6125f482, arr5)

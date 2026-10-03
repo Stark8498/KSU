@@ -87,15 +87,15 @@ module KSU::Svg
   def rect(node)
     x = attr(node, "x").to_f
     y = attr(node, "y").to_f
-    num3 = attr(node, "width").to_f
-    arr52 = attr(node, "height").to_f
+    w = attr(node, "width").to_f
+    h = attr(node, "height").to_f
     pre, opac = paint_ops(node)
     return pre if opac == "n"
-    half = [attr(node, "rx").to_f, num3 / 2.0, arr52 / 2.0].min
-    return pre + ["#{n(x)} #{n(y)} #{n(num3)} #{n(arr52)} re", opac] if half <= 0
+    half = [attr(node, "rx").to_f, w / 2.0, h / 2.0].min
+    return pre + ["#{n(x)} #{n(y)} #{n(w)} #{n(h)} re", opac] if half <= 0
     k = half * 0.5523
-    x2 = x + num3
-    _60000b16 = y + arr52
+    x2 = x + w
+    _60000b16 = y + h
     ops = ["#{n(x + half)} #{n(y)} m", "#{n(x2 - half)} #{n(y)} l"]
     ops << "#{n(x2 - half + k)} #{n(y)} #{n(x2)} #{n(y + half - k)} #{n(x2)} #{n(y + half)} c"
     ops << "#{n(x2)} #{n(_60000b16 - half)} l"

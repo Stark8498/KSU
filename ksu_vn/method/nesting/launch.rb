@@ -150,7 +150,7 @@ module KSU::Launch
   def _f75e3e4f(rows, _4effcb0e)
     return if @arr47 || @num12 || @labelling || @flag6
     KSU.select_only([])
-    h18 = job_settings
+    cfg = job_settings
     unless rows.empty?
       materials = {}
       mat_order = {}
@@ -163,19 +163,19 @@ module KSU::Launch
         rotate_cfg[half["key"].to_s] = color
         h[half["name"].to_s] = color
       end
-      h18[:materials] = materials
-      h18[:mat_order] = mat_order
-      h18[:rotate_cfg] = rotate_cfg
-      h18[:rotate_by_name] = h
+      cfg[:materials] = materials
+      cfg[:mat_order] = mat_order
+      cfg[:rotate_cfg] = rotate_cfg
+      cfg[:rotate_by_name] = h
     end
-    flag26, flag7, top, arr40 = margins_of(h18)
-    if h18[:sheet_w] - flag26 - flag7 <= 0 || h18[:sheet_h] - top - arr40 <= 0
+    m_left, m_right, top, m_bottom = margins_of(cfg)
+    if cfg[:sheet_w] - m_left - m_right <= 0 || cfg[:sheet_h] - top - m_bottom <= 0
       UI.messagebox("Có lỗi xảy ra khi nesting!")
       return
     end
     close_contexts
     erase_nesting
-    _33959628(h18, true, _4effcb0e)
+    _33959628(cfg, true, _4effcb0e)
   rescue StandardError => ent
     _a762c251
     UI.messagebox("Lỗi nesting: #{ent.message}")

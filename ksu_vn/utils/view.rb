@@ -119,7 +119,7 @@ module KSU::View
   end
   def self.panel_record(entity, polygon, holes, board_index, back, z, two_sided_flags)
     poly = polygon.map { |pt| Geom::Point3d.new(pt.x, pt.y, z) }
-    pt2 = (holes || []).map { |arr52| arr52.map { |pt| Geom::Point3d.new(pt.x, pt.y, z) } }
+    pt2 = (holes || []).map { |h| h.map { |pt| Geom::Point3d.new(pt.x, pt.y, z) } }
     {
       entity: entity,
       tris: tris(poly, pt2),
@@ -469,7 +469,7 @@ module KSU::View
   def self._2c42fd38(outer, holes, color)
     return unless color && outer && outer.length >= 3
     draw_loop(outer, color: color)
-    (holes || []).each { |arr52| draw_loop(arr52, color: color) if arr52 && arr52.length >= 3 }
+    (holes || []).each { |h| draw_loop(h, color: color) if h && h.length >= 3 }
   end
   def self._feb12e90(layers)
     arr = [

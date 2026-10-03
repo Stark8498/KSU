@@ -19,7 +19,7 @@ module KSU::Label
     case str2.to_s
     when "upper" then thick.upcase
     when "lower" then thick.downcase
-    when "title" then thick.gsub(/[^\s]+/) { |num3| num3.capitalize }
+    when "title" then thick.gsub(/[^\s]+/) { |w| w.capitalize }
     else thick
     end
   end
@@ -338,8 +338,8 @@ module KSU::Label
       arr10 = _9f608530(_6e2cbaa3 + _b6d1d40c, opac)
       arr8 = _9f608530(_57f116a2 - _b6d1d40c, opac)
       next if arr10.size < 2 || arr8.size < 2
-      arr15 = holes.map { |arr52| _9f608530(_6e2cbaa3 + _b6d1d40c, arr52) }
-      arr14 = holes.map { |arr52| _9f608530(_57f116a2 - _b6d1d40c, arr52) }
+      arr15 = holes.map { |h| _9f608530(_6e2cbaa3 + _b6d1d40c, h) }
+      arr14 = holes.map { |h| _9f608530(_57f116a2 - _b6d1d40c, h) }
       arr16 = grid[half]
       num2.times do |num|
         _296d32cf = arr2[num]
@@ -380,12 +380,12 @@ module KSU::Label
           num += 1
         else
           _ab593548 = arr4.pop
-          arr52 = arr5[_ab593548]
+          h = arr5[_ab593548]
           flag = arr4.empty? ? 0 : arr4.last + 1
-          _5fb96e91 = arr52 * (arr2[num] - arr2[flag])
-          if arr52 > 0 && _5fb96e91 > area
+          _5fb96e91 = h * (arr2[num] - arr2[flag])
+          if h > 0 && _5fb96e91 > area
             area = _5fb96e91
-            best = [arr2[flag], arr2[num], _57f116a2 - arr52, _57f116a2]
+            best = [arr2[flag], arr2[num], _57f116a2 - h, _57f116a2]
           end
         end
       end
@@ -403,11 +403,11 @@ module KSU::Label
     { large: large, small: small, center: center }
   end
   def _681febe3(grp, b2, tf)
-    grp9 = KSU::Cutting.cutting_group(grp)
-    return nil unless grp9 && grp9.valid? && grp9.visible?
-    snap_edges = (KSU.entities_in(grp9) || []).grep(Sketchup::Edge)
+    grp7 = KSU::Cutting.cutting_group(grp)
+    return nil unless grp7 && grp7.valid? && grp7.visible?
+    snap_edges = (KSU.entities_in(grp7) || []).grep(Sketchup::Edge)
     return nil if snap_edges.empty?
-    pt = snap_edges[0].start.position.transform(tf * grp9.transformation)
+    pt = snap_edges[0].start.position.transform(tf * grp7.transformation)
     vec2 = pt.distance_to_plane([b2[0].bounds.center.transform(tf), b2[0].normal.transform(tf)])
     d1 = pt.distance_to_plane([b2[1].bounds.center.transform(tf), b2[1].normal.transform(tf)])
     vec2 < d1 ? b2[0] : b2[1]

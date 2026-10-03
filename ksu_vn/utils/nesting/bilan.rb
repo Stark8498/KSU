@@ -57,11 +57,11 @@ module KSU::Bilan
     _035410f9 = KSU::Avail.two_sided?(sheet)
     flag5 = KSU::Sheet.hidden?(sheet) && KSU::Sheet.marks_of(sheet).any?
     _88817caf, _5dc624bc, _bee95155, _58b58971 = KSU::Avail.sides_for(sheet, gap_for)
-    flag26 = _035410f9 ? num3 : _88817caf
-    arr40 = (_035410f9 || flag5) ? num3 : _58b58971
-    flag7 = flag5 ? num3 : _5dc624bc
+    m_left = _035410f9 ? num3 : _88817caf
+    m_bottom = (_035410f9 || flag5) ? num3 : _58b58971
+    m_right = flag5 ? num3 : _5dc624bc
     top = _bee95155
-    _efb2355c = [flag26, flag7, top, arr40].max
+    _efb2355c = [m_left, m_right, top, m_bottom].max
     h = {}
     h2 = {}
     keys.each do |i|
@@ -70,8 +70,8 @@ module KSU::Bilan
       fld_bbox = fld[:bbox]
       hull = fld[:hull]
       unless flag.nil? || _efb2355c <= 0.0
-        if fld_bbox[:min_x] < flag + flag26 - tol || fld_bbox[:max_x] > flag3 - flag7 + tol ||
-           fld_bbox[:min_y] < flag4 + arr40 - tol || fld_bbox[:max_y] > flag2 - top + tol
+        if fld_bbox[:min_x] < flag + m_left - tol || fld_bbox[:max_x] > flag3 - m_right + tol ||
+           fld_bbox[:min_y] < flag4 + m_bottom - tol || fld_bbox[:max_y] > flag2 - top + tol
           h[i] = true
         end
       end

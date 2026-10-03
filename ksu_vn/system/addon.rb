@@ -23,7 +23,7 @@ module KSU
       @items.key?(key.to_s.to_sym)
     end
     def self.labels
-      @items.each_with_object({}) { |(k, v), arr52| arr52[k] = [v[:label], v[:tip]] }
+      @items.each_with_object({}) { |(k, v), h| h[k] = [v[:label], v[:tip]] }
     end
     def self.icon_of(key)
       fld = @items[key.to_s.to_sym]

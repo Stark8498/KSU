@@ -99,7 +99,7 @@ module KSU::Collide
       fld = items[i]
       next if fld[:is_border] || _9535dc0b[fld[:panel].object_id]
       rings << fld[:poly]
-      (fld[:holes] || []).each { |arr52| rings << arr52 if arr52 && arr52.length >= 3 }
+      (fld[:holes] || []).each { |h| rings << h if h && h.length >= 3 }
     end
     borders = arr3[:borders].map { |arr6| arr6[:poly] }
     return if rings.empty? && borders.empty?
@@ -151,7 +151,7 @@ module KSU::Collide
     fill = KSU::Cutting.outline(h[:panel], h[:world_tr])
     outer = fill[:outer]
     h[:outer] = (outer && outer.length >= 3) ? outer.map { |_23505ef9| view.screen_coords(_23505ef9) } : nil
-    h[:holes] = (fill[:holes] || []).map { |arr52| arr52.map { |_23505ef9| view.screen_coords(_23505ef9) } }
+    h[:holes] = (fill[:holes] || []).map { |h23| h23.map { |_23505ef9| view.screen_coords(_23505ef9) } }
   end
   def _970aa8ae
     KSU::Avail.sides(@tam_cach_le.to_f).min
@@ -258,9 +258,9 @@ module KSU::Collide
       next if fld[:is_border]
       holes = fld[:holes]
       next unless holes && !holes.empty?
-      holes.each do |arr52|
-        next if arr52.length < 3
-        return arr52 if KSU::Geom.point_in?(trai, duoi, arr52)
+      holes.each do |h|
+        next if h.length < 3
+        return h if KSU::Geom.point_in?(trai, duoi, h)
       end
     end
     nil
@@ -308,7 +308,7 @@ module KSU::Collide
     _ac6822d3 = [_970aa8ae - num, 0.0].max
     arr9.each do |arr2|
       fixed = arr2[:poly].map { |pt| [pt.x.to_f, pt.y.to_f] }
-      arr11 = (arr2[:holes] || []).map { |arr52| arr52.map { |pt| [pt.x.to_f, pt.y.to_f] } }
+      arr11 = (arr2[:holes] || []).map { |h| h.map { |pt| [pt.x.to_f, pt.y.to_f] } }
       KSU::Nfp._3ea4c8e4(arr3, arr5, fixed, arr11, moving, num2)
     end
     _c6c7c535(arr4, arr8).each do |_e1aa7d6a|
@@ -358,9 +358,9 @@ module KSU::Collide
   def _5bb0f6d2
     return 0.0 unless @arr15
     bbox = KSU::Geom.bounds(@arr15)
-    num3 = bbox[:max_x] - bbox[:min_x]
-    arr52 = bbox[:max_y] - bbox[:min_y]
-    num3 > arr52 ? num3 : arr52
+    w = bbox[:max_x] - bbox[:min_x]
+    h = bbox[:max_y] - bbox[:min_y]
+    w > h ? w : h
   end
   def _25080947(arr, pt2)
     return unless @anchor_pt && @drag_offset

@@ -188,9 +188,9 @@ module KSU::Engine
       num2 = flag47
       arr7 = num2.zero? ? loops : loops.map { |arr8| arr8.map { |arr| [arr[0] + num2, arr[1]] } }
       pt[:poly_mm] = arr7.first
-      (pt[:members] || []).each do |arr40|
-        flag26 = _fa87e7fb(arr40[:part]).first
-        arr40[:part][:poly_mm] = flag26.map { |arr| [arr[0] + arr40[:rx] + num2, arr[1] + arr40[:ry]] }
+      (pt[:members] || []).each do |m_bottom|
+        m_left = _fa87e7fb(m_bottom[:part]).first
+        m_bottom[:part][:poly_mm] = m_left.map { |arr| [arr[0] + m_bottom[:rx] + num2, arr[1] + m_bottom[:ry]] }
       end
       arr7.each do |_b41d8800|
         flat << _b41d8800
@@ -207,12 +207,12 @@ module KSU::Engine
     return nil unless panel && panel.valid?
     panel.get_attribute("KSU", "group-id")
   end
-  def _9f684ec0(pt16)
-    if pt16[:outer] && pt16[:outer].length >= 3
-      [pt16[:outer].map { |pt| pt.x.to_f }.min * 25.4,
-       pt16[:outer].map { |pt| pt.y.to_f }.min * 25.4]
-    elsif pt16[:bbox]
-      [pt16[:bbox].min.x.to_f * 25.4, pt16[:bbox].min.y.to_f * 25.4]
+  def _9f684ec0(pt13)
+    if pt13[:outer] && pt13[:outer].length >= 3
+      [pt13[:outer].map { |pt| pt.x.to_f }.min * 25.4,
+       pt13[:outer].map { |pt| pt.y.to_f }.min * 25.4]
+    elsif pt13[:bbox]
+      [pt13[:bbox].min.x.to_f * 25.4, pt13[:bbox].min.y.to_f * 25.4]
     end
   end
   def _7714f91b(parts)
@@ -229,9 +229,9 @@ module KSU::Engine
     end
     return parts if groups.empty?
     arr3 = parts.map do |pt|
-      num3 = pt[:w].to_f * 25.4
-      arr52 = pt[:h].to_f * 25.4
-      [[num3, arr52].min, [num3, arr52].max]
+      w = pt[:w].to_f * 25.4
+      h = pt[:h].to_f * 25.4
+      [[w, h].min, [w, h].max]
     end
     groups.each_value do |members|
       if members.length < 2
@@ -248,7 +248,7 @@ module KSU::Engine
       loops = _fa87e7fb(pt)
       sheet_h = loops.map { |arr6| arr6.map { |arr3| [arr3[0] + arr4[0], arr3[1] + arr4[1]] } }
       arr5 << KSU::Nfp._5762df6e(sheet_h.first, true)
-      (sheet_h[1..] || []).each { |arr52| arr5 << KSU::Nfp._5762df6e(arr52, false) }
+      (sheet_h[1..] || []).each { |h| arr5 << KSU::Nfp._5762df6e(h, false) }
     end
     rings = begin
         defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:union) ? KSU::Clipper.union(arr5, 6) : nil
@@ -310,9 +310,9 @@ module KSU::Engine
     ang = flag2 ? (grp[:cano] || 0.0) % 360.0 : 0.0
     outer = grp[:outer]
     unless outer && outer.length >= 3
-      num3 = grp[:w] * 25.4
-      arr52 = grp[:h] * 25.4
-      rect = [[0.0, 0.0], [num3, 0.0], [num3, arr52], [0.0, arr52]]
+      w = grp[:w] * 25.4
+      h = grp[:h] * 25.4
+      rect = [[0.0, 0.0], [w, 0.0], [w, h], [0.0, h]]
       return [rect] if ang == 0.0
       rect = _d3de41b2(rect, ang)
       arr8 = rect.map { |_23505ef9| _23505ef9[0] }.min
@@ -326,9 +326,9 @@ module KSU::Engine
     min_y = arr2.map { |_23505ef9| _23505ef9[1] }.min
     conv2 = ->(arr10) { arr10.map { |_23505ef9| [(_23505ef9[0] - min_x) * 25.4, (_23505ef9[1] - min_y) * 25.4] } }
     loops = [conv2.call(arr2)]
-    (grp[:holes] || []).each do |arr52|
-      next unless arr52 && arr52.length >= 3
-      arr3 = arr52.map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }
+    (grp[:holes] || []).each do |h|
+      next unless h && h.length >= 3
+      arr3 = h.map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }
       arr3 = _d3de41b2(arr3, ang) unless ang == 0.0
       arr5 = KSU::Simplify._c71fe5d3(arr3, false)
       next if arr5.length < 3
@@ -350,7 +350,7 @@ module KSU::Engine
         grp = parts[id]
         next [] unless grp
         members = !!grp[:members]
-        arr4 = members ? grp[:members].map { |arr40| arr40[:part] } : [grp]
+        arr4 = members ? grp[:members].map { |m_bottom| m_bottom[:part] } : [grp]
         arr4.map do |arr|
           poly = arr[:poly_mm] || _fa87e7fb(arr, !members).first
           screen_box = _6d7a71cf(poly, num2.to_f, num.to_f, rot.to_f)

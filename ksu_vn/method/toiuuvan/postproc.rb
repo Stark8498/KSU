@@ -369,18 +369,18 @@ module KSU::Postproc
     score = 0.0
     str2.each do |color|
       arr = color[:p]
-      num3 = arr[:bw]
-      arr52 = arr[:bh]
-      box = free_spot(arr4, num3, arr52, usable_w, usable_h, gap2)
-      if box.nil? && @cho_phep_xoay && arr[:rotatable] && color[:kids].empty? && (num3 - arr52).abs > 1e-6
-        box = free_spot(arr4, arr52, num3, usable_w, usable_h, gap2)
+      w = arr[:bw]
+      h = arr[:bh]
+      box = free_spot(arr4, w, h, usable_w, usable_h, gap2)
+      if box.nil? && @cho_phep_xoay && arr[:rotatable] && color[:kids].empty? && (w - h).abs > 1e-6
+        box = free_spot(arr4, h, w, usable_w, usable_h, gap2)
         if box
-          num3 = arr[:bh]
-          arr52 = arr[:bw]
+          w = arr[:bh]
+          h = arr[:bw]
         end
       end
       next unless box
-      arr4 << { lx: box[:x], ly: box[:y], w: num3, h: arr52 }
+      arr4 << { lx: box[:x], ly: box[:y], w: w, h: h }
       score += arr[:bw] * arr[:bh]
     end
     score
@@ -471,10 +471,10 @@ module KSU::Postproc
     arr4 = found.map { |ent| { lx: ent[:bx], ly: ent[:by], w: ent[:bw], h: ent[:bh] } }
     arr3 = [[arr[:bw], arr[:bh], 0]]
     arr3 << [arr[:bh], arr[:bw], 90] if _c61e50a5 && @cho_phep_xoay && arr[:rotatable] && (arr[:bw] - arr[:bh]).abs > 1e-6
-    arr3.each do |num3, arr52, rot|
-      next if num3 > usable_w + 1e-6 || arr52 > usable_h + 1e-6
-      box = free_spot(arr4, num3, arr52, usable_w, usable_h, gap2)
-      return { lx: box[:x], ly: box[:y], w: num3, h: arr52, rot: rot } if box
+    arr3.each do |w, h, rot|
+      next if w > usable_w + 1e-6 || h > usable_h + 1e-6
+      box = free_spot(arr4, w, h, usable_w, usable_h, gap2)
+      return { lx: box[:x], ly: box[:y], w: w, h: h, rot: rot } if box
     end
     nil
   end
@@ -539,7 +539,7 @@ module KSU::Postproc
     _cce35269(sheet, rec).map do |pt|
       loops = _0579a704(pt)
       holes = loops[1..] || []
-      _5fb96e91 = poly_area(loops.first) - holes.inject(0.0) { |s, arr52| s + poly_area(arr52) }
+      _5fb96e91 = poly_area(loops.first) - holes.inject(0.0) { |s, h| s + poly_area(h) }
       _e66e2152, _c0711cd2 = _1998c7d5(pt)
       bbox = pt[:bbox]
       {
@@ -571,30 +571,30 @@ module KSU::Postproc
     end
     out
   end
-  def _0579a704(pt17)
-    outer = pt17[:outer]
+  def _0579a704(pt15)
+    outer = pt15[:outer]
     unless outer && outer.length >= 3
-      num3 = pt17[:w] * 25.4
-      arr52 = pt17[:h] * 25.4
-      return [[[0.0, 0.0], [num3, 0.0], [num3, arr52], [0.0, arr52]]]
+      w = pt15[:w] * 25.4
+      h = pt15[:h] * 25.4
+      return [[[0.0, 0.0], [w, 0.0], [w, h], [0.0, h]]]
     end
     arr2 = outer.map { |pt| [pt.x.to_f, pt.y.to_f] }
     min_x = arr2.map { |pt| pt[0] }.min
     min_y = arr2.map { |pt| pt[1] }.min
     conv2 = ->(arr5) { arr5.map { |pt| [(pt[0] - min_x) * 25.4, (pt[1] - min_y) * 25.4] } }
     loops = [conv2.call(arr2)]
-    (pt17[:holes] || []).each do |arr52|
-      next unless arr52 && arr52.length >= 3
-      loops << conv2.call(arr52.map { |pt| [pt.x.to_f, pt.y.to_f] })
+    (pt15[:holes] || []).each do |h|
+      next unless h && h.length >= 3
+      loops << conv2.call(h.map { |pt| [pt.x.to_f, pt.y.to_f] })
     end
     loops
   end
-  def _1998c7d5(pt18)
-    outer = pt18[:outer]
+  def _1998c7d5(pt16)
+    outer = pt16[:outer]
     if outer && outer.length >= 3
       [outer.map { |pt| pt.x.to_f }.min, outer.map { |pt| pt.y.to_f }.min]
     else
-      [pt18[:bbox].min.x.to_f, pt18[:bbox].min.y.to_f]
+      [pt16[:bbox].min.x.to_f, pt16[:bbox].min.y.to_f]
     end
   end
 end

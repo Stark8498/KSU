@@ -74,10 +74,10 @@ module KSU::Intem
     pw = arr["kr"].to_f * s
     ph = arr["kc"].to_f * s
     rot = !!arr["rot"]
-    num3 = arr["w"].to_f
-    arr52 = arr["h"].to_f
+    w = arr["w"].to_f
+    h = arr["h"].to_f
     arr3 = arr2.map do |svg|
-      { svg: svg, w: num3, h: arr52, pw: pw, ph: ph, rot: rot }
+      { svg: svg, w: w, h: h, pw: pw, ph: ph, rot: rot }
     end
     placements = KSU::Pdf.build_pdf(arr3, font, font_bold)
     File.open(path, "wb") { |f| f.write(placements) }

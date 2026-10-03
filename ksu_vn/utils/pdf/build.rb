@@ -34,7 +34,7 @@ module KSU::Pdf
     file_id = add.call(nil)
     tounicode_id = add.call(nil)
     arr2 = h.keys.sort
-    num3 = arr2.map { |g| "#{g} [#{(KSU::Ttf.advance(font_full, g).to_f * 1000 / font_full[:upm]).round}]" }.join(" ")
+    w = arr2.map { |g| "#{g} [#{(KSU::Ttf.advance(font_full, g).to_f * 1000 / font_full[:upm]).round}]" }.join(" ")
     upm = 1000.0 / font_full[:upm]
     data = font_full[:data]
     str = "<< /Type /Font /Subtype /Type0 /BaseFont /#{name} /Encoding /Identity-H " \
@@ -43,7 +43,7 @@ module KSU::Pdf
       "#{(font_full[:xmax] * upm).round} #{(font_full[:ymax] * upm).round}]"
     str2 = "<< /Type /Font /Subtype /CIDFontType2 /BaseFont /#{name} " \
       "/CIDSystemInfo << /Registry (Adobe) /Ordering (Identity) /Supplement 0 >> " \
-      "/FontDescriptor #{desc_id} 0 R /CIDToGIDMap /Identity /DW 500 /W [#{num3}] >>"
+      "/FontDescriptor #{desc_id} 0 R /CIDToGIDMap /Identity /DW 500 /W [#{w}] >>"
     str3 = "<< /Type /FontDescriptor /FontName /#{name} /Flags 4 /FontBBox #{box} " \
       "/ItalicAngle 0 /Ascent #{(font_full[:ascent] * upm).round} /Descent #{(font_full[:descent] * upm).round} " \
       "/CapHeight #{(font_full[:ascent] * upm).round} /StemV 80 /FontFile2 #{file_id} 0 R >>"
@@ -63,14 +63,14 @@ module KSU::Pdf
     "#{count_by_length.size} beginbfchar\n#{count_by_length.join("\n")}\nendbfchar\nendcmap\nCMapName currentdict /CMap defineresource pop\nend\nend"
   end
   def page_stream(group_rgb, font, font_bold, used, used_bold)
-    arr52 = group_rgb[:h]
-    num3 = group_rgb[:w]
+    h = group_rgb[:h]
+    w = group_rgb[:w]
     ops = []
     ops << "q"
     if group_rgb[:rot]
-      ops << "0 -1 1 0 0 #{num(num3 * S)} cm"
+      ops << "0 -1 1 0 0 #{num(w * S)} cm"
     end
-    ops << "#{num(S)} 0 0 #{num(-S)} 0 #{num(arr52 * S)} cm"
+    ops << "#{num(S)} 0 0 #{num(-S)} 0 #{num(h * S)} cm"
     ops.concat(KSU::Svg._3c7812cc(group_rgb[:svg], font, font_bold, used, used_bold))
     ops << "Q"
     ops.join("\n")

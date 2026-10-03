@@ -70,8 +70,8 @@ module KSU
     merge_before_last(TOOL_LABELS, KSU::Addon.labels)
   end
   def self.data
-    addon_data = KSU::Addon.keys.each_with_object({}) do |k, arr52|
-      arr52[k] = [nil, -> { KSU.with_license { KSU::Addon.launch(k) } }]
+    addon_data = KSU::Addon.keys.each_with_object({}) do |k, h|
+      h[k] = [nil, -> { KSU.with_license { KSU::Addon.launch(k) } }]
     end
     merge_before_last(TOOL_DATA, addon_data)
   end
