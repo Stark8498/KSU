@@ -1,6 +1,6 @@
 module KSU::Postproc
   private
-  def _28a699c9(flag = false)
+  def start_optimize(flag = false)
     return if @num12
     stop_timer
     groups = _e1ab909e
@@ -8,20 +8,20 @@ module KSU::Postproc
       UI.messagebox("Không có sheet hợp lệ để tối ưu.")
       return
     end
-    if _11554dfd
+    if errors_in_selection?
       msg2 = "Trong vùng chọn có chi tiết bị lỗi. Điều này có thể tạo ra kết quả không như ý muốn khi tối ưu, ví dụ như chồng lấn hoặc mất tấm. Tiếp tục?"
       return unless UI.messagebox(msg2, MB_YESNO) == IDYES
     end
-    _a815fdc9(@sel)
+    clear_last_cuts(@sel)
     if flag
-      _b9664cc7(true)
+      start_postpass(true)
     elsif !!defined?(KSU::Nesting::Engine)
-      _f16a0746(groups)
+      run_async(groups)
     else
-      _8ffda7d7(groups)
+      run_sync(groups)
     end
   end
-  def _11554dfd
+  def errors_in_selection?
     return false unless @arr11 && @arr11.any?
     return false unless @sel && @sheets
     tol = 1.mm.to_f
@@ -38,8 +38,8 @@ module KSU::Postproc
     end
     false
   end
-  def _a815fdc9(sheets)
-    arr = Array(sheets).compact.select { |s| s && s.valid? && _545a8b49(s) }.uniq
+  def clear_last_cuts(sheets)
+    arr = Array(sheets).compact.select { |s| s && s.valid? && has_last_cut?(s) }.uniq
     return if arr.empty?
     KSU.start
     arr.each do |sheet|
@@ -52,11 +52,11 @@ module KSU::Postproc
   rescue StandardError
     KSU.abort_op
   end
-  def _545a8b49(sheet)
+  def has_last_cut?(sheet)
     return true if sheet.get_attribute("ABF", "sheet-last-cut", nil)
     sheet.definition.entities.grep(Sketchup::Group).any? { |g| KSU::Nesting.last_cut?(g) }
   end
-  def _8ffda7d7(groups)
+  def run_sync(groups)
     _d6f11a0e = run(groups)
     @sel = (@sel + _d6f11a0e).select { |s| s && s.valid? }.uniq
     KSU::View.clear_cache
@@ -65,7 +65,7 @@ module KSU::Postproc
     KSU.abort_op
     UI.messagebox("Lỗi tối ưu: #{ent.message}")
   end
-  def _f16a0746(groups)
+  def run_async(groups)
     @arr17 = []
     @arr6 = groups.values
     @num12 = 0
@@ -92,56 +92,56 @@ module KSU::Postproc
     _10248dd2
     KSU::View.clear_cache
     KSU::View.view&.invalidate
-    _b9664cc7 if @tu_dong_hau_ky
+    start_postpass if @tu_dong_hau_ky
   end
-  def _b9664cc7(flag = false)
+  def start_postpass(flag = false)
     return unless flag || @tu_dong_hau_ky
     stop_timer
     @flag53 = false
-    @arr44 = nil
-    @num15 = 0
-    @num17 = 0
-    @flag57 = false
-    @num18 = 0
+    @postpass_rows = nil
+    @row_ix = 0
+    @src_ix = 0
+    @repacked_once = false
+    @done_count = 0
     @num5 = 0
-    @flag44 = false
-    @h19 = {}
+    @postpass_ended = false
+    @sheet_cache = {}
     @h7 = {}
     @_b933b59e = nil
-    @flag43 = false
+    @in_tick = false
     id = nil
-    id = UI.start_timer(0.15, true) { _0176b6ab(id) }
-    @_a16ac17e = id
+    id = UI.start_timer(0.15, true) { postpass_tick(id) }
+    @postpass_timer = id
   end
   def stop_timer
-    UI.stop_timer(@_a16ac17e) if @_a16ac17e
-    @_a16ac17e = nil
+    UI.stop_timer(@postpass_timer) if @postpass_timer
+    @postpass_timer = nil
     @flag53 = false
-    @arr44 = nil
-    @num15 = 0
-    @num17 = 0
-    @flag57 = nil
-    @num18 = 0
+    @postpass_rows = nil
+    @row_ix = 0
+    @src_ix = 0
+    @repacked_once = nil
+    @done_count = 0
     @num5 = 0
-    @flag44 = nil
-    @h19 = nil
+    @postpass_ended = nil
+    @sheet_cache = nil
     @h7 = nil
     @_b933b59e = nil
   end
-  def _0176b6ab(_ce79ae35 = nil)
-    if _ce79ae35 && @_a16ac17e != _ce79ae35
+  def postpass_tick(_ce79ae35 = nil)
+    if _ce79ae35 && @postpass_timer != _ce79ae35
       begin
         UI.stop_timer(_ce79ae35)
       rescue StandardError
       end
       return
     end
-    return if @flag43
-    @flag43 = true
+    return if @in_tick
+    @in_tick = true
     begin
       return stop_timer unless @nesting && @nesting.valid?
       return if @flag53
-      if _b0b73b9f == :done
+      if postpass_step == :done
         cancel
         return
       end
@@ -149,7 +149,7 @@ module KSU::Postproc
     rescue StandardError
       stop_timer
     ensure
-      @flag43 = false
+      @in_tick = false
     end
   end
   def cancel
@@ -158,132 +158,132 @@ module KSU::Postproc
     KSU::View.clear_cache
     KSU::View.view&.invalidate
   end
-  def _b0b73b9f
+  def postpass_step
     @sheets ||= KSU::Sheet.sheet_list(@nesting)
-    _61e17503 if @arr44.nil?
-    node = @arr44[@num15]
-    return _2e351df2 unless node
-    if @num17 >= node.length
-      _bf8a619a
+    build_postpass_queue if @postpass_rows.nil?
+    node = @postpass_rows[@row_ix]
+    return postpass_finish unless node
+    if @src_ix >= node.length
+      next_row
       return :round
     end
-    target = node[@num17]
+    target = node[@src_ix]
     unless target && target.valid?
-      _16f1ba59
+      next_src
       return :round
     end
-    rect = node[(@num17 + 1)..].to_a.none? { |s| s && s.valid? }
+    rect = node[(@src_ix + 1)..].to_a.none? { |s| s && s.valid? }
     if rect
-      _ceeedf70(target, node)
-      _16f1ba59
+      repack_sheet(target, node)
+      next_src
       return :round
     end
-    case _38bca22d(target, node)
+    case try_fill(target, node)
     when :moved
-      @flag57 = false
+      @repacked_once = false
     when :full
-      if @flag57
-        _16f1ba59
+      if @repacked_once
+        next_src
       else
-        @flag57 = true
-        _ceeedf70(target, node)
+        @repacked_once = true
+        repack_sheet(target, node)
       end
     end
     :round
   end
-  def _2e351df2
-    return :done if @flag44
-    @flag44 = true
+  def postpass_finish
+    return :done if @postpass_ended
+    @postpass_ended = true
     drop_empty_sheets
     @sel = @sel.select { |s| s && s.valid? }
     sheet_list
     KSU::View.clear_cache
     :round
   end
-  def _61e17503
+  def build_postpass_queue
     groups = []
     _e1ab909e.each_value do |sheets|
       arr = sheets.select { |s| s && s.valid? && !KSU::Sheet.hidden?(s) }
       groups << sort_by_x(arr) unless arr.empty?
     end
-    @arr44 = groups
+    @postpass_rows = groups
     @num5 = groups.inject(0) { |s, g| s + g.length }
-    _0a363616
-    @num18 = 0
-    @num15 = 0
-    @num17 = 0
-    @flag57 = false
+    reset_try_cache
+    @done_count = 0
+    @row_ix = 0
+    @src_ix = 0
+    @repacked_once = false
   end
-  def _16f1ba59
-    @num18 += 1
-    @num17 += 1
-    @flag57 = false
-    _0a363616
+  def next_src
+    @done_count += 1
+    @src_ix += 1
+    @repacked_once = false
+    reset_try_cache
   end
-  def _bf8a619a
-    @num15 += 1
-    @num17 = 0
-    @flag57 = false
-    _0a363616
+  def next_row
+    @row_ix += 1
+    @src_ix = 0
+    @repacked_once = false
+    reset_try_cache
   end
-  def _ceeedf70(target, node = nil)
+  def repack_sheet(target, node = nil)
     KSU.start
-    _d93740da([target], node)
+    repack_each([target], node)
     KSU.commit
     KSU::View.clear_cache
-    _0a363616
+    reset_try_cache
   rescue StandardError
     KSU.abort_op
   end
-  def _0a363616
-    @num8 = 0
-    @h9 = {}
+  def reset_try_cache
+    @try_resume_ix = 0
+    @tried_keys = {}
   end
-  def _38bca22d(target, node)
+  def try_fill(target, node)
     gap_for = @tam_cach_le.to_f
     deadline = Time.now + 0.5
     usable_w, usable_h = usable_size(target, gap_for)
     return :full unless usable_w && usable_h && usable_w > 0 && usable_h > 0
     found = _aeea1f26(target, gap_for)
     _6cab3dc0 = usable_w * usable_h * 25.4 * 25.4 - found.inject(0.0) { |s, ent| s + ent[:area] }
-    arr2 = _06a8054e(target, node, gap_for)
-    @h9 ||= {}
-    num = @num8.to_i
+    arr2 = movable_from_later(target, node, gap_for)
+    @tried_keys ||= {}
+    num = @try_resume_ix.to_i
     num = 0 if num < 0 || num >= arr2.length
     while num < arr2.length
       if Time.now > deadline
-        @num8 = num
+        @try_resume_ix = num
         return :again
       end
       arr = arr2[num]
       num += 1
       next if _6cab3dc0 < arr[:area] - 1e-6
       key = [arr[:p][:bw].round(4), arr[:p][:bh].round(4), !!arr[:p][:rotatable], arr[:kids].empty?]
-      next if @h9[key]
+      next if @tried_keys[key]
       screen_box = _cc51eebc(found, arr[:p], usable_w, usable_h, arr[:kids].empty?)
       unless screen_box
-        @h9[key] = true
+        @tried_keys[key] = true
         next
       end
       arr3 = { panel: arr[:p][:panel], src: arr[:src], target: target, box: screen_box,
                   bbox: arr[:p][:bbox], kids: arr[:kids], refx: arr[:p][:bx], refy: arr[:p][:by],
                   virtual: arr[:virtual] }
-      next unless _43a12c4f(arr3, gap_for)
-      _5fafa826(target, arr3[:src])
-      _0a363616
+      next unless do_move(arr3, gap_for)
+      forget_sheets(target, arr3[:src])
+      reset_try_cache
       return :moved
     end
-    _0a363616
+    reset_try_cache
     :full
   end
-  def _06a8054e(target, node, gap_for)
+  def movable_from_later(target, node, gap_for)
     _fb072f1a = node.index(target)
     return [] unless _fb072f1a
     out = []
     node[(_fb072f1a + 1)..].to_a.each do |src|
       next unless src && src.valid?
       parts = _aeea1f26(src, gap_for)
-      _003ab64b(parts).each do |arr|
+      cluster_parts(parts).each do |arr|
         next unless arr[:panels].all? { |normal_rgb| normal_rgb && normal_rgb.valid? }
         if arr[:entry]
           out << { src: src, p: arr[:entry], kids: arr[:kid_entries], area: arr[:area], virtual: true }
@@ -298,7 +298,7 @@ module KSU::Postproc
     end
     out.sort_by { |color| -(color[:p][:bw] * color[:p][:bh]) }
   end
-  def _43a12c4f(_bd0102dd, gap_for)
+  def do_move(_bd0102dd, gap_for)
     KSU.start
     bbox = _086b9b67(_bd0102dd, gap_for)
     KSU.commit
@@ -307,14 +307,14 @@ module KSU::Postproc
     KSU.abort_op
     false
   end
-  def _5fafa826(target, src = nil)
-    if @h19
-      @h19.delete(target.entityID) if target && target.valid?
-      @h19.delete(src.entityID) if src && src.valid?
+  def forget_sheets(target, src = nil)
+    if @sheet_cache
+      @sheet_cache.delete(target.entityID) if target && target.valid?
+      @sheet_cache.delete(src.entityID) if src && src.valid?
     end
     KSU::View.clear_cache
   end
-  def _d93740da(arr2, node = nil)
+  def repack_each(arr2, node = nil)
     ix = pack_seed
     gap_for = @tam_cach_le.to_f
     gap2 = @tam_cach_nhau.to_f
@@ -324,14 +324,14 @@ module KSU::Postproc
       next if KSU::Sheet.bottom(s, @nesting)
       rec = sheet_recs.find { |i| i[:instance] == s }
       next unless rec
-      plan = _b54811d0(s, rec, ix, gap_for, gap2, node)
+      plan = best_plan(s, rec, ix, gap_for, gap2, node)
       KSU::Nesting.apply_moves(@nesting, plan) if plan
-      @h19.delete(s.entityID) if @h19
+      @sheet_cache.delete(s.entityID) if @sheet_cache
     end
   rescue StandardError
     nil
   end
-  def _b54811d0(sheet, rec, ix, gap_for, gap2, node)
+  def best_plan(sheet, rec, ix, gap_for, gap2, node)
     arr = [KSU::Nesting.plan_corner(@nesting, sheet, rec, ix, gap_for, gap2, false, Time.now + 0.5)]
     [ix, (ix + 3) % 4].each do |ent|
       arr << KSU::Nesting.plan_edge(@nesting, sheet, rec, ent, gap_for, gap2)
@@ -339,18 +339,18 @@ module KSU::Postproc
     arr = arr.compact
     return nil if arr.empty?
     return arr.first if arr.length == 1
-    str2 = node ? _06a8054e(sheet, node, gap_for).first(12) : []
+    str2 = node ? movable_from_later(sheet, node, gap_for).first(12) : []
     best = arr.first
-    _488638cf = _c4f153fd(sheet, gap_for, best, str2)
+    _488638cf = plan_score(sheet, gap_for, best, str2)
     arr[1..].each do |members|
-      score = _c4f153fd(sheet, gap_for, members, str2)
+      score = plan_score(sheet, gap_for, members, str2)
       next unless score > _488638cf + 1e-6
       best = members
       _488638cf = score
     end
     best
   end
-  def _c4f153fd(sheet, gap_for, plan, str2)
+  def plan_score(sheet, gap_for, plan, str2)
     return 0.0 if str2.nil? || str2.empty?
     usable_w, usable_h = usable_size(sheet, gap_for)
     return 0.0 unless usable_w && usable_h && usable_w > 0 && usable_h > 0
@@ -385,7 +385,7 @@ module KSU::Postproc
     end
     score
   end
-  def _003ab64b(parts)
+  def cluster_parts(parts)
     h3 = {}
     solo = []
     parts.each do |ent|
@@ -412,7 +412,7 @@ module KSU::Postproc
       solo.each do |f|
         next if f.equal?(ent)
         next if h[f.object_id]
-        next unless _8f10bac2(f, ent)
+        next unless fits_in_hole?(f, ent)
         h[f.object_id] = true
         (h2[ent.object_id] ||= []) << f
       end
@@ -453,7 +453,7 @@ module KSU::Postproc
       kid_entries: members
     }
   end
-  def _8f10bac2(f, ent)
+  def fits_in_hole?(f, ent)
     arr3 = poly_bounds(f[:polygon])
     max_eb = poly_bounds(ent[:polygon])
     return false unless f[:x] >= ent[:x] - 1e-3 && f[:y] >= ent[:y] - 1e-3 &&
@@ -480,7 +480,7 @@ module KSU::Postproc
   end
   def percent
     return 0 unless @num5 && @num5 > 0
-    [[(@num18 * 100 / @num5), 0].max, 100].min
+    [[(@done_count * 100 / @num5), 0].max, 100].min
   end
   def _086b9b67(arr2, gap_for)
     target = arr2[:target]
@@ -521,10 +521,10 @@ module KSU::Postproc
   end
   def _aeea1f26(sheet, gap_for)
     key = sheet.entityID
-    partner = @h19 && @h19[key]
+    partner = @sheet_cache && @sheet_cache[key]
     return partner if partner
     answer = _c5297436(sheet, gap_for)
-    @h19[key] = answer if @h19
+    @sheet_cache[key] = answer if @sheet_cache
     answer
   end
   def _c5297436(sheet, gap_for)

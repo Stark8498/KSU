@@ -1,7 +1,7 @@
-SketchUp 24.0.484  Ruby 3.2.2  2026-10-03 20:09:14 +0700
+SketchUp 24.0.484  Ruby 3.2.2  2026-10-03 20:27:19 +0700
 cay: C:/Users/Phucs/Downloads/ksu_vn
 
-1 NAP: OK (288 ms)
+1 NAP: OK (261 ms)
 2 MODULE: 73/73 co mat
 3 LOI GOI: 463/463 phan giai duoc
 4 METHOD: 1787 method dinh nghia trong cac module KSU

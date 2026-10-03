@@ -55,7 +55,7 @@ module KSU::Nest
         UI.start_timer(0, false) { KSU::Nest.finish }
         return
       end
-      _b9664cc7
+      start_postpass
       KSU::View.view.invalidate
     end
     def deactivate(view)

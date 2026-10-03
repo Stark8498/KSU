@@ -30,11 +30,17 @@ module KSUKhoiDong
               !defined?(KSU::Geom)
     return if pending
     done
-    begin
-      load File.join(HERE, "doisanh.rb")
-    rescue ScriptError, StandardError => e
-      File.open(File.join(HERE, "doisanh_loi.txt"), "w:UTF-8") do |f|
-        f.write("#{e.class}: #{e.message}\n" + e.backtrace.first(20).join("\n"))
+    # thu_su first: it loads the tree and reports what failed to load, which is
+    # what you want to read when the comparison then cannot run. Where KSU is
+    # already installed it declines, and doisanh uses that copy instead.
+    ["thu_su.rb", "doisanh.rb"].each do |f|
+      begin
+        load File.join(HERE, f)
+      rescue ScriptError, StandardError => e
+        File.open(File.join(HERE, "doisanh_loi.txt"), "a:UTF-8") do |out|
+          out.write("#{f}: #{e.class}: #{e.message}\n" +
+                    e.backtrace.first(20).join("\n") + "\n")
+        end
       end
     end
   end

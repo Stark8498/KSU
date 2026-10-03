@@ -52,15 +52,15 @@ class KSU::Toiuuvan
     @_x_bi_lan_polys = nil
     @num12 = nil
     @str = nil
-    @_a16ac17e = nil
+    @postpass_timer = nil
     @flag53 = false
-    @arr44 = nil
-    @num15 = 0
-    @num17 = 0
-    @flag57 = nil
-    @num18 = 0
+    @postpass_rows = nil
+    @row_ix = 0
+    @src_ix = 0
+    @repacked_once = nil
+    @done_count = 0
     @num5 = 0
-    @h19 = nil
+    @sheet_cache = nil
     if Sketchup.active_model.tools.active_tool == self
       @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, @an_nhan_tiet_dien, @label_section_hidden)
     end
@@ -148,7 +148,7 @@ class KSU::Toiuuvan
   end
   def onReturn(view)
     return if @sel.empty?
-    _28a699c9(@flag23)
+    start_optimize(@flag23)
     view&.invalidate
   end
   def onMouseMove(rot, x, y, view)

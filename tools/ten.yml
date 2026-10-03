@@ -1768,6 +1768,48 @@ ten:
   _5771caa6: sheet_id_of         # get_attribute("ABF","sheet-id"), khong co thi doc tu ten
   _3f9f6f46: panels_of
 
+  # ===== ME 44: method/toiuuvan/postproc.rb -- hau ky sau khi toi uu =====
+  # Sau khi xep xong, chay them mot luot don: duyet tung hang van, thu keo tam
+  # tu van SAU len van TRUOC cho kin, roi xep lai van vua nhan them. Chay tren
+  # UI.start_timer 0.15s, moi nhip tu cat o 0.5s de khong treo SketchUp.
+  _28a699c9: start_optimize
+  _11554dfd: errors_in_selection?   # co diem loi nao roi trong hop bao van dang chon
+  _a815fdc9: clear_last_cuts
+  _545a8b49: has_last_cut?
+  _8ffda7d7: run_sync
+  _f16a0746: run_async              # co KSU::Nesting::Engine thi chay theo lo
+
+  _b9664cc7: start_postpass
+  _0176b6ab: postpass_tick          # nhan dung id timer, timer cu tu tat
+  _b0b73b9f: postpass_step          # tra :round hoac :done
+  _2e351df2: postpass_finish
+  _61e17503: build_postpass_queue
+  _16f1ba59: next_src               # sang van nguon ke tiep trong hang
+  _bf8a619a: next_row
+  _ceeedf70: repack_sheet
+  _d93740da: repack_each
+  _38bca22d: try_fill               # :moved / :full / :again (het gio)
+  _06a8054e: movable_from_later     # ung vien lay tu cac van SAU van dich
+  _43a12c4f: do_move
+  _c4f153fd: plan_score             # cham diem mot phuong an theo dien tich nhet them duoc
+  _b54811d0: best_plan              # thu goc + hai canh, giu phuong an diem cao nhat
+  _003ab64b: cluster_parts          # gom theo get_attribute("KSU","group-id"), roi long tam vao lo
+  _8f10bac2: fits_in_hole?
+  _5fafa826: forget_sheets
+  _0a363616: reset_try_cache
+
+  _a16ac17e: postpass_timer      # @
+  _beecfd43: postpass_rows       # @: moi phan tu la mot hang van da xep theo x
+  _c4ac47fb: row_ix              # @
+  _d53ad96a: src_ix              # @: vi tri van nguon trong hang
+  _dc050c0b: done_count          # @
+  _eab3e9a3: repacked_once       # @: da xep lai van nay mot lan roi, lan nua la thoi
+  _aca3c0d8: postpass_ended      # @
+  _ac0e988f: in_tick             # @: chan nhip chong nhip
+  _70bb0001: try_resume_ix       # @: het gio thi lan sau xet tiep tu day
+  _84aff668: tried_keys          # @: khoa [bw, bh, xoay duoc, khong co con] da thu hong
+  _b1189fd0: sheet_cache         # @
+
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,
