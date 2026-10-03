@@ -15,7 +15,7 @@ class KSU::Toiuuvan
     @nesting = nil
     @sheets = []
     @sel = []
-    @arr64 = []
+    @btn_plan = []
     @_3e453efd = nil
     @_096c8c23 = nil
     @_e14ef301 = nil
@@ -50,7 +50,7 @@ class KSU::Toiuuvan
     @arr20 = []
     @arr11 = []
     @_x_bi_lan_polys = nil
-    @num12 = nil
+    @progress = nil
     @str = nil
     @postpass_timer = nil
     @flag53 = false
@@ -164,7 +164,7 @@ class KSU::Toiuuvan
       if (x - @_3a930069).abs > 3 || (y - @_0b246bc2).abs > 3
         @flag46 = true
         @_86277c8a, @_e76905aa = x, y
-        @arr64 = []
+        @btn_plan = []
         @_e14ef301 = nil
         view.invalidate
       end
@@ -178,9 +178,9 @@ class KSU::Toiuuvan
   end
   def _37011ad2(ctrl, view)
     return unless @_3e453efd && @_096c8c23
-    prev_key = @arr64
+    prev_key = @btn_plan
     sheet = _0fe26c5f(view, @_3e453efd, @_096c8c23)
-    @arr64 = if sheet && ctrl
+    @btn_plan = if sheet && ctrl
                       key = KSU::Sheet._7b0a38ee(sheet)
                       @sheets
                         .select { |rec| KSU::Sheet._7b0a38ee(rec[:instance]) == key }
@@ -188,7 +188,7 @@ class KSU::Toiuuvan
                     else
                       sheet ? [sheet] : []
                     end
-    view.invalidate if prev_key != @arr64
+    view.invalidate if prev_key != @btn_plan
   end
   def _f27128bc(view, x, y)
     prev_key = @_e14ef301
@@ -268,7 +268,7 @@ class KSU::Toiuuvan
       rec = @sheets.find { |s| s[:instance] == sheet }
       KSU::View.draw_outline(rec[:top_corners], KSU::View.main_face_color) if rec
     end
-    @arr64.each do |sheet|
+    @btn_plan.each do |sheet|
       next if @sel.include?(sheet)
       rec = @sheets.find { |s| s[:instance] == sheet }
       KSU::View.draw_outline(rec[:top_corners], KSU::View.face_color) if rec
@@ -283,7 +283,7 @@ class KSU::Toiuuvan
     _a42dd0f4(view)
     draw_presets(view)
     draw_fields(view)
-    draw_mode_hint(view, "#{@str || "Đang tối ưu"}... #{@num12}%") if @num12
+    draw_mode_hint(view, "#{@str || "Đang tối ưu"}... #{@progress}%") if @progress
     draw_mode_hint(view, "Đang hậu kỳ... #{percent}%") if @num5 && @num5 > 0
   end
   private
@@ -464,7 +464,7 @@ class KSU::Toiuuvan
   def _256cdef5(sheet)
     return unless KSU::Sheet.remove_sheet(sheet, @nesting, @sheets)
     @sel.delete(sheet)
-    @arr64.delete(sheet)
+    @btn_plan.delete(sheet)
     @_e14ef301 = nil
     sheet_list
     KSU::View.clear_cache

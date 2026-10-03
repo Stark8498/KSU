@@ -148,7 +148,7 @@ module KSU::Launch
     arr.select { |half| half.is_a?(Hash) && !half["key"].to_s.empty? }
   end
   def _f75e3e4f(rows, _4effcb0e)
-    return if @arr47 || @num12 || @labelling || @flag6
+    return if @arr47 || @progress || @labelling || @flag6
     KSU.select_only([])
     cfg = job_settings
     unless rows.empty?

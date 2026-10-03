@@ -35,8 +35,8 @@ class KSU::Netcatcuoi
     @pt = nil
     @_1cb11a43 = nil
     @arr26 = nil
-    @pt11 = nil
-    @num13 = 0.0
+    @cur_pt = nil
+    @plane_z = 0.0
     @id = nil
     @flag60 = nil
     @h5 = {}
@@ -164,11 +164,11 @@ class KSU::Netcatcuoi
     hover_field(x, y, view)
     hover_mode(x, y, view)
     hover_preset(x, y, view)
-    @pt11 = KSU::View.pick_on_plane(view, x, y, @num13)
-    if @flag19 && @pt11
+    @cur_pt = KSU::View.pick_on_plane(view, x, y, @plane_z)
+    if @flag19 && @cur_pt
       resize_to_cursor(view)
-    elsif @flag56 && @inst3 && @pt11
-      @pt = _d204c38c(@pt11, @_1cb11a43, view)
+    elsif @flag56 && @inst3 && @cur_pt
+      @pt = _d204c38c(@cur_pt, @_1cb11a43, view)
       @pt = _81184680(@pt9, @pt) if @pt9
       @flag60 = @pt
     else
@@ -214,7 +214,7 @@ class KSU::Netcatcuoi
     return unless rec
     @_1cb11a43 = limits_of(rec)
     @arr26 = panel_boxes(rec[:instance], rec[:transform])
-    _d41bb15d = KSU::View.pick_on_plane(view, x, y, @num13)
+    _d41bb15d = KSU::View.pick_on_plane(view, x, y, @plane_z)
     _d41bb15d = _d204c38c(_d41bb15d, @_1cb11a43, view)
     return unless _d41bb15d
     @flag56 = true
@@ -267,7 +267,7 @@ class KSU::Netcatcuoi
   end
   def sheet_list
     @sheets = KSU::Sheet.sheet_list(@nesting)
-    @num13 = @sheets.empty? ? 0.0 : @sheets.first[:bbox].center.z.to_f
+    @plane_z = @sheets.empty? ? 0.0 : @sheets.first[:bbox].center.z.to_f
   end
   def _0ed68c30(view, x, y)
     @sheets.find do |rec|
@@ -327,7 +327,7 @@ class KSU::Netcatcuoi
     ny = arr[:y].select { |s| x >= s[:lo] - _0845fb1d && x <= s[:hi] + _0845fb1d }.map { |s| s[:v] }.min_by { |v| (v - y).abs }
     x = nx if nx && (nx - x).abs <= _0845fb1d
     y = ny if ny && (ny - y).abs <= _0845fb1d
-    Geom::Point3d.new(x, y, @num13)
+    Geom::Point3d.new(x, y, @plane_z)
   end
   def _ae750226(view, _d41bb15d)
     view.pixels_to_model(12, _d41bb15d).to_f
@@ -335,10 +335,10 @@ class KSU::Netcatcuoi
     @tam_cach_le.to_f
   end
   def _63677f15(view, x, y)
-    return nil unless @mode == 0 && @pt11
+    return nil unless @mode == 0 && @cur_pt
     rec = _0ed68c30(view, x, y)
     return nil unless rec
-    _d204c38c(@pt11, limits_of(rec), view)
+    _d204c38c(@cur_pt, limits_of(rec), view)
   end
   def _d4767c0f
     rect = _d5a5cc33

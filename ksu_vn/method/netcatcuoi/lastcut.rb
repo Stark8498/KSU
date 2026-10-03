@@ -106,7 +106,7 @@ module KSU::Lastcut
         flag2 = i > 0 ? arr4[i - 1][j] : false
         flag3 = i < nx ? arr4[i][j] : false
         next if flag2 == flag3
-        arr6 << [Geom::Point3d.new(arr2[i], arr3[j], @num13), Geom::Point3d.new(arr2[i], arr3[j + 1], @num13)]
+        arr6 << [Geom::Point3d.new(arr2[i], arr3[j], @plane_z), Geom::Point3d.new(arr2[i], arr3[j + 1], @plane_z)]
       end
     end
     (0..ny).each do |j|
@@ -114,7 +114,7 @@ module KSU::Lastcut
         flag4 = j > 0 ? arr4[i][j - 1] : false
         flag = j < ny ? arr4[i][j] : false
         next if flag4 == flag
-        arr6 << [Geom::Point3d.new(arr2[i], arr3[j], @num13), Geom::Point3d.new(arr2[i + 1], arr3[j], @num13)]
+        arr6 << [Geom::Point3d.new(arr2[i], arr3[j], @plane_z), Geom::Point3d.new(arr2[i + 1], arr3[j], @plane_z)]
       end
     end
     loops = KSU::Cutting.build_loops(arr6)
@@ -272,8 +272,8 @@ module KSU::Lastcut
           _eac99076 = _79be379e
         end
         bbox = Geom::BoundingBox.new
-        bbox.add(Geom::Point3d.new(arr3[start2[0]], arr2[j], @num13))
-        bbox.add(Geom::Point3d.new(arr3[start2[1]], arr2[_eac99076 + 1], @num13))
+        bbox.add(Geom::Point3d.new(arr3[start2[0]], arr2[j], @plane_z))
+        bbox.add(Geom::Point3d.new(arr3[start2[1]], arr2[_eac99076 + 1], @plane_z))
         arr4 << bbox
       end
     end

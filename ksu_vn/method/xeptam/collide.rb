@@ -12,23 +12,23 @@ module KSU::Collide
   end
   def reset_caches
     KSU::View.clear_cache
-    @h15 = {}
-    @h27 = {}
+    @obstacle_cache = {}
+    @nfp_memo = {}
     clear_grid_cache
     @arr3 = nil
     @grid = nil
     stamp_sig
   end
   def drop_sheet_cache(sheets)
-    @h15 ||= {}
+    @obstacle_cache ||= {}
     keys = {}
     Array(sheets).each { |s| keys[s.entityID] = true if s && s.valid? }
     return if keys.empty?
-    @h15.delete_if { |k, v| !(k && k.valid?) || keys[k.entityID] }
+    @obstacle_cache.delete_if { |k, v| !(k && k.valid?) || keys[k.entityID] }
   end
   def refresh_after_move(panels, sheets)
     drop_sheet_cache(sheets)
-    @h27 = {}
+    @nfp_memo = {}
     drop_grid_cache(sheets)
     @arr3 = nil
     refresh_hits(panels)
@@ -72,8 +72,8 @@ module KSU::Collide
     end
   end
   def build_grid(arr4)
-    return unless @flag9 && @sel_polys && arr4 && arr4[:instance]
-    arr3 = _1adb886a(arr4[:instance])
+    return unless @refine_on && @sel_polys && arr4 && arr4[:instance]
+    arr3 = obstacles_of(arr4[:instance])
     return unless arr3
     arr5 = []
     bbox = nil
@@ -103,7 +103,7 @@ module KSU::Collide
     end
     borders = arr3[:borders].map { |arr6| arr6[:poly] }
     return if rings.empty? && borders.empty?
-    dx, dy = KSU::Method.contact_refine(arr5, rings, borders, gap2, _970aa8ae, tol, 6)
+    dx, dy = KSU::Method.contact_refine(arr5, rings, borders, gap2, min_margin, tol, 6)
     return if dx.abs < 1e-12 && dy.abs < 1e-12
     delta = Geom::Vector3d.new(dx, dy, 0)
     add_offset(delta)
@@ -146,26 +146,26 @@ module KSU::Collide
       area: (sxmax - sxmin) * (symax - symin),
     }
   end
-  def _9b1924b8(view, h)
+  def ensure_screen_poly(view, h)
     return if h.key?(:outer)
     fill = KSU::Cutting.outline(h[:panel], h[:world_tr])
     outer = fill[:outer]
     h[:outer] = (outer && outer.length >= 3) ? outer.map { |_23505ef9| view.screen_coords(_23505ef9) } : nil
     h[:holes] = (fill[:holes] || []).map { |h23| h23.map { |_23505ef9| view.screen_coords(_23505ef9) } }
   end
-  def _970aa8ae
+  def min_margin
     KSU::Avail.sides(@tam_cach_le.to_f).min
   end
-  def _1adb886a(sheet)
+  def obstacles_of(sheet)
     return nil unless sheet && sheet.valid?
-    @h15 ||= {}
-    partner = @h15[sheet]
+    @obstacle_cache ||= {}
+    partner = @obstacle_cache[sheet]
     return partner if partner
     items = []
     borders = []
     sheet.definition.entities.each do |panel|
       next unless KSU::Sheet.drawable?(panel)
-      poly = (@h21 && @h21[panel.object_id]) || outer_pts_of(panel, sheet)
+      poly = (@poly_cache && @poly_cache[panel.object_id]) || outer_pts_of(panel, sheet)
       next if poly.length < 3
       str = panel.name.to_s == "__ABF_sheetBorder"
       if str
@@ -174,13 +174,13 @@ module KSU::Collide
         poly = KSU::Avail.shrink_poly(poly, _88817caf - _08f8a9e0, _5dc624bc - _08f8a9e0, _bee95155 - _08f8a9e0, bbox - _08f8a9e0)
         if (num = KSU::Sheet.edit_offset(sheet))
           num = KSU::Avail.clamp_move(sheet, num, @tam_cach_le.to_f)
-          poly = _56bc8e10(poly, num[0], num[1])
+          poly = shift_edges(poly, num[0], num[1])
         end
       end
       holes = if str
           []
         else
-          fill = _cdd6bfc2(panel, sheet)
+          fill = fill_of(panel, sheet)
           fill ? (fill[:holes] || []) : []
         end
       fld = { panel: panel, poly: poly, holes: holes,
@@ -189,13 +189,13 @@ module KSU::Collide
       items << fld
       borders << fld if str
     end
-    @h15[sheet] = {
+    @obstacle_cache[sheet] = {
       items: items,
       borders: borders,
       grid: KSU::Nfp._78849fa5(items),
     }
   end
-  def _56bc8e10(poly, dx, dy)
+  def shift_edges(poly, dx, dy)
     b = KSU::Geom.bounds(poly)
     tol = 0.1.mm
     poly.map do |pt|
@@ -208,9 +208,9 @@ module KSU::Collide
       Geom::Point3d.new(x, y, pt.z.to_f)
     end
   end
-  def _79fb30a5(loops, holes)
+  def hole_around(loops, holes)
     return nil unless holes && !holes.empty? && loops && !loops.empty?
-    px, py = _5ac34e7b(loops)
+    px, py = bbox_mid(loops)
     return nil unless px
     holes.each do |vec|
       next if vec.length < 3
@@ -220,7 +220,7 @@ module KSU::Collide
     end
     nil
   end
-  def _5ac34e7b(loops)
+  def bbox_mid(loops)
     lx = ly = nil
     flag2 = flag = nil
     loops.each do |arr|
@@ -237,23 +237,23 @@ module KSU::Collide
     return [nil, nil] if lx.nil?
     [(lx + flag2) / 2.0, (ly + flag) / 2.0]
   end
-  def _19030d1a(arr)
+  def escape_hole(arr)
     return nil unless @pt5 && @sel_polys
-    _24eac4c4 = _1adb886a(arr[:instance])
+    _24eac4c4 = obstacles_of(arr[:instance])
     return nil unless _24eac4c4
     x = @pt5.x.to_f
     y = @pt5.y.to_f
-    px, py = _5ac34e7b(@sel_polys)
+    px, py = bbox_mid(@sel_polys)
     return nil unless px
-    _80253039 = _fb706f65(_24eac4c4, x, y)
+    _80253039 = hole_at(_24eac4c4, x, y)
     if _80253039
       return nil if KSU::Geom.point_in?(px, py, _80253039)
       return Geom::Vector3d.new(x - px, y - py, 0)
     end
-    return nil unless _fb706f65(_24eac4c4, px, py)
+    return nil unless hole_at(_24eac4c4, px, py)
     Geom::Vector3d.new(x - px, y - py, 0)
   end
-  def _fb706f65(arr, trai, duoi)
+  def hole_at(arr, trai, duoi)
     arr[:items].each do |fld|
       next if fld[:is_border]
       holes = fld[:holes]
@@ -266,17 +266,17 @@ module KSU::Collide
     nil
   end
   def reset_anchor
-    @h27 = {}
-    @arr15 = nil
+    @nfp_memo = {}
+    @moving_poly = nil
     @anchor_pt = nil
-    @flag35 = false
+    @nfp_on = false
     return unless @flag54
     active_ix = anchor_poly
     return unless active_ix && active_ix.length >= 3
     p_ref = active_ix[0]
-    @arr15 = active_ix
+    @moving_poly = active_ix
     @anchor_pt = Geom::Point3d.new(p_ref.x.to_f, p_ref.y.to_f, p_ref.z.to_f)
-    @flag35 = true
+    @nfp_on = true
   end
   def anchor_poly
     return nil unless @sel_polys
@@ -287,31 +287,31 @@ module KSU::Collide
     arr2 = KSU::Nfp.simplify_pts(normal)
     arr2.length >= 3 ? arr2 : normal
   end
-  def _0feae552(arr)
-    return { valid: false } unless @flag35 && arr && arr[:instance]
+  def nfp_for(arr)
+    return { valid: false } unless @nfp_on && arr && arr[:instance]
     sheet_id = arr[:instance].object_id
-    @h27[sheet_id] ||= _4a014121(arr)
+    @nfp_memo[sheet_id] ||= build_nfp(arr)
   end
-  def _4a014121(arr8)
-    return { valid: false } unless @flag35 && @arr15
-    arr4 = _1adb886a(arr8[:instance])
+  def build_nfp(arr8)
+    return { valid: false } unless @nfp_on && @moving_poly
+    arr4 = obstacles_of(arr8[:instance])
     return { valid: false } unless arr4
     _9535dc0b = {}
     @sel.each { |pt| _9535dc0b[pt.object_id] = true if pt }
     arr9 = arr4[:items].reject { |arr2| arr2[:is_border] || _9535dc0b[arr2[:panel].object_id] }
     return { valid: false } if arr9.length > 300
-    moving = @arr15.map { |pt| [pt.x.to_f, pt.y.to_f] }
+    moving = @moving_poly.map { |pt| [pt.x.to_f, pt.y.to_f] }
     arr3 = []
     arr5 = []
     num = 0.02.mm.to_f
     num2 = [@tam_cach_nhau.to_f - num, 0.0].max
-    _ac6822d3 = [_970aa8ae - num, 0.0].max
+    _ac6822d3 = [min_margin - num, 0.0].max
     arr9.each do |arr2|
       fixed = arr2[:poly].map { |pt| [pt.x.to_f, pt.y.to_f] }
       arr11 = (arr2[:holes] || []).map { |h| h.map { |pt| [pt.x.to_f, pt.y.to_f] } }
       KSU::Nfp._3ea4c8e4(arr3, arr5, fixed, arr11, moving, num2)
     end
-    _c6c7c535(arr4, arr8).each do |_e1aa7d6a|
+    border_rings(arr4, arr8).each do |_e1aa7d6a|
       KSU::Nfp._3ea4c8e4(arr3, arr5, _e1aa7d6a, [], moving, _ac6822d3)
     end
     return { valid: true, rings: [], flat: [], snap_edges: [] } if arr3.empty?
@@ -334,7 +334,7 @@ module KSU::Collide
   rescue StandardError
     { valid: false }
   end
-  def _c6c7c535(arr2, arr)
+  def border_rings(arr2, arr)
     bd2 = arr2[:borders].first
     bbox = if bd2
         bd2[:bbox]
@@ -356,8 +356,8 @@ module KSU::Collide
     ]
   end
   def _5bb0f6d2
-    return 0.0 unless @arr15
-    bbox = KSU::Geom.bounds(@arr15)
+    return 0.0 unless @moving_poly
+    bbox = KSU::Geom.bounds(@moving_poly)
     w = bbox[:max_x] - bbox[:min_x]
     h = bbox[:max_y] - bbox[:min_y]
     w > h ? w : h
@@ -393,7 +393,7 @@ module KSU::Collide
       next unless panel && panel.valid?
       rec = rec_by_def(panel.parent)
       next unless rec
-      pts = (@h21 && @h21[panel.object_id]) || outer_pts_of(panel, rec[:instance])
+      pts = (@poly_cache && @poly_cache[panel.object_id]) || outer_pts_of(panel, rec[:instance])
       next if pts.length < 3
       @outlines[panel.object_id] = pts
     end
@@ -422,7 +422,7 @@ module KSU::Collide
   end
   def _11075c77(arr)
     return false unless @sel_polys && arr && arr[:instance]
-    arr2 = _1adb886a(arr[:instance])
+    arr2 = obstacles_of(arr[:instance])
     return false unless arr2 && !arr2[:borders].empty?
     @sel_polys.each do |poly|
       next if poly.nil? || poly.length < 3
@@ -434,7 +434,7 @@ module KSU::Collide
   end
   def _4237de17(arr4, pt2)
     inst5 = arr4[:instance]
-    arr3 = _1adb886a(inst5)
+    arr3 = obstacles_of(inst5)
     return nil unless arr3
     items = arr3[:items]
     borders = arr3[:borders]
@@ -460,7 +460,7 @@ module KSU::Collide
           arr
         end
       borders.each do |fld|
-        pt = KSU::Geom._0c91518b(bbox, fld[:poly], _970aa8ae)
+        pt = KSU::Geom._0c91518b(bbox, fld[:poly], min_margin)
         next unless pt
         _0b24b753 = Math.sqrt(pt.x * pt.x + pt.y * pt.y)
         if _0b24b753 > num
@@ -471,7 +471,7 @@ module KSU::Collide
       KSU::Nfp._a6cf3d0d(grid, _f8733e26, @tam_cach_nhau).each do |i|
         fld = items[i]
         next if h[fld[:panel].object_id]
-        _33f52d3e = _79fb30a5([bbox], fld[:holes])
+        _33f52d3e = hole_around([bbox], fld[:holes])
         if _33f52d3e
           pt = KSU::Geom._0c91518b(bbox, _33f52d3e, @tam_cach_nhau)
           if pt

@@ -21,7 +21,7 @@ module KSU::Assign
         arr[:rank] = _481463cd(arr[:cutting])
         arr[:prefix] = arr[:rank] ? "Lớp" : nil
       end
-      arr[:fill_color] = _67c06000(arr)
+      arr[:fill_color] = fill_color_of(arr)
     end
   end
   def _481463cd(cutting)
@@ -91,7 +91,7 @@ module KSU::Assign
     return nil unless color
     [color.red, color.green, color.blue]
   end
-  def _67c06000(arr)
+  def fill_color_of(arr)
     return nil unless arr[:rank]
     mix = @danh_so_thu_tu ? arr[:rank] - 1 : 0
     unless arr[:side]
@@ -111,7 +111,7 @@ module KSU::Assign
       arr[:prefix] = layer_prefix(arr2[:side])
       arr[:base_color] = arr2[:side] ? side_color(arr2[:side], @layer_theo_vung) : nil
       arr[:changed] = true
-      arr[:fill_color] = _67c06000(arr)
+      arr[:fill_color] = fill_color_of(arr)
       arr3 << arr
     end
     commit_changes(arr3)
@@ -119,7 +119,7 @@ module KSU::Assign
   def _bd503ff9(arr, layers)
     return unless arr[:rank]
     arr[:rank] = layers
-    arr[:fill_color] = _67c06000(arr)
+    arr[:fill_color] = fill_color_of(arr)
     arr[:changed] = true
     commit_changes([arr])
   end

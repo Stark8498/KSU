@@ -2,7 +2,7 @@ module KSU::Push
   private
   def compute_push_back(arr3, flag = false)
     if @flag27 && flag
-      arr2 = _1adb886a(arr3[:instance])
+      arr2 = obstacles_of(arr3[:instance])
       return Geom::Vector3d.new(0, 0, 0) unless arr2
       h2 = {}
       @sel.each { |_23505ef9| h2[_23505ef9.object_id] = true }
@@ -27,7 +27,7 @@ module KSU::Push
         fld = items[i]
         next if fld[:is_border]
         next if h2[fld[:panel].object_id]
-        if _79fb30a5(num, fld[:holes])
+        if hole_around(num, fld[:holes])
           flag2 = true
           break
         end
@@ -35,7 +35,7 @@ module KSU::Push
       end
       unless flag2
         dx, dy = KSU::Method.compute_push_back(num, arr4, borders,
-                                                     @tam_cach_nhau.to_f, _970aa8ae, 20)
+                                                     @tam_cach_nhau.to_f, min_margin, 20)
         return Geom::Vector3d.new(dx, dy, 0)
       end
     end
@@ -60,7 +60,7 @@ module KSU::Push
   end
   def _7f17a5c5(arr3)
     inst5 = arr3[:instance]
-    arr2 = _1adb886a(inst5)
+    arr2 = obstacles_of(inst5)
     return true unless arr2
     items = arr2[:items]
     borders = arr2[:borders]
@@ -75,12 +75,12 @@ module KSU::Push
                     KSU::Geom.bounds(arr)
       _6a5c7d09 = (@sel_hulls && @sel_hulls[ix]) || arr
       borders.each do |fld|
-        return false if KSU::Geom._0c91518b(arr, fld[:poly], _970aa8ae)
+        return false if KSU::Geom._0c91518b(arr, fld[:poly], min_margin)
       end
       KSU::Nfp._a6cf3d0d(grid, _f38e85e6, @tam_cach_nhau).each do |i|
         fld = items[i]
         next if h[fld[:panel].object_id]
-        _33f52d3e = _79fb30a5([arr], fld[:holes])
+        _33f52d3e = hole_around([arr], fld[:holes])
         if _33f52d3e
           return false if KSU::Geom._0c91518b(arr, _33f52d3e, @tam_cach_nhau)
           next
@@ -133,14 +133,14 @@ module KSU::Push
     @arr18 = arr
   end
   def _726c65ba(sheet)
-    gap_for = _970aa8ae
+    gap_for = min_margin
     tol = 0.5.mm.to_f
     tol2 = 0.1.mm.to_f
     num = @tam_cach_nhau.to_f - tol
     num = 0.0 if num < 0.0
     answer = []
     begin
-      arr = _1adb886a(sheet)
+      arr = obstacles_of(sheet)
       return answer unless arr
       items = arr[:items]
       grid = arr[:grid]
@@ -175,7 +175,7 @@ module KSU::Push
           next if j == i
           next unless h2[j]
           panel = items[j]
-          _33f52d3e = _79fb30a5([_2e113abe], panel[:holes])
+          _33f52d3e = hole_around([_2e113abe], panel[:holes])
           if _33f52d3e
             if KSU::Geom._0c91518b(_2e113abe, _33f52d3e, num)
               h[i] = true
@@ -183,7 +183,7 @@ module KSU::Push
             end
             next
           end
-          _3e1d5f51 = _79fb30a5([panel[:poly]], fld[:holes])
+          _3e1d5f51 = hole_around([panel[:poly]], fld[:holes])
           if _3e1d5f51
             _982c8eb9 = (h3[j] ||= _5dc6e713(panel[:poly], tol2))
             if KSU::Geom._0c91518b(_982c8eb9, _3e1d5f51, num)

@@ -51,7 +51,7 @@ module KSU::Back
   end
   def bottom_target(sheet2, back_sheet, sheet3)
     return back_sheet unless sheet3 && sheet3.valid?
-    partner = @h29 && @h29[sheet3.entityID]
+    partner = @pack_cache && @pack_cache[sheet3.entityID]
     return partner if partner && partner.valid?
     vec2 = KSU::Sheet.bottom(sheet3, @nesting)
     if vec2 && vec2.valid?
@@ -86,8 +86,8 @@ module KSU::Back
     _76d37ecf(sheet3, grp2)
   end
   def _76d37ecf(sheet3, tr)
-    return tr unless @h29 && sheet3 && sheet3.valid?
-    @h29[sheet3.entityID] = tr if tr && tr.valid?
+    return tr unless @pack_cache && sheet3 && sheet3.valid?
+    @pack_cache[sheet3.entityID] = tr if tr && tr.valid?
     tr
   end
   def _3fccea3f(tr, sheet3)

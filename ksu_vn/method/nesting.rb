@@ -18,11 +18,11 @@ module KSU::Nest
         draw_mode_hint(view, "Đang gắn nhãn... #{[done + 1, total].min}/#{total}", 10)
         return
       end
-      progress = KSU::Nest.num12
-      return unless progress
+      progress2 = KSU::Nest.progress
+      return unless progress2
       name2 = KSU::Nest.name
       lbl = KSU::Nest.str || "Đang nesting"
-      text = name2 ? "#{name2} | #{lbl}... #{progress}%" : "#{lbl}... #{progress}%"
+      text = name2 ? "#{name2} | #{lbl}... #{progress2}%" : "#{lbl}... #{progress2}%"
       draw_mode_hint(view, text)
     end
   end
@@ -87,8 +87,8 @@ module KSU::Nest
       sheet_list
     end
   end
-  def num12
-    @num12
+  def progress
+    @progress
   end
   def str
     @str
@@ -126,7 +126,7 @@ module KSU::Nest
       return if tool.is_a?(Progress)
       _a762c251
     end
-    return if @num12 || @labelling
+    return if @progress || @labelling
     KSU::Settings.open_window("nesting")
   rescue StandardError => ent
     _a762c251
@@ -237,7 +237,7 @@ module KSU::Nest
   end
   def _47d154e7(jobs)
     @name = @arr47[0][:type][:name]
-    @num12 = 0
+    @progress = 0
     @str = "Đang tính dữ liệu"
     model = Sketchup.active_model
     _02d60c07(Progress) unless model.tools.active_tool.instance_of?(Progress)
@@ -245,14 +245,14 @@ module KSU::Nest
       jobs: jobs,
       on_job_progress: lambda { |j, progress|
         if j == @num4 && @str != "Đang xếp tấm"
-          @num12 = progress
+          @progress = progress
           KSU::View.view.invalidate
         end
       },
       on_job_place_progress: lambda { |j, done, total|
         if j == @num4
           @str = "Đang xếp tấm"
-          @num12 = total > 0 ? (done * 100.0 / total).round : 100
+          @progress = total > 0 ? (done * 100.0 / total).round : 100
           KSU::View.view.invalidate
         end
       },
@@ -293,7 +293,7 @@ module KSU::Nest
       _3bfa2532
     else
       @name = @arr47[@num4][:type][:name]
-      @num12 = 0
+      @progress = 0
       @str = "Đang tính dữ liệu"
       model = Sketchup.active_model
       _02d60c07(Progress) unless model.tools.active_tool.instance_of?(Progress)
@@ -324,7 +324,7 @@ module KSU::Nest
     @num4 = nil
     @arr51 = nil
     @name = nil
-    @num12 = nil
+    @progress = nil
     @str = nil
     finish_draw
     restore_view
@@ -350,7 +350,7 @@ module KSU::Nest
     @arr45 = nil
     @arr39 = nil
     @root = nil
-    @num12 = nil
+    @progress = nil
     @str = nil
   end
   def _a762c251
@@ -411,7 +411,7 @@ module KSU::Nest
     KSU.abort_op
   end
   def clear_progress
-    @num12 = nil
+    @progress = nil
     @str = nil
     model = Sketchup.active_model
     model.select_tool(nil) if model.tools.active_tool.is_a?(Progress)

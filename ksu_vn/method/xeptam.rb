@@ -29,15 +29,15 @@ class KSU::Xeptam
     @label_section_hidden = []
     @flag15 = defined?(KSU::Method) && KSU::Method.respond_to?(:polygons_overlap?)
     @flag27 = defined?(KSU::Method) && KSU::Method.respond_to?(:compute_push_back)
-    @flag9 = defined?(KSU::Method) && KSU::Method.respond_to?(:contact_refine)
+    @refine_on = defined?(KSU::Method) && KSU::Method.respond_to?(:contact_refine)
     @flag2 = defined?(KSU::Method) && KSU::Method.respond_to?(:nfp_snap)
     @grid = nil
     @flag54 = defined?(KSU::Nesting) && KSU::Nesting.respond_to?(:nfp) && KSU::Nesting.respond_to?(:inflate) &&
                         defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:union) && KSU::Clipper.respond_to?(:difference)
-    @h27 = {}
-    @arr15 = nil
+    @nfp_memo = {}
+    @moving_poly = nil
     @anchor_pt = nil
-    @flag35 = false
+    @nfp_on = false
     @sel = []
     @sel_sheets = []
     @flag56 = false
@@ -51,7 +51,7 @@ class KSU::Xeptam
     @h25 = {}
     @hit_list = nil
     @h6 = {}
-    @arr46 = nil
+    @dest = nil
     @_955ee93a = nil
     @panel = nil
     @arr41 = []
@@ -64,7 +64,7 @@ class KSU::Xeptam
     @flag5 = false
     @h11 = {}
     @arr28 = []
-    @h21 = {}
+    @poly_cache = {}
     @h24 = {}
     @arr2 = []
     @flag37 = nil
@@ -81,7 +81,7 @@ class KSU::Xeptam
     @sel_polys = nil
     @sel_hull = nil
     @sel_bounds = nil
-    @h15 = {}
+    @obstacle_cache = {}
     @arr3 = nil
     @outlines = {}
     @_75ce293c = nil
@@ -103,9 +103,9 @@ class KSU::Xeptam
     @_02765833 = nil
     @grid_cache = {}
     @flag11 = nil
-    @num12 = nil
+    @progress = nil
     @str = nil
-    @arr6 = nil
+    @queue = nil
     @opt_sheet = nil
     if Sketchup.active_model.tools.active_tool == self
       @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, @an_nhan_tiet_dien, @label_section_hidden)
@@ -161,7 +161,7 @@ class KSU::Xeptam
   def apply_preset(s)
     apply_settings(s)
     _de5cc9a8
-    @h27 = {}
+    @nfp_memo = {}
   end
   def _de5cc9a8
     @tam_cach_nhau = @ghi_de_khoang_cach ? @tam_cach_nhau_rieng : get("tam_cach_nhau", 6.5).to_f.mm
@@ -179,15 +179,15 @@ class KSU::Xeptam
                      tach_cach_le_rieng tam_cach_le_trai_rieng tam_cach_le_phai_rieng
                      tam_cach_le_tren_rieng tam_cach_le_duoi_rieng tam_cach_le_hai_mat].include?(key.to_s)
     _de5cc9a8
-    @h27 = {}
-    @h15 = {}
+    @nfp_memo = {}
+    @obstacle_cache = {}
     clear_grid_cache
   end
   def reload_settings
     super
     _de5cc9a8
-    @h27 = {}
-    @h15 = {}
+    @nfp_memo = {}
+    @obstacle_cache = {}
     clear_grid_cache
   end
   def rebuild_all
@@ -254,7 +254,7 @@ class KSU::Xeptam
     view.invalidate
   end
   def onKeyDown(key, _4ce596b6, rot, view)
-    return if @num12
+    return if @progress
     if key == COPY_MODIFIER_KEY
       unless @flag30
         @flag30 = true
@@ -320,7 +320,7 @@ class KSU::Xeptam
     if key == COPY_MODIFIER_KEY
       _f0301936 = @flag30 && !@flag52
       @flag30 = false
-      if _f0301936 && !@num12 && !@flag56 && !@flag10 && !@flag46
+      if _f0301936 && !@progress && !@flag56 && !@flag10 && !@flag46
         toggle_group
         view.invalidate
       end
@@ -335,7 +335,7 @@ class KSU::Xeptam
     end
   end
   def onReturn(view)
-    return if @num12
+    return if @progress
     return if @flag56
     return unless @sel.empty?
     return unless @flag37 && @flag37.valid?
@@ -344,7 +344,7 @@ class KSU::Xeptam
     view.invalidate
   end
   def onLButtonDown(rot, x, y, view)
-    return if @num12
+    return if @progress
     @flag52 = true
     if click_field(x, y, view)
       @flag38 = true
@@ -497,7 +497,7 @@ class KSU::Xeptam
       return
     end
     arr = record_for(@sel_sheets.first)
-    inst6 = @arr46 && @arr46[:instance]
+    inst6 = @dest && @dest[:instance]
     _1f2cf874 = @flag50
     flag = @flag25 ? nil : @arr23.find do |s|
       !KSU::Sheet.hidden?(s[:instance]) && s[:bbox].contains?(@pt5)
@@ -506,30 +506,30 @@ class KSU::Xeptam
     if @flag50
       if flag
         @flag50 = false if _7f17a5c5(flag)
-        @arr46 = flag
+        @dest = flag
       else
-        @arr46 = arr
+        @dest = arr
       end
     elsif flag
-      @arr46 = flag
+      @dest = flag
     elsif @xep_tam_tu_do
-      @arr46 = arr
+      @dest = arr
     else
       _b4ce762b, _8eedd0f1 = nearest_sheet(@pt5)
       if _8eedd0f1 && _8eedd0f1 > 0.0
         @flag50 = true
-        @arr46 = arr
+        @dest = arr
       else
-        @arr46 = _b4ce762b || arr
+        @dest = _b4ce762b || arr
       end
     end
     _5a7c1be3 = @flag50 && !_1f2cf874
-    if _5a7c1be3 || (@arr46 && @arr46[:instance]) != inst6
+    if _5a7c1be3 || (@dest && @dest[:instance]) != inst6
       restore_free_mode
       drag_follow if _5a7c1be3
       save_drag_state
     end
-    _d8a427f3 = @arr46 || arr
+    _d8a427f3 = @dest || arr
     _290b52bf = !!(flag && arr && flag[:instance] != arr[:instance])
     if _d8a427f3
       begin
@@ -540,13 +540,13 @@ class KSU::Xeptam
           @flag21 = !cap
           restore_free_mode if cap && @flag4
         else
-          arr5 = _0feae552(_d8a427f3)
+          arr5 = nfp_for(_d8a427f3)
           if arr5 && arr5[:valid]
             _25080947(arr5, vec)
             build_grid(_d8a427f3)
             @flag21 = false
           else
-            _33b33533 = _19030d1a(_d8a427f3)
+            _33b33533 = escape_hole(_d8a427f3)
             if _33b33533
               add_offset(_33b33533)
               shift_cached_polys(_33b33533)
@@ -696,7 +696,7 @@ class KSU::Xeptam
     draw_hover(view) unless @flag56
     draw_presets(view)
     draw_fields(view)
-    draw_mode_hint(view, "#{@str || "Đang tối ưu"}... #{@num12}%") if @num12
+    draw_mode_hint(view, "#{@str || "Đang tối ưu"}... #{@progress}%") if @progress
   end
 end
 class KSU::Xeptam

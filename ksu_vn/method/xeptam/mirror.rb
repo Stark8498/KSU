@@ -134,8 +134,8 @@ module KSU::Mirror
   def rebuild_preview
     clear_preview
     @arr57 = []
-    return unless @flag56 && @arr46
-    inst4 = @arr46[:instance]
+    return unless @flag56 && @dest
+    inst4 = @dest[:instance]
     return unless inst4 && inst4.valid?
     bb = KSU::Sheet.world_bbox(inst4, @nesting)
     return unless bb
@@ -276,7 +276,7 @@ module KSU::Mirror
       next unless x.between?(arr[:sxmin], arr[:sxmax]) && y.between?(arr[:symin], arr[:symax])
       next unless arr[:area] < area
       next unless arr[:panel] && arr[:panel].valid?
-      _9b1924b8(view, arr)
+      ensure_screen_poly(view, arr)
       if arr[:outer]
         next unless KSU::View.in_poly?(x, y, arr[:outer])
         next if arr[:holes].any? { |h| h.length >= 3 && KSU::View.in_poly?(x, y, h) }
@@ -294,7 +294,7 @@ module KSU::Mirror
     screen_items(view).each do |arr|
       next unless arr[:panel] && arr[:panel].valid?
       next if arr[:sxmax] < _2cf18878 || arr[:sxmin] > _d6439c88 || arr[:symax] < _ab593548 || arr[:symin] > bot
-      _9b1924b8(view, arr)
+      ensure_screen_poly(view, arr)
       outer = arr[:outer]
       if outer.nil?
         next unless _3b0d8ae2 || (arr[:sxmin] >= _2cf18878 && arr[:sxmax] <= _d6439c88 && arr[:symin] >= _ab593548 && arr[:symax] <= bot)
@@ -358,12 +358,12 @@ module KSU::Mirror
     KSU::View.view.line_width = 1
     KSU::View.view.draw(GL_LINES, arr2)
   end
-  def _cdd6bfc2(panel, sheet)
+  def fill_of(panel, sheet)
     return nil unless panel && panel.respond_to?(:object_id)
     @h24[panel.object_id] ||= panel_outline(panel, sheet)
   end
   def draw_panel_fill(panel, sheet, color, _4a7d3cee = nil)
-    fill = _cdd6bfc2(panel, sheet)
+    fill = fill_of(panel, sheet)
     return false unless fill && fill[:outer].length >= 3
     tris2 = (fill[:tris] ||= KSU::View.tris(fill[:outer], fill[:holes]))
     if tris2 && !tris2.empty?
@@ -389,7 +389,7 @@ module KSU::Mirror
     KSU::View.clear_cache
   end
   def _a70d673b
-    @h21 = {}
+    @poly_cache = {}
     @h24 = {}
     return unless @nesting && @nesting.valid?
     @nesting.definition.entities.each do |sheet|
@@ -397,14 +397,14 @@ module KSU::Mirror
       sheet.definition.entities.each do |panel|
         next unless KSU::Sheet.drawable?(panel)
         next if @sel.include?(panel)
-        @h21[panel.object_id] = outer_pts_of(panel, sheet)
+        @poly_cache[panel.object_id] = outer_pts_of(panel, sheet)
       end
     end
   end
   def drop_panel_cache(panels)
     Array(panels).each do |_23505ef9|
       next unless _23505ef9 && _23505ef9.respond_to?(:object_id)
-      @h21.delete(_23505ef9.object_id)
+      @poly_cache.delete(_23505ef9.object_id)
       @h24.delete(_23505ef9.object_id)
     end
   end

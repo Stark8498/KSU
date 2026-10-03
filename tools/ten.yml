@@ -1924,6 +1924,88 @@ ten:
   _2a453897: place_root          # dua goc lon nhat cua cum ve (-1m, -1m)
   _9ce24ea4: finish_draw
 
+  # ===== ME 49: method/chongbay.rb -- cong cu chong bay =====
+  # Hai che do: Thu cong (nguoi dung quet/ve/lasso de chon tam roi danh lop) va
+  # Tu dong (bam vao mot canh van, tu sinh ca hang). Giu ALT thi doi sang XOA
+  # lop thay vi dat.
+  _b79e997a: plane_z             # @: cao do mat phang chieu chuot
+  _ea58c957: cur_pt              # @: diem chuot tren mat phang do
+  _f18056aa: screen_pt           # @
+  _da6590c6: sweeping            # @: dang keo khung chon
+  _5d585089: sweep_a             # @
+  _8d1358a8: sweep_b             # @
+  _cd7eef1c: rank_a              # @: diem thu nhat cua thao tac danh so (doi voi rank_b)
+  _c6dfd687: dest                # @: van/ban ghi DICH -- o themtam la van bi ghi de,
+                                 # o xeptam la van tha tam vao, o day la van sap bam nut
+  _7d753141: btn_joint           # @: nut nao tren dau van (:plus, :minus...)
+  _eda5d6c9: btn_plan            # @: phuong an se chay neu bam nut do
+  _fcdd440f: auto_hover          # @: [van, canh] dang tro trong che do Tu dong
+  _cb7c87f2: editing             # @: o dang sua tai cho
+  _a86d40bb: clearing            # @: giu ALT -> xoa lop thay vi dat
+
+  _4868b3b3: preview_plan        # phuong an se ap neu tha chuot bay gio
+  _2e1313e5: clear_preview2      # cac tam se bi XOA lop (chi khi giu ALT)
+  _f674b1ec: auto_plan
+  _b278661f: button_plan
+  _c915a205: rect_plan           # kieu chon "Vung"
+  _ed847bcd: line_plan           # kieu chon "Net"
+  _c174cba6: lasso_plan          # kieu chon "Tu do"
+  _8f0a8c81: refresh_fill_colors # chi tinh lai khi bat/tat danh so thu tu
+  _67c06000: fill_color_of
+
+  # ===== ME 50: method/toiuuvan/engine.rb -- goi engine xep tam =====
+  # Engine chay bat dong bo: gui hinh hoc sang, nhan tien do qua callback, roi
+  # on_done moi doc ket qua ve. Vi the ca duong nay viet theo kieu truyen block
+  # chu khong tra ve gia tri.
+  _ac73572a: solve_async
+  _1cdba2d3: run_engine
+  _2808e8d4: base                # tham so tu khoa: tien do bat dau cua lo nay
+  _3307792a: span                # tham so tu khoa: lo nay chiem bao nhieu phan tram
+  _d6d35368: two_sided           # tham so tu khoa
+  _603ba9c4: read_result
+  _7714f91b: prep_parts
+  _57ce2a46: flatten_polys       # dat cac da giac canh nhau tren mot dai, cach nhau 1 inch
+  _fa87e7fb: loops_mm
+  _9f684ec0: origin_mm
+  _81d80555: group_id_of
+  _2cf6d3a4: align_to_corner     # don ca cum ve goc theo pack_seed (0..3)
+  _0c084a37: pack_plain
+  _6e065d2e: pack_two_sided      # tach rieng tam hai mat ra van cua no
+  _ae6cb680: apply_two_sided
+  _1db9fb3a: pack_plain_again   # engine khong ra gi thi quay ve cach xep thuong;
+                                 # mot cho khac da giu `pack_fallback`
+  _416e5f49: in_operation        # start / yield / prune_bottoms / commit
+  _10248dd2: tidy_sheets
+  _a30b0487: progress            # @: phan tram, nil khi khong chay
+  _0a6c011e: queue               # @: cac lo con cho
+  _4ee58c26: added               # @: van moi them trong lan toi uu nay
+  _fe7b627f: pack_cache          # @
+
+  # ===== ME 51: method/xeptam/collide.rb -- va cham khi keo tam =====
+  # Hai co che roi nhau. `build_grid` goi contact_refine (native) de day tam ra
+  # khoi vat can mot doan nho. NFP thi dung ca vung CAM: hop cac da giac khong
+  # chen giua tam dang keo va moi vat can, de con tro khong bao gio vao duoc.
+  _1adb886a: obstacles_of        # cache theo van: { items:, borders:, grid: }
+  _9e7965ef: obstacle_cache      # @
+  _bd3ecedb: poly_cache          # @
+  _1c3a2132: refine_on           # @
+  _970aa8ae: min_margin          # le nho nhat trong bon canh van
+  _56bc8e10: shift_edges         # chi doi cac dinh nam tren canh ve phia dich
+  _cdd6bfc2: fill_of
+  _9b1924b8: ensure_screen_poly  # tinh mot lan roi nho vao chinh hash do
+
+  _0feae552: nfp_for
+  _4a014121: build_nfp           # bo qua van co qua 300 vat can -- khong kip trong mot nhip
+  _c6c7c535: border_rings
+  _f678c59e: nfp_memo            # mot hex khac da giu `nfp_cache`
+  _45f9250e: moving_poly         # @: da giac dai dien cho ca vung chon
+  _9190ea3c: nfp_on              # @
+
+  _79fb30a5: hole_around         # lo nao chua tam diem cua cac vong
+  _fb706f65: hole_at
+  _5ac34e7b: bbox_mid            # tam HOP BAO; mot hex khac da giu `center_of`
+  _19030d1a: escape_hole         # vector keo tam ra khoi lo no dang mac
+
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,

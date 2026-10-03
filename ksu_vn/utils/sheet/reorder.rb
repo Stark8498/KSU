@@ -191,24 +191,24 @@ module KSU::Reorder
       _3a4c25ca = KSU::Const::SHEET_V_PADDING / 2.0
       _88097773 = KSU::Const::SHEET_V_PADDING
     end
-    num17 = 0.0
+    num15 = 0.0
     num2 = 0
     box = {}
     _ab80cc5b = nil
     arr6.each do |sheet_type|
       normal = sheet_type.to_s.sub(part_re3, "")
-      num17 += (normal == _ab80cc5b ? _88097773 : _6baff1da) unless _ab80cc5b.nil?
+      num15 += (normal == _ab80cc5b ? _88097773 : _6baff1da) unless _ab80cc5b.nil?
       arr2 = h[sheet_type]
       num2 = [num2, arr2.size].max
       flag = false
-      _feddf318 = num17
+      _feddf318 = num15
       arr2.each_with_index do |id, fill|
         _8af8d41e = fill * (sheet_w + KSU::Const::SHEET_H_PADDING)
         arr[id].transformation = Geom::Transformation.translation([_8af8d41e, _feddf318, 0])
         box[id] = [_8af8d41e, _feddf318]
         flag = true if bot[id]
       end
-      num17 += _dcd13e53
+      num15 += _dcd13e53
       if flag
         by2 = _feddf318 + _dcd13e53 + _3a4c25ca
         arr2.each do |id|
@@ -216,11 +216,11 @@ module KSU::Reorder
           bx2 = box[id][0]
           bot[id].transformation = Geom::Transformation.translation([bx2, by2, 0])
         end
-        num17 = by2 + _dcd13e53
+        num15 = by2 + _dcd13e53
       end
       _ab80cc5b = normal
     end
-    _7bc2ff7d = num17
+    _7bc2ff7d = num15
     _865b7251 = KSU::Settings.get("hien_do_day", false, "xep_hang")
     _620ee4af = KSU::Settings.get("hien_so_van", false, "xep_hang")
     _8be1afcd = KSU::Settings.get("cho_phep_xuong_dong", true, "xep_hang")

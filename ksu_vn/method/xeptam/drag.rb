@@ -45,30 +45,30 @@ module KSU::Drag
   def optimize_sheet(sheet)
     return unless @nesting && @nesting.valid?
     return unless sheet && sheet.valid?
-    return if @num12
+    return if @progress
     @flag10 = false
     @flag46 = false
     load_optimize_settings
     reload_sheets
     groups = { KSU::Sheet._7b0a38ee(sheet) => [sheet] }
     unless defined?(KSU::Nesting::Engine)
-      @arr17 = []
+      @added = []
       run(groups)
       refresh_after_optimize(sheet)
       return
     end
     @opt_sheet = sheet
-    @arr17 = []
-    @arr6 = groups.values
-    @num12 = 0
+    @added = []
+    @queue = groups.values
+    @progress = 0
     @str = "Đang tính dữ liệu"
     KSU::View.view&.invalidate
     optimize_next
   rescue StandardError => ent
     KSU.abort_op
-    @num12 = nil
+    @progress = nil
     @str = nil
-    @arr6 = nil
+    @queue = nil
     UI.messagebox("Lỗi tối ưu: #{ent.message}")
   end
   def load_optimize_settings
@@ -83,19 +83,19 @@ module KSU::Drag
     @danh_sach_vat_lieu = KSU::Settings.get("danh_sach_vat_lieu", "TRƠN, TRẮNG, XANH, HỒNG", "toi_uu_van").to_s
   end
   def optimize_next
-    if @arr6.nil? || @arr6.empty?
+    if @queue.nil? || @queue.empty?
       optimize_done
       return
     end
-    sheets = @arr6.shift
+    sheets = @queue.shift
     pack_batch(sheets)
   end
   def optimize_done
-    @num12 = nil
+    @progress = nil
     @str = nil
-    @arr6 = nil
+    @queue = nil
     drop_empty_sheets
-    arr = ([@opt_sheet] + @arr17.to_a).select { |s| s && s.valid? }.uniq
+    arr = ([@opt_sheet] + @added.to_a).select { |s| s && s.valid? }.uniq
     unless arr.empty?
       KSU.start
       pack_all_to_corner(arr)
@@ -115,11 +115,11 @@ module KSU::Drag
     KSU::View.view&.invalidate
   end
   def optimize_cancel
-    return unless @num12
+    return unless @progress
     KSU::Nesting::Engine.instance.stop if defined?(KSU::Nesting::Engine)
-    @arr6 = nil
+    @queue = nil
     @opt_sheet = nil
-    @num12 = nil
+    @progress = nil
     @str = nil
   rescue StandardError
     nil
@@ -414,7 +414,7 @@ module KSU::Drag
   end
   def build_snap_grid
     return if @flag45 || @flag50 || @xep_tam_tu_do
-    rec = @arr46 || record_for(@sel_sheets.first)
+    rec = @dest || record_for(@sel_sheets.first)
     return unless rec && rec[:instance] && rec[:instance].valid?
     build_grid(rec)
   rescue StandardError
@@ -428,19 +428,19 @@ module KSU::Drag
     build_snap_grid
     apply_offset
     _09012de8 = @sel_sheets.compact
-    _09012de8 += [@arr46[:instance]] if @arr46 && @arr46[:instance]
+    _09012de8 += [@dest[:instance]] if @dest && @dest[:instance]
     flag = false
-    if @arr46 && !@flag45
+    if @dest && !@flag45
       @sel.each_with_index do |panel, ix|
-        next if @sel_sheets[ix] == @arr46[:instance]
+        next if @sel_sheets[ix] == @dest[:instance]
         cur_sheet = @sel_sheets[ix]
         pair = back_of(panel)
-        _2f683801 = clone_to(panel, cur_sheet, @arr46)
+        _2f683801 = clone_to(panel, cur_sheet, @dest)
         next unless _2f683801&.valid?
         @sel[ix] = _2f683801
-        @sel_sheets[ix] = @arr46[:instance]
+        @sel_sheets[ix] = @dest[:instance]
         flag = true
-        sync_back(_2f683801, pair, cur_sheet, @arr46[:instance]) if pair
+        sync_back(_2f683801, pair, cur_sheet, @dest[:instance]) if pair
       end
       KSU::Sheet.prune_bottoms(@nesting) if flag
     end
@@ -457,20 +457,20 @@ module KSU::Drag
     @sel_hull = nil
     @arr3 = nil
     if flag
-      @h15 = {}
+      @obstacle_cache = {}
       clear_grid_cache
     else
       _b7284874 = (_09012de8 + sheets_of(_b1981961)).uniq
       drop_sheet_cache(_b7284874)
       drop_grid_cache(_b7284874)
     end
-    @h27 = {}
-    @arr15 = nil
+    @nfp_memo = {}
+    @moving_poly = nil
     @anchor_pt = nil
-    @flag35 = false
+    @nfp_on = false
     refresh_hits(@sel + _b1981961)
     rebuild_outlines
-    inst2 = @arr46&.dig(:instance)
+    inst2 = @dest&.dig(:instance)
     @flag37 = inst2 if inst2&.valid? && !@flag45
     @sheet2 = @flag37
     @flag45 = false

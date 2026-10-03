@@ -15,7 +15,7 @@ module KSU::Collect
     @arr59 = []
     @num9 = 0
     @num7 = 0.0
-    @num12 = 0
+    @progress = 0
     @str = "Đang chuẩn bị"
     KSU.select_tool(KSU::Nest::Progress) unless model.tools.active_tool.instance_of?(KSU::Nest::Progress)
     model.active_view.invalidate
@@ -46,7 +46,7 @@ module KSU::Collect
         @arr59 << g.name.to_s
       end
     end
-    @num12 = (@num9 * 100.0 / total).round
+    @progress = (@num9 * 100.0 / total).round
     KSU::View.view.invalidate
   rescue StandardError => ent
     _a762c251
@@ -93,7 +93,7 @@ module KSU::Collect
   def _2d469ec2
     return unless @flag6
     _90d58cd9
-    @num12 = nil
+    @progress = nil
     @str = nil
   end
   def _17ee8011(ents, out, seen)

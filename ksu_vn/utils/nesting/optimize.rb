@@ -39,14 +39,14 @@ module KSU::Optimize
     @sheet_memo = KSU::Sheet.sheet_list(@nesting)
   end
   def run(groups)
-    @arr17 = []
-    @h29 = {}
+    @added = []
+    @pack_cache = {}
     KSU.start
     groups.each_value { |sheets| pack_group(sheets) }
     KSU::Sheet.prune_bottoms(@nesting)
     KSU.commit
     drop_empty_sheets
-    @arr17.select { |s| s && s.valid? }
+    @added.select { |s| s && s.valid? }
   end
   def drop_empty_sheets
     num = 0
@@ -88,11 +88,11 @@ module KSU::Optimize
     if pack_to_row_start?
       num = arr.empty? ? [] : ensure_sheets(sheets, arr.length)
       num2 = arr2.empty? ? [] : add_sheets(arr2.length, sheets)
-      @arr17.concat(num2)
+      @added.concat(num2)
     else
       num2 = arr2.empty? ? [] : ensure_sheets(sheets, arr2.length)
       num = arr.empty? ? [] : add_sheets(arr.length, sheets)
-      @arr17.concat(num)
+      @added.concat(num)
       arr2 = arr2.reverse
     end
     reload_sheets
@@ -105,7 +105,7 @@ module KSU::Optimize
     arr = h.dup
     if want > arr.length
       addon_data = add_sheets(want - arr.length, h)
-      @arr17.concat(addon_data)
+      @added.concat(addon_data)
       arr.concat(addon_data)
       reload_sheets
     end

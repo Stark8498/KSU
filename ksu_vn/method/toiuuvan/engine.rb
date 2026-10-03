@@ -1,7 +1,7 @@
 module KSU::Engine
   private
   def pack_batch(sheets)
-    @h29 = {}
+    @pack_cache = {}
     stroke_w, sheet_h = sheet_size(edited_sheet(sheets))
     return optimize_next unless stroke_w && sheet_h
     parts = collect_parts(sheets)
@@ -11,25 +11,25 @@ module KSU::Engine
     width_mm, height_mm = usable_size(edited_sheet(sheets), gap_for)
     arr = parts.select { |arr2| arr2[:two_sided] }
     if @tach_nhom_2_mat && !arr.empty?
-      _6e065d2e(sheets, parts, width_mm, height_mm, gap_for, gap2)
+      pack_two_sided(sheets, parts, width_mm, height_mm, gap_for, gap2)
     else
-      _0c084a37(sheets, parts, width_mm, height_mm, gap_for, gap2)
+      pack_plain(sheets, parts, width_mm, height_mm, gap_for, gap2)
     end
   rescue StandardError => ent
     UI.messagebox("Lỗi tối ưu: #{ent.message}")
     optimize_next
   end
-  def _ac73572a(parts, width_mm, height_mm, gap2, _2808e8d4: 0, _3307792a: 100, seed: nil, _d6d35368: false, &blk)
+  def solve_async(parts, width_mm, height_mm, gap2, base: 0, span: 100, seed: nil, two_sided: false, &blk)
     if parts.empty?
       blk.call([])
       return
     end
-    parts = _7714f91b(parts)
-    polys, _05c18602, _0638a063, _ad07fd49 = _57ce2a46(parts)
-    _1cdba2d3(@cho_phep_xoay ? _05c18602 : false, polys, _0638a063, _d6d35368 ? _ad07fd49 : [], parts, width_mm, height_mm, gap2,
-                       _2808e8d4, _3307792a, seed, &blk)
+    parts = prep_parts(parts)
+    polys, _05c18602, _0638a063, _ad07fd49 = flatten_polys(parts)
+    run_engine(@cho_phep_xoay ? _05c18602 : false, polys, _0638a063, two_sided ? _ad07fd49 : [], parts, width_mm, height_mm, gap2,
+                       base, span, seed, &blk)
   end
-  def _1cdba2d3(rot, polys, _0638a063, _ad07fd49, parts, width_mm, height_mm, gap2, _2808e8d4, _3307792a, seed = nil, &blk)
+  def run_engine(rot, polys, _0638a063, _ad07fd49, parts, width_mm, height_mm, gap2, base, span, seed = nil, &blk)
     @str = "Đang tính dữ liệu"
     KSU::Nesting::Engine.instance.start2(
       width_mm: width_mm * 25.4, height_mm: height_mm * 25.4, spacing_mm: gap2 * 25.4,
@@ -39,30 +39,30 @@ module KSU::Engine
       pair: KSU::Settings.get("ghep_cap_toi_uu", true, "nesting").to_s != "false",
       on_progress: lambda do |progress|
         unless @str == "Đang xếp tấm"
-          @num12 = (_2808e8d4 + progress * _3307792a / 100.0).round
+          @progress = (base + progress * span / 100.0).round
           KSU::View.view&.invalidate
         end
       end,
       on_place_progress: lambda do |done, total|
         @str = "Đang xếp tấm"
-        @num12 = total > 0 ? (done * 100.0 / total).round : 100
+        @progress = total > 0 ? (done * 100.0 / total).round : 100
         KSU::View.view&.invalidate
       end,
       on_done: lambda do |data, arr24|
         begin
-          _0850aa4d = _603ba9c4(data["0"], parts)
+          _0850aa4d = read_result(data["0"], parts)
           blk.call(_0850aa4d)
         rescue StandardError => ent
-          @num12 = nil
+          @progress = nil
           @str = nil
-          @arr6 = nil
+          @queue = nil
           KSU::View.view&.invalidate
           UI.messagebox("Lỗi tối ưu: #{ent.message}")
         end
       end
     )
   end
-  def _2cf6d3a4(arr, width_mm, height_mm, seed)
+  def align_to_corner(arr, width_mm, height_mm, seed)
     _d6439c88 = (seed == 1 || seed == 2)
     _ab593548 = (seed == 2 || seed == 3)
     arr.each do |placements|
@@ -95,7 +95,7 @@ module KSU::Engine
   rescue StandardError
     nil
   end
-  def _10248dd2
+  def tidy_sheets
     sheet_list
     KSU.start
     pack_all_to_corner(@sel)
@@ -103,14 +103,14 @@ module KSU::Engine
   rescue StandardError
     KSU.abort_op
   end
-  def _0c084a37(sheets, parts, width_mm, height_mm, gap_for, gap2)
-    _ac73572a(parts, width_mm, height_mm, gap2, seed: 0) do |arr|
+  def pack_plain(sheets, parts, width_mm, height_mm, gap_for, gap2)
+    solve_async(parts, width_mm, height_mm, gap2, seed: 0) do |arr|
       if arr.empty?
-        _1db9fb3a(sheets)
+        pack_plain_again(sheets)
       else
         arr = arr.sort_by { |b| -used_area(b) } unless @thu_tu_don == "theo_ten"
-        arr = _2cf6d3a4(arr, width_mm, height_mm, pack_seed)
-        _416e5f49 do
+        arr = align_to_corner(arr, width_mm, height_mm, pack_seed)
+        in_operation do
           num = ensure_sheets(sheets, arr.length)
           reload_sheets
           num = sort_by_x(num)
@@ -120,21 +120,21 @@ module KSU::Engine
       optimize_next
     end
   end
-  def _6e065d2e(sheets, parts, width_mm, height_mm, gap_for, gap2)
-    _ac73572a(parts, width_mm, height_mm, gap2, _d6d35368: true) do |arr4|
+  def pack_two_sided(sheets, parts, width_mm, height_mm, gap_for, gap2)
+    solve_async(parts, width_mm, height_mm, gap2, two_sided: true) do |arr4|
       arr = arr4.select { |b| b.any? { |members| members[:two_sided] } }
       if arr.empty?
-        _1db9fb3a(sheets)
+        pack_plain_again(sheets)
       else
         arr3 = arr4.reject { |b| b.any? { |members| members[:two_sided] } }
-        arr = _2cf6d3a4(arr, width_mm, height_mm, pack_seed)
-        arr3 = _2cf6d3a4(arr3, width_mm, height_mm, pack_seed)
-        _416e5f49 { _ae6cb680(sheets, arr, arr3, gap_for) }
+        arr = align_to_corner(arr, width_mm, height_mm, pack_seed)
+        arr3 = align_to_corner(arr3, width_mm, height_mm, pack_seed)
+        in_operation { apply_two_sided(sheets, arr, arr3, gap_for) }
       end
       optimize_next
     end
   end
-  def _ae6cb680(sheets, arr2, arr, gap_for)
+  def apply_two_sided(sheets, arr2, arr, gap_for)
     unless @thu_tu_don == "theo_ten"
       arr2 = arr2.sort_by { |b| [-b.inject(0.0) { |s, members| members[:two_sided] ? s + members[:w].to_f * members[:h].to_f : s }, -used_area(b)] } unless arr2.empty?
       arr = arr.sort_by { |b| -used_area(b) } unless arr.empty?
@@ -142,11 +142,11 @@ module KSU::Engine
     if pack_to_row_start?
       num = arr2.empty? ? [] : ensure_sheets(sheets, arr2.length)
       num2 = arr.empty? ? [] : add_sheets(arr.length, sheets)
-      @arr17.concat(num2)
+      @added.concat(num2)
     else
       num2 = arr.empty? ? [] : ensure_sheets(sheets, arr.length)
       num = arr2.empty? ? [] : add_sheets(arr2.length, sheets)
-      @arr17.concat(num)
+      @added.concat(num)
       arr = arr.reverse
     end
     reload_sheets
@@ -155,11 +155,11 @@ module KSU::Engine
     apply_plan(num2, arr, gap_for) unless arr.empty?
     apply_plan(num, arr2, gap_for) unless arr2.empty?
   end
-  def _1db9fb3a(sheets)
-    @h29 = {}
-    _416e5f49 { pack_group(sheets) }
+  def pack_plain_again(sheets)
+    @pack_cache = {}
+    in_operation { pack_group(sheets) }
   end
-  def _416e5f49
+  def in_operation
     KSU.start
     yield
     KSU::Sheet.prune_bottoms(@nesting)
@@ -168,7 +168,7 @@ module KSU::Engine
     KSU.abort_op
     UI.messagebox("Lỗi tối ưu: #{ent.message}")
   end
-  def _57ce2a46(node, flag = false)
+  def flatten_polys(node, flag = false)
     flag47 = 0.0
     flat = []
     rot = []
@@ -181,7 +181,7 @@ module KSU::Engine
               .each_with_index { |(_56afdcfc, _b7a8e470), half| layers[_b7a8e470] = half }
     end
     node.each_with_index do |pt, _b7a8e470|
-      loops = _fa87e7fb(pt, true)
+      loops = loops_mm(pt, true)
       outer = loops.first
       num = 0.0
       outer.each { |arr| num = arr[0] if arr[0] > num }
@@ -189,7 +189,7 @@ module KSU::Engine
       arr7 = num2.zero? ? loops : loops.map { |arr8| arr8.map { |arr| [arr[0] + num2, arr[1]] } }
       pt[:poly_mm] = arr7.first
       (pt[:members] || []).each do |m_bottom|
-        m_left = _fa87e7fb(m_bottom[:part]).first
+        m_left = loops_mm(m_bottom[:part]).first
         m_bottom[:part][:poly_mm] = m_left.map { |arr| [arr[0] + m_bottom[:rx] + num2, arr[1] + m_bottom[:ry]] }
       end
       arr7.each do |_b41d8800|
@@ -202,25 +202,25 @@ module KSU::Engine
     end
     [flat, rot, arr6, arr4]
   end
-  def _81d80555(pt)
+  def group_id_of(pt)
     panel = pt[:panel]
     return nil unless panel && panel.valid?
     panel.get_attribute("KSU", "group-id")
   end
-  def _9f684ec0(pt13)
-    if pt13[:outer] && pt13[:outer].length >= 3
-      [pt13[:outer].map { |pt| pt.x.to_f }.min * 25.4,
-       pt13[:outer].map { |pt| pt.y.to_f }.min * 25.4]
-    elsif pt13[:bbox]
-      [pt13[:bbox].min.x.to_f * 25.4, pt13[:bbox].min.y.to_f * 25.4]
+  def origin_mm(pt8)
+    if pt8[:outer] && pt8[:outer].length >= 3
+      [pt8[:outer].map { |pt| pt.x.to_f }.min * 25.4,
+       pt8[:outer].map { |pt| pt.y.to_f }.min * 25.4]
+    elsif pt8[:bbox]
+      [pt8[:bbox].min.x.to_f * 25.4, pt8[:bbox].min.y.to_f * 25.4]
     end
   end
-  def _7714f91b(parts)
+  def prep_parts(parts)
     groups = {}
     out = []
     parts.each do |pt|
-      gid = _81d80555(pt)
-      flag = gid ? _9f684ec0(pt) : nil
+      gid = group_id_of(pt)
+      flag = gid ? origin_mm(pt) : nil
       if gid && flag
         (groups[gid] ||= []) << [pt, flag]
       else
@@ -245,7 +245,7 @@ module KSU::Engine
   def _46279528(members, _e17f53e7)
     arr5 = []
     members.each do |pt, arr4|
-      loops = _fa87e7fb(pt)
+      loops = loops_mm(pt)
       sheet_h = loops.map { |arr6| arr6.map { |arr3| [arr3[0] + arr4[0], arr3[1] + arr4[1]] } }
       arr5 << KSU::Nfp._5762df6e(sheet_h.first, true)
       (sheet_h[1..] || []).each { |h| arr5 << KSU::Nfp._5762df6e(h, false) }
@@ -294,7 +294,7 @@ module KSU::Engine
   def _f573a61c(members)
     min_x = min_y = flag3 = flag4 = nil
     members.each do |pt, arr2|
-      _fa87e7fb(pt).first.each do |arr|
+      loops_mm(pt).first.each do |arr|
         x = arr[0] + arr2[0]
         y = arr[1] + arr2[1]
         min_x = x if min_x.nil? || x < min_x
@@ -305,7 +305,7 @@ module KSU::Engine
     end
     [[min_x, min_y], [flag3, min_y], [flag3, flag4], [min_x, flag4]]
   end
-  def _fa87e7fb(grp, flag2 = false)
+  def loops_mm(grp, flag2 = false)
     return grp[:loops_mm] if grp[:loops_mm]
     ang = flag2 ? (grp[:cano] || 0.0) % 360.0 : 0.0
     outer = grp[:outer]
@@ -342,7 +342,7 @@ module KSU::Engine
     _a877a0fa = Math.sin(rad)
     pts.map { |arr| [arr[0] * _fdb496e4 - arr[1] * _a877a0fa, arr[0] * _a877a0fa + arr[1] * _fdb496e4] }
   end
-  def _603ba9c4(arr3, parts)
+  def read_result(arr3, parts)
     return [] unless arr3
     arr3.map do |sheet|
       sheet.flat_map do |fld|
@@ -352,7 +352,7 @@ module KSU::Engine
         members = !!grp[:members]
         arr4 = members ? grp[:members].map { |m_bottom| m_bottom[:part] } : [grp]
         arr4.map do |arr|
-          poly = arr[:poly_mm] || _fa87e7fb(arr, !members).first
+          poly = arr[:poly_mm] || loops_mm(arr, !members).first
           screen_box = _6d7a71cf(poly, num2.to_f, num.to_f, rot.to_f)
           addon_data = members ? 0.0 : (arr[:cano] || 0.0)
           {

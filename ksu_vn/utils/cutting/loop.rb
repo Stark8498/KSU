@@ -177,20 +177,20 @@ module KSU::Loop
   def build_loops(segments)
     return [] if segments.empty?
     return KSU::Method.build_loops(segments) if defined?(KSU::Method) && KSU::Method.respond_to?(:build_loops)
-    h30 = {}
+    h29 = {}
     h2 = Hash.new { |h, k| h[k] = [] }
     h3 = {}
     segments.each_with_index do |pts, ix|
       _c0467335 = _be46bc4b(pts[0])
       _1544f6a8 = _be46bc4b(pts[1])
       next if _c0467335 == _1544f6a8
-      h30[_c0467335] ||= pts[0]
-      h30[_1544f6a8] ||= pts[1]
+      h29[_c0467335] ||= pts[0]
+      h29[_1544f6a8] ||= pts[1]
       h2[_c0467335] << [_1544f6a8, ix]
       h2[_1544f6a8] << [_c0467335, ix]
       h3[ix] = [_c0467335, _1544f6a8]
     end
-    _3a1d2466(h30, h2, h3)
+    _3a1d2466(h29, h2, h3)
   end
   def collect_segments(container, gtr, segments)
     container.each do |entity|

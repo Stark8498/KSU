@@ -14,7 +14,7 @@ ten:
   _179db7c2:
     ksu_vn/utils/preset/store.rb#_a5c0536b: rect3
   _1a4249c1:
-    ksu_vn/method/xuatdxf/geom.rb#_826c9296: num15
+    ksu_vn/method/xuatdxf/geom.rb#_826c9296: num13
   _1add3f22:
     ksu_vn/utils/nesting/pack.rb#_311385c4: bbox3
   _1b474acd:
@@ -23,7 +23,7 @@ ten:
     ksu_vn/method/chongbay/shape.rb#_d01131b1: pts2
     ksu_vn/utils/cutting/loop.rb#_58ea2028: pts3
   _1d78e444:
-    ksu_vn/utils/cutting/loop.rb#_93cdf1dd: h30
+    ksu_vn/utils/cutting/loop.rb#_93cdf1dd: h29
   _223cc36c:
     ksu_vn/method/xeptam/mirror.rb#_43486b4a: tr5
   _262dad3d:
@@ -60,7 +60,7 @@ ten:
   _4fcf5547:
     ksu_vn/utils/cutting/detail.rb#_0f0ed6ac: depth2
   _502cd779:
-    ksu_vn/utils/sheet/reorder.rb#_bb66defe: num17
+    ksu_vn/utils/sheet/reorder.rb#_bb66defe: num15
   _529cefc7:
     ksu_vn/method/xeptam.rb#draw: panel3
   _52f912ed:
@@ -79,10 +79,10 @@ ten:
   _609d76aa:
     ksu_vn/utils/cutting/loop.rb#_3a1d2466: ix2
   _63629225:
-    ksu_vn/method/chongbay/shape.rb#_9707d4ab: pt8
-    ksu_vn/method/toiuuvan/engine.rb#_9f684ec0: pt13
-    ksu_vn/method/toiuuvan/postproc.rb#_0579a704: pt15
-    ksu_vn/method/toiuuvan/postproc.rb#_1998c7d5: pt16
+    ksu_vn/method/chongbay/shape.rb#_9707d4ab: pt6
+    ksu_vn/method/toiuuvan/engine.rb#_9f684ec0: pt8
+    ksu_vn/method/toiuuvan/postproc.rb#_0579a704: pt11
+    ksu_vn/method/toiuuvan/postproc.rb#_1998c7d5: pt12
   _7043876e:
     ksu_vn/method/chongbay/shape.rb#_9608e031: x25
     ksu_vn/method/chongbay/shape.rb#_d5735c13: x23
@@ -110,6 +110,8 @@ ten:
     ksu_vn/utils/view.rb#_0b8e9c29: x221
   _77db59ee:
     ksu_vn/utils/sheet.rb#_6036fd14: tr6
+  _7b079005:
+    ksu_vn/method/nesting.rb#draw: progress2
   _8a52ae64:
     ksu_vn/method/chontam/pick.rb#_68d73ae7: h9
     ksu_vn/method/chontam/pick.rb#_9277e941: h18
@@ -143,7 +145,7 @@ ten:
     ksu_vn/utils/sheet/bottom.rb#_c7decd32: bottom4
   _cefe7468:
     ksu_vn/method/xeptam/collide.rb#_9b1924b8: h23
-    ksu_vn/utils/nesting/pack.rb#_26b5a6fd: h31
+    ksu_vn/utils/nesting/pack.rb#_26b5a6fd: h30
   _dfa78933:
     ksu_vn/method/nesting.rb#draw: name2
   _fae1d475:

@@ -99,15 +99,15 @@ module KSU::Resize
   end
   def points(half)
     [
-      Geom::Point3d.new(half[:x1], half[:y1], @num13),
-      Geom::Point3d.new(half[:x2], half[:y1], @num13),
-      Geom::Point3d.new(half[:x2], half[:y2], @num13),
-      Geom::Point3d.new(half[:x1], half[:y2], @num13)
+      Geom::Point3d.new(half[:x1], half[:y1], @plane_z),
+      Geom::Point3d.new(half[:x2], half[:y1], @plane_z),
+      Geom::Point3d.new(half[:x2], half[:y2], @plane_z),
+      Geom::Point3d.new(half[:x1], half[:y2], @plane_z)
     ]
   end
   def center(pts)
     color = KSU::Geom.centroid(pts)
-    Geom::Point3d.new(color[0], color[1], @num13)
+    Geom::Point3d.new(color[0], color[1], @plane_z)
   end
   def buttons
     arr = []
@@ -148,7 +148,7 @@ module KSU::Resize
     pts = slot[:points]
     return [] unless pts && pts.length == 4
     x214, x2, _60000b16, y2 = xy_bounds(pts)
-    z = @num13
+    z = @plane_z
     [
       { edge: :x1, a: Geom::Point3d.new(x214, _60000b16, z), b: Geom::Point3d.new(x214, y2, z) },
       { edge: :x2, a: Geom::Point3d.new(x2, _60000b16, z), b: Geom::Point3d.new(x2, y2, z) },
@@ -171,13 +171,13 @@ module KSU::Resize
     best
   end
   def edge_blocked?(slot, edge)
-    return false unless @pt11
+    return false unless @cur_pt
     pts = slot[:points]
     return false unless pts && pts.length == 4
     x215, x2, _60000b16, y2 = xy_bounds(pts)
     tol = 1.0.mm.to_f
-    px = @pt11.x.to_f
-    py = @pt11.y.to_f
+    px = @cur_pt.x.to_f
+    py = @cur_pt.y.to_f
     case edge
     when :x1
       tx = x215 - tol
@@ -220,18 +220,18 @@ module KSU::Resize
     true
   end
   def resize_to_cursor(view)
-    return unless @entry && @pt11
+    return unless @entry && @cur_pt
     pts = @entry[:points]
     x216, x2, _60000b16, y24 = xy_bounds(pts)
     arr = @flag61
     case @edge
     when :x1, :x2
-      v = @pt11.x.to_f
+      v = @cur_pt.x.to_f
       v = [[v, arr[:xs]].max, arr[:xe]].min if arr
       v = clamp_to_panels(@flag31, @edge, v, x216, x2, _60000b16, y24)
       if @edge == :x1 then x216 = v else x2 = v end
     when :y1, :y2
-      v = @pt11.y.to_f
+      v = @cur_pt.y.to_f
       v = [[v, arr[:ys]].max, arr[:ye]].min if arr
       v = clamp_to_panels(@flag31, @edge, v, x216, x2, _60000b16, y24)
       if @edge == :y1 then _60000b16 = v else y24 = v end
@@ -285,9 +285,9 @@ module KSU::Resize
     num5 = (ry - flag).abs
     return pt if num4 < 1e-9 && num5 < 1e-9
     if num4 <= num5
-      Geom::Point3d.new(flag2, ry, @num13)
+      Geom::Point3d.new(flag2, ry, @plane_z)
     else
-      Geom::Point3d.new(rx, flag, @num13)
+      Geom::Point3d.new(rx, flag, @plane_z)
     end
   end
   def _cd5e80f4
@@ -340,9 +340,9 @@ module KSU::Resize
     end
   end
   def draw_sheet_buttons(view)
-    flag28 = @mode == 1 && @flag29 && @id ? @id[0] : nil
+    btn_joint = @mode == 1 && @flag29 && @id ? @id[0] : nil
     buttons.each do |arr|
-      hover = @id == arr[:id] || (flag28 && arr[:kind] == flag28)
+      hover = @id == arr[:id] || (btn_joint && arr[:kind] == btn_joint)
       if arr[:kind] == :remove
         KSU::View.draw_warn_button(view, arr[:center], hover: hover)
       else

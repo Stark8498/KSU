@@ -1,7 +1,7 @@
 module KSU::Postproc
   private
   def start_optimize(flag = false)
-    return if @num12
+    return if @progress
     stop_timer
     groups = _e1ab909e
     if groups.empty?
@@ -66,9 +66,9 @@ module KSU::Postproc
     UI.messagebox("Lỗi tối ưu: #{ent.message}")
   end
   def run_async(groups)
-    @arr17 = []
-    @arr6 = groups.values
-    @num12 = 0
+    @added = []
+    @queue = groups.values
+    @progress = 0
     @str = "Đang tính dữ liệu"
     KSU::View.view&.invalidate
     optimize_next
@@ -77,19 +77,19 @@ module KSU::Postproc
     UI.messagebox("Lỗi tối ưu: #{ent.message}")
   end
   def optimize_next
-    if @arr6.nil? || @arr6.empty?
+    if @queue.nil? || @queue.empty?
       optimize_done
       return
     end
-    sheets = @arr6.shift
+    sheets = @queue.shift
     pack_batch(sheets)
   end
   def optimize_done
-    @num12 = nil
+    @progress = nil
     @str = nil
     drop_empty_sheets
-    @sel = (@sel + @arr17).select { |s| s && s.valid? }.uniq
-    _10248dd2
+    @sel = (@sel + @added).select { |s| s && s.valid? }.uniq
+    tidy_sheets
     KSU::View.clear_cache
     KSU::View.view&.invalidate
     start_postpass if @tu_dong_hau_ky
@@ -571,11 +571,11 @@ module KSU::Postproc
     end
     out
   end
-  def _0579a704(pt15)
-    outer = pt15[:outer]
+  def _0579a704(pt11)
+    outer = pt11[:outer]
     unless outer && outer.length >= 3
-      w = pt15[:w] * 25.4
-      h = pt15[:h] * 25.4
+      w = pt11[:w] * 25.4
+      h = pt11[:h] * 25.4
       return [[[0.0, 0.0], [w, 0.0], [w, h], [0.0, h]]]
     end
     arr2 = outer.map { |pt| [pt.x.to_f, pt.y.to_f] }
@@ -583,18 +583,18 @@ module KSU::Postproc
     min_y = arr2.map { |pt| pt[1] }.min
     conv2 = ->(arr5) { arr5.map { |pt| [(pt[0] - min_x) * 25.4, (pt[1] - min_y) * 25.4] } }
     loops = [conv2.call(arr2)]
-    (pt15[:holes] || []).each do |h|
+    (pt11[:holes] || []).each do |h|
       next unless h && h.length >= 3
       loops << conv2.call(h.map { |pt| [pt.x.to_f, pt.y.to_f] })
     end
     loops
   end
-  def _1998c7d5(pt16)
-    outer = pt16[:outer]
+  def _1998c7d5(pt12)
+    outer = pt12[:outer]
     if outer && outer.length >= 3
       [outer.map { |pt| pt.x.to_f }.min, outer.map { |pt| pt.y.to_f }.min]
     else
-      [pt16[:bbox].min.x.to_f, pt16[:bbox].min.y.to_f]
+      [pt12[:bbox].min.x.to_f, pt12[:bbox].min.y.to_f]
     end
   end
 end

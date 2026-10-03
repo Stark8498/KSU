@@ -1,7 +1,7 @@
 module KSU::Shape
   private
   def end_drag2
-    if @flag40
+    if @clearing
       clear_ranks(band_parts)
       return
     end
@@ -10,16 +10,16 @@ module KSU::Shape
     apply_ranks(rank_plan(sweep))
   end
   def sweep_dir
-    return @sweep_memo if @flag55 && @sweep_memo
-    return nil if @flag55 && band_parts.empty?
-    dir = forced_dir || dir_of(@pt4, @pt6)
-    @sweep_memo = dir if @flag55 && dir
+    return @sweep_memo if @sweeping && @sweep_memo
+    return nil if @sweeping && band_parts.empty?
+    dir = forced_dir || dir_of(@sweep_a, @sweep_b)
+    @sweep_memo = dir if @sweeping && dir
     dir
   end
   def band_parts
-    return [] unless @pt4 && @pt6
-    x1, x2 = [@pt4.x.to_f, @pt6.x.to_f].minmax
-    y1, y2 = [@pt4.y.to_f, @pt6.y.to_f].minmax
+    return [] unless @sweep_a && @sweep_b
+    x1, x2 = [@sweep_a.x.to_f, @sweep_b.x.to_f].minmax
+    y1, y2 = [@sweep_a.y.to_f, @sweep_b.y.to_f].minmax
     return [] if (x2 - x1) < 1.mm.to_f && (y2 - y1) < 1.mm.to_f
     @parts.select do |arr|
       bbox = arr[:bbox]
@@ -94,7 +94,7 @@ module KSU::Shape
       end
       return best || center
     end
-    s = @pt4
+    s = @sweep_a
     num = s ? (horizontal ? s.x.to_f : s.y.to_f) * flag2 : nil
     return num if s && point_in_part?(s.x.to_f, s.y.to_f, arr)
     tol = 1.mm.to_f
@@ -148,13 +148,13 @@ module KSU::Shape
     end
   end
   def cross_sorter_band(sweep)
-    return cross_sorter(sweep) unless @pt4 && @pt6
+    return cross_sorter(sweep) unless @sweep_a && @sweep_b
     case sweep
     when :left_to_right, :right_to_left
-      @pt6.y.to_f >= @pt4.y.to_f ?
+      @sweep_b.y.to_f >= @sweep_a.y.to_f ?
         ->(arr) { arr[:center].y.to_f } : ->(arr) { -arr[:center].y.to_f }
     when :top_to_bottom, :bottom_to_top
-      @pt6.x.to_f >= @pt4.x.to_f ?
+      @sweep_b.x.to_f >= @sweep_a.x.to_f ?
         ->(arr) { arr[:center].x.to_f } : ->(arr) { -arr[:center].x.to_f }
     end
   end
@@ -186,10 +186,10 @@ module KSU::Shape
   end
   def rank_drag(parts)
     if @layer_theo_vung
-      arr = parts.sort_by { |_23505ef9| _1b630104(@_cd7eef1c, @rank_b, _23505ef9) }
+      arr = parts.sort_by { |_23505ef9| _1b630104(@rank_a, @rank_b, _23505ef9) }
       rank_band(arr)
     else
-      sweep = dir_of(@_cd7eef1c, @rank_b)
+      sweep = dir_of(@rank_a, @rank_b)
       sweep ? rank_by_layer(parts, sweep) : []
     end
   end
@@ -250,9 +250,9 @@ module KSU::Shape
     end
   end
   def forced_dir
-    return nil unless @pt4 && @pt6
-    x1, x2 = [@pt4.x.to_f, @pt6.x.to_f].minmax
-    y1, y2 = [@pt4.y.to_f, @pt6.y.to_f].minmax
+    return nil unless @sweep_a && @sweep_b
+    x1, x2 = [@sweep_a.x.to_f, @sweep_b.x.to_f].minmax
+    y1, y2 = [@sweep_a.y.to_f, @sweep_b.y.to_f].minmax
     return nil if (x2 - x1) < 1.mm.to_f && (y2 - y1) < 1.mm.to_f
     arr = []
     @sheets.each do |rec|
@@ -288,9 +288,9 @@ module KSU::Shape
     }
   end
   def dist(_78088f46, _fb746155, _24cbb6f3, _8e929fea, edge)
-    return Float::INFINITY unless @pt4
-    start_x = @pt4.x.to_f
-    ly0 = @pt4.y.to_f
+    return Float::INFINITY unless @sweep_a
+    start_x = @sweep_a.x.to_f
+    ly0 = @sweep_a.y.to_f
     case edge
     when :top    then (ly0 - _8e929fea).abs
     when :bottom then (ly0 - _24cbb6f3).abs
@@ -328,10 +328,10 @@ module KSU::Shape
     end
   end
   def finish_drag_rank
-    return unless @_cd7eef1c && @rank_b
-    parts = _9b7885a4(@_cd7eef1c, @rank_b)
+    return unless @rank_a && @rank_b
+    parts = _9b7885a4(@rank_a, @rank_b)
     apply_ranks(rank_drag(parts)) unless parts.empty?
-    @_cd7eef1c = nil
+    @rank_a = nil
     @rank_b = nil
   end
   def rank_lasso
@@ -370,12 +370,12 @@ module KSU::Shape
     end
     arr
   end
-  def _9707d4ab(pt, b, pt8)
+  def _9707d4ab(pt, b, pt6)
     dx = b.x.to_f - pt.x.to_f
     dy = b.y.to_f - pt.y.to_f
     len2 = dx * dx + dy * dy
     return 0.0 if len2 < 1e-9
-    ((pt8.x.to_f - pt.x.to_f) * dx + (pt8.y.to_f - pt.y.to_f) * dy) / len2
+    ((pt6.x.to_f - pt.x.to_f) * dx + (pt6.y.to_f - pt.y.to_f) * dy) / len2
   end
   def _9b7885a4(p1, p2)
     eligible(@parts.select { |_23505ef9| _f9c10539(p1, p2, _23505ef9) })
@@ -458,7 +458,7 @@ module KSU::Shape
       next unless arr[:rank]
       next if arr2[arr[:part]]
       next if arr3[arr[:part]]
-      color = arr[:fill_color] || _67c06000(arr)
+      color = arr[:fill_color] || fill_color_of(arr)
       next unless color
       key = [color.red, color.green, color.blue, color.alpha]
       (h[key] ||= [color, []])[1] << overlay_of(arr)
@@ -473,24 +473,24 @@ module KSU::Shape
     end
   end
   def _3c222d84(view)
-    return unless @flag55 && @pt4 && @pt6
-    x211, x2 = @pt4.x.to_f, @pt6.x.to_f
-    _60000b16, y2 = @pt4.y.to_f, @pt6.y.to_f
+    return unless @sweeping && @sweep_a && @sweep_b
+    x211, x2 = @sweep_a.x.to_f, @sweep_b.x.to_f
+    _60000b16, y2 = @sweep_a.y.to_f, @sweep_b.y.to_f
     pts = [
-      Geom::Point3d.new([x211, x2].min, [_60000b16, y2].min, @num13),
-      Geom::Point3d.new([x211, x2].max, [_60000b16, y2].min, @num13),
-      Geom::Point3d.new([x211, x2].max, [_60000b16, y2].max, @num13),
-      Geom::Point3d.new([x211, x2].min, [_60000b16, y2].max, @num13)
+      Geom::Point3d.new([x211, x2].min, [_60000b16, y2].min, @plane_z),
+      Geom::Point3d.new([x211, x2].max, [_60000b16, y2].min, @plane_z),
+      Geom::Point3d.new([x211, x2].max, [_60000b16, y2].max, @plane_z),
+      Geom::Point3d.new([x211, x2].min, [_60000b16, y2].max, @plane_z)
     ]
     KSU::View.draw_polygon2d(view, KSU::View.to_screen(pts))
     _d1cfc672(view)
   end
   def _d1cfc672(view)
-    return if @flag40
+    return if @clearing
     sweep = sweep_dir
     return unless sweep
-    s = view.screen_coords(@pt4)
-    ent = view.screen_coords(@pt6)
+    s = view.screen_coords(@sweep_a)
+    ent = view.screen_coords(@sweep_b)
     extent_along = case sweep
               when :left_to_right, :right_to_left then (ent.x - s.x).abs
               else (ent.y - s.y).abs
@@ -514,8 +514,8 @@ module KSU::Shape
     end
   end
   def _b066035d(view)
-    return unless @_cd7eef1c && @rank_b
-    KSU::View.draw_lines([@_cd7eef1c, @rank_b], guide: false, width: 1)
+    return unless @rank_a && @rank_b
+    KSU::View.draw_lines([@rank_a, @rank_b], guide: false, width: 1)
   end
   def _990148f1(view)
     return if @lasso_pts.empty?

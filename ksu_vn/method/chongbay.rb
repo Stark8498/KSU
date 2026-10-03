@@ -20,30 +20,30 @@ class KSU::Chongbay
     @chieu_rong_toi_da = get("chieu_rong_toi_da", 200.0).to_f.mm
     @sheets = []
     @parts = []
-    @num13 = 0.0
-    @pt11 = nil
-    @pt12 = nil
-    @flag55 = false
-    @pt4 = nil
-    @pt6 = nil
+    @plane_z = 0.0
+    @cur_pt = nil
+    @screen_pt = nil
+    @sweeping = false
+    @sweep_a = nil
+    @sweep_b = nil
     @sweep_memo = nil
     @track_ids = []
-    @_cd7eef1c = nil
+    @rank_a = nil
     @rank_b = nil
     @lasso_pts = []
-    @arr46 = nil
-    @flag28 = nil
-    @arr64 = []
-    @flag63 = nil
+    @dest = nil
+    @btn_joint = nil
+    @btn_plan = []
+    @auto_hover = nil
     @hover_sheet = nil
-    @arr49 = nil
+    @editing = nil
     @_04b8b9d9 = nil
     @str3 = ""
     @arr32 = []
     @arr54 = []
     @h2 = {}
     @h16 = {}
-    @flag40 = false
+    @clearing = false
     @side = :tren
     @danh_so_thu_tu = !!get("danh_so_thu_tu", true)
     @so_layer_tu  = [get("so_layer_tu", 1).to_i, 1].max
@@ -198,12 +198,12 @@ class KSU::Chongbay
     @che_do = v
     set("che_do", v)
     reset_state
-    @flag63 = nil
+    @auto_hover = nil
     cancel_edit
     update_status
   end
   def onKeyDown(key, rep, kflags, view)
-    return true if @arr49 && edit_key(key, view)
+    return true if @editing && edit_key(key, view)
     case key
     when 192
       KSU::Settings.open_settings("chong_bay")
@@ -214,7 +214,7 @@ class KSU::Chongbay
       if @kieu_chon_tam == 2 && @lasso_pts.any?
         rank_lasso
         view&.invalidate
-      elsif !@flag40 && !(@flag55 || !@_cd7eef1c.nil? || @lasso_pts.any?)
+      elsif !@clearing && !(@sweeping || !@rank_a.nil? || @lasso_pts.any?)
         KSU.select_tool(nil)
         view&.invalidate
       end
@@ -231,9 +231,9 @@ class KSU::Chongbay
     when CONSTRAIN_MODIFIER_KEY
       update_preview(true, view)
     when ALT_MODIFIER_KEY
-      unless @flag40
-        @flag40 = true
-        reset_state unless @flag55
+      unless @clearing
+        @clearing = true
+        reset_state unless @sweeping
         view&.invalidate
       end
     end
@@ -244,19 +244,19 @@ class KSU::Chongbay
     when CONSTRAIN_MODIFIER_KEY
       update_preview(false, view)
     when ALT_MODIFIER_KEY
-      if @flag40
-        @flag40 = false
-        reset_state unless @flag55
+      if @clearing
+        @clearing = false
+        reset_state unless @sweeping
         view&.invalidate
       end
     end
     true
   end
   def update_preview(ctrl, view)
-    return unless @arr46
-    plan = plan_for(@arr46, @flag28, ctrl)
-    return if plan == @arr64
-    @arr64 = plan
+    return unless @dest
+    plan = plan_for(@dest, @btn_joint, ctrl)
+    return if plan == @btn_plan
+    @btn_plan = plan
     view&.invalidate
   end
   def onCancel(reason, view)
@@ -270,32 +270,32 @@ class KSU::Chongbay
       set_hover(nil, view)
       return
     end
-    @pt11 = KSU::View.pick_on_plane(view, x, y, @num13)
-    @pt12 = Geom::Point3d.new(x, y, 0)
-    if !@flag55 && !@_cd7eef1c && @lasso_pts.empty?
-      _b1c23df1, cur_sheet, _10b8f37f, _3ab5da25 = @hover_sheet, @arr46, @flag28, @arr64
+    @cur_pt = KSU::View.pick_on_plane(view, x, y, @plane_z)
+    @screen_pt = Geom::Point3d.new(x, y, 0)
+    if !@sweeping && !@rank_a && @lasso_pts.empty?
+      _b1c23df1, cur_sheet, _10b8f37f, _3ab5da25 = @hover_sheet, @dest, @btn_joint, @btn_plan
       @hover_sheet = hit_header(view, x, y)
       sheet, joint = hit_button(view, x, y)
       ctrl = (rot & MK_SHIFT) != 0
-      @arr46, @flag28 = sheet, joint
-      @arr64 = plan_for(sheet, joint, ctrl)
-      view.invalidate if _b1c23df1 != @hover_sheet || cur_sheet != @arr46 || _10b8f37f != @flag28 || _3ab5da25 != @arr64
+      @dest, @btn_joint = sheet, joint
+      @btn_plan = plan_for(sheet, joint, ctrl)
+      view.invalidate if _b1c23df1 != @hover_sheet || cur_sheet != @dest || _10b8f37f != @btn_joint || _3ab5da25 != @btn_plan
       set_hover(hit_at(x, y), view)
     else
       set_hover(nil, view)
     end
     if @che_do == 1
-      _77f3b22c = @flag63
-      @flag63 = @arr46 ? nil : sheet_at(@pt11)
-      view.invalidate if _77f3b22c != @flag63
+      _77f3b22c = @auto_hover
+      @auto_hover = @dest ? nil : sheet_at(@cur_pt)
+      view.invalidate if _77f3b22c != @auto_hover
     else
       case pick_mode
       when 0
-        @pt6 = @pt11 if @flag55
+        @sweep_b = @cur_pt if @sweeping
       when 1
-        @rank_b = @pt11 if @_cd7eef1c
+        @rank_b = @cur_pt if @rank_a
       when 2
-        @rank_b = @pt11 if @lasso_pts.any?
+        @rank_b = @cur_pt if @lasso_pts.any?
       end
     end
     view.invalidate
@@ -304,7 +304,7 @@ class KSU::Chongbay
     return if click_field(x, y, view)
     return if click_mode(x, y, view)
     return if click_outside(x, y, view)
-    if !@flag55 && @_cd7eef1c.nil? && @lasso_pts.empty?
+    if !@sweeping && @rank_a.nil? && @lasso_pts.empty?
       hit = hit_at(x, y)
       if hit
         begin_edit(hit, view)
@@ -320,25 +320,25 @@ class KSU::Chongbay
       view.invalidate
       return
     end
-    _d41bb15d = KSU::View.pick_on_plane(view, x, y, @num13)
+    _d41bb15d = KSU::View.pick_on_plane(view, x, y, @plane_z)
     return unless _d41bb15d
     if @che_do == 1
       arr = sheet_at(_d41bb15d)
       assign_side(arr[0], arr[1]) if arr
-      @flag63 = nil
+      @auto_hover = nil
       view.invalidate
       return
     end
     case pick_mode
     when 0
-      @flag55 = true
-      @pt4 = _d41bb15d
-      @pt6 = _d41bb15d
+      @sweeping = true
+      @sweep_a = _d41bb15d
+      @sweep_b = _d41bb15d
       @sweep_memo = nil
       @track_ids = []
     when 1
-      if @_cd7eef1c.nil?
-        @_cd7eef1c = _d41bb15d
+      if @rank_a.nil?
+        @rank_a = _d41bb15d
         @rank_b = _d41bb15d
       else
         @rank_b = _d41bb15d
@@ -351,21 +351,21 @@ class KSU::Chongbay
     view.invalidate
   end
   def pick_mode
-    @flag40 ? 0 : @kieu_chon_tam
+    @clearing ? 0 : @kieu_chon_tam
   end
   def onLButtonUp(kflags, x, y, view)
-    return unless pick_mode == 0 && @flag55
+    return unless pick_mode == 0 && @sweeping
     end_drag2
-    @flag55 = false
-    @pt4 = nil
-    @pt6 = nil
+    @sweeping = false
+    @sweep_a = nil
+    @sweep_b = nil
     view.invalidate
   end
   def draw(view)
     KSU::View.refresh_now
-    _8f0a8c81
-    @arr32 = _4868b3b3
-    @arr54 = _2e1313e5
+    refresh_fill_colors
+    @arr32 = preview_plan
+    @arr54 = clear_preview2
     @h2 = @arr32.each_with_object({}) { |arr, h| h[arr[:part][:part]] = true }
     @h16 = @arr54.each_with_object({}) { |arr2, h| h[arr2[:part]] = true }
     _de1ac9fc if @phu_mau_tam || @phu_mau_tam_hai_mat
@@ -385,10 +385,10 @@ class KSU::Chongbay
     _a72e7349(view)
     _29b62f37(view)
   end
-  def _8f0a8c81
+  def refresh_fill_colors
     return if @_be1ff2f2 == @danh_so_thu_tu
     @_be1ff2f2 = @danh_so_thu_tu
-    @parts.each { |arr| arr[:fill_color] = _67c06000(arr) }
+    @parts.each { |arr| arr[:fill_color] = fill_color_of(arr) }
   end
   def _a72e7349(view)
     return unless @hien_so_thu_tu && @danh_so_thu_tu
@@ -398,7 +398,7 @@ class KSU::Chongbay
       next unless arr[:rank]
       next if arr4[arr[:part]]
       next if arr3[arr[:part]]
-      next if arr.equal?(@arr49)
+      next if arr.equal?(@editing)
       KSU::View.draw_label(arr[:rank].to_s, arr[:center], shape: :circle, size: size2(arr))
     end
     @arr32.each do |arr2|
@@ -407,14 +407,14 @@ class KSU::Chongbay
     _c8f21829
   end
   def _c8f21829
-    arr = @arr49
+    arr = @editing
     return unless arr && arr[:rank]
     return if @h2[arr[:part]] || @h16[arr[:part]]
     lbl = @str3.empty? ? arr[:rank].to_s : @str3
     KSU::View.draw_label(lbl, arr[:center], shape: :circle, size: size2(arr), line_width: 2)
   end
   def size2(_23505ef9)
-    return @co_so_thu_tu * 1.5 if _23505ef9.equal?(@arr49) || _23505ef9.equal?(@_04b8b9d9)
+    return @co_so_thu_tu * 1.5 if _23505ef9.equal?(@editing) || _23505ef9.equal?(@_04b8b9d9)
     @co_so_thu_tu
   end
   def hit_at(x, y)
@@ -428,8 +428,8 @@ class KSU::Chongbay
   end
   def begin_edit(_23505ef9, view)
     @str3 = ""
-    return if @arr49.equal?(_23505ef9)
-    @arr49 = _23505ef9
+    return if @editing.equal?(_23505ef9)
+    @editing = _23505ef9
     update_status
     view&.invalidate
   end
@@ -454,7 +454,7 @@ class KSU::Chongbay
     @str3 += ch if @str3.length < 3
   end
   def _d855ea50(view)
-    arr = @arr49
+    arr = @editing
     layers = @str3.to_i
     _bd503ff9(arr, layers) if arr && arr[:rank] && layers >= 1
     begin_edit(nil, view)
@@ -488,7 +488,7 @@ class KSU::Chongbay
     holes && !holes.empty? ? { outer: arr[:overlay_polygon], holes: holes } : arr[:overlay_polygon]
   end
   def draw_sheet_buttons(view)
-    node = @arr64 || []
+    node = @btn_plan || []
     arr2 = node.dup
     arr2 << @hover_sheet if @hover_sheet && !arr2.include?(@hover_sheet)
     return if arr2.empty?
@@ -546,9 +546,9 @@ class KSU::Chongbay
     else
       arr.each { |s| assign_all(s) }
     end
-    @arr46 = nil
-    @flag28 = nil
-    @arr64 = []
+    @dest = nil
+    @btn_joint = nil
+    @btn_plan = []
     @hover_sheet = nil
   end
   def plan_for(sheet, joint, ctrl)
@@ -653,8 +653,8 @@ class KSU::Chongbay
     end
   end
   def _82f140a1(view)
-    return unless @flag63
-    sheet, side = @flag63
+    return unless @auto_hover
+    sheet, side = @auto_hover
     rec = KSU::Sheet.record_for(@sheets, sheet)
     return unless rec
     bbox = rec[:bbox]
@@ -692,32 +692,32 @@ class KSU::Chongbay
     when :trai then bb.min.x - bbox.min.x
     end
   end
-  def _4868b3b3
-    return [] if @flag40
-    return _b278661f if @arr46 && @flag28 == :plus
-    return _f674b1ec if @che_do == 1
+  def preview_plan
+    return [] if @clearing
+    return button_plan if @dest && @btn_joint == :plus
+    return auto_plan if @che_do == 1
     case @kieu_chon_tam
-    when 0 then _c915a205
-    when 1 then _ed847bcd
-    when 2 then _c174cba6
+    when 0 then rect_plan
+    when 1 then line_plan
+    when 2 then lasso_plan
     else []
     end
   end
-  def _2e1313e5
-    return [] unless @flag40 && @flag55
+  def clear_preview2
+    return [] unless @clearing && @sweeping
     band_parts
   end
-  def _f674b1ec
-    return [] unless @flag63
-    sheet, side = @flag63
+  def auto_plan
+    return [] unless @auto_hover
+    sheet, side = @auto_hover
     rec = KSU::Sheet.record_for(@sheets, sheet)
     return [] unless rec
     parts = @parts.select { |arr2| arr2[:sheet] == sheet }
     plan_side(parts, rec[:bbox], side)
   end
-  def _b278661f
-    arr = @arr64
-    arr = [@arr46] if arr.nil? || arr.empty?
+  def button_plan
+    arr = @btn_plan
+    arr = [@dest] if arr.nil? || arr.empty?
     arr.flat_map do |sheet|
       rec = KSU::Sheet.record_for(@sheets, sheet)
       next [] unless rec
@@ -725,18 +725,18 @@ class KSU::Chongbay
       plan_all_sides(parts, rec[:bbox])
     end
   end
-  def _c915a205
-    return [] unless @kieu_chon_tam == 0 && @flag55
+  def rect_plan
+    return [] unless @kieu_chon_tam == 0 && @sweeping
     sweep = sweep_dir
     sweep ? rank_plan(sweep) : []
   end
-  def _ed847bcd
-    return [] unless @kieu_chon_tam == 1 && @_cd7eef1c && @rank_b
-    parts = _9b7885a4(@_cd7eef1c, @rank_b)
+  def line_plan
+    return [] unless @kieu_chon_tam == 1 && @rank_a && @rank_b
+    parts = _9b7885a4(@rank_a, @rank_b)
     return [] if parts.empty?
     rank_drag(parts)
   end
-  def _c174cba6
+  def lasso_plan
     return [] unless @kieu_chon_tam == 2 && @lasso_pts.any?
     pts = _e7ce91ab
     return [] if pts.length < 2
@@ -746,9 +746,9 @@ class KSU::Chongbay
   end
   private
   def update_status
-    if @arr49
+    if @editing
       KSU.set_status("Nhập số layer rồi nhấn Enter. Nhấn Enter hoặc bấm ra chỗ trống để bỏ chọn số.")
-      KSU.set_vcb("Số layer", @str3.empty? ? @arr49[:rank].to_s : @str3)
+      KSU.set_vcb("Số layer", @str3.empty? ? @editing[:rank].to_s : @str3)
       return
     end
     KSU.set_vcb("", "")
@@ -766,9 +766,9 @@ class KSU::Chongbay
     dir ? side_of(dir) : _b7735d5c
   end
   def _b7735d5c
-    return @side unless @pt11
-    px = @pt11.x.to_f
-    py = @pt11.y.to_f
+    return @side unless @cur_pt
+    px = @cur_pt.x.to_f
+    py = @cur_pt.y.to_f
     rec = @sheets.find do |s|
       bbox = s[:bbox]
       px >= bbox.min.x.to_f && px <= bbox.max.x.to_f && py >= bbox.min.y.to_f && py <= bbox.max.y.to_f
@@ -778,12 +778,12 @@ class KSU::Chongbay
   end
   def _29b62f37(view)
     return if @che_do != 0
-    return if @flag40 || @pt12.nil? || !@hien_bang_mau || busy?
+    return if @clearing || @screen_pt.nil? || !@hien_bang_mau || busy?
     return if @kieu_chon_tam == 0
     num3 = @co_bang_mau.to_f
     num4 = 14.0
-    x1 = @pt12.x.to_f + num4
-    y1 = @pt12.y.to_f + num4
+    x1 = @screen_pt.x.to_f + num4
+    y1 = @screen_pt.y.to_f + num4
     x2 = x1 + num3
     _60000b16 = y1 + num3
     view.line_stipple = ""
@@ -813,24 +813,24 @@ class KSU::Chongbay
     ])
   end
   def reset_state
-    @flag55 = false
-    @pt4 = nil
-    @pt6 = nil
+    @sweeping = false
+    @sweep_a = nil
+    @sweep_b = nil
     @sweep_memo = nil
     @track_ids = []
-    @_cd7eef1c = nil
+    @rank_a = nil
     @rank_b = nil
     @lasso_pts = []
     @_04b8b9d9 = nil
     @str3 = ""
-    if @arr49
-      @arr49 = nil
+    if @editing
+      @editing = nil
       update_status
     end
   end
   def sheet_list
     @sheets = KSU::Sheet.sheet_list(@nesting)
-    @num13 = @sheets.empty? ? 0.0 : @sheets.first[:bbox].center.z.to_f
+    @plane_z = @sheets.empty? ? 0.0 : @sheets.first[:bbox].center.z.to_f
   end
   def _8784e3f2
     @parts = []
@@ -881,11 +881,11 @@ class KSU::Chongbay
     _8784e3f2
     _2868a9dd
     reset_state
-    @arr46 = nil
-    @flag28 = nil
-    @arr64 = []
+    @dest = nil
+    @btn_joint = nil
+    @btn_plan = []
     @hover_sheet = nil
-    @arr49 = nil
+    @editing = nil
     @_04b8b9d9 = nil
   end
 end
