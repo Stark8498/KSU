@@ -146,7 +146,7 @@
   },
   {
    "ns": "KSU::Detail",
-   "m": "_90be1fb4",
+   "m": "has_id?",
    "f": "ksu_vn/method/caidat.rb",
    "l": 628
   },
@@ -950,19 +950,19 @@
   },
   {
    "ns": "KSU::Cutting",
-   "m": "_f7a09903",
+   "m": "short_side",
    "f": "ksu_vn/method/nesting/collect.rb",
    "l": 153
   },
   {
    "ns": "KSU::Cutting",
-   "m": "_e4e88386",
+   "m": "arrow_sizes",
    "f": "ksu_vn/method/nesting/collect.rb",
    "l": 154
   },
   {
    "ns": "KSU::Cutting",
-   "m": "_4605a894",
+   "m": "cut_loops",
    "f": "ksu_vn/method/nesting/collect.rb",
    "l": 155
   },
@@ -974,13 +974,13 @@
   },
   {
    "ns": "KSU::Cutting",
-   "m": "_32f2e5fc",
+   "m": "side_drills",
    "f": "ksu_vn/method/nesting/collect.rb",
    "l": 176
   },
   {
    "ns": "KSU::Cutting",
-   "m": "_babeb881",
+   "m": "split_by_face",
    "f": "ksu_vn/method/nesting/collect.rb",
    "l": 184
   },
@@ -1022,13 +1022,13 @@
   },
   {
    "ns": "KSU::Cutting",
-   "m": "_56b0abb5",
+   "m": "copy_attrs",
    "f": "ksu_vn/method/nesting/draw.rb",
    "l": 137
   },
   {
    "ns": "KSU::Cutting",
-   "m": "_c6e26747",
+   "m": "save_drills_desc",
    "f": "ksu_vn/method/nesting/draw.rb",
    "l": 158
   },
@@ -1040,7 +1040,7 @@
   },
   {
    "ns": "KSU::Cutting",
-   "m": "_81410e9d",
+   "m": "copy_and_flatten",
    "f": "ksu_vn/method/nesting/draw.rb",
    "l": 164
   },
@@ -1052,7 +1052,7 @@
   },
   {
    "ns": "KSU::Cutting",
-   "m": "_b39e8694",
+   "m": "transparent_material",
    "f": "ksu_vn/method/nesting/draw.rb",
    "l": 364
   },
@@ -1508,7 +1508,7 @@
   },
   {
    "ns": "KSU::Cutting",
-   "m": "_b344f39a",
+   "m": "box_axes",
    "f": "ksu_vn/method/thongke/quet.rb",
    "l": 57
   },
@@ -1682,7 +1682,7 @@
   },
   {
    "ns": "KSU::Nfp",
-   "m": "_5762df6e",
+   "m": "orient",
    "f": "ksu_vn/method/toiuuvan/engine.rb",
    "l": 250
   },
@@ -1970,7 +1970,7 @@
   },
   {
    "ns": "KSU::Nfp",
-   "m": "_a6cf3d0d",
+   "m": "grid_query",
    "f": "ksu_vn/method/xeptam/collide.rb",
    "l": 98
   },
@@ -2000,7 +2000,7 @@
   },
   {
    "ns": "KSU::Nfp",
-   "m": "_78849fa5",
+   "m": "cell_grid",
    "f": "ksu_vn/method/xeptam/collide.rb",
    "l": 195
   },
@@ -2024,7 +2024,7 @@
   },
   {
    "ns": "KSU::Nfp",
-   "m": "_3ea4c8e4",
+   "m": "nfp_into",
    "f": "ksu_vn/method/xeptam/collide.rb",
    "l": 312
   },
@@ -2036,7 +2036,7 @@
   },
   {
    "ns": "KSU::Nfp",
-   "m": "_8c9066f6",
+   "m": "add_ring_edges",
    "f": "ksu_vn/method/xeptam/collide.rb",
    "l": 331
   },
@@ -2048,7 +2048,7 @@
   },
   {
    "ns": "KSU::Nfp",
-   "m": "_4ec2a6e7",
+   "m": "snap_out",
    "f": "ksu_vn/method/xeptam/collide.rb",
    "l": 378
   },
@@ -2204,7 +2204,7 @@
   },
   {
    "ns": "KSU::Nfp",
-   "m": "_3b7ac698",
+   "m": "ring_area",
    "f": "ksu_vn/method/xeptam/push.rb",
    "l": 214
   },
@@ -2636,7 +2636,7 @@
   },
   {
    "ns": "KSU::Nfp",
-   "m": "_b66f0915",
+   "m": "pack_key",
    "f": "ksu_vn/utils/nesting/optimize.rb",
    "l": 262
   },
@@ -2768,7 +2768,7 @@
   },
   {
    "ns": "KSU::Nfp",
-   "m": "_a737195f",
+   "m": "save_binding",
    "f": "ksu_vn/utils/view.rb",
    "l": 518
   },

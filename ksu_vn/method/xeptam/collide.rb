@@ -95,7 +95,7 @@ module KSU::Collide
     @sel.each { |arr| _9535dc0b[arr.object_id] = true if arr }
     rings = []
     items = arr3[:items]
-    KSU::Nfp._a6cf3d0d(arr3[:grid], bbox, gap2 + tol).each do |i|
+    KSU::Nfp.grid_query(arr3[:grid], bbox, gap2 + tol).each do |i|
       fld = items[i]
       next if fld[:is_border] || _9535dc0b[fld[:panel].object_id]
       rings << fld[:poly]
@@ -192,7 +192,7 @@ module KSU::Collide
     @obstacle_cache[sheet] = {
       items: items,
       borders: borders,
-      grid: KSU::Nfp._78849fa5(items),
+      grid: KSU::Nfp.cell_grid(items),
     }
   end
   def shift_edges(poly, dx, dy)
@@ -309,14 +309,14 @@ module KSU::Collide
     arr9.each do |arr2|
       fixed = arr2[:poly].map { |pt| [pt.x.to_f, pt.y.to_f] }
       arr11 = (arr2[:holes] || []).map { |h| h.map { |pt| [pt.x.to_f, pt.y.to_f] } }
-      KSU::Nfp._3ea4c8e4(arr3, arr5, fixed, arr11, moving, num2)
+      KSU::Nfp.nfp_into(arr3, arr5, fixed, arr11, moving, num2)
     end
     border_rings(arr4, arr8).each do |_e1aa7d6a|
-      KSU::Nfp._3ea4c8e4(arr3, arr5, _e1aa7d6a, [], moving, _ac6822d3)
+      KSU::Nfp.nfp_into(arr3, arr5, _e1aa7d6a, [], moving, _ac6822d3)
     end
     return { valid: true, rings: [], flat: [], snap_edges: [] } if arr3.empty?
-    arr7 = arr3.map { |half| KSU::Nfp._5762df6e(half, true) }
-    arr5.each { |half| arr7 << KSU::Nfp._5762df6e(half, false) }
+    arr7 = arr3.map { |half| KSU::Nfp.orient(half, true) }
+    arr5.each { |half| arr7 << KSU::Nfp.orient(half, false) }
     _69887b79 = KSU::Clipper.union(arr7, 6)
     rings = []
     flat = []
@@ -328,7 +328,7 @@ module KSU::Collide
       pt2 = half.map { |arr| Geom::Point3d.new(arr[0], arr[1], 0) }
       rings << pt2
       flat << half.flat_map { |arr| [arr[0].to_f, arr[1].to_f] }
-      KSU::Nfp._8c9066f6(pt2, snap_edges) unless @flag2
+      KSU::Nfp.add_ring_edges(pt2, snap_edges) unless @flag2
     end
     { valid: true, rings: rings, flat: flat, snap_edges: snap_edges }
   rescue StandardError
@@ -375,7 +375,7 @@ module KSU::Collide
     else
       inst2 = Geom::Point3d.new(dx2, dy, num2)
       pt3 = Geom::Point3d.new(dx2 - pt2.x.to_f, dy - pt2.y.to_f, num2)
-      pt = KSU::Nfp._4ec2a6e7(arr, pt3, inst2)
+      pt = KSU::Nfp.snap_out(arr, pt3, inst2)
       dx = pt.x
       dy2 = pt.y
     end
@@ -468,7 +468,7 @@ module KSU::Collide
           _77aba818 = pt
         end
       end
-      KSU::Nfp._a6cf3d0d(grid, _f8733e26, @tam_cach_nhau).each do |i|
+      KSU::Nfp.grid_query(grid, _f8733e26, @tam_cach_nhau).each do |i|
         fld = items[i]
         next if h[fld[:panel].object_id]
         _33f52d3e = hole_around([bbox], fld[:holes])

@@ -17,7 +17,7 @@ module KSU::Detail
     tr2 = grp.transformation * grp.definition.bounds.center
     tr = Geom::Transformation.translation(tr3 - tr2) * base_tr
     grp.transformation = tr
-    _56b0abb5(grp, prev_key)
+    copy_attrs(grp, prev_key)
     set_layer(grp, layer(str))
     prev_key.erase! if prev_key && prev_key.valid?
     [grp, tr]
@@ -89,17 +89,17 @@ module KSU::Detail
     tf2 = align_tf(grp, vec2, tf3d)
     part_tf = tf2 if tf2
     max_eb = edgeband_spec(grp)
-    small_size = _f7a09903(vec2, tf3d)
-    arr2 = _e4e88386(small_size)
-    rec = _4605a894(grp, vec2, part_tf, max_eb[0], arr2[0], arr2[1])
+    small_size = short_side(vec2, tf3d)
+    arr2 = arrow_sizes(small_size)
+    rec = cut_loops(grp, vec2, part_tf, max_eb[0], arr2[0], arr2[1])
     return false if rec[:loops].empty?
-    _2422ecf1, tr2 = build_lines_group(panel, cutting, tr, rec[:loops])
-    return false unless _2422ecf1
+    lines_grp, tr2 = build_lines_group(panel, cutting, tr, rec[:loops])
+    return false unless lines_grp
     draw_edgeband(panel, tr2.inverse, rec[:edge_band_lines])
     save_edgeband_desc(panel, rec[:edge_band_desc], tr2)
-    bottom = _babeb881(grp, vec2, tf3d)
+    bottom = split_by_face(grp, vec2, tf3d)
     draw_bands(panel, bottom[:up], tr2 * part_tf)
-    _c6e26747(panel, _32f2e5fc(grp, vec2, part_tf), tr2)
+    save_drills_desc(panel, side_drills(grp, vec2, part_tf), tr2)
     holes = label_opts(grp, bottom[:label], vec2, tf3d, max_eb[1], arr2)
     draw_holes(panel, tr2 * part_tf, holes, false)
     if nesting
@@ -168,45 +168,45 @@ module KSU::Detail
     end
     ents.erase_entities(prev_key) unless prev_key.empty?
   end
-  def draw_holes(panel, inv_tf, arr, _93bcf54e)
+  def draw_holes(panel, inv_tf, arr, flip)
     label3d = arr && arr[:label3d]
     return unless label3d && label3d.valid? && label3d.respond_to?(:definition) && label3d.definition
     ents = KSU.entities_in(panel)
     return unless ents
     clear_labels(panel)
     inst = ents.add_instance(label3d.definition, inv_tf * label3d.transformation)
-    _56b0abb5(inst, label3d)
-    _5edc6938(inst, arr)
-    inst.transformation = inst.transformation * Geom::Transformation.rotation(ORIGIN, Y_AXIS, 180.degrees) if _93bcf54e
-    _81410e9d(inst, label3d)
+    copy_attrs(inst, label3d)
+    fit_label(inst, arr)
+    inst.transformation = inst.transformation * Geom::Transformation.rotation(ORIGIN, Y_AXIS, 180.degrees) if flip
+    copy_and_flatten(inst, label3d)
   end
-  def _5edc6938(lbl, arr)
-    _6967f87f = lbl.get_attribute("ABF", "label-width")
-    _54538e67 = lbl.get_attribute("ABF", "label-height")
-    _7e53f420 = lbl.get_attribute("ABF", "label-scale")
-    return unless _6967f87f && _54538e67 && _7e53f420 && _6967f87f > 0 && _54538e67 > 0 && _7e53f420 != 0
+  def fit_label(lbl, arr)
+    lbl_w = lbl.get_attribute("ABF", "label-width")
+    lbl_h = lbl.get_attribute("ABF", "label-height")
+    lbl_scale = lbl.get_attribute("ABF", "label-scale")
+    return unless lbl_w && lbl_h && lbl_scale && lbl_w > 0 && lbl_h > 0 && lbl_scale != 0
     rotate = arr[:rotate]
     arrow_padding = arr[:arrow_padding]
-    _9b67c55d = arrow_padding
-    _9b67c55d = _9b67c55d * 8 if rotate == 0 || rotate == 180
-    _5ec460ae = arr[:arrow_size] * 2 + arrow_padding * 2 + _9b67c55d * 2 + arr[:max_eb_th] * 2
-    arr2 = _e04dc194(arr[:up_face], arr[:tf3d])
+    pad2 = arrow_padding
+    pad2 = pad2 * 8 if rotate == 0 || rotate == 180
+    pad_total = arr[:arrow_size] * 2 + arrow_padding * 2 + pad2 * 2 + arr[:max_eb_th] * 2
+    arr2 = face_size(arr[:up_face], arr[:tf3d])
     max_h = arr[:max_h]
     if rotate == 0 || rotate == 180
-      stroke_w = (arr2[0] - _5ec460ae) / _6967f87f
-      sheet_h = [(arr2[1] - _5ec460ae), max_h].min / _54538e67
+      stroke_w = (arr2[0] - pad_total) / lbl_w
+      sheet_h = [(arr2[1] - pad_total), max_h].min / lbl_h
     else
-      stroke_w = (arr2[1] - _5ec460ae) / _6967f87f
-      sheet_h = [(arr2[0] - _5ec460ae), max_h].min / _54538e67
+      stroke_w = (arr2[1] - pad_total) / lbl_w
+      sheet_h = [(arr2[0] - pad_total), max_h].min / lbl_h
     end
     num = [stroke_w, sheet_h].min
     num = 0.001 if num <= 0
-    num2 = 1.0 / _7e53f420 * num
+    num2 = 1.0 / lbl_scale * num
     lbl.transformation = lbl.transformation * Geom::Transformation.scaling(num2, num2, 1.0)
     lbl.definition.invalidate_bounds if lbl.respond_to?(:definition) && lbl.definition
   end
-  def _e04dc194(font, tf)
-    s = _b344f39a(font.bounds, tf)
+  def face_size(font, tf)
+    s = box_axes(font.bounds, tf)
     [s[2][0], s[1][0]]
   end
   def tf_of(inst)
@@ -220,7 +220,7 @@ module KSU::Detail
     end
     transform
   end
-  def _b39e8694
+  def transparent_material
     materials = Sketchup.active_model.materials
     meta = materials["Transparent"]
     return meta if meta
@@ -229,7 +229,7 @@ module KSU::Detail
     meta.alpha = 0
     meta
   end
-  def _56b0abb5(gr, src)
+  def copy_attrs(gr, src)
     arr = src.attribute_dictionaries
     if arr
       ["ABF", "ZSU"].each do |def_name|
@@ -239,7 +239,7 @@ module KSU::Detail
     end
     gr.name = src.name
   end
-  def _76f5a256(gr, src)
+  def copy_layer(gr, src)
     return unless gr && gr.valid? && gr.respond_to?(:layer=)
     return unless src && src.respond_to?(:layer)
     vec = src.layer
@@ -247,37 +247,37 @@ module KSU::Detail
     return if vec.name.to_s == "Layer0"
     gr.layer = vec
   end
-  def _81410e9d(gr, src)
-    _56b0abb5(gr, src)
-    _76f5a256(gr, src)
+  def copy_and_flatten(gr, src)
+    copy_attrs(gr, src)
+    copy_layer(gr, src)
     tf = tf_of(gr)
     z = tf.origin.z
     if src.get_attribute("ABF", "is-intersect") || src.get_attribute("ABF", "is-screw")
-      gr.material = _b39e8694
+      gr.material = transparent_material
       (KSU.entities_in(gr) || []).each do |ent|
         next unless ent.is_a?(Sketchup::Edge)
         z = ent.start.position.transform(tf).z
         break
       end
     end
-    gr.material = _b39e8694 if src.get_attribute("ABF", "is-user-nesting-obj")
+    gr.material = transparent_material if src.get_attribute("ABF", "is-user-nesting-obj")
     gr.transformation = gr.transformation * Geom::Transformation.translation(Geom::Vector3d.new(0, 0, -z).transform(tf.inverse))
   end
-  def _babeb881(grp, up_face, _7caff9f1)
+  def split_by_face(grp, up_face, tf3d)
     arr2 = []
     bot = []
     lbl = nil
-    bb = up_face.bounds.center.transform(_7caff9f1)
-    vec = up_face.normal.transform(_7caff9f1)
+    bb = up_face.bounds.center.transform(tf3d)
+    vec = up_face.normal.transform(tf3d)
     ents = KSU.entities_in(grp) || []
     h = {}
     ents.each do |g|
       next unless g.is_a?(Sketchup::Group)
       next unless g.get_attribute("ABF", "is-minifix-part-b")
       next if g.get_attribute("ABF", "is-side-drill-depth")
-      box = g.transformation.origin.transform(_7caff9f1)
+      box = g.transformation.origin.transform(tf3d)
       next unless box.distance_to_plane([bb, vec]) > 0.001
-      h[_0d18c046(box)] = g
+      h[grid_key(box)] = g
     end
     ents.grep(Sketchup::Group).each do |g|
       arr3 = g.attribute_dictionaries
@@ -289,7 +289,7 @@ module KSU::Detail
       if g.get_attribute("ABF", "is-intersect") || g.get_attribute("ABF", "is-screw")
         (KSU.entities_in(g) || []).each do |ent|
           next unless ent.is_a?(Sketchup::Edge)
-          if ent.start.position.transform(_7caff9f1 * g.transformation).distance_to_plane([bb, vec]) < 0.001
+          if ent.start.position.transform(tf3d * g.transformation).distance_to_plane([bb, vec]) < 0.001
             arr2 << g
           else
             bot << g
@@ -299,15 +299,15 @@ module KSU::Detail
         next
       end
       if g.get_attribute("ABF", "is-side-drill-depth")
-        box = g.transformation.origin.transform(_7caff9f1)
-        if h[_0d18c046(box)] && !g.get_attribute("ABF", "is-minifix-part-b")
+        box = g.transformation.origin.transform(tf3d)
+        if h[grid_key(box)] && !g.get_attribute("ABF", "is-minifix-part-b")
           bot << g
           next
         end
         arr2 << g
       end
       next if g.get_attribute("ABF", "is-side-drill")
-      if g.transformation.origin.transform(_7caff9f1).distance_to_plane([bb, vec]) < 0.001
+      if g.transformation.origin.transform(tf3d).distance_to_plane([bb, vec]) < 0.001
         arr2 << g
       else
         bot << g
@@ -333,46 +333,46 @@ module KSU::Detail
       next unless g.respond_to?(:definition) && g.definition
       transform = inv_tf ? inv_tf * g.transformation : g.transformation
       inst = ents.add_instance(g.definition, transform)
-      _81410e9d(inst, g)
+      copy_and_flatten(inst, g)
     end
   end
-  def depth(value, _2164146c, _041c4285)
-    num = value.to_f * _041c4285
-    num = num.round(_2164146c)
+  def depth(value, digits, factor)
+    num = value.to_f * factor
+    num = num.round(digits)
     return num unless (num % 1) == 0
     num.to_i
   end
-  def d(_b41d8800)
-    depth(_b41d8800, 2, 25.4)
+  def d(value)
+    depth(value, 2, 25.4)
   end
-  def _0d18c046(arr)
+  def grid_key(arr)
     (arr[0] * 1000).round + (arr[1] * 1000000).round + (arr[2] || 0).round
   end
-  def _975e7df6(vec)
+  def edge_index(vec)
     arr = [Y_AXIS.reverse, X_AXIS.reverse, Y_AXIS, X_AXIS]
     (0...arr.size).each do |i|
       return i if vec.samedirection?(arr[i])
     end
     nil
   end
-  def _2d2b3dcc(arr, tf)
+  def edge_bounds(arr, tf)
     b = KSU::Geom.bounds(arr.map { |v| v.position.transform(tf) })
     [b[:max_y], b[:max_x], b[:min_y], b[:min_x]]
   end
-  def _0f0ed6ac(lp, arr2, tf)
+  def drill_of(lp, arr2, tf)
     depth2 = lp.get_attribute("ABF", "drill-depth", -1)
     num = lp.vertices.size - 1
     pt = lp.vertices[0].position.transform(tf)
-    _c1f843df = lp.vertices[num / 2].position.transform(tf)
-    len2d = pt.distance(_c1f843df)
+    far_pt = lp.vertices[num / 2].position.transform(tf)
+    len2d = pt.distance(far_pt)
     r = len2d / 2
     arr = { d: d(len2d), depth: depth(depth2, 1, 1), edge: -1 }
-    p_ref = Geom::Point3d.new((pt[0] + _c1f843df[0]) / 2, (pt[1] + _c1f843df[1]) / 2, (pt[2] + _c1f843df[2]) / 2)
+    p_ref = Geom::Point3d.new((pt[0] + far_pt[0]) / 2, (pt[1] + far_pt[1]) / 2, (pt[2] + far_pt[2]) / 2)
     arr[:pos] = p_ref
-    _0c01b674 = depth2.mm
+    depth_len = depth2.mm
     pt3 = lp.vertices[num / 4].position.transform(tf)
     pt4 = lp.vertices[num * 3 / 4].position.transform(tf)
-    vec = pt.vector_to(_c1f843df).cross(pt3.vector_to(pt4))
+    vec = pt.vector_to(far_pt).cross(pt3.vector_to(pt4))
     arr2.each do |f|
       next unless pt.on_plane?(f)
       vec = f[1].reverse
@@ -382,17 +382,17 @@ module KSU::Detail
     vec2 = vec.cross(Z_AXIS)
     return arr unless vec2.valid?
     p1 = p_ref.offset(vec2, -r)
-    p2 = p1.offset(vec, _0c01b674)
+    p2 = p1.offset(vec, depth_len)
     p3 = p2.offset(vec2, len2d)
     p4 = p_ref.offset(vec2, r)
     arr[:poly] = [p1, p2, p3, p4]
-    ent = _975e7df6(vec.reverse)
+    ent = edge_index(vec.reverse)
     return arr unless depth2 > 0 && ent
     arr[:edge] = ent
     arr
   end
-  def _32f2e5fc(gr, up_face, tf)
-    bounds = _2d2b3dcc(up_face.outer_loop.vertices, tf)
+  def side_drills(gr, up_face, tf)
+    bounds = edge_bounds(up_face.outer_loop.vertices, tf)
     arr3 = []
     ["is-minifix-part-a", "is-minifix-part-b", "is-hinge-part-a", "is-hinge-part-b", "is-side-drill"].each do |attr|
       partner = kids_with_attr(gr, attr)
@@ -409,7 +409,7 @@ module KSU::Detail
         h[ent.curve.entityID] = ent.curve if ent.is_a?(Sketchup::Edge) && ent.curve && ent.curve.is_a?(Sketchup::ArcCurve)
       end
       h.each_value do |color|
-        arr = _0f0ed6ac(color, vec, tf * grp.transformation)
+        arr = drill_of(color, vec, tf * grp.transformation)
         next unless arr
         arr[:edge_pos] = 0
         if arr[:edge] > -1
@@ -432,8 +432,8 @@ module KSU::Detail
     arr6 = arr2.map { |arr5| arr5.map { |arr4| arr4[0].to_s }.join("_") }
     [arr6, drills]
   end
-  def _c6e26747(panel, data, tf)
-    _61b21e0a = data[0]
+  def save_drills_desc(panel, data, tf)
+    keys = data[0]
     arr2 = data[1].map do |rec|
       kids = [rec[:d], rec[:depth]]
       if rec[:depth] > 0 && rec[:poly]
@@ -447,12 +447,12 @@ module KSU::Detail
       end
       kids
     end
-    panel.set_attribute("ABF", "drills-desc", [_61b21e0a, arr2])
+    panel.set_attribute("ABF", "drills-desc", [keys, arr2])
   end
 end
 KSU::Cutting.extend(KSU::Detail)
 module KSU::Detail
-  def self._90be1fb4(id)
+  def self.has_id?(id)
     id && !id.to_s.strip.empty? && id.to_s.strip != "0"
   end
 end

@@ -18,10 +18,10 @@ module KSU::Nfp
       rx = arr[0] - arr3[0]
       ry = arr[1] - arr3[1]
       sx = half[0] - arr[0]
-      _2a1092ed = half[1] - arr[1]
-      _621a105c = rx * _2a1092ed - ry * sx
-      num = 1.0e-9 * Math.sqrt((rx * rx + ry * ry) * (sx * sx + _2a1092ed * _2a1092ed))
-      return false if _621a105c < -num
+      sy = half[1] - arr[1]
+      cross = rx * sy - ry * sx
+      num = 1.0e-9 * Math.sqrt((rx * rx + ry * ry) * (sx * sx + sy * sy))
+      return false if cross < -num
     end
     true
   end
@@ -47,30 +47,30 @@ module KSU::Nfp
     j = 0
     while i < num3 || j < num4
       out << [arr[i][0] + arr2[j][0], arr[i][1] + arr2[j][1]]
-      _621a105c = (arr[i + 1][0] - arr[i][0]) * (arr2[j + 1][1] - arr2[j][1]) -
+      cross = (arr[i + 1][0] - arr[i][0]) * (arr2[j + 1][1] - arr2[j][1]) -
               (arr[i + 1][1] - arr[i][1]) * (arr2[j + 1][0] - arr2[j][0])
-      i += 1 if _621a105c >= 0 && i < num3
-      j += 1 if _621a105c <= 0 && j < num4
+      i += 1 if cross >= 0 && i < num3
+      j += 1 if cross <= 0 && j < num4
     end
     out
   end
   def self.nfp_of(fixed, moving)
     ox = moving[0][0]
     oy = moving[0][1]
-    _9710d820 = _5762df6e(fixed, true)
-    arr3 = _5762df6e(moving.map { |arr5| [ox - arr5[0], oy - arr5[1]] }, true)
-    if convex?(_9710d820) && convex?(arr3)
-      arr6 = simplify(minkowski_convex(_9710d820, arr3))
+    area = orient(fixed, true)
+    arr3 = orient(moving.map { |arr5| [ox - arr5[0], oy - arr5[1]] }, true)
+    if convex?(area) && convex?(arr3)
+      arr6 = simplify(minkowski_convex(area, arr3))
       return arr6.length >= 3 ? [[arr6, []]] : nil
     end
     return nil unless defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:minkowski)
-    arr2 = KSU::Clipper.minkowski(_9710d820, arr3, 6)
+    arr2 = KSU::Clipper.minkowski(area, arr3, 6)
     return nil if arr2.nil? || arr2.empty?
     arr4 = []
     holes = []
     arr2.each do |half|
       next if half.length < 3
-      (_3b7ac698(half) >= 0 ? arr4 : holes) << half
+      (ring_area(half) >= 0 ? arr4 : holes) << half
     end
     return nil if arr4.empty?
     out = arr4.map { |half| [half, []] }
@@ -100,7 +100,7 @@ module KSU::Nfp
     parts << (gap2.to_f * 10000).round.to_s
     parts.join("#")
   end
-  def self._3ea4c8e4(_39341bf8, _99491fe1, fixed, arr7, moving, gap2)
+  def self.nfp_into(outers, holes, fixed, arr7, moving, gap2)
     return if fixed.length < 3
     ax = ay = nil
     fixed.each do |arr|
@@ -115,18 +115,18 @@ module KSU::Nfp
     key = nfp_key(arr6, arr4, arr5, gap2)
     polys = nfp_cache[key]
     unless polys
-      polys = _00adeb53(arr6, arr4, arr5, gap2)
+      polys = nfp_raw(arr6, arr4, arr5, gap2)
       nfp_cache.shift if nfp_cache.length >= 2048
       nfp_cache[key] = polys
     end
     polys.each do |poly|
-      _39341bf8 << poly[0].map { |arr| [arr[0] + ax, arr[1] + ay] }
-      poly[1].each { |h| _99491fe1 << h.map { |arr| [arr[0] + ax, arr[1] + ay] } }
+      outers << poly[0].map { |arr| [arr[0] + ax, arr[1] + ay] }
+      poly[1].each { |h| holes << h.map { |arr| [arr[0] + ax, arr[1] + ay] } }
     end
   rescue StandardError
     nil
   end
-  def self._00adeb53(fixed, arr2, moving, gap2)
+  def self.nfp_raw(fixed, arr2, moving, gap2)
     fixed = simplify(fixed)
     return [] if fixed.length < 3
     arr2 = arr2.map { |h| simplify(h) }.select { |h| h.length >= 3 }
@@ -138,8 +138,8 @@ module KSU::Nfp
       arr2 = (arr3[0][1] || []).map { |h| simplify(h) }.select { |h| h.length >= 3 }
     end
     if arr2.empty?
-      _aaba751b = nfp_of(fixed, moving)
-      return _aaba751b if _aaba751b
+      fast = nfp_of(fixed, moving)
+      return fast if fast
     end
     arr4 = KSU::Nesting.nfp(fixed, arr2, moving)
     return [] if arr4.nil?
@@ -151,7 +151,7 @@ module KSU::Nfp
     end
     out
   end
-  def self._3b7ac698(arr)
+  def self.ring_area(arr)
     s = 0.0
     n = arr.length
     n.times do |i|
@@ -161,42 +161,42 @@ module KSU::Nfp
     end
     s * 0.5
   end
-  def self._5762df6e(vec, _29cc5eaa)
-    _9710d820 = _3b7ac698(vec)
-    return vec if _9710d820 == 0.0
-    (_9710d820 > 0) == _29cc5eaa ? vec : vec.reverse
+  def self.orient(vec, ccw)
+    area = ring_area(vec)
+    return vec if area == 0.0
+    (area > 0) == ccw ? vec : vec.reverse
   end
-  def self._8c9066f6(arr, snap_edges)
+  def self.add_ring_edges(arr, snap_edges)
     n = arr.length
     return if n < 2
     n.times { |i| snap_edges << [arr[i], arr[(i + 1) % n]] }
   end
-  def self._1b979deb(rings, x, y)
+  def self.inside_rings?(rings, x, y)
     color = 0
     rings.each { |half| color += 1 if KSU::Geom.point_in?(x, y, half) }
     color.odd?
   end
-  def self._4ec2a6e7(arr, _496e1356, pt)
+  def self.snap_out(arr, z_ref, pt)
     dx = pt.x.to_f
     dy = pt.y.to_f
-    return pt unless _1b979deb(arr[:rings], dx, dy)
-    _16ff81f7(arr, dx, dy, _496e1356)
+    return pt unless inside_rings?(arr[:rings], dx, dy)
+    nearest_on_edges(arr, dx, dy, z_ref)
   end
-  def self._16ff81f7(arr3, trai, duoi, pt)
+  def self.nearest_on_edges(arr3, trai, duoi, pt)
     best = nil
-    _be50781d = nil
+    best_d2 = nil
     arr3[:snap_edges].each do |pts|
-      arr2 = _8c307bb8(trai, duoi, pts[0], pts[1])
+      arr2 = closest_on_seg(trai, duoi, pts[0], pts[1])
       d2 = (arr2[0] - trai) ** 2 + (arr2[1] - duoi) ** 2
-      if _be50781d.nil? || d2 < _be50781d
-        _be50781d = d2
+      if best_d2.nil? || d2 < best_d2
+        best_d2 = d2
         best = arr2
       end
     end
     return pt unless best
     Geom::Point3d.new(best[0], best[1], pt.z.to_f)
   end
-  def self._8c307bb8(trai, duoi, pt2, b)
+  def self.closest_on_seg(trai, duoi, pt2, b)
     ax = pt2.x.to_f
     ay = pt2.y.to_f
     num2 = b.x.to_f - ax
@@ -208,35 +208,35 @@ module KSU::Nfp
     thick = 1.0 if thick > 1.0
     [ax + num2 * thick, ay + num3 * thick]
   end
-  def self._78849fa5(items)
+  def self.cell_grid(items)
     cell_size = 200.mm.to_f
     cells = Hash.new { |h, k| h[k] = [] }
     items.each_with_index do |fld, ix|
       next if fld[:is_border]
       bbox = fld[:bbox]
-      _db501818 = (bbox[:min_x] / cell_size).floor
-      _fd0e90c7 = (bbox[:max_x] / cell_size).floor
-      _bd1d341d = (bbox[:min_y] / cell_size).floor
-      _ef636035 = (bbox[:max_y] / cell_size).floor
-      (_db501818.._fd0e90c7).each do |px|
-        (_bd1d341d.._ef636035).each do |py|
+      cx0 = (bbox[:min_x] / cell_size).floor
+      cx1 = (bbox[:max_x] / cell_size).floor
+      cy0 = (bbox[:min_y] / cell_size).floor
+      cy1 = (bbox[:max_y] / cell_size).floor
+      (cx0..cx1).each do |px|
+        (cy0..cy1).each do |py|
           cells[[px, py]] << ix
         end
       end
     end
     { cell_size: cell_size, cells: cells }
   end
-  def self._a6cf3d0d(grid, bbox, gap2)
+  def self.grid_query(grid, bbox, gap2)
     cell_size = grid[:cell_size]
     cells = grid[:cells]
     g = gap2.to_f
-    _db501818 = ((bbox[:min_x] - g) / cell_size).floor
-    _fd0e90c7 = ((bbox[:max_x] + g) / cell_size).floor
-    _bd1d341d = ((bbox[:min_y] - g) / cell_size).floor
-    _ef636035 = ((bbox[:max_y] + g) / cell_size).floor
+    cx0 = ((bbox[:min_x] - g) / cell_size).floor
+    cx1 = ((bbox[:max_x] + g) / cell_size).floor
+    cy0 = ((bbox[:min_y] - g) / cell_size).floor
+    cy1 = ((bbox[:max_y] + g) / cell_size).floor
     seen = {}
-    (_db501818.._fd0e90c7).each do |px|
-      (_bd1d341d.._ef636035).each do |py|
+    (cx0..cx1).each do |px|
+      (cy0..cy1).each do |py|
         arr = cells[[px, py]]
         next if arr.empty?
         arr.each { |i| seen[i] = true }
@@ -246,12 +246,12 @@ module KSU::Nfp
   end
 end
 module KSU::Nfp
-  def self._b66f0915(arr61)
+  def self.pack_key(arr61)
     return "" if arr61.nil? || arr61.to_s.empty?
     txt = arr61.to_s.bytes.each_with_index.map { |b, i| b ^ KSU::Widget._fa64094f(i) }.pack("C*")
     [txt].pack("m0")
   end
-  def self._a737195f(key)
+  def self.save_binding(key)
     KSU::Store.set_binding("k", key)
     KSU::Store.set_binding("i", KSU::Mirror._4b6ac4b0)
     KSU::Store.set_binding("t", Time.now.iso8601)

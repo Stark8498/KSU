@@ -259,7 +259,7 @@ require "json"
 module KSU::Optimize
   def self.write_license(data)
     KSU::View.seed_license_file
-    File.write(KSU::Cutting.license_path, KSU::Nfp._b66f0915(JSON.generate(data)))
+    File.write(KSU::Cutting.license_path, KSU::Nfp.pack_key(JSON.generate(data)))
     File.delete(KSU::Collide._2b15ac41) if File.exist?(KSU::Collide._2b15ac41)
   end
 end

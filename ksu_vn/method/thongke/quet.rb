@@ -54,7 +54,7 @@ module KSU::Thongke::Quet
     h
   end
   def self.long_axis(font, tf)
-    KSU::Cutting._b344f39a(font.bounds, tf)[2][1]
+    KSU::Cutting.box_axes(font.bounds, tf)[2][1]
   end
   def self.label_group(node)
     arr = KSU::Cutting.kids_with_attr(node, "is-label")

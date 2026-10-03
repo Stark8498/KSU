@@ -625,11 +625,11 @@ end
 module KSU::Caidat
   def self.machine_fingerprint
     id_str = KSU::Nesting._f92a626b
-    return id_str if KSU::Detail._90be1fb4(id_str)
+    return id_str if KSU::Detail.has_id?(id_str)
     id_str = KSU::Chontam.volume_id
-    return id_str if KSU::Detail._90be1fb4(id_str)
+    return id_str if KSU::Detail.has_id?(id_str)
     id_str = KSU::Update.disk_id2
-    return id_str if KSU::Detail._90be1fb4(id_str)
+    return id_str if KSU::Detail.has_id?(id_str)
     ""
   end
 end

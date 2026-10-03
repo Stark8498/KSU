@@ -134,7 +134,7 @@ module KSU::Draw
   def draw_panel(grp3, grp, x, y, _33aa68d7, cfg)
     part_tf = grp[:part_tf]
     gr = grp3.entities.add_group
-    KSU::Cutting._56b0abb5(gr, grp[:group])
+    KSU::Cutting.copy_attrs(gr, grp[:group])
     gr.delete_attribute("KSU", "group-id")
     cutting_gr = gr.entities.add_group
     cutting_gr.name = "_ABF_cuttingLines"
@@ -155,19 +155,19 @@ module KSU::Draw
     gr.transformation = gr.transformation * Geom::Transformation.translation([x, y, 0])
     gr.transformation = gr.transformation * Geom::Transformation.rotation(ORIGIN, Z_AXIS, _33aa68d7.degrees)
     gr.transformation = gr.transformation * part_tf
-    KSU::Cutting._c6e26747(gr, grp[:drills], part_tf.inverse)
+    KSU::Cutting.save_drills_desc(gr, grp[:drills], part_tf.inverse)
     KSU::Cutting.save_edgeband_desc(gr, grp[:edge_band_desc], part_tf.inverse)
     _fc78e970(grp[:group])
-    bottom = KSU::Cutting._babeb881(grp[:group], grp[:up_face], grp[:tf])
+    bottom = KSU::Cutting.split_by_face(grp[:group], grp[:up_face], grp[:tf])
     bottom[:up].each do |grp5|
       next unless grp5.respond_to?(:definition) && grp5.definition
-      KSU::Cutting._81410e9d(gr.entities.add_instance(grp5.definition, grp5.transformation), grp5)
+      KSU::Cutting.copy_and_flatten(gr.entities.add_instance(grp5.definition, grp5.transformation), grp5)
     end
     label_gr = nil
     if bottom[:label] && bottom[:label].respond_to?(:definition) && bottom[:label].definition
       label_gr = gr.entities.add_instance(bottom[:label].definition, bottom[:label].transformation)
-      KSU::Cutting._56b0abb5(label_gr, bottom[:label])
-      KSU::Cutting._81410e9d(label_gr, bottom[:label])
+      KSU::Cutting.copy_attrs(label_gr, bottom[:label])
+      KSU::Cutting.copy_and_flatten(label_gr, bottom[:label])
     end
     board_index = nil
     unless bottom[:bottom].empty?
@@ -198,7 +198,7 @@ module KSU::Draw
       KSU::Cutting.set_layer(grp3, KSU::Cutting.layer("ABF_partBorder"))
       arr[:bottom].each do |grp|
         next unless grp.respond_to?(:definition) && grp.definition
-        KSU::Cutting._81410e9d(panel.entities.add_instance(grp.definition, grp.transformation), grp)
+        KSU::Cutting.copy_and_flatten(panel.entities.add_instance(grp.definition, grp.transformation), grp)
       end
       if arr[:label_gr]
         tr = panel.entities.add_instance(arr[:label_gr].definition, arr[:label_gr].transformation)
@@ -361,7 +361,7 @@ module KSU::Draw
       end
       grp.name = "_ABF_Intersect"
       grp.set_attribute("ABF", "is-intersect", true)
-      grp.material = KSU::Cutting._b39e8694
+      grp.material = KSU::Cutting.transparent_material
       KSU::Cutting.set_layer(grp, _2cb52d46) if _2cb52d46
       ok = true
     end

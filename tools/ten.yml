@@ -2351,6 +2351,107 @@ ten:
   _77f3b22c:
     ksu_vn/method/chongbay.rb: prev_auto
 
+  # ----- ME 60: utils/cutting/detail.rb -- ban ve chi tiet mot tam -----
+  # Tu khoi 3D dung ra ban ve 2D: duong cat, chi dan, nhan, lo khoan canh.
+  # Cac nhom con cua khoi duoc chia theo mat nao chung nam tren.
+  _babeb881: split_by_face        # tra { up:, bottom:, label: }
+  _0d18c046: grid_key             # lam tron toa do thanh khoa so sanh vi tri
+  _975e7df6: edge_index           # huong -> canh 0..3, theo thu tu -Y -X Y X
+  _2d2b3dcc: edge_bounds          # [max_y, max_x, min_y, min_x], dung edge_index
+  _0f0ed6ac: drill_of             # mot cung tron -> duong kinh, do sau, canh
+  _32f2e5fc: side_drills
+  _c6e26747: save_drills_desc     # doi xung voi save_edgeband_desc
+  _5edc6938: fit_label            # thu nho nhan vua mat tam, tru le mui ten
+  _e04dc194: face_size            # hai canh trong mat phang, dai truoc
+  _b39e8694: transparent_material # vat lieu "Transparent", alpha 0
+  _56b0abb5: copy_attrs           # tu dien ABF + ZSU, va ten
+  _76f5a256: copy_layer           # tru Layer0
+  _81410e9d: copy_and_flatten     # sao lai lai lich roi ha z ve 0
+  _90be1fb4: has_id?
+
+  # ----- ME 60b: utils/cutting.rb -- co mui ten theo be rong tam -----
+  _b344f39a: box_axes             # ba canh hop tu goc 0, ngan den dai
+  _f7a09903: short_side
+  _e4e88386: arrow_sizes          # [arrow_size, arrow_padding]
+  _4605a894: cut_loops
+  _022c78bd: arrow_size
+
+  _7caff9f1:
+    ksu_vn/utils/cutting/detail.rb: tf3d
+  _6967f87f:
+    ksu_vn/utils/cutting/detail.rb: lbl_w
+  _54538e67:
+    ksu_vn/utils/cutting/detail.rb: lbl_h
+  _7e53f420:
+    "ksu_vn/utils/cutting/detail.rb#_5edc6938": lbl_scale
+  _9b67c55d:
+    "ksu_vn/utils/cutting/detail.rb#_5edc6938": pad2
+  _5ec460ae:
+    "ksu_vn/utils/cutting/detail.rb#_5edc6938": pad_total
+  _c1f843df:
+    ksu_vn/utils/cutting/detail.rb: far_pt
+  _0c01b674:
+    ksu_vn/utils/cutting/detail.rb: depth_len
+  _61b21e0a:
+    ksu_vn/utils/cutting/detail.rb: keys
+  _2422ecf1:
+    ksu_vn/utils/cutting/detail.rb: lines_grp
+  _2164146c:
+    ksu_vn/utils/cutting/detail.rb: digits
+  _041c4285:
+    ksu_vn/utils/cutting/detail.rb: factor
+  _93bcf54e:
+    ksu_vn/utils/cutting/detail.rb: flip
+  _b41d8800:
+    ksu_vn/utils/cutting/detail.rb: value
+  _23505ef9:
+    "ksu_vn/utils/cutting.rb#_b344f39a": pt
+
+  # ----- ME 61: method/xeptam/nfp.rb -- no-fit polygon va luoi bam -----
+  # NFP cua mot cap hinh la tap vi tri ma hinh dong cham hinh dung; dat goc
+  # hinh dong len vien NFP la cham sat ma khong chong. Ket qua duoc dem theo
+  # khoa hinh dang nen hai tam giong nhau chi tinh mot lan.
+  _3ea4c8e4: nfp_into             # tinh roi do vao hai mang goi dua sang
+  _00adeb53: nfp_raw              # khong qua cache; noi phong va goi Clipper
+  _3b7ac698: ring_area            # `signed_area` da thuoc corner.rb
+  _5762df6e: orient               # xoay chieu vong cho dung thuan/nguoc kim
+  _8c9066f6: add_ring_edges
+  _1b979deb: inside_rings?        # chan le: nam trong so vong le thi la trong
+  _4ec2a6e7: snap_out             # diem roi vao vung cam thi keo ra vien gan nhat
+  _16ff81f7: nearest_on_edges
+  _8c307bb8: closest_on_seg
+  _78849fa5: cell_grid            # o 200mm; `build_grid` da thuoc collide.rb
+  _a6cf3d0d: grid_query
+  _b66f0915: pack_key
+  _a737195f: save_binding
+
+  _39341bf8:
+    ksu_vn/method/xeptam/nfp.rb: outers
+  _99491fe1:
+    ksu_vn/method/xeptam/nfp.rb: holes
+  _9710d820:
+    ksu_vn/method/xeptam/nfp.rb: area
+  _29cc5eaa:
+    ksu_vn/method/xeptam/nfp.rb: ccw
+  _496e1356:
+    ksu_vn/method/xeptam/nfp.rb: z_ref
+  _be50781d:
+    ksu_vn/method/xeptam/nfp.rb: best_d2
+  _db501818:
+    ksu_vn/method/xeptam/nfp.rb: cx0
+  _fd0e90c7:
+    ksu_vn/method/xeptam/nfp.rb: cx1
+  _bd1d341d:
+    ksu_vn/method/xeptam/nfp.rb: cy0
+  _ef636035:
+    ksu_vn/method/xeptam/nfp.rb: cy1
+  _2a1092ed:
+    ksu_vn/method/xeptam/nfp.rb: sy
+  _621a105c:
+    ksu_vn/method/xeptam/nfp.rb: cross
+  _aaba751b:
+    ksu_vn/method/xeptam/nfp.rb: fast
+
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,

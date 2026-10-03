@@ -189,7 +189,7 @@ module KSU::Cutting
     end
     [src, hi]
   end
-  def self._e4e88386(small_size)
+  def self.arrow_sizes(small_size)
     num2 = 6.5
     num = 9
     if small_size > 5.cm
@@ -217,17 +217,17 @@ module KSU::Cutting
     _05045e96 = num3 if _05045e96 > num3
     [_05045e96, _05045e96 / num]
   end
-  def self._b344f39a(bounds, tf)
+  def self.box_axes(bounds, tf)
     p_ref = bounds.corner(0).transform(tf)
     [1, 2, 4].map { |i|
-      _23505ef9 = bounds.corner(i).transform(tf)
-      [p_ref.distance(_23505ef9), p_ref.vector_to(_23505ef9)]
+      pt = bounds.corner(i).transform(tf)
+      [p_ref.distance(pt), p_ref.vector_to(pt)]
     }.sort_by { |arr| arr[0] }
   end
-  def self._f7a09903(font, tf)
-    _e04dc194(font, tf)[1]
+  def self.short_side(font, tf)
+    face_size(font, tf)[1]
   end
-  def self._4605a894(g, up_face, tf, edgeband_spec, _022c78bd, arrow_padding)
+  def self.cut_loops(g, up_face, tf, edgeband_spec, arrow_size, arrow_padding)
     loops = []
     edge_band_lines = []
     edge_band_desc = []
@@ -262,7 +262,7 @@ module KSU::Cutting
             p_ref = pt.offset!(vec, -thickness - arrow_padding)
             pp_vec = vec.cross(vec2)
             next unless pp_vec.length.to_f > 0.0
-            arr3 << { p0: p_ref, vec: vec, pp_vec: pp_vec, size: [_022c78bd, num / 2].min }
+            arr3 << { p0: p_ref, vec: vec, pp_vec: pp_vec, size: [arrow_size, num / 2].min }
             edge_band_desc << { p0: pt, p1: pt.offset(vec, 1), name: rec[2], fields: rec[3], kind: rec[5] }
           end
           count_by_length << axis

@@ -502,7 +502,7 @@ module KSU::View
     return if File.exist?(KSU::Cutting.license_path)
     cands2 = KSU::Flip._8351e254
     return if cands2.nil?
-    File.write(KSU::Cutting.license_path, KSU::Nfp._b66f0915(JSON.generate(cands2)))
+    File.write(KSU::Cutting.license_path, KSU::Nfp.pack_key(JSON.generate(cands2)))
     File.delete(KSU::Collide._2b15ac41) if File.exist?(KSU::Collide._2b15ac41)
   end
   def self.show_activation_result(key, resp)
@@ -515,7 +515,7 @@ module KSU::View
       UI.messagebox "Kích hoạt thất bại! " + KSU::Back._cd99bb15(err_code)
       return false
     end
-    KSU::Nfp._a737195f(key)
+    KSU::Nfp.save_binding(key)
     UI.messagebox "Kích hoạt thành công! Còn lại " + KSU::Shape._142b3e3b(resp, key).to_s + " lượt kích hoạt."
     true
   end

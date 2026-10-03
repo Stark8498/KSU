@@ -247,8 +247,8 @@ module KSU::Engine
     members.each do |pt, arr4|
       loops = loops_mm(pt)
       sheet_h = loops.map { |arr6| arr6.map { |arr3| [arr3[0] + arr4[0], arr3[1] + arr4[1]] } }
-      arr5 << KSU::Nfp._5762df6e(sheet_h.first, true)
-      (sheet_h[1..] || []).each { |h| arr5 << KSU::Nfp._5762df6e(h, false) }
+      arr5 << KSU::Nfp.orient(sheet_h.first, true)
+      (sheet_h[1..] || []).each { |h| arr5 << KSU::Nfp.orient(h, false) }
     end
     rings = begin
         defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:union) ? KSU::Clipper.union(arr5, 6) : nil
@@ -285,7 +285,7 @@ module KSU::Engine
       h: (arr2[3] - arr2[1]) / 25.4,
       outer: nil,
       holes: nil,
-      loops_mm: [KSU::Nfp._5762df6e(arr9.call(outer), true)],
+      loops_mm: [KSU::Nfp.orient(arr9.call(outer), true)],
       rotatable: members.all? { |pt, _part| pt[:rotatable] != false },
       two_sided: members.any? { |pt, _part| pt[:two_sided] },
       members: members.map { |pt, arr4| { part: pt, rx: arr4[0] - arr2[0], ry: arr4[1] - arr2[1] } },

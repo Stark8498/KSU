@@ -413,8 +413,8 @@ class KSU::Chongbay
     lbl = @typed.empty? ? arr[:rank].to_s : @typed
     KSU::View.draw_label(lbl, arr[:center], shape: :circle, size: size2(arr), line_width: 2)
   end
-  def size2(rec)
-    return @co_so_thu_tu * 1.5 if rec.equal?(@editing) || rec.equal?(@hover_rec)
+  def size2(_23505ef9)
+    return @co_so_thu_tu * 1.5 if _23505ef9.equal?(@editing) || _23505ef9.equal?(@hover_rec)
     @co_so_thu_tu
   end
   def hit_at(x, y)
@@ -426,10 +426,10 @@ class KSU::Chongbay
     end
     nil
   end
-  def begin_edit(rec, view)
+  def begin_edit(_23505ef9, view)
     @typed = ""
-    return if @editing.equal?(rec)
-    @editing = rec
+    return if @editing.equal?(_23505ef9)
+    @editing = _23505ef9
     update_status
     view&.invalidate
   end
@@ -460,9 +460,9 @@ class KSU::Chongbay
     begin_edit(nil, view)
     view&.invalidate
   end
-  def set_hover(rec, view)
-    return if @hover_rec.equal?(rec)
-    @hover_rec = rec
+  def set_hover(_23505ef9, view)
+    return if @hover_rec.equal?(_23505ef9)
+    @hover_rec = _23505ef9
     view&.invalidate
   end
   def draw_overlay_fills

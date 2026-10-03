@@ -150,9 +150,9 @@ module KSU::Collect
     anchor = (tr2 * tf_axes * tf).origin
     tr3 = Geom::Transformation.translation([-anchor.x, -anchor.y, -anchor.z])
     _984e016d = tr3 * tr2 * tf_axes * tf
-    small_size = KSU::Cutting._f7a09903(face, tf)
-    arr3 = KSU::Cutting._e4e88386(small_size)
-    rec = KSU::Cutting._4605a894(g, face, _984e016d, max_eb[0], arr3[0], arr3[1])
+    small_size = KSU::Cutting.short_side(face, tf)
+    arr3 = KSU::Cutting.arrow_sizes(small_size)
+    rec = KSU::Cutting.cut_loops(g, face, _984e016d, max_eb[0], arr3[0], arr3[1])
     return [nil, _c348cdef] if rec[:loops].empty?
     bounds = rec[:loops].map do |arr|
       KSU::Simplify._c71fe5d3(arr[:pts].map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }, arr[:outer])
@@ -173,7 +173,7 @@ module KSU::Collect
     _c348cdef -= (flag - lx + 1)
     tr = Geom::Transformation.translation([ax, ay, 0])
     part_tf = tr3 * tr * tr2 * tf_axes * tf
-    drills = KSU::Cutting._32f2e5fc(g, face, _984e016d)
+    drills = KSU::Cutting.side_drills(g, face, _984e016d)
     drills[1].each do |len2d|
       if len2d[:depth] > 0 && len2d[:poly]
         len2d[:poly].map! { |_23505ef9| _23505ef9.transform(tr) }
@@ -181,7 +181,7 @@ module KSU::Collect
         len2d[:pos] = len2d[:pos].transform(tr)
       end
     end
-    bottom = KSU::Cutting._babeb881(g, face, tf)
+    bottom = KSU::Cutting.split_by_face(g, face, tf)
     grp = {
       group: g, up_face: face, tf: tf, part_tf: part_tf,
       two_sided: !bottom[:bottom].empty?,

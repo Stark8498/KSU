@@ -18,7 +18,7 @@ module KSU::Push
       items = arr2[:items]
       h = {}
       arr.each do |poly|
-        KSU::Nfp._a6cf3d0d(grid, KSU::Geom.bounds(poly), @tam_cach_nhau).each { |i| h[i] = true }
+        KSU::Nfp.grid_query(grid, KSU::Geom.bounds(poly), @tam_cach_nhau).each { |i| h[i] = true }
       end
       borders = arr2[:borders].map { |fld| fld[:poly] }
       arr4 = []
@@ -77,7 +77,7 @@ module KSU::Push
       borders.each do |fld|
         return false if KSU::Geom._0c91518b(arr, fld[:poly], min_margin)
       end
-      KSU::Nfp._a6cf3d0d(grid, _f38e85e6, @tam_cach_nhau).each do |i|
+      KSU::Nfp.grid_query(grid, _f38e85e6, @tam_cach_nhau).each do |i|
         fld = items[i]
         next if h[fld[:panel].object_id]
         _33f52d3e = hole_around([arr], fld[:holes])
@@ -171,7 +171,7 @@ module KSU::Push
             h[i] = true
           end
         end
-        KSU::Nfp._a6cf3d0d(grid, fld_bbox, num).each do |j|
+        KSU::Nfp.grid_query(grid, fld_bbox, num).each do |j|
           next if j == i
           next unless h2[j]
           panel = items[j]
@@ -211,7 +211,7 @@ module KSU::Push
   def _5dc6e713(poly, tol)
     return poly unless defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:offset)
     arr = poly.map { |pt| [pt.x.to_f * 25.4, pt.y.to_f * 25.4] }
-    arr.reverse! if KSU::Nfp._3b7ac698(arr) < 0
+    arr.reverse! if KSU::Nfp.ring_area(arr) < 0
     arr2 = KSU::Clipper.offset([arr], -(tol.to_f * 25.4), 0, 1)
     return poly unless arr2 && !arr2.empty?
     best = arr2.max_by { |half| KSU::Nesting.poly_area(half) }

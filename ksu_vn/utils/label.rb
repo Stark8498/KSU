@@ -240,7 +240,7 @@ module KSU::Label
     grp.definition.invalidate_bounds if grp.respond_to?(:definition) && grp.definition
   end
   def face_axes(font, tf)
-    _32998202 = KSU::Cutting._b344f39a(font.bounds, tf)
+    _32998202 = KSU::Cutting.box_axes(font.bounds, tf)
     large_size = _32998202[2][0]
     small_size = _32998202[1][0]
     line_vec = _32998202[2][1]

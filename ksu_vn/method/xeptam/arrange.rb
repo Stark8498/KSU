@@ -283,7 +283,7 @@ KSU::Xeptam.include(KSU::Arrange)
 require "digest"
 module KSU::Arrange
   def self._9fcc1956(id_str)
-    return nil unless KSU::Detail._90be1fb4(id_str)
+    return nil unless KSU::Detail.has_id?(id_str)
     Digest::SHA256.hexdigest(id_str.to_s).upcase[0, 16].scan(/.{4}/).join("-")
   end
 end
