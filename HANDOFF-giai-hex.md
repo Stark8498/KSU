@@ -258,6 +258,30 @@ nhớ dựng lại trước khi kiểm:
 python tools/codegraph.py . tools/graph.json
 ```
 
+### Lời gọi động — lớp rủi ro duy nhất không phép kiểm nào nhìn thấy, và đã đóng
+
+Đổi tên một method mà chỗ gọi nằm trong **chuỗi** thì không phép kiểm nào bắt:
+`verify_graph` chỉ soi lời gọi viết bằng mã, còn `kiemchuoi` thì *bảo đảm* chuỗi
+không đổi — tức là bảo đảm chỗ gọi vẫn trỏ vào cái tên cũ đã biến mất. Đã soi cả
+cây mốc:
+
+- **không có** `send` / `__send__` / `public_send`, `define_method`, `method(:x)`,
+  `method_missing` — không chỗ nào cả;
+- `respond_to?(:_bbaa2919)` và `instance_variable_set(:@flag16, nil)` dùng
+  **symbol**, mà symbol là mã chứ không phải chuỗi, nên nó đổi tên cùng lúc với
+  chỗ định nghĩa;
+- `instance_variable_get("@#{key}")` (preset/field.rb, preset/store.rb,
+  font.rb) dựng tên biến từ chuỗi lúc chạy — nhưng **không một chuỗi nào trong
+  cây chứa hex** (đếm được: 0). Nên nó chỉ có thể trỏ tới những `@ivar` mà
+  trình làm rối **chưa bao giờ** đụng tới: `@tam_cach_le…`, `@them_tam_tu_do`,
+  `@ghi_de_tam_cu` — kiểm lại trong mốc, chúng vốn đã không phải hex.
+
+Kiểm lại khi nghi ngờ:
+
+```bash
+python -c "import sys;sys.path.insert(0,'tools');import re;from kscommon import literals;from datten import baseline_sources;print(sum(len(re.findall(r'_[0-9a-f]{8}',t)) for s in baseline_sources().values() for t in literals(s)))"
+```
+
 **Nạp được không có nghĩa là chạy đúng.** Chốt cuối vẫn là thử trong SketchUp
 thật — chưa làm.
 
