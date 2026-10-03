@@ -2,9 +2,9 @@ module KSU::Back
   private
   def _e1ab909e
     groups = Hash.new { |arr52, k| arr52[k] = [] }
-    @arr27.each do |vec|
-      next unless vec && vec.valid?
-      groups[KSU::Sheet._7b0a38ee(vec)] << vec
+    @sel_panels.each do |sheet|
+      next unless sheet && sheet.valid?
+      groups[KSU::Sheet._7b0a38ee(sheet)] << sheet
     end
     groups
   end
@@ -20,13 +20,13 @@ module KSU::Back
     return nil unless panel && panel.valid? && front_panel?(panel)
     ix = KSU::Cutting.board_index(panel)
     return nil if ix.nil?
-    @nesting.definition.entities.each do |grp|
-      next unless KSU.container?(grp) && grp.name.to_s.downcase.include?("sheet")
-      back = grp.definition.entities.find do |ent|
+    @nesting.definition.entities.each do |sheet|
+      next unless KSU.container?(sheet) && sheet.name.to_s.downcase.include?("sheet")
+      back = sheet.definition.entities.find do |ent|
         KSU.container?(ent) && ent != panel &&
           KSU::Cutting.board_index(ent) == ix && back_face2?(ent)
       end
-      return [back, grp] if back
+      return [back, sheet] if back
     end
     nil
   end
@@ -42,8 +42,8 @@ module KSU::Back
     _a7fa30d2(partner, vec, num) if num && num != 0
     place_mirror(panel2, partner, sheet3, vec)
   end
-  def _a7fa30d2(panel, grp, _74c34b47)
-    tr = @nesting.transformation * grp.transformation
+  def _a7fa30d2(panel, sheet, _74c34b47)
+    tr = @nesting.transformation * sheet.transformation
     center = KSU::View._66e14707(panel, tr).center
     rad = -_74c34b47 * Math::PI / 180.0
     tr2 = Geom::Transformation.rotation(center, Z_AXIS, rad)

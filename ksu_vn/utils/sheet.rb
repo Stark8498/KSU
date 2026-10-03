@@ -6,37 +6,37 @@ module KSU::Sheet
     sheets = []
     return sheets unless nesting && nesting.valid?
     tr = nesting.transformation
-    nesting.definition.entities.each do |grp|
-      next unless grp.respond_to?(:name) && grp.name.to_s.downcase.include?("sheet")
-      next if !include_bottom && bottom_sheet?(grp)
-      transform = tr * grp.transformation
-      bd2 = border_of(grp)
+    nesting.definition.entities.each do |sheet|
+      next unless sheet.respond_to?(:name) && sheet.name.to_s.downcase.include?("sheet")
+      next if !include_bottom && bottom_sheet?(sheet)
+      transform = tr * sheet.transformation
+      bd2 = border_of(sheet)
       if bd2 && bd2.respond_to?(:definition) && bd2.definition
         tr6 = transform * bd2.transformation
-        arr = (0..7).map { |_a4ab9a59| tr6 * bd2.definition.bounds.corner(_a4ab9a59) }
+        arr = (0..7).map { |i| tr6 * bd2.definition.bounds.corner(i) }
       else
-        bb = grp.definition.bounds
-        arr = (0..7).map { |_a4ab9a59| bb.corner(_a4ab9a59).transform(transform) }
+        bb = sheet.definition.bounds
+        arr = (0..7).map { |i| bb.corner(i).transform(transform) }
       end
       box = Geom::BoundingBox.new
       arr.each { |_23505ef9| box.add(_23505ef9) }
       sheets << {
-        instance: grp, bbox: box, transform: transform,
+        instance: sheet, bbox: box, transform: transform,
         top_corners: [arr[4], arr[5], arr[7], arr[6]],
       }
     end
     sheets
   end
-  def self.record_for(arr23, _73dc38ac)
-    return nil unless arr23 && _73dc38ac
-    arr23.find { |s| s[:instance] == _73dc38ac }
+  def self.record_for(arr23, sheet)
+    return nil unless arr23 && sheet
+    arr23.find { |s| s[:instance] == sheet }
   end
-  def self.row_of(_73dc38ac, arr23)
-    normal = arr23.find { |s| s[:instance] == _73dc38ac }
-    return [_73dc38ac] unless normal
+  def self.row_of(sheet, arr23)
+    normal = arr23.find { |s| s[:instance] == sheet }
+    return [sheet] unless normal
     bbox = normal[:bbox]
     tol = [bbox.height * 0.5, 10.mm].max
-    is_bottom = bottom_sheet?(_73dc38ac)
+    is_bottom = bottom_sheet?(sheet)
     arr23
       .select do |s|
       s[:instance].valid? &&
@@ -135,9 +135,9 @@ module KSU::Sheet
     ent2.text = text
     _9728a3d1(ent2)
   end
-  def self.labels(vec, nesting)
-    return [] unless vec && vec.valid? && nesting && nesting.valid?
-    bbox = world_bbox(vec, nesting)
+  def self.sheet_labels(sheet, nesting)
+    return [] unless sheet && sheet.valid? && nesting && nesting.valid?
+    bbox = world_bbox(sheet, nesting)
     return [] unless bbox
     ents = [nesting.definition.entities]
     model = Sketchup.active_model

@@ -8,9 +8,9 @@ module KSU::Nesting
   def poly_area(poly)
     n = poly.length
     num = 0.0
-    n.times do |_a4ab9a59|
-      j = (_a4ab9a59 + 1) % n
-      num += poly[_a4ab9a59][0] * poly[j][1] - poly[j][0] * poly[_a4ab9a59][1]
+    n.times do |i|
+      j = (i + 1) % n
+      num += poly[i][0] * poly[j][1] - poly[j][0] * poly[i][1]
     end
     num.abs * 0.5
   end
@@ -19,13 +19,13 @@ module KSU::Nesting
     flag = false
     n = poly.length
     j = n - 1
-    n.times do |_a4ab9a59|
-      xi, yi = poly[_a4ab9a59]
+    n.times do |i|
+      xi, yi = poly[i]
       xj, yj = poly[j]
       if ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)
         flag = !flag
       end
-      j = _a4ab9a59
+      j = i
     end
     flag
   end
@@ -35,8 +35,8 @@ module KSU::Nesting
                                    width_mm, height_mm, gap2, false, 1000, 0)
       unless id_str.empty?
         return [] unless id_str.all? { |ent| ent[0] == 0 }
-        return id_str.each_with_index.map do |(_bin, x, y, num3, arr52), _a4ab9a59|
-                 items[_a4ab9a59].merge(lx: x, ly: y, w: num3, h: arr52)
+        return id_str.each_with_index.map do |(_bin, x, y, num3, arr52), i|
+                 items[i].merge(lx: x, ly: y, w: num3, h: arr52)
                end
       end
     end

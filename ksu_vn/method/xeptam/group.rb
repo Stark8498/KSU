@@ -1,17 +1,17 @@
 module KSU::Group
   private
   def toggle_group
-    return if @arr27.empty?
-    arr = @arr27.map { |_23505ef9| group_id(_23505ef9) }
+    return if @sel_panels.empty?
+    arr = @sel_panels.map { |_23505ef9| group_id(_23505ef9) }
     arr2 = arr.compact.uniq
     if arr2.size == 1 && !arr.include?(nil)
       ungroup_selected
-    elsif @arr27.size >= 2
+    elsif @sel_panels.size >= 2
       group_selected
     else
       return
     end
-    KSU::View.refresh_groups(@arr27)
+    KSU::View.refresh_groups(@sel_panels)
   end
   def group_id(panel)
     return nil unless panel && panel.valid?
@@ -50,35 +50,35 @@ module KSU::Group
   end
   def expand_selection
     ids = {}
-    @arr27.each do |grp|
+    @sel_panels.each do |grp|
       gid = group_id(grp)
       ids[gid] = true if gid
     end
     return if ids.empty?
     h2 = {}
-    @arr27.each { |grp| h2[grp.entityID] = true if grp && grp.valid? }
-    all_panels.each do |panel, _73dc38ac, gid|
+    @sel_panels.each { |grp| h2[grp.entityID] = true if grp && grp.valid? }
+    all_panels.each do |panel, sheet, gid|
       next unless ids[gid]
       next if h2[panel.entityID]
-      @arr27 << panel
-      @arr12 << _73dc38ac
+      @sel_panels << panel
+      @sel_sheets << sheet
     end
   end
   def remove_from_selection(panel)
     gid = group_id(panel)
-    arr = gid ? @arr27.select { |_23505ef9| group_id(_23505ef9) == gid } : [panel]
+    arr = gid ? @sel_panels.select { |_23505ef9| group_id(_23505ef9) == gid } : [panel]
     arr.each do |_23505ef9|
-      ix = @arr27.index(_23505ef9)
+      ix = @sel_panels.index(_23505ef9)
       next unless ix
-      @arr27.delete_at(ix)
-      @arr12.delete_at(ix)
+      @sel_panels.delete_at(ix)
+      @sel_sheets.delete_at(ix)
     end
   end
   def group_selected
-    return if @arr27.size < 2
+    return if @sel_panels.size < 2
     gid = new_group_id
     KSU.start
-    @arr27.each do |grp|
+    @sel_panels.each do |grp|
       grp.set_attribute("KSU", "group-id", gid) if grp && grp.valid?
     end
     @flag36 = true
@@ -89,7 +89,7 @@ module KSU::Group
   end
   def ungroup_selected
     KSU.start
-    @arr27.each do |vec|
+    @sel_panels.each do |vec|
       vec.delete_attribute("KSU", "group-id") if vec && vec.valid?
     end
     @flag36 = true

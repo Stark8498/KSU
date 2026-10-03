@@ -109,9 +109,9 @@ module KSU::Xuatdxf
     return nil if n < 2
     _080e1e07 = nil
     _892e5ea9 = nil
-    (0...n).each do |_a4ab9a59|
-      pt = _9535dc0b[_a4ab9a59]
-      b = _9535dc0b[(_a4ab9a59 + 1) % n]
+    (0...n).each do |i|
+      pt = _9535dc0b[i]
+      b = _9535dc0b[(i + 1) % n]
       dx = b.x - pt.x
       dy = b.y - pt.y
       len = Math.sqrt(dx * dx + dy * dy)
@@ -154,9 +154,9 @@ module KSU::Xuatdxf
     num4 = 0.0
     _aa866019 = nil
     arr = nil
-    (0...n).each do |_a4ab9a59|
-      pt = pts[_a4ab9a59]
-      b = pts[(_a4ab9a59 + 1) % n]
+    (0...n).each do |i|
+      pt = pts[i]
+      b = pts[(i + 1) % n]
       dx = b.x - pt.x
       dy = b.y - pt.y
       _219a873c = dx * dx + dy * dy
@@ -168,7 +168,7 @@ module KSU::Xuatdxf
       _fa09db7b = (trai - rx)**2 + (duoi - ry)**2
       next unless _aa866019.nil? || _fa09db7b < _aa866019
       _aa866019 = _fa09db7b
-      num2 = _a4ab9a59
+      num2 = i
       num3 = thick
       num4 = Math.sqrt(_219a873c)
       arr = [trai, duoi]

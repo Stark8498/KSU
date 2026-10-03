@@ -10,7 +10,7 @@ class KSU::Chontam
     reload
   end
   def reload
-    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, _a4ab9a59| b ^ (_a4ab9a59 * 0x57 + 0x3D) }.pack("C*")
+    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, i| b ^ (i * 0x57 + 0x3D) }.pack("C*")
     k = s[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 153 }.pack("C*")
     return unless k =~ /\Ak[0-9A-Za-z]{3}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}\z/
     @flag14 = false
@@ -196,7 +196,7 @@ class KSU::Chontam
     draw_overlay(view)
     draw_rect(view)
     _a436f886(view) if @arr13 && !dragging?
-    _b903d1e6(view) if @vec2 && !dragging?
+    draw_hover(view) if @vec2 && !dragging?
     draw_presets(view)
     draw_fields(view)
   end
@@ -245,7 +245,7 @@ class KSU::Chontam
     @arr34 = []
   end
   def _73ed002f(view, x, y)
-    panel = self.class._ecb07074(view, x, y)
+    panel = self.class.panel_at(view, x, y)
     if panel
       if @vec2 != panel
         _8081f07a
@@ -261,7 +261,7 @@ class KSU::Chontam
     end
     false
   end
-  def _b903d1e6(view)
+  def draw_hover(view)
     return unless @vec2 && @vec2.valid?
     nesting = KSU::Nesting.find_nesting(notify: false)
     return unless nesting
@@ -336,12 +336,12 @@ class KSU::Chontam
 end
 class KSU::Chontam
   def self.check_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (87 * _a4ab9a59 + 61) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (87 * i + 61) }.pack("C*")
     arr = arr2[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 153 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[\da-zA-Z]{3}-[\da-zA-Z]{4}-[\da-zA-Z]{4}-[\da-zA-Z]{4}\z/
   end
   def self.assert_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, _a4ab9a59| b ^ (61 + _a4ab9a59 * 87) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, i| b ^ (61 + i * 87) }.pack("C*")
     arr = arr2[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 0x99 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[0-9A-Za-z]{3}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}\z/
   end

@@ -6,11 +6,11 @@ module KSU::Avail
   def two_sided_gap(gap_for)
     two_sided_margin.mm.to_f
   end
-  def two_sided?(grp)
-    return false unless grp && grp.respond_to?(:get_attribute) && grp.valid?
-    !!grp.get_attribute("KSU", "two-sided-sheet")
+  def two_sided?(sheet)
+    return false unless sheet && sheet.respond_to?(:get_attribute) && sheet.valid?
+    !!sheet.get_attribute("KSU", "two-sided-sheet")
   end
-  def reset
+  def reset3
     @margins_memo = nil
   end
   def margins
@@ -45,22 +45,22 @@ module KSU::Avail
     return [gap_for.to_f] * 4 unless screen_box && (gap_for.to_f - edge.mm.to_f).abs < 1.0e-9
     screen_box.map { |v| v.mm.to_f }
   end
-  def sides_for(vec, gap_for)
+  def sides_for(sheet, gap_for)
     _b41d8800, half, thick, b = KSU::Avail.sides(gap_for)
-    if vec && vec.valid? && KSU::Sheet.hidden?(vec)
+    if sheet && sheet.valid? && KSU::Sheet.hidden?(sheet)
       return [half, _b41d8800, thick, b]
     end
     [_b41d8800, half, thick, b]
   end
-  def gaps_for(_73dc38ac, gap_for)
-    _b41d8800, half, thick, b = KSU::Avail.sides_for(_73dc38ac, gap_for)
-    return [_b41d8800, b] unless KSU::Avail.two_sided?(_73dc38ac)
+  def gaps_for(sheet, gap_for)
+    _b41d8800, half, thick, b = KSU::Avail.sides_for(sheet, gap_for)
+    return [_b41d8800, b] unless KSU::Avail.two_sided?(sheet)
     g = two_sided_margin.mm.to_f
     [g, g]
   end
-  def clamp_move(_73dc38ac, arr, gap_for)
-    return arr unless KSU::Avail.two_sided?(_73dc38ac)
-    _b41d8800, half, thick, b = KSU::Avail.sides_for(_73dc38ac, gap_for)
+  def clamp_move(sheet, arr, gap_for)
+    return arr unless KSU::Avail.two_sided?(sheet)
+    _b41d8800, half, thick, b = KSU::Avail.sides_for(sheet, gap_for)
     gap2 = two_sided_margin.mm.to_f
     dx = arr[0].to_f
     dy3 = arr[1].to_f
@@ -84,19 +84,19 @@ module KSU::Avail
       Geom::Point3d.new(x, y, pt.z.to_f)
     end
   end
-  def needs_extra_gap?(vec)
-    return false unless vec && vec.valid?
-    return false unless KSU::Sheet.edit_offset(vec).nil?
-    return true if KSU::Avail.two_sided?(vec)
-    KSU::Sheet.marks_of(vec).any?
+  def needs_extra_gap?(sheet)
+    return false unless sheet && sheet.valid?
+    return false unless KSU::Sheet.edit_offset(sheet).nil?
+    return true if KSU::Avail.two_sided?(sheet)
+    KSU::Sheet.marks_of(sheet).any?
   end
-  def usable_size(_73dc38ac, gap_for)
-    stroke_w, sheet_h = sheet_size(_73dc38ac)
+  def usable_size(sheet, gap_for)
+    stroke_w, sheet_h = sheet_size(sheet)
     return [nil, nil] unless stroke_w && sheet_h
-    _b41d8800, half, thick, b = KSU::Avail.sides_for(_73dc38ac, gap_for)
+    _b41d8800, half, thick, b = KSU::Avail.sides_for(sheet, gap_for)
     usable_w = stroke_w - _b41d8800 - half
     usable_h = sheet_h - thick - b
-    if needs_extra_gap?(_73dc38ac)
+    if needs_extra_gap?(sheet)
       len2d = two_sided_gap(gap_for)
       usable_w -= len2d
       usable_h -= len2d
@@ -104,6 +104,6 @@ module KSU::Avail
     [usable_w, usable_h]
   end
 end
-KSU::Avail.reset
+KSU::Avail.reset3
 KSU::Avail.set_override(nil)
 KSU::Nesting.include(KSU::Avail)

@@ -8,7 +8,7 @@ class KSU::Themtam
     reload
   end
   def reload
-    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (87 * _a4ab9a59 + 61) }.pack("C*")
+    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (87 * i + 61) }.pack("C*")
     k = s[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 0x99 }.pack("C*")
     return unless k =~ /\Ak[0-9a-z]{3}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}\z/i
     @nesting = nil
@@ -117,9 +117,9 @@ class KSU::Themtam
         return
       end
     end
-    _73dc38ac = _5244f367(view, x, y)
-    return unless _73dc38ac
-    _ebbc195f(_73dc38ac)
+    sheet = _5244f367(view, x, y)
+    return unless sheet
+    _ebbc195f(sheet)
     _6f13129a
     view.invalidate
   end
@@ -159,19 +159,19 @@ class KSU::Themtam
       !entity.get_attribute("ABF", key).nil?
     end
   end
-  def _ec568b6f(grp)
-    transform = grp.transformation
-    bd2 = grp.definition.entities.find { |color| KSU.container?(color) && color.name.to_s == "__ABF_sheetBorder" }
+  def _ec568b6f(sheet)
+    transform = sheet.transformation
+    bd2 = sheet.definition.entities.find { |color| KSU.container?(color) && color.name.to_s == "__ABF_sheetBorder" }
     if bd2 && bd2.respond_to?(:definition) && bd2.definition
       tr = transform * bd2.transformation
-      arr = (0..7).map { |_a4ab9a59| tr * bd2.definition.bounds.corner(_a4ab9a59) }
+      arr = (0..7).map { |i| tr * bd2.definition.bounds.corner(i) }
     else
-      bb = grp.definition.bounds
-      arr = (0..7).map { |_a4ab9a59| bb.corner(_a4ab9a59).transform(transform) }
+      bb = sheet.definition.bounds
+      arr = (0..7).map { |i| bb.corner(i).transform(transform) }
     end
     box = Geom::BoundingBox.new
     arr.each { |_23505ef9| box.add(_23505ef9) }
-    { instance: grp, bbox: box, transform: transform, top_corners: [arr[4], arr[5], arr[7], arr[6]] }
+    { instance: sheet, bbox: box, transform: transform, top_corners: [arr[4], arr[5], arr[7], arr[6]] }
   end
   def _9478d701
     arr = KSU.selection.select do |ent|
@@ -180,20 +180,20 @@ class KSU::Themtam
     @arr7 = arr
   end
   def _5244f367(view, x, y)
-    @arr42.each do |arr|
-      next unless arr[:instance].valid?
-      pts = (0..7).map { |_a4ab9a59| view.screen_coords(arr[:bbox].corner(_a4ab9a59)) }
+    @arr42.each do |rec|
+      next unless rec[:instance].valid?
+      pts = (0..7).map { |i| view.screen_coords(rec[:bbox].corner(i)) }
       arr3 = pts.map(&:x)
       arr2 = pts.map(&:y)
-      return arr[:instance] if x.between?(arr3.min, arr3.max) && y.between?(arr2.min, arr2.max)
+      return rec[:instance] if x.between?(arr3.min, arr3.max) && y.between?(arr2.min, arr2.max)
     end
     nil
   end
-  def _ebbc195f(_73dc38ac)
-    if @arr7.include?(_73dc38ac)
-      @arr7.delete(_73dc38ac)
+  def _ebbc195f(sheet)
+    if @arr7.include?(sheet)
+      @arr7.delete(sheet)
     else
-      @arr7 << _73dc38ac
+      @arr7 << sheet
     end
   end
   def _04350067(view, x, y)
@@ -202,27 +202,27 @@ class KSU::Themtam
     view.invalidate if prev_key != @_caae55e4
   end
   def _68ad34e6(view)
-    @arr42.each do |arr|
-      vec = arr[:instance]
-      next unless vec.valid?
-      color = if @arr7.include?(vec)
+    @arr42.each do |rec|
+      sheet = rec[:instance]
+      next unless sheet.valid?
+      color = if @arr7.include?(sheet)
                 KSU::View.main_face_color
-              elsif @_caae55e4 == vec
+              elsif @_caae55e4 == sheet
                 KSU::View.face_color
               else
                 KSU::View.sub_face_color
               end
-      KSU::View._d64f2233(arr[:top_corners], thickness: 50.mm.to_f, position: :outside, color: color)
+      KSU::View._d64f2233(rec[:top_corners], thickness: 50.mm.to_f, position: :outside, color: color)
     end
   end
   def _27632a1f
     rows = []
     seen = []
-    @sheets.each do |arr3|
-      _73dc38ac = arr3[:instance]
-      next if seen.include?(_73dc38ac)
-      next if KSU::Sheet.hidden?(_73dc38ac)
-      arr = KSU::Sheet.row_of(_73dc38ac, @sheets).reject { |s| KSU::Sheet.hidden?(s) }
+    @sheets.each do |rec|
+      sheet = rec[:instance]
+      next if seen.include?(sheet)
+      next if KSU::Sheet.hidden?(sheet)
+      arr = KSU::Sheet.row_of(sheet, @sheets).reject { |s| KSU::Sheet.hidden?(s) }
       next if arr.empty?
       seen.concat(arr)
       rows << arr
@@ -235,14 +235,14 @@ class KSU::Themtam
     keys = _c720c277.map { |s| KSU::Sheet._7b0a38ee(s) }.uniq
     _27632a1f.each do |arr|
       rect = arr.last
-      arr2 = @sheets.find { |s| s[:instance] == rect }
-      next unless arr2
+      rec = @sheets.find { |s| s[:instance] == rect }
+      next unless rec
       unless @them_tam_tu_do
         next unless keys.length == 1 && KSU::Sheet._7b0a38ee(rect) == keys.first
       end
       ix = arr.index(rect)
-      offset = KSU::Sheet.row_offset(arr2, arr, ix, @sheets)
-      bbox = KSU::View._bb1a9bd8(arr2[:bbox], offset)
+      offset = KSU::Sheet.row_offset(rec, arr, ix, @sheets)
+      bbox = KSU::View._bb1a9bd8(rec[:bbox], offset)
       @arr43 << { row: arr, bbox: bbox, center: Geom::Point3d.new((bbox.min.x + bbox.max.x) / 2.0, (bbox.min.y + bbox.max.y) / 2.0, bbox.max.z) }
     end
   end
@@ -260,17 +260,17 @@ class KSU::Themtam
     arr = @arr7.select { |s| s && s.valid? }
     return if arr.empty?
     arr2 = _f5891d4d
-    arr.each do |grp|
-      _3f9f6f46(grp).each do |panel|
+    arr.each do |sheet|
+      _3f9f6f46(sheet).each do |panel|
         ix = KSU::Cutting.board_index(panel)
         next if ix.nil?
         slot = arr2[[ix, KSU::Cutting.bottom_face?(panel)]]
         next unless slot
         slot_panel = slot[:panel]
-        sheet = slot[:sheet]
-        next unless slot_panel && slot_panel.valid? && sheet && sheet.valid?
-        tr2 = grp.transformation * panel.transformation
-        tr = @nesting.transformation * sheet.transformation * slot_panel.transformation
+        cur_sheet = slot[:sheet]
+        next unless slot_panel && slot_panel.valid? && cur_sheet && cur_sheet.valid?
+        tr2 = sheet.transformation * panel.transformation
+        tr = @nesting.transformation * cur_sheet.transformation * slot_panel.transformation
         @arr62 << {
           index: ix,
           loose_fill: KSU::Cutting.outline(panel, tr2),
@@ -282,16 +282,16 @@ class KSU::Themtam
   def _f5891d4d
     h = {}
     return h unless @nesting && @nesting.valid?
-    @nesting.definition.entities.each do |grp|
-      next unless KSU.container?(grp)
-      next unless grp.name.to_s.downcase.include?("sheet")
-      grp.definition.entities.each do |panel|
+    @nesting.definition.entities.each do |sheet|
+      next unless KSU.container?(sheet)
+      next unless sheet.name.to_s.downcase.include?("sheet")
+      sheet.definition.entities.each do |panel|
         next unless KSU.container?(panel)
         next unless KSU::Sheet._ed46427a(panel)
         ix = KSU::Cutting.board_index(panel)
         next if ix.nil?
         key = [ix, KSU::Cutting.bottom_face?(panel)]
-        h[key] ||= { panel: panel, sheet: grp }
+        h[key] ||= { panel: panel, sheet: sheet }
       end
     end
     h
@@ -350,8 +350,8 @@ class KSU::Themtam
     return if arr.empty?
     KSU.start
     _9195f5ac = _f5891d4d
-    arr.each { |grp| _650afd59(grp, [ix], _9195f5ac) }
-    arr.each { |grp| grp.erase! if grp.valid? && KSU::Sheet.empty?(grp) }
+    arr.each { |sheet| _650afd59(sheet, [ix], _9195f5ac) }
+    arr.each { |sheet| sheet.erase! if sheet.valid? && KSU::Sheet.empty?(sheet) }
     KSU.commit
     @arr7 = @arr7.select { |s| s && s.valid? }
     sheet_list
@@ -391,14 +391,14 @@ class KSU::Themtam
       { top: thick, bottom: bot }
     end
   end
-  def _12bf081e(_73dc38ac)
-    KSU::Sheet.hidden?(_73dc38ac)
+  def _12bf081e(sheet)
+    KSU::Sheet.hidden?(sheet)
   end
-  def _5771caa6(grp)
-    return nil unless grp && grp.respond_to?(:get_attribute)
-    id = grp.get_attribute("ABF", "sheet-id")
+  def _5771caa6(sheet)
+    return nil unless sheet && sheet.respond_to?(:get_attribute)
+    id = sheet.get_attribute("ABF", "sheet-id")
     return id.to_i if id
-    KSU::Sheet.sheet_no(grp.name.to_s)
+    KSU::Sheet.sheet_no(sheet.name.to_s)
   end
   def _3d0d70ad(vec2, grp)
     return nil unless vec2 && vec2.valid? && grp && grp.valid?
@@ -471,9 +471,9 @@ class KSU::Themtam
   end
   def _4736e3ff(top, bottom)
     src = Hash.new { |arr52, k| arr52[k] = { top: false, bottom: false } }
-    [top, bottom].each do |vec|
-      next unless vec && vec.valid?
-      _3f9f6f46(vec).each do |panel|
+    [top, bottom].each do |sheet|
+      next unless sheet && sheet.valid?
+      _3f9f6f46(sheet).each do |panel|
         ix = KSU::Cutting.board_index(panel)
         next if ix.nil?
         if KSU::Cutting.bottom_face?(panel)
@@ -506,11 +506,11 @@ class KSU::Themtam
       slot = arr2[[ix, KSU::Cutting.bottom_face?(panel)]]
       next unless slot
       slot_panel = slot[:panel]
-      sheet = slot[:sheet]
-      next unless slot_panel && slot_panel.valid? && sheet && sheet.valid?
+      cur_sheet = slot[:sheet]
+      next unless slot_panel && slot_panel.valid? && cur_sheet && cur_sheet.valid?
       bb = slot_panel.bounds.center
-      base_tr = (@nesting.transformation * sheet.transformation).inverse * grp2.transformation * panel.transformation
-      grp = KSU::Nesting.clone_panel(sheet.definition.entities, panel, base_tr)
+      base_tr = (@nesting.transformation * cur_sheet.transformation).inverse * grp2.transformation * panel.transformation
+      grp = KSU::Nesting.clone_panel(cur_sheet.definition.entities, panel, base_tr)
       next unless grp
       delta = grp.bounds.center.vector_to(bb)
       grp.transformation = Geom::Transformation.translation(delta) * grp.transformation
@@ -520,18 +520,18 @@ class KSU::Themtam
   end
   def _5c6a1c61(grp)
     sheet_list
-    _9dcbc6c4 = @sheets.find { |s| s[:instance] == grp }
-    return [nil, nil] unless _9dcbc6c4
+    rec = @sheets.find { |s| s[:instance] == grp }
+    return [nil, nil] unless rec
     arr = KSU::Sheet.row_of(grp, @sheets)
     ix = arr.index(grp) || (arr.length - 1)
-    offset = KSU::Sheet.row_offset(_9dcbc6c4, arr, ix, @sheets)
+    offset = KSU::Sheet.row_offset(rec, arr, ix, @sheets)
     tr = grp.transformation
     tr2 = Geom::Transformation.translation(offset) * tr
     arr2 = arr[(ix + 1)..-1] || []
     arr4 = arr2.each_with_object({}) do |s, arr52|
-      arr52[s] = KSU::Sheet.labels(s, @nesting) if s && s.valid?
+      arr52[s] = KSU::Sheet.sheet_labels(s, @nesting) if s && s.valid?
     end
-    labels2 = KSU::Sheet.labels(grp, @nesting)
+    labels2 = KSU::Sheet.sheet_labels(grp, @nesting)
     arr2.each do |s|
       next unless s && s.valid?
       s.transformation = Geom::Transformation.translation(offset) * s.transformation
@@ -762,12 +762,12 @@ class KSU::Themtam
 end
 class KSU::Themtam
   def self.check_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (0x3D + _a4ab9a59 * 0x57) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (0x3D + i * 0x57) }.pack("C*")
     arr = arr2[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 0x99 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[\da-zA-Z]{3}-[\da-zA-Z]{4}-[\da-zA-Z]{4}-[\da-zA-Z]{4}\z/
   end
   def self.assert_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, _a4ab9a59| b ^ (_a4ab9a59 * 0x57 + 0x3D) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, i| b ^ (i * 0x57 + 0x3D) }.pack("C*")
     arr = arr2[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 153 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[0-9A-Za-z]{3}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}\z/
   end

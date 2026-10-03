@@ -356,8 +356,8 @@ module KSU::Field
       [x + r, y + arr52 - r, Math::PI / 2]
     ]
     pts = scr.flat_map { |px, py, _709b21ed|
-      9.times.map { |_a4ab9a59|
-        _9710d820 = _709b21ed + _a4ab9a59 * Math::PI / 16
+      9.times.map { |i|
+        _9710d820 = _709b21ed + i * Math::PI / 16
         Geom::Point3d.new(px + Math.cos(_9710d820) * r, py + Math.sin(_9710d820) * r, 0)
       }
     }
@@ -371,8 +371,8 @@ module KSU::Field
       if outset > 0
         _e74b5af2 = r + outset
         arr = scr.flat_map { |px, py, _709b21ed|
-          9.times.map { |_a4ab9a59|
-            _9710d820 = _709b21ed + _a4ab9a59 * Math::PI / 16
+          9.times.map { |i|
+            _9710d820 = _709b21ed + i * Math::PI / 16
             Geom::Point3d.new(px + Math.cos(_9710d820) * _e74b5af2, py + Math.sin(_9710d820) * _e74b5af2, 0)
           }
         }
@@ -543,8 +543,8 @@ module KSU::Field
     gap_for = margin_top
     x = view.vpwidth - gap_for - num3
     y = gap_for + pad
-    items.each_with_index.map do |fld, _a4ab9a59|
-      if _a4ab9a59 > 0
+    items.each_with_index.map do |fld, i|
+      if i > 0
         y += pad + sec_gap + pad if fld[:group_start]
         y += _aeeff86b unless fld[:group_start]
       end

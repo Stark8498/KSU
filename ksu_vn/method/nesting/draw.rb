@@ -138,9 +138,9 @@ module KSU::Draw
     gr.delete_attribute("KSU", "group-id")
     cutting_gr = gr.entities.add_group
     cutting_gr.name = "_ABF_cuttingLines"
-    grp[:cutting_lines].each_with_index do |pts, _a4ab9a59|
+    grp[:cutting_lines].each_with_index do |pts, i|
       lp = cutting_gr.entities.add_curve(pts)
-      next unless _a4ab9a59 == grp[:outer_index] && lp
+      next unless i == grp[:outer_index] && lp
       lp.each { |ent| ent.set_attribute("ABF", "is-outer-loop", true) if ent.is_a?(Sketchup::Edge) }
     end
     cutting_gr.transformation = cutting_gr.transformation * part_tf.inverse
@@ -270,9 +270,9 @@ module KSU::Draw
   end
   def _ce93a4c7(arr)
     return unless defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:union)
-    arr.each do |grp|
-      next unless grp && grp.valid?
-      grp.entities.grep(Sketchup::Group).each do |grp7|
+    arr.each do |sheet|
+      next unless sheet && sheet.valid?
+      sheet.entities.grep(Sketchup::Group).each do |grp7|
         next if KSU::Sheet._27ecfdd1(grp7)
         _e3d864eb(grp7)
       end
@@ -287,18 +287,18 @@ module KSU::Draw
     return if arr.size < 2
     n = arr.size
     arr2 = Array.new(n) { Array.new(n, false) }
-    (0...n - 1).each do |_a4ab9a59|
-      (_a4ab9a59 + 1...n).each do |j|
-        next unless !arr[_a4ab9a59][:rect].intersect(arr[j][:rect]).empty? && arr[_a4ab9a59][:layer_name] == arr[j][:layer_name]
-        arr2[_a4ab9a59][j] = true
-        arr2[j][_a4ab9a59] = true
+    (0...n - 1).each do |i|
+      (i + 1...n).each do |j|
+        next unless !arr[i][:rect].intersect(arr[j][:rect]).empty? && arr[i][:layer_name] == arr[j][:layer_name]
+        arr2[i][j] = true
+        arr2[j][i] = true
       end
     end
     color = _2827207b(n, arr2)
     (1..n).each do |color2|
-      ix = (0...n).select { |_a4ab9a59| color[_a4ab9a59] == color2 }
+      ix = (0...n).select { |i| color[i] == color2 }
       next if ix.size < 2
-      _13398956(ix.map { |_a4ab9a59| arr[_a4ab9a59] }, grp)
+      _13398956(ix.map { |i| arr[i] }, grp)
     end
   end
   def _a086bafa(arr2)
@@ -326,11 +326,11 @@ module KSU::Draw
   def _2827207b(n, arr2)
     color = Array.new(n, 0)
     color3 = 0
-    (0...n).each do |_a4ab9a59|
-      next unless color[_a4ab9a59] == 0
+    (0...n).each do |i|
+      next unless color[i] == 0
       color3 += 1
-      arr = [_a4ab9a59]
-      color[_a4ab9a59] = color3
+      arr = [i]
+      color[i] = color3
       until arr.empty?
         _7e53f420 = arr.pop
         (0...n).each do |j|
@@ -343,7 +343,7 @@ module KSU::Draw
     color
   end
   def _13398956(arr3, defn)
-    polys = arr3.flat_map { |arr| arr[:polys] }
+    polys = arr3.flat_map { |i| i[:polys] }
     rings = KSU::Clipper.union(polys, 6)
     return if rings.nil? || rings.empty?
     _2cb52d46 = arr3[0][:layer]
@@ -365,13 +365,13 @@ module KSU::Draw
       KSU::Cutting.set_layer(grp, _2cb52d46) if _2cb52d46
       ok = true
     end
-    defn.entities.erase_entities(arr3.map { |arr| arr[:gr] }) if ok
+    defn.entities.erase_entities(arr3.map { |i| i[:gr] }) if ok
   end
   def _42f184ce(grp2)
     return unless grp2 && grp2.valid?
-    grp2.entities.grep(Sketchup::Group).each do |grp3|
-      next unless grp3.get_attribute("ABF", "sheet-id")
-      ents = grp3.entities.grep(Sketchup::Group)
+    grp2.entities.grep(Sketchup::Group).each do |sheet|
+      next unless sheet.get_attribute("ABF", "sheet-id")
+      ents = sheet.entities.grep(Sketchup::Group)
       bd2 = ents.find { |color| KSU::Sheet._27ecfdd1(color) }
       next unless bd2
       rect = _127808db(bd2)
@@ -394,8 +394,8 @@ module KSU::Draw
     b = gr.definition.bounds
     arr2 = []
     arr = []
-    [0, 1, 2, 4].each do |_a4ab9a59|
-      pt = b.corner(_a4ab9a59).transform(tf)
+    [0, 1, 2, 4].each do |i|
+      pt = b.corner(i).transform(tf)
       arr2 << pt.x.to_f
       arr << pt.y.to_f
     end

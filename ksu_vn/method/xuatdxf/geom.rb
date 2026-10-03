@@ -38,31 +38,31 @@ module KSU::Xuatdxf
   def _a54bea0f(box)
     return nil if box.size < 12
     _67416b90 = box[0].distance(box[1])
-    (1...box.size - 1).each do |_a4ab9a59|
-      return nil if (_67416b90 - box[_a4ab9a59].distance(box[_a4ab9a59 + 1])).abs > EPS_ARC
+    (1...box.size - 1).each do |i|
+      return nil if (_67416b90 - box[i].distance(box[i + 1])).abs > EPS_ARC
     end
     center = _2d01dec4(box[0], box[box.size / 3], box[box.size * 2 / 3])
     return nil unless center
     half = center.distance(box[0])
-    (1...box.size).each do |_a4ab9a59|
-      return nil if (half - center.distance(box[_a4ab9a59])).abs > EPS_ARC
+    (1...box.size).each do |i|
+      return nil if (half - center.distance(box[i])).abs > EPS_ARC
     end
     { center: center, radius: half }
   end
-  def _826c9296(box, _a4ab9a59)
+  def _826c9296(box, i)
     num = box.size
-    p1 = box[_a4ab9a59]
-    p2 = box[(_a4ab9a59 + 1) % num]
-    p3 = box[(_a4ab9a59 + 2) % num]
+    p1 = box[i]
+    p2 = box[(i + 1) % num]
+    p3 = box[(i + 2) % num]
     _d9b81a7a = p1.distance(p2)
     return nil if (p2.distance(p3) - _d9b81a7a).abs > EPS_ARC
     center = _2d01dec4(p1, p2, p3)
     return nil unless center
     r = p1.distance(center)
     num21 = 2
-    start_i = _a4ab9a59
-    end_i = _a4ab9a59 + 2
-    (start_i - 1).downto(_a4ab9a59 - num + 3) do |j|
+    start_i = i
+    end_i = i + 2
+    (start_i - 1).downto(i - num + 3) do |j|
       _771229d2 = j % num
       _bfe9f61b = (j + 1) % num
       break unless (box[_771229d2].distance(box[_bfe9f61b]) - _d9b81a7a).abs < EPS_ARC &&
@@ -127,8 +127,8 @@ module KSU::Xuatdxf
     loop do
       break if deadline && Time.now > deadline
       done = true
-      (0...box.size).each do |_a4ab9a59|
-        color = _826c9296(box, _a4ab9a59)
+      (0...box.size).each do |i|
+        color = _826c9296(box, i)
         next unless color
         start_i = color[:start_i]
         end_i = color[:end_i]
@@ -160,33 +160,33 @@ module KSU::Xuatdxf
     return [] if n < 3
     arr2 = Array.new(n) { Array.new(n, false) }
     snap_edges.each do |ent|
-      _a4ab9a59 = seen[ent.start.entityID]
+      i = seen[ent.start.entityID]
       j = seen[ent.end.entityID]
-      arr2[_a4ab9a59][j] = true
-      arr2[j][_a4ab9a59] = true
+      arr2[i][j] = true
+      arr2[j][i] = true
     end
     arr4 = []
     arr3 = Array.new(n, false)
-    (0...n).each do |_a4ab9a59|
-      next if arr3[_a4ab9a59]
-      back = Array.new(n, _a4ab9a59)
-      _4e8cbee3(_a4ab9a59, _a4ab9a59, arr2, arr3, back, n, arr, arr4)
+    (0...n).each do |i|
+      next if arr3[i]
+      back = Array.new(n, i)
+      _4e8cbee3(i, i, arr2, arr3, back, n, arr, arr4)
     end
     arr4
   end
-  def _4e8cbee3(start, _a4ab9a59, arr2, arr, back, n, arr4, _c520310e)
-    arr[_a4ab9a59] = true
+  def _4e8cbee3(start, i, arr2, arr, back, n, arr4, _c520310e)
+    arr[i] = true
     done = true
     (0...n).each do |j|
-      next unless arr2[_a4ab9a59][j] && !arr[j]
+      next unless arr2[i][j] && !arr[j]
       done = false
-      back[j] = _a4ab9a59
+      back[j] = i
       _4e8cbee3(start, j, arr2, arr, back, n, arr4, _c520310e)
     end
     return unless done
-    return unless arr2[start][_a4ab9a59]
+    return unless arr2[start][i]
     path = []
-    _7e53f420 = _a4ab9a59
+    _7e53f420 = i
     loop do
       path << _7e53f420
       _7e53f420 = back[_7e53f420]

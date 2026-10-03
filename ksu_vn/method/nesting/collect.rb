@@ -63,7 +63,7 @@ module KSU::Collect
       UI.messagebox("Cảnh báo! Có lỗi xảy ra khi tạo đường cắt của tấm.")
     end
     return _9be3af68(:empty, h18, _3ef84888, _4effcb0e) if parts.empty?
-    start(h18, _b0282735(parts, h18))
+    start3(h18, _b0282735(parts, h18))
   rescue StandardError => ent
     _a762c251
     UI.messagebox("Lỗi nesting: #{ent.message}")
@@ -74,7 +74,7 @@ module KSU::Collect
       UI.messagebox("Có lỗi xảy ra khi nesting!")
       return
     end
-    run(h18, _4effcb0e) if ask_relabel(err)
+    run2(h18, _4effcb0e) if ask_relabel(err)
   end
   def _90d58cd9
     UI.stop_timer(@_d3fa94d5) if @_d3fa94d5
@@ -152,9 +152,9 @@ module KSU::Collect
     _984e016d = tr3 * tr2 * tf_axes * tf
     small_size = KSU::Cutting._f7a09903(face, tf)
     arr3 = KSU::Cutting._e4e88386(small_size)
-    arr2 = KSU::Cutting._4605a894(g, face, _984e016d, max_eb[0], arr3[0], arr3[1])
-    return [nil, _c348cdef] if arr2[:loops].empty?
-    bounds = arr2[:loops].map do |arr|
+    rec = KSU::Cutting._4605a894(g, face, _984e016d, max_eb[0], arr3[0], arr3[1])
+    return [nil, _c348cdef] if rec[:loops].empty?
+    bounds = rec[:loops].map do |arr|
       KSU::Simplify._c71fe5d3(arr[:pts].map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }, arr[:outer])
     end
     lx = nil
@@ -185,11 +185,11 @@ module KSU::Collect
     grp = {
       group: g, up_face: face, tf: tf, part_tf: part_tf,
       two_sided: !bottom[:bottom].empty?,
-      outer_index: arr2[:loops].find_index { |arr| arr[:outer] } || 0,
+      outer_index: rec[:loops].find_index { |arr| arr[:outer] } || 0,
       bounds_mm: bounds.map { |arr| arr.map { |_23505ef9| [(_23505ef9[0] + ax) * 25.4, (_23505ef9[1] + ay) * 25.4] } },
-      cutting_lines: arr2[:loops].map { |arr| arr[:pts].map { |_23505ef9| _23505ef9.transform(tr) } },
-      edge_band_lines: arr2[:edge_band_lines].map { |arr| arr.map { |_23505ef9| _23505ef9.transform(tr) } },
-      edge_band_desc: arr2[:edge_band_desc].map do |len2d|
+      cutting_lines: rec[:loops].map { |arr| arr[:pts].map { |_23505ef9| _23505ef9.transform(tr) } },
+      edge_band_lines: rec[:edge_band_lines].map { |arr| arr.map { |_23505ef9| _23505ef9.transform(tr) } },
+      edge_band_desc: rec[:edge_band_desc].map do |len2d|
         { p0: len2d[:p0].transform(tr), p1: len2d[:p1].transform(tr), name: len2d[:name], kind: len2d[:kind] }
       end,
       drills: drills, arrow: arr3, max_eb: max_eb[1],
@@ -245,8 +245,8 @@ module KSU::Collect
     rows.sort_by! { |half| [half[:thickness_mm].to_f, half[:material].to_s.downcase] }
     mat_order = h18 && h18[:mat_order]
     if mat_order.is_a?(Hash) && !mat_order.empty?
-      rows = rows.each_with_index.sort_by do |half, _a4ab9a59|
-        [mat_order.fetch("#{half[:material]}#{half[:thickness_mm]}", 1 << 20), _a4ab9a59]
+      rows = rows.each_with_index.sort_by do |half, i|
+        [mat_order.fetch("#{half[:material]}#{half[:thickness_mm]}", 1 << 20), i]
       end.map { |half, _part| half }
     end
     _3758e659(rows)

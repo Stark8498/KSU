@@ -17,9 +17,9 @@ module KSU::Mirror
     ix = KSU::Cutting.board_index(panel)
     return nil if ix.nil?
     want_back = !back_face2?(panel)
-    @nesting.definition.entities.each do |grp|
-      next unless KSU.container?(grp) && grp.name.to_s.downcase.include?("sheet")
-      partner = grp.definition.entities.find do |ent|
+    @nesting.definition.entities.each do |sheet|
+      next unless KSU.container?(sheet) && sheet.name.to_s.downcase.include?("sheet")
+      partner = sheet.definition.entities.find do |ent|
         KSU.container?(ent) && ent != panel &&
           KSU::Cutting.board_index(ent) == ix && (back_face2?(ent) == want_back)
       end
@@ -32,9 +32,9 @@ module KSU::Mirror
     @arr28 = []
     return unless @nesting
     h = Hash.new { |arr52, k| arr52[k] = [] }
-    @nesting.definition.entities.each do |grp3|
-      next unless KSU.container?(grp3) && grp3.name.to_s.downcase.include?("sheet")
-      grp3.definition.entities.each do |grp|
+    @nesting.definition.entities.each do |sheet|
+      next unless KSU.container?(sheet) && sheet.name.to_s.downcase.include?("sheet")
+      sheet.definition.entities.each do |grp|
         next unless KSU.container?(grp)
         ix = KSU::Cutting.board_index(grp)
         next if ix.nil?
@@ -45,8 +45,8 @@ module KSU::Mirror
       arr2 = parts.reject { |_23505ef9| back_face2?(_23505ef9) }
       arr = parts.select { |_23505ef9| back_face2?(_23505ef9) }
       next if arr2.empty? || arr.empty?
-      arr2.each_with_index do |grp8, _a4ab9a59|
-        back = arr[_a4ab9a59] || arr.first
+      arr2.each_with_index do |grp8, i|
+        back = arr[i] || arr.first
         next unless grp8 && back
         @arr28 << grp8 << back
         @h11[grp8.entityID] = { partner: back }
@@ -54,8 +54,8 @@ module KSU::Mirror
       end
     end
   end
-  def clone_to(panel, sheet, arr)
-    tr = @nesting.transformation * sheet.transformation * panel.transformation
+  def clone_to(panel, cur_sheet, arr)
+    tr = @nesting.transformation * cur_sheet.transformation * panel.transformation
     tr5 = arr[:transform].inverse * tr
     KSU::Nesting.clone_panel(arr[:instance].definition.entities, panel, tr5)
   end
@@ -75,10 +75,10 @@ module KSU::Mirror
     return nil unless panel && panel.valid? && front_panel?(panel)
     back = partner_of2(panel)
     return nil unless back && back.valid? && back_face2?(back)
-    arr = rec_by_def(back.parent)
-    vec2 = arr && arr[:instance]
-    return nil unless vec2 && vec2.valid?
-    [back, vec2]
+    rec = rec_by_def(back.parent)
+    sheet = rec && rec[:instance]
+    return nil unless sheet && sheet.valid?
+    [back, sheet]
   end
   def sync_back(panel2, pair, sheet2, sheet3, num = 0)
     partner, back_sheet = pair
@@ -135,26 +135,26 @@ module KSU::Mirror
     clear_preview
     @arr57 = []
     return unless @flag56 && @arr46
-    instance = @arr46[:instance]
-    return unless instance && instance.valid?
-    bb = KSU::Sheet.world_bbox(instance, @nesting)
+    inst4 = @arr46[:instance]
+    return unless inst4 && inst4.valid?
+    bb = KSU::Sheet.world_bbox(inst4, @nesting)
     return unless bb
-    @arr27.each_with_index do |vec, ix|
-      anchor = @arr12[ix]
-      next if anchor == instance
+    @sel_panels.each_with_index do |vec, ix|
+      anchor = @sel_sheets[ix]
+      next if anchor == inst4
       next unless vec && vec.valid? && anchor && anchor.valid?
-      arr2 = @arr55 && @arr55[ix]
+      arr2 = @sel_bounds && @sel_bounds[ix]
       next unless arr2
       pair = back_of(vec)
       next unless pair
       partner, back_sheet = pair
       next unless partner && partner.valid? && back_sheet && back_sheet.valid?
-      _794181de = target_box(anchor, back_sheet, instance, bb)
+      _794181de = target_box(anchor, back_sheet, inst4, bb)
       next unless _794181de
       bb2, _1b6c344e = _794181de
       tr = KSU::View._66e14707(partner, @nesting.transformation * back_sheet.transformation)
-      arr = _89bccf8d(partner, back_sheet)
-      poly = arr ? arr[:outer] : _8e5202c8(partner, back_sheet)
+      arr = panel_outline(partner, back_sheet)
+      poly = arr ? arr[:outer] : outer_pts_of(partner, back_sheet)
       next if poly.length < 3
       holes = arr ? (arr[:holes] || []) : []
       _17ed90bb = (bb.min.x + bb.max.x) / 2.0
@@ -237,19 +237,19 @@ module KSU::Mirror
     edge_color4 = KSU::View.edge_color
     arr.each do |half|
       panel = half[:panel]
-      vec = half[:sheet]
-      next unless panel && panel.valid? && vec && vec.valid?
-      _9a1f1a22(panel, vec, _33c34f08, edge_color4)
+      sheet = half[:sheet]
+      next unless panel && panel.valid? && sheet && sheet.valid?
+      draw_panel_fill(panel, sheet, _33c34f08, edge_color4)
     end
   end
   def _37011ad2(x, y, view)
     return unless @nesting && @nesting.valid?
     prev = [@panel, @sheet, @hover_side, @flag12, @flag39, @flag51, @vec3]
-    @vec3 = _ecb07074(view, x, y)
+    @vec3 = panel_at(view, x, y)
     @hover_side = !@vec3 && hit_side_button(view, x, y)
     @flag12 = !@vec3 && !@hover_side && hit_delete_button(view, x, y)
-    @flag39 = (!@vec3 && !@hover_side && !@flag12) ? _f3bdae07(view, x, y) : nil
-    @flag51 = (!@vec3 && !@hover_side && !@flag12 && !@flag39) ? _30c1f1e6(view, x, y) : nil
+    @flag39 = (!@vec3 && !@hover_side && !@flag12) ? corner_handle_at(view, x, y) : nil
+    @flag51 = (!@vec3 && !@hover_side && !@flag12 && !@flag39) ? edge_handle_at(view, x, y) : nil
     if @vec3 || @hover_side || @flag12 || @flag39 || @flag51
       @panel = @sheet3 = @sheet = nil
       @arr41 = []
@@ -319,51 +319,51 @@ module KSU::Mirror
   end
   def _c949afeb(_2cf18878, _ab593548, _d6439c88, bot, scr, poly)
     n = poly.length
-    n.times do |_a4ab9a59|
-      pt = poly[_a4ab9a59]
+    n.times do |i|
+      pt = poly[i]
       return true if pt.x.to_f.between?(_2cf18878, _d6439c88) && pt.y.to_f.between?(_ab593548, bot)
-      b = poly[(_a4ab9a59 + 1) % n]
+      b = poly[(i + 1) % n]
       4.times do |j|
         return true if KSU::Geom.segments_cross?(pt, b, scr[j], scr[(j + 1) % 4])
       end
     end
     false
   end
-  def _68d76957(panel, grp)
-    if grp && grp.valid?
-      @nesting.transformation * grp.transformation * panel.transformation
+  def panel_tf(panel, sheet)
+    if sheet && sheet.valid?
+      @nesting.transformation * sheet.transformation * panel.transformation
     else
       @nesting.transformation * panel.transformation
     end
   end
-  def _8e5202c8(panel, vec)
+  def outer_pts_of(panel, sheet)
     return [] unless panel && panel.valid? && @nesting && @nesting.valid?
-    return [] if vec && !vec.valid?
-    KSU::Cutting.outer_pts(panel, _68d76957(panel, vec))
+    return [] if sheet && !sheet.valid?
+    KSU::Cutting.outer_pts(panel, panel_tf(panel, sheet))
   end
-  def _89bccf8d(panel, vec)
+  def panel_outline(panel, sheet)
     return nil unless panel && panel.valid? && @nesting && @nesting.valid?
-    return nil if vec && !vec.valid?
-    KSU::Cutting.outline(panel, _68d76957(panel, vec))
+    return nil if sheet && !sheet.valid?
+    KSU::Cutting.outline(panel, panel_tf(panel, sheet))
   end
   def _83ee7e20(loops, color)
     arr2 = []
     loops.each do |arr|
       next unless arr && arr.length >= 3
       meta = arr.length
-      meta.times { |_a4ab9a59| arr2 << arr[_a4ab9a59] << arr[(_a4ab9a59 + 1) % meta] }
+      meta.times { |i| arr2 << arr[i] << arr[(i + 1) % meta] }
     end
     return if arr2.empty?
     KSU::View.set_pen(color)
     KSU::View.view.line_width = 1
     KSU::View.view.draw(GL_LINES, arr2)
   end
-  def _cdd6bfc2(panel, _73dc38ac)
+  def _cdd6bfc2(panel, sheet)
     return nil unless panel && panel.respond_to?(:object_id)
-    @h24[panel.object_id] ||= _89bccf8d(panel, _73dc38ac)
+    @h24[panel.object_id] ||= panel_outline(panel, sheet)
   end
-  def _9a1f1a22(panel, _73dc38ac, color, _4a7d3cee = nil)
-    fill = _cdd6bfc2(panel, _73dc38ac)
+  def draw_panel_fill(panel, sheet, color, _4a7d3cee = nil)
+    fill = _cdd6bfc2(panel, sheet)
     return false unless fill && fill[:outer].length >= 3
     tris2 = (fill[:tris] ||= KSU::View.tris(fill[:outer], fill[:holes]))
     if tris2 && !tris2.empty?
@@ -379,7 +379,7 @@ module KSU::Mirror
     build_pairs
     _a70d673b
     reset_caches
-    _285eca92
+    rebuild_outlines
   end
   def _1817fa46
     _b5e0ad4b
@@ -392,67 +392,67 @@ module KSU::Mirror
     @h21 = {}
     @h24 = {}
     return unless @nesting && @nesting.valid?
-    @nesting.definition.entities.each do |grp|
-      next unless grp.respond_to?(:name) && grp.name.to_s.downcase.include?("sheet")
-      grp.definition.entities.each do |panel|
+    @nesting.definition.entities.each do |sheet|
+      next unless sheet.respond_to?(:name) && sheet.name.to_s.downcase.include?("sheet")
+      sheet.definition.entities.each do |panel|
         next unless KSU::Sheet.drawable?(panel)
-        next if @arr27.include?(panel)
-        @h21[panel.object_id] = _8e5202c8(panel, grp)
+        next if @sel_panels.include?(panel)
+        @h21[panel.object_id] = outer_pts_of(panel, sheet)
       end
     end
   end
-  def _8f1f5186(panels)
+  def drop_panel_cache(panels)
     Array(panels).each do |_23505ef9|
       next unless _23505ef9 && _23505ef9.respond_to?(:object_id)
       @h21.delete(_23505ef9.object_id)
       @h24.delete(_23505ef9.object_id)
     end
   end
-  def _4f4ecb72
-    @arr63 = @arr27.each_with_index.map do |panel, ix|
+  def rebuild_sel_polys
+    @sel_polys = @sel_panels.each_with_index.map do |panel, ix|
       next [] unless panel && panel.valid?
-      vec = @arr12[ix]
-      next [] unless vec && vec.valid?
-      _8e5202c8(panel, vec)
+      sheet = @sel_sheets[ix]
+      next [] unless sheet && sheet.valid?
+      outer_pts_of(panel, sheet)
     end
-    @arr55 = @arr63.map do |poly|
+    @sel_bounds = @sel_polys.map do |poly|
       poly.length < 3 ? nil : KSU::Geom.bounds(poly)
     end
-    @arr19 = @arr63.map do |poly|
+    @sel_hulls = @sel_polys.map do |poly|
       poly.length < 3 ? nil : (poly.length > 12 ? KSU::Geom.convex_hull(poly) : poly)
     end
-    @arr53 = _7ceb2cd7
+    @sel_hull = selection_hull
   end
-  def _7ceb2cd7
-    arr = @arr63.select { |arr2| arr2 && arr2.length >= 3 }
+  def selection_hull
+    arr = @sel_polys.select { |arr2| arr2 && arr2.length >= 3 }
     return nil if arr.length < 2
     arr3 = KSU::Geom.convex_hull(arr.flatten)
     arr3.length >= 3 ? arr3 : nil
   end
-  def _52bcd343(vec)
-    return unless @arr63
+  def shift_cached_polys(vec)
+    return unless @sel_polys
     dx = vec.x.to_f
     dy = vec.y.to_f
     return if dx.abs < 1e-9 && dy.abs < 1e-9
-    @arr63 = @arr63.map do |poly|
+    @sel_polys = @sel_polys.map do |poly|
       poly.length < 3 ? poly : KSU::Geom.translate(poly, dx, dy)
     end
-    @arr55 = @arr55.map do |bbox|
+    @sel_bounds = @sel_bounds.map do |bbox|
       next nil unless bbox
       { min_x: bbox[:min_x] + dx, max_x: bbox[:max_x] + dx,
         min_y: bbox[:min_y] + dy, max_y: bbox[:max_y] + dy }
     end
-    if @arr19
-      @arr19 = @arr19.map do |arr52|
+    if @sel_hulls
+      @sel_hulls = @sel_hulls.map do |arr52|
         arr52.nil? || arr52.length < 3 ? arr52 : KSU::Geom.translate(arr52, dx, dy)
       end
     end
-    @arr53 = KSU::Geom.translate(@arr53, dx, dy) if @arr53
+    @sel_hull = KSU::Geom.translate(@sel_hull, dx, dy) if @sel_hull
   end
   def skip
     return nil unless @flag56
     out = {}
-    @arr27.each do |vec|
+    @sel_panels.each do |vec|
       next unless vec && vec.valid?
       out[vec] = true
       partner_of = partner_of2(vec)

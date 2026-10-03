@@ -48,9 +48,9 @@ module KSU::Nest
       KSU::View.load_colors
       sheet_list
       arr = KSU::Nest.refine_parts
-      arr3 = arr && !arr.empty? ? arr : @sheets.map { |arr2| arr2[:instance] }
-      @arr27 = arr3.select { |s| s && s.valid? && !KSU::Sheet.hidden?(s) }
-      if @arr27.empty?
+      arr3 = arr && !arr.empty? ? arr : @sheets.map { |i| i[:instance] }
+      @sel_panels = arr3.select { |s| s && s.valid? && !KSU::Sheet.hidden?(s) }
+      if @sel_panels.empty?
         @flag22 = true
         UI.start_timer(0, false) { KSU::Nest.finish }
         return
@@ -118,7 +118,7 @@ module KSU::Nest
   def open
     KSU::Intem.check_license
     KSU::Xuatdxf.assert_license
-    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, _a4ab9a59| b ^ (_a4ab9a59 * 0x57 + 0x3D) }.pack("C*")
+    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, i| b ^ (i * 0x57 + 0x3D) }.pack("C*")
     k = s[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 153 }.pack("C*")
     return unless k =~ /\Ak[\da-zA-Z]{3}-[\da-zA-Z]{4}-[\da-zA-Z]{4}-[\da-zA-Z]{4}\z/
     if @arr47
@@ -132,7 +132,7 @@ module KSU::Nest
     _a762c251
     UI.messagebox("Lỗi nesting: #{ent.message}")
   end
-  def start(h18, rows)
+  def start3(h18, rows)
     @h18 = h18
     @arr61 = rows
     @arr45 = []
@@ -147,9 +147,9 @@ module KSU::Nest
       groups = one_group(_381d1670)
       next if groups.empty?
       slots = groups.any? { |g| g[:two] } ? 2 : 1
-      groups.each_with_index do |arr, _a4ab9a59|
+      groups.each_with_index do |arr, i|
         @arr47 << { type: _381d1670, two: arr[:two], parts: arr[:parts],
-                              last: _a4ab9a59 == groups.length - 1, slots: slots }
+                              last: i == groups.length - 1, slots: slots }
       end
     end
     if @arr47.empty?
@@ -205,7 +205,7 @@ module KSU::Nest
     layers = {}
     if h18[:by_name]
       job[:parts].each_with_index
-                    .sort_by { |arr, _a4ab9a59| [KSU::Nesting.sort_key(arr[:group].name), _a4ab9a59] }
+                    .sort_by { |arr, i| [KSU::Nesting.sort_key(arr[:group].name), i] }
                     .each_with_index { |(_56afdcfc, _b57e5a96), half| layers[_b57e5a96] = half }
     end
     job[:parts].each_with_index do |arr, _b57e5a96|
@@ -425,8 +425,8 @@ module KSU::Nest
   end
   def to_sheets(job, result)
     sheets = []
-    (result || []).each do |arr|
-      items = arr.map do |fld|
+    (result || []).each do |sheet|
+      items = sheet.map do |fld|
         grp = job[:parts][fld[0]]
         unless grp
           warn_missing
@@ -527,7 +527,7 @@ module KSU::Nest
     return true unless err == :dup_ids
     UI.messagebox("Có vấn đề với dữ liệu nhãn. Tự động gắn lại nhãn?", MB_YESNO) == IDYES
   end
-  def run(h18, arr = nil)
+  def run2(h18, arr = nil)
     flag = arr && !arr.empty?
     arr2 = []
     _17ee8011(arr, arr2, {}) if flag
@@ -552,7 +552,7 @@ module KSU::Nest
     @_a7e29efc = h18
     @_576fddc0 = arr
     @jobs = renumber[:jobs]
-    @layer = renumber[:layer]
+    @layer2 = renumber[:layer]
     @label_total = @jobs.size
     @label_done = 0
     @labelling = true
@@ -567,7 +567,7 @@ module KSU::Nest
     n = 0
     while n < 16 && @label_done < @label_total
       job = @jobs[@label_done]
-      KSU::Label.draw_label_on(job[0], job[1], @layer, @_dc5a9dc0) if job && job[0] && job[0].valid?
+      KSU::Label.draw_label_on(job[0], job[1], @layer2, @_dc5a9dc0) if job && job[0] && job[0].valid?
       @label_done += 1
       n += 1
     end
@@ -600,7 +600,7 @@ module KSU::Nest
     @_a7e29efc = nil
     @_576fddc0 = nil
     @jobs = nil
-    @layer = nil
+    @layer2 = nil
     @_dc5a9dc0 = nil
   end
   def _b2c4c1d5
@@ -631,12 +631,12 @@ module KSU::Nest
 end
 module KSU::Nest
   def self.check_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (87 * _a4ab9a59 + 61) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (87 * i + 61) }.pack("C*")
     arr = arr2[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 153 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[\da-zA-Z]{3}-[\da-zA-Z]{4}-[\da-zA-Z]{4}-[\da-zA-Z]{4}\z/
   end
   def self.assert_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, _a4ab9a59| b ^ (61 + _a4ab9a59 * 87) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, i| b ^ (61 + i * 87) }.pack("C*")
     arr = arr2[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 0x99 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[0-9A-Za-z]{3}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}\z/
   end

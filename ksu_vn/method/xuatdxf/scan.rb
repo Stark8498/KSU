@@ -9,15 +9,15 @@ module KSU::Xuatdxf
     bot.each do |id, gr|
       arr3 << { id: id, gr: gr, bottom: true, has_bottom: true }
     end
-    arr3.sort_by! { |arr4| arr4[:id].to_i * 10000 + (arr4[:bottom] ? 0 : 1) }
+    arr3.sort_by! { |i| i[:id].to_i * 10000 + (i[:bottom] ? 0 : 1) }
     true_color = Sketchup.active_model.layers.any? do |grp|
       grp.get_attribute("ABF", "cutting-layer-original-name")
     end
     sheets = []
     h = {}
     th = {}
-    arr3.each do |arr2|
-      gr = arr2[:gr]
+    arr3.each do |rec|
+      gr = rec[:gr]
       next unless gr && gr.valid?
       sheet_type = gr.get_attribute("ABF", "sheet-type").to_s
       mat = gr.get_attribute("KSU", "sheet-material").to_s
@@ -29,13 +29,13 @@ module KSU::Xuatdxf
       num2 = ent2[0].to_f.mm
       num = ent2[1].to_f.mm
       ents, parts = _daa2f929(gr)
-      ents.concat(_cdd54f61(arr2, mat, num2, num))
+      ents.concat(_cdd54f61(rec, mat, num2, num))
       pt = gr.transformation.origin
       sheets << {
-        id: arr2[:id], key: key, mat: h[key],
+        id: rec[:id], key: key, mat: h[key],
         w: ent2[0].to_f, h: ent2[1].to_f,
         x: (pt.x.to_f * 25.4).round(2), y: (pt.y.to_f * 25.4).round(2),
-        bottom: arr2[:bottom], ents: ents, parts: parts
+        bottom: rec[:bottom], ents: ents, parts: parts
       }
     end
     _884dee16 = _4d1bd02d
@@ -118,7 +118,7 @@ module KSU::Xuatdxf
     end
     layers > 0 ? [layers, str2.strip] : [nil, nil]
   end
-  def layer(entity, normal)
+  def dxf_layer(entity, normal)
     name = entity ? entity.layer.name.to_s : ""
     return name unless name.empty? || name == "Layer0"
     normal.to_s.empty? ? name : normal
@@ -135,7 +135,7 @@ module KSU::Xuatdxf
     _20c319d6 = gr.get_attribute("ABF", "is-intersect")
     obj = KSU.entities_in(gr)
     return unless obj
-    normal = layer(gr, _8d6669ce)
+    normal = dxf_layer(gr, _8d6669ce)
     if _bc8516a9
       seen = {}
       arr2 = []
@@ -143,13 +143,13 @@ module KSU::Xuatdxf
         if ent.curve
           next if seen[ent.curve.entityID]
           seen[ent.curve.entityID] = true
-          ents << { layer: layer(ent, normal), pts: pts(ent.curve.vertices, _7bafc8a5),
+          ents << { layer: dxf_layer(ent, normal), pts: pts(ent.curve.vertices, _7bafc8a5),
                        closed: true, via_module: true, bulge: true, pid: pid, sect: false }
         else
           arr2 << ent
         end
       end
-      layer2 = arr2.first ? layer(arr2.first, normal) : "0"
+      layer2 = arr2.first ? dxf_layer(arr2.first, normal) : "0"
       _c73c2639(arr2).each do |_c9fa72f2|
         ents << { layer: layer2, pts: pts(_c9fa72f2, _7bafc8a5),
                      closed: true, via_module: true, bulge: true, pid: pid, sect: false }
@@ -157,28 +157,28 @@ module KSU::Xuatdxf
     elsif _27846c89 || _84dcc166
       edge = obj.grep(Sketchup::Edge).first
       if edge && edge.curve
-        ents << { layer: layer(edge, normal), pts: pts(edge.curve.vertices, _7bafc8a5),
+        ents << { layer: dxf_layer(edge, normal), pts: pts(edge.curve.vertices, _7bafc8a5),
                      closed: _27846c89, via_module: false, bulge: false, pid: pid, sect: false,
                      border: _27846c89 }
       end
     elsif _20c319d6
       h2 = {}
       obj.grep(Sketchup::Face).each do |f|
-        ents << { layer: layer(f, normal), pts: pts(f.outer_loop.vertices, _7bafc8a5),
+        ents << { layer: dxf_layer(f, normal), pts: pts(f.outer_loop.vertices, _7bafc8a5),
                      closed: true, via_module: true, bulge: true, pid: pid, sect: true }
         f.outer_loop.edges.each { |ent| h2[ent.entityID] = true }
       end
       obj.grep(Sketchup::Edge).each do |ent|
         next if ent.curve
         next if h2[ent.entityID]
-        ents << { layer: layer(ent, normal), pts: pts([ent.start, ent.end], _7bafc8a5),
+        ents << { layer: dxf_layer(ent, normal), pts: pts([ent.start, ent.end], _7bafc8a5),
                      closed: false, via_module: false, bulge: false, pid: pid, sect: true }
       end
     else
       h2 = {}
       obj.grep(Sketchup::Face).each do |f|
         f.loops.each do |face|
-          ents << { layer: layer(face.edges[0], normal), pts: pts(face.vertices, _7bafc8a5),
+          ents << { layer: dxf_layer(face.edges[0], normal), pts: pts(face.vertices, _7bafc8a5),
                        closed: true, via_module: true, bulge: true, pid: pid, sect: true }
           face.edges.each { |ent| h2[ent.entityID] = true }
         end
@@ -191,10 +191,10 @@ module KSU::Xuatdxf
           seen[ent.curve.entityID] = true
           arr3 = ent.curve.vertices
           closed = arr3.first.position == arr3.last.position
-          ents << { layer: layer(ent.curve.edges[0], normal), pts: pts(arr3, _7bafc8a5),
+          ents << { layer: dxf_layer(ent.curve.edges[0], normal), pts: pts(arr3, _7bafc8a5),
                        closed: closed, via_module: true, bulge: true, pid: pid, sect: true }
         else
-          ents << { layer: layer(ent, normal), pts: pts([ent.start, ent.end], _7bafc8a5),
+          ents << { layer: dxf_layer(ent, normal), pts: pts([ent.start, ent.end], _7bafc8a5),
                        closed: false, via_module: false, bulge: false, pid: pid, sect: true }
         end
       end
@@ -210,13 +210,13 @@ module KSU::Xuatdxf
       [pt.x.to_f, pt.y.to_f]
     end
   end
-  def _cdd54f61(arr, mat, _8ddd8c6f, _68165b06)
+  def _cdd54f61(rec, mat, _8ddd8c6f, _68165b06)
     return [] unless KSU::Font.import
     out = []
     num = 18.0
-    _5cb20db4 = arr[:id].to_s
-    if arr[:has_bottom]
-      _5cb20db4 = _5cb20db4 + "-" + (arr[:bottom] ? "0" : "1")
+    _5cb20db4 = rec[:id].to_s
+    if rec[:has_bottom]
+      _5cb20db4 = _5cb20db4 + "-" + (rec[:bottom] ? "0" : "1")
       num = 16.0 if _5cb20db4.size > 2
       num = 14.0 if _5cb20db4.size > 3
       num = 12.0 if _5cb20db4.size > 4

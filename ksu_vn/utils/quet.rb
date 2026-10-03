@@ -56,8 +56,8 @@ module KSU::Quet
     return nil unless bbox && bbox.valid?
     arr2 = []
     arr = []
-    (0..7).each do |_a4ab9a59|
-      pt = bbox.corner(_a4ab9a59)
+    (0..7).each do |i|
+      pt = bbox.corner(i)
       pt = pt.transform(tf) if tf
       return nil unless KSU::View.in_front?(pt)
       pt2 = view.screen_coords(pt)

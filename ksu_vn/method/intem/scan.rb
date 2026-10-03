@@ -15,10 +15,10 @@ module KSU::Intem
     h2 = {}
     _e12462c7(model.entities, h3, {}, 0, h2)
     h = {}
-    src.grep(Sketchup::Group).each do |grp|
-      next unless grp.get_attribute("ABF", "sheet-id")
-      next unless KSU::Sheet.hidden?(grp)
-      grp.entities.grep(Sketchup::Group).each do |grp5|
+    src.grep(Sketchup::Group).each do |sheet|
+      next unless sheet.get_attribute("ABF", "sheet-id")
+      next unless KSU::Sheet.hidden?(sheet)
+      sheet.entities.grep(Sketchup::Group).each do |grp5|
         board_index = grp5.get_attribute("ABF", "board-index")
         next unless board_index
         next if h[board_index]
@@ -26,52 +26,52 @@ module KSU::Intem
         h[board_index] = _14954c73 if _14954c73
       end
     end
-    src.grep(Sketchup::Group).each do |grp|
-      sheet = grp.get_attribute("ABF", "sheet-id")
-      next unless sheet
-      next if KSU::Sheet.hidden?(grp)
-      sheet_type = grp.get_attribute("ABF", "sheet-type").to_s
-      mat = grp.get_attribute("KSU", "sheet-material").to_s
+    src.grep(Sketchup::Group).each do |sheet|
+      sheet_id = sheet.get_attribute("ABF", "sheet-id")
+      next unless sheet_id
+      next if KSU::Sheet.hidden?(sheet)
+      sheet_type = sheet.get_attribute("ABF", "sheet-type").to_s
+      mat = sheet.get_attribute("KSU", "sheet-material").to_s
       mat = sheet_type if mat.empty?
-      num3, arr52 = _acf1b201(grp)
+      num3, arr52 = _acf1b201(sheet)
       parts = []
-      grp.entities.grep(Sketchup::Group).each do |grp5|
-        _9dcbc6c4 = _cbfbfd78(grp5, sheet, mat, h3, h, h2)
-        next unless _9dcbc6c4
-        parts2 << _9dcbc6c4
+      sheet.entities.grep(Sketchup::Group).each do |grp5|
+        rec = _cbfbfd78(grp5, sheet_id, mat, h3, h, h2)
+        next unless rec
+        parts2 << rec
         parts << parts2.length - 1
       end
-      _9ec31362(grp, sheet, mat).each do |_9dcbc6c4|
-        parts2 << _9dcbc6c4
+      _9ec31362(sheet, sheet_id, mat).each do |rec|
+        parts2 << rec
         parts << parts2.length - 1
       end
       next if parts.empty?
       if str2
         _c04fb39c = descent ? -1 : 1
-        parts.sort_by! { |_a4ab9a59| [parts2[_a4ab9a59][:lk] ? 1 : 0, _c04fb39c * parts2[_a4ab9a59][:id].to_i] }
+        parts.sort_by! { |i| [parts2[i][:lk] ? 1 : 0, _c04fb39c * parts2[i][:id].to_i] }
       else
         px = seed.include?("phai") ? num3 : 0.0
         py = seed.include?("tren") ? arr52 : 0.0
-        parts.sort_by! do |_a4ab9a59|
-          pt = _f0de9fe3(parts2[_a4ab9a59][:poly], px, py)
-          [parts2[_a4ab9a59][:lk] ? 1 : 0, (pt[1] - py).abs.round, (pt[0] - px).abs, parts2[_a4ab9a59][:id].to_i]
+        parts.sort_by! do |i|
+          pt = _f0de9fe3(parts2[i][:poly], px, py)
+          [parts2[i][:lk] ? 1 : 0, (pt[1] - py).abs.round, (pt[0] - px).abs, parts2[i][:id].to_i]
         end
       end
-      num4 = grp.get_attribute("ABF", "sheet-thickness").to_f
-      sheets[sheet] = { w: num3, h: arr52, th: num4, parts: parts }
+      num4 = sheet.get_attribute("ABF", "sheet-thickness").to_f
+      sheets[sheet_id] = { w: num3, h: arr52, th: num4, parts: parts }
       unless materials2[sheet_type]
         materials2[sheet_type] = { key: sheet_type, name: sheet_type, th: num4, sheets: [] }
         materials << sheet_type
       end
-      materials2[sheet_type][:sheets] << sheet
-      bbox = grp.bounds
+      materials2[sheet_type][:sheets] << sheet_id
+      bbox = sheet.bounds
       next if bbox.empty?
       num = bbox.max.y.to_f
       tx = bbox.min.x.to_f
       arr = box[sheet_type]
       box[sheet_type] = [num, tx] if arr.nil? || num > arr[0] || (num == arr[0] && tx < arr[1])
     end
-    materials2.each_value { |meta| meta[:sheets].sort_by! { |sheet| [sheet.to_i, sheet.to_s] } }
+    materials2.each_value { |meta| meta[:sheets].sort_by! { |sheet_id| [sheet_id.to_i, sheet_id.to_s] } }
     materials.sort_by! do |k|
       arr = box[k]
       [arr ? -arr[0] : Float::INFINITY, arr ? arr[1] : 0.0]
@@ -82,18 +82,18 @@ module KSU::Intem
     pts = poly[0] || []
     pts.min_by { |arr| (arr[0] - px)**2 + (arr[1] - py)**2 } || [px, py]
   end
-  def self._acf1b201(grp)
-    ent2 = grp.get_attribute("ABF", "sheet-dimension")
+  def self._acf1b201(sheet)
+    ent2 = sheet.get_attribute("ABF", "sheet-dimension")
     if ent2.is_a?(Array) && ent2[0].to_f > 0 && ent2[1].to_f > 0
       return [ent2[0].to_f, ent2[1].to_f]
     end
-    ents = grp.entities.grep(Sketchup::Group).find { |ent| KSU::Sheet._27ecfdd1(ent) }
+    ents = sheet.entities.grep(Sketchup::Group).find { |ent| KSU::Sheet._27ecfdd1(ent) }
     return [0.0, 0.0] unless ents
     bbox = ents.bounds
     [(bbox.width * 25.4).round(2), (bbox.height * 25.4).round(2)]
   end
-  def self._9ec31362(grp, sheet, mat)
-    id_str = grp.get_attribute("ABF", "sheet-last-cut", nil)
+  def self._9ec31362(sheet, sheet_id, mat)
+    id_str = sheet.get_attribute("ABF", "sheet-last-cut", nil)
     return [] unless id_str
     data = begin
       JSON.parse(id_str)
@@ -101,7 +101,7 @@ module KSU::Intem
       nil
     end
     return [] unless data.is_a?(Hash) && data["polys"].is_a?(Array)
-    _3e7613f3, _9ba1a361 = _6aba4c5e(grp)
+    _3e7613f3, _9ba1a361 = _6aba4c5e(sheet)
     loops = data["polys"].select { |arr| arr.is_a?(Array) && arr.length >= 3 }
     out = []
     loops.each_with_index do |arr, ix|
@@ -112,7 +112,7 @@ module KSU::Intem
       out << {
         id: "L#{ix + 1}",
         eid: nil,
-        sheet: sheet,
+        sheet: sheet_id,
         mat: mat,
         name: "Tấm lưu kho",
         lk: true,
@@ -130,9 +130,9 @@ module KSU::Intem
     end
     out
   end
-  def self._6aba4c5e(grp)
-    arr = KSU::Sheet.edit_offset(grp) || [0.0, 0.0]
-    ents = grp.entities.grep(Sketchup::Group).find { |ent| KSU::Sheet._27ecfdd1(ent) }
+  def self._6aba4c5e(sheet)
+    arr = KSU::Sheet.edit_offset(sheet) || [0.0, 0.0]
+    ents = sheet.entities.grep(Sketchup::Group).find { |ent| KSU::Sheet._27ecfdd1(ent) }
     lo = ents && ents.bounds.valid? ? ents.bounds.min : nil
     [(lo ? lo.x.to_f : 0.0) + arr[0], (lo ? lo.y.to_f : 0.0) + arr[1]]
   end
@@ -160,7 +160,7 @@ module KSU::Intem
       _e12462c7(kids, arr4, seen, depth + 1, arr) if kids
     end
   end
-  def self._cbfbfd78(grp, sheet, mat, arr, arr4, arr3)
+  def self._cbfbfd78(grp, sheet_id, mat, arr, arr4, arr3)
     pid = grp.get_attribute("ABF", "board-index")
     return nil unless pid
     return nil if KSU::Sheet._27ecfdd1(grp)
@@ -179,7 +179,7 @@ module KSU::Intem
     {
       id: pid,
       eid: grp.entityID,
-      sheet: sheet,
+      sheet: sheet_id,
       mat: mat,
       name: name,
       poly: poly,
@@ -302,7 +302,7 @@ module KSU::Intem
         flag = false
         break if _fe5ae039(pts)
         _fc35762e = pts.last
-        arr.each_with_index do |f, _a4ab9a59|
+        arr.each_with_index do |f, i|
           next if _fe5ae039(f[:pts])
           if _a8e56783(f[:pts].first, _fc35762e)
             pts.concat(f[:pts][1..-1])
@@ -312,7 +312,7 @@ module KSU::Intem
             next
           end
           outer ||= f[:outer]
-          arr.delete_at(_a4ab9a59)
+          arr.delete_at(i)
           flag = true
           break
         end

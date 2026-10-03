@@ -78,10 +78,10 @@ module KSU::Svg
     elsif color == "#000" || color == "#000000" then "0 0 0"
     elsif (meta = color.match(/^#([0-9a-fA-F]{6})$/))
       v = meta[1]
-      [0, 2, 4].map { |_a4ab9a59| (v[_a4ab9a59, 2].to_i(16) / 255.0).round(3) }.join(" ")
+      [0, 2, 4].map { |i| (v[i, 2].to_i(16) / 255.0).round(3) }.join(" ")
     elsif (meta = color.match(/^#([0-9a-fA-F]{3})$/))
       v = meta[1]
-      (0..2).map { |_a4ab9a59| ((v[_a4ab9a59] * 2).to_i(16) / 255.0).round(3) }.join(" ")
+      (0..2).map { |i| ((v[i] * 2).to_i(16) / 255.0).round(3) }.join(" ")
     else "0 0 0" end
   end
   def rect(node)
@@ -140,7 +140,7 @@ module KSU::Svg
     pre, opac = paint_ops(node)
     pts = attr(node, "points").to_s.scan(/(-?[\d.]+)[,\s]+(-?[\d.]+)/)
     return pre if pts.empty? || opac == "n"
-    ops = pts.each_with_index.map { |(x, y), num| "#{n(x)} #{n(y)} #{num.zero? ? 'm' : "l"}" }
+    ops = pts.each_with_index.map { |(x, y), i| "#{n(x)} #{n(y)} #{i.zero? ? 'm' : "l"}" }
     pre + ops + ["h", opac]
   end
   def circle(node)

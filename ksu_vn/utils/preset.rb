@@ -53,7 +53,7 @@ module KSU::Preset
     cfg[:dark] ? COLOR_DARK : COLOR_LIGHT
   end
   def self.load_cfg
-    KSU::Avail.reset if defined?(KSU::Avail)
+    KSU::Avail.reset3 if defined?(KSU::Avail)
     fsize = KSU::Settings.get("co_chu_cai_dat_mau", 8, "cai_dat")
     font = KSU::Settings.get("kieu_chu", "Arial", "cai_dat")
     font_full = KSU::Settings.get("chu_dam", false, "cai_dat") ? "#{font} Bold" : font

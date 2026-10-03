@@ -55,35 +55,35 @@ module KSU::Font
   def ubyte(b)
     b.nil? ? 0 : b
   end
-  def skip_op(arr, _a4ab9a59)
-    b = arr[_a4ab9a59]
-    _a4ab9a59 += 1
+  def skip_op(arr, i)
+    b = arr[i]
+    i += 1
     case b
-    when nil, 0x00, 0x01, 0x02, 0x05, 0x06, 0x0E then _a4ab9a59
-    when 0x03, 0x04 then _a4ab9a59 + 1
-    when 0x07 then _a4ab9a59 + 2
-    when 0x08 then _a4ab9a59 + 2
+    when nil, 0x00, 0x01, 0x02, 0x05, 0x06, 0x0E then i
+    when 0x03, 0x04 then i + 1
+    when 0x07 then i + 2
+    when 0x08 then i + 2
     when 0x09
       loop do
-        break if arr[_a4ab9a59].nil? || arr[_a4ab9a59 + 1].nil?
-        dx = arr[_a4ab9a59]
-        dy = arr[_a4ab9a59 + 1]
-        _a4ab9a59 += 2
+        break if arr[i].nil? || arr[i + 1].nil?
+        dx = arr[i]
+        dy = arr[i + 1]
+        i += 2
         break if dx == 0 && dy == 0
       end
-      _a4ab9a59
-    when 0x0A then _a4ab9a59 + 2
-    when 0x0B then _a4ab9a59 + 5
-    when 0x0C then _a4ab9a59 + 3
+      i
+    when 0x0A then i + 2
+    when 0x0B then i + 5
+    when 0x0C then i + 3
     when 0x0D
       loop do
-        break if arr[_a4ab9a59].nil? || arr[_a4ab9a59 + 1].nil?
-        break if arr[_a4ab9a59] == 0 && arr[_a4ab9a59 + 1] == 0
-        _a4ab9a59 += 3
+        break if arr[i].nil? || arr[i + 1].nil?
+        break if arr[i] == 0 && arr[i + 1] == 0
+        i += 3
       end
-      _a4ab9a59 + 2
+      i + 2
     else
-      _a4ab9a59
+      i
     end
   end
   def decode_glyph(arr)
@@ -93,48 +93,48 @@ module KSU::Font
     pen = false
     upm = 1.0
     arr3 = []
-    num = 0
+    i = 0
     n = arr.length
-    while num < n
-      b = arr[num]
-      num += 1
+    while i < n
+      b = arr[i]
+      i += 1
       case b
       when 0x00
         next
       when 0x0E
-        num = skip_op(arr, num)
+        i = skip_op(arr, i)
         next
       when 0x01
         pen = true
       when 0x02
         pen = false
       when 0x03
-        s = ubyte(arr[num]).to_f
-        num += 1
+        s = ubyte(arr[i]).to_f
+        i += 1
         upm /= s unless s == 0.0
       when 0x04
-        s = ubyte(arr[num]).to_f
-        num += 1
+        s = ubyte(arr[i]).to_f
+        i += 1
         upm *= s unless s == 0.0
       when 0x05
         arr3.push([x, y])
       when 0x06
         x, y = arr3.pop || [x, y]
       when 0x07
-        num += 2
+        i += 2
       when 0x08
-        nx = x + sbyte(arr[num]) * upm
-        ny = y + sbyte(arr[num + 1]) * upm
-        num += 2
+        nx = x + sbyte(arr[i]) * upm
+        ny = y + sbyte(arr[i + 1]) * upm
+        i += 2
         snap_edges << [x, y, nx, ny] if pen
         x = nx
         y = ny
       when 0x09
         loop do
-          break if arr[num].nil? || arr[num + 1].nil?
-          dx = sbyte(arr[num])
-          dy = sbyte(arr[num + 1])
-          num += 2
+          break if arr[i].nil? || arr[i + 1].nil?
+          dx = sbyte(arr[i])
+          dy = sbyte(arr[i + 1])
+          i += 2
           break if dx == 0 && dy == 0
           nx = x + dx * upm
           ny = y + dy * upm
@@ -143,22 +143,22 @@ module KSU::Font
           y = ny
         end
       when 0x0A
-        x, y = arc_octant(snap_edges, x, y, ubyte(arr[num]), ubyte(arr[num + 1]), upm, pen)
-        num += 2
+        x, y = arc_octant(snap_edges, x, y, ubyte(arr[i]), ubyte(arr[i + 1]), upm, pen)
+        i += 2
       when 0x0B
-        num += 5
+        i += 5
       when 0x0C
-        x, y = bulge(snap_edges, x, y, sbyte(arr[num]), sbyte(arr[num + 1]), sbyte(arr[num + 2]), upm, pen)
-        num += 3
+        x, y = bulge(snap_edges, x, y, sbyte(arr[i]), sbyte(arr[i + 1]), sbyte(arr[i + 2]), upm, pen)
+        i += 3
       when 0x0D
         loop do
-          break if arr[num].nil? || arr[num + 1].nil?
-          dx = sbyte(arr[num])
-          dy = sbyte(arr[num + 1])
-          num += 2
+          break if arr[i].nil? || arr[i + 1].nil?
+          dx = sbyte(arr[i])
+          dy = sbyte(arr[i + 1])
+          i += 2
           break if dx == 0 && dy == 0
-          hdr_box = sbyte(arr[num])
-          num += 1
+          hdr_box = sbyte(arr[i])
+          i += 1
           x, y = bulge(snap_edges, x, y, dx, dy, hdr_box, upm, pen)
         end
       else

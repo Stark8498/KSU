@@ -87,8 +87,8 @@ module KSU::Launch
       half[:rot] = color.is_a?(Array) && color[2] == true
       half[:kw] = color.is_a?(Array) && color[3].is_a?(String) ? color[3] : ""
     end
-    ordered = rows.each_with_index.sort_by do |half, _a4ab9a59|
-      [half[:ord] ? 0 : 1, half[:ord].to_f, _a4ab9a59]
+    ordered = rows.each_with_index.sort_by do |half, i|
+      [half[:ord] ? 0 : 1, half[:ord].to_f, i]
     end.map { |half, _part| half }
     ordered.each { |half| half.delete(:ord) }
     rows.replace(ordered)
@@ -156,9 +156,9 @@ module KSU::Launch
       mat_order = {}
       rotate_cfg = {}
       h = {}
-      rows.each_with_index do |half, _a4ab9a59|
+      rows.each_with_index do |half, i|
         materials[half["key"].to_s] = true if half["on"]
-        mat_order[half["key"].to_s] = _a4ab9a59
+        mat_order[half["key"].to_s] = i
         color = { on: half["rot"] == true, kw: half["kw"].to_s }
         rotate_cfg[half["key"].to_s] = color
         h[half["name"].to_s] = color

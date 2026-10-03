@@ -8,14 +8,14 @@ module KSU::Simplify
     min_y = box.map { |arr3| arr3[1] }.min
     arr9 = box.map { |arr3| arr3[1] }.max
     num2 = 0.0
-    n.times do |num|
-      arr6 = box[num]
-      b = box[(num + 1) % n]
+    n.times do |i|
+      arr6 = box[i]
+      b = box[(i + 1) % n]
       num2 += arr6[0] * b[1] - b[0] * arr6[1]
     end
     flag2 = (num2 < 0 ? 1 : -1) * (_24bf279f ? 1 : -1)
     vec = []
-    (0...n - 1).each { |num| vec << [box[num + 1][0] - box[num][0], box[num + 1][1] - box[num][1]] }
+    (0...n - 1).each { |i| vec << [box[i + 1][0] - box[i][0], box[i + 1][1] - box[i][1]] }
     vec << [box[n - 1][0] - box[0][0], box[n - 1][1] - box[0][1]]
     num5 = 20.0 * Math::PI / 180.0
     num3 = 10.0 * Math::PI / 180.0
@@ -65,15 +65,15 @@ module KSU::Simplify
     if arr.length >= 3
       loop do
         ok = true
-        num = 1
-        while num <= arr.length - 2
-          _7e2557de = [arr[num][0] - arr[num - 1][0], arr[num][1] - arr[num - 1][1]]
-          _298717ec = [arr[num + 1][0] - arr[num][0], arr[num + 1][1] - arr[num][1]]
+        i = 1
+        while i <= arr.length - 2
+          _7e2557de = [arr[i][0] - arr[i - 1][0], arr[i][1] - arr[i - 1][1]]
+          _298717ec = [arr[i + 1][0] - arr[i][0], arr[i + 1][1] - arr[i][1]]
           if _877aa5f8(_7e2557de, _298717ec) < 0.01
-            arr.delete_at(num)
+            arr.delete_at(i)
             ok = false
           else
-            num += 1
+            i += 1
           end
         end
         break if ok || arr.length < 3

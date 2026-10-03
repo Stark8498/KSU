@@ -68,7 +68,7 @@ module KSU::Label
   def jobs(parts, renumber = false)
     arr2 = parts.select { |grp| grp && grp.valid? }
     ordered = arr2.each_with_index
-                        .sort_by { |grp, _a4ab9a59| [KSU::Nesting.sort_key(grp.name), _a4ab9a59] }
+                        .sort_by { |grp, i| [KSU::Nesting.sort_key(grp.name), i] }
                         .map { |grp, _ix| grp }
     h = {}
     arr = []
@@ -264,15 +264,15 @@ module KSU::Label
   def _9f608530(_bc71159c, poly)
     arr = []
     j = poly.size - 1
-    poly.each_index do |_a4ab9a59|
-      yi = poly[_a4ab9a59][1]
+    poly.each_index do |i|
+      yi = poly[i][1]
       yj = poly[j][1]
       if (yi > _bc71159c) != (yj > _bc71159c)
-        xi = poly[_a4ab9a59][0]
+        xi = poly[i][0]
         xj = poly[j][0]
         arr << (xj - xi) * (_bc71159c - yi) / (yj - yi) + xi
       end
-      j = _a4ab9a59
+      j = i
     end
     arr.sort!
     arr
@@ -290,7 +290,7 @@ module KSU::Label
     _e25dbacd = arr.last
     _972803c5 = arr.dup
     _89bad203 = (_e25dbacd - _e8649a72) / 64.0
-    (1...64).each { |_a4ab9a59| _972803c5 << _e8649a72 + _89bad203 * _a4ab9a59 } if _89bad203 > tol
+    (1...64).each { |i| _972803c5 << _e8649a72 + _89bad203 * i } if _89bad203 > tol
     KSU::Geom._a404e7b6(_972803c5, tol)
   end
   def inner_rect(font, tf, arr6)
@@ -354,7 +354,7 @@ module KSU::Label
         arr16[num] = true
       end
     end
-    start = Array.new(num2, 0.0)
+    start2 = Array.new(num2, 0.0)
     arr5 = Array.new(num2, 0.0)
     active_ix = Array.new(num2, false)
     arr = nil
@@ -363,9 +363,9 @@ module KSU::Label
       _57f116a2 = arr3[half + 1]
       num2.times do |num|
         if grid[half][num]
-          start[num] = arr3[half] unless active_ix[num]
+          start2[num] = arr3[half] unless active_ix[num]
           active_ix[num] = true
-          arr5[num] = _57f116a2 - start[num]
+          arr5[num] = _57f116a2 - start2[num]
         else
           active_ix[num] = false
           arr5[num] = 0.0
@@ -489,8 +489,8 @@ module KSU::Label
     end
     font.set_attribute(DICT, K_IS_LABELED_FACE, true)
   end
-  def world_tf(instance)
-    KSU::Cutting.tf_of(instance)
+  def world_tf(inst)
+    KSU::Cutting.tf_of(inst)
   end
 end
 module KSU::Label

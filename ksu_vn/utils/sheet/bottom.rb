@@ -10,25 +10,25 @@ module KSU::Bottom
       _9d031de6 << {
         instance: ent, id: id,
         bottom: bottom(ent, nesting),
-        labels: labels(ent, nesting),
+        labels: sheet_labels(ent, nesting),
       }
     end
     return if arr.empty?
     arr.sort_by! { |len2d| len2d[:id] } if sort
     arr.each do |len2d|
-      instance = len2d[:instance]
+      inst = len2d[:instance]
       bottom4 = len2d[:bottom]
-      instance.name = "__sheet_tmp_#{instance.entityID}__" if instance && instance.valid?
+      inst.name = "__sheet_tmp_#{inst.entityID}__" if inst && inst.valid?
       bottom4.name = "__sheet_tmp_#{bottom4.entityID}__-bottom" if bottom4 && bottom4.valid?
     end
     arr.each do |len2d|
       new_id = len2d[:id] + delta
       str = "sheet-#{new_id}"
-      instance = len2d[:instance]
+      inst = len2d[:instance]
       bottom4 = len2d[:bottom]
-      if instance && instance.valid?
-        instance.name = str
-        instance.set_attribute("ABF", "sheet-id", new_id)
+      if inst && inst.valid?
+        inst.name = str
+        inst.set_attribute("ABF", "sheet-id", new_id)
       end
       if bottom4 && bottom4.valid?
         bottom4.name = "#{str}-bottom"
@@ -37,25 +37,25 @@ module KSU::Bottom
       len2d[:labels].each { |slot| _ba804f88(slot[:dim], str) }
     end
   end
-  def remove_sheet(grp, nesting, arr23)
-    return false unless grp && grp.valid? && empty?(grp)
+  def remove_sheet(sheet, nesting, arr23)
+    return false unless sheet && sheet.valid? && empty?(sheet)
     return false unless nesting && nesting.valid?
-    _9dcbc6c4 = arr23.find { |s| s[:instance] == grp }
-    return false unless _9dcbc6c4
-    num19 = sheet_no(grp.name.to_s)
-    arr = row_of(grp, arr23)
-    ix = arr.index(grp) || 0
-    offset = row_offset(_9dcbc6c4, arr, ix, arr23)
+    rec = arr23.find { |s| s[:instance] == sheet }
+    return false unless rec
+    num19 = sheet_no(sheet.name.to_s)
+    arr = row_of(sheet, arr23)
+    ix = arr.index(sheet) || 0
+    offset = row_offset(rec, arr, ix, arr23)
     vec = Geom::Vector3d.new(-offset.x, -offset.y, -offset.z)
     arr2 = arr[(ix + 1)..-1] || []
-    arr4 = labels(grp, nesting)
+    arr4 = sheet_labels(sheet, nesting)
     arr3 = arr2.each_with_object({}) do |s, arr52|
-      arr52[s] = labels(s, nesting) if s && s.valid?
+      arr52[s] = sheet_labels(s, nesting) if s && s.valid?
     end
-    grp2 = bottom(grp, nesting)
+    grp2 = bottom(sheet, nesting)
     KSU.start
     arr4.each { |slot| slot[:dim].erase! if slot[:dim]&.valid? }
-    grp.erase! if grp.valid?
+    sheet.erase! if sheet.valid?
     grp2.erase! if grp2 && grp2.valid?
     arr2.each do |s|
       next unless s && s.valid?
@@ -68,8 +68,8 @@ module KSU::Bottom
     KSU.commit
     true
   end
-  def bottom_sheet?(grp)
-    grp && grp.respond_to?(:name) && grp.name.to_s.downcase.include?("-bottom")
+  def bottom_sheet?(sheet)
+    sheet && sheet.respond_to?(:name) && sheet.name.to_s.downcase.include?("-bottom")
   end
   def sheet_no(name)
     meta = name.to_s.match(/sheet-(\d+)/i)
@@ -103,24 +103,24 @@ module KSU::Bottom
         sheet_no(ent.name.to_s) == id
     end
   end
-  def has_back?(grp2)
-    return false unless grp2 && grp2.valid?
-    grp2.definition.entities.any? do |ent|
+  def has_back?(sheet)
+    return false unless sheet && sheet.valid?
+    sheet.definition.entities.any? do |ent|
       KSU.container?(ent) && drawable?(ent) &&
         ent.name.to_s != "__ABF_sheetBorder" && back_face?(ent)
     end
   end
   def prune_bottoms(nesting)
-    nesting.definition.entities.to_a.each do |grp|
-      next unless bottom_sheet?(grp)
-      next if has_back?(grp)
-      grp.erase! if grp.valid?
+    nesting.definition.entities.to_a.each do |sheet|
+      next unless bottom_sheet?(sheet)
+      next if has_back?(sheet)
+      sheet.erase! if sheet.valid?
     end
   end
-  def index_set(grp)
+  def index_set(sheet)
     out = {}
-    return out unless grp && grp.valid?
-    grp.definition.entities.each do |grp2|
+    return out unless sheet && sheet.valid?
+    sheet.definition.entities.each do |grp2|
       next unless _ed46427a(grp2)
       board_index = grp2.get_attribute("ABF", "board-index")
       out[board_index] = true unless board_index.nil?
@@ -171,13 +171,13 @@ module KSU::Bottom
       b.set_attribute("ABF", "sheet-id", _477c927d) if b.get_attribute("ABF", "sheet-id") != _477c927d
     end
   end
-  def _de0a88d4(nesting, grp, forward)
-    return nil unless nesting && nesting.valid? && grp && grp.valid?
-    phan = grp.get_attribute("KSU", "phan")
+  def _de0a88d4(nesting, sheet, forward)
+    return nil unless nesting && nesting.valid? && sheet && sheet.valid?
+    phan = sheet.get_attribute("KSU", "phan")
     return nil if phan.nil?
     phan = phan.to_i
     part_re2 = part_re
-    normal = base_type(grp, part_re2)
+    normal = base_type(sheet, part_re2)
     arr4, = sheet_maps(nesting)
     parts = {}
     arr4.each do |id, g|
@@ -189,7 +189,7 @@ module KSU::Bottom
     flag = forward ? phan + 1 : phan - 1
     return nil unless parts[flag]
     arr3 = (parts[phan] || []).sort_by { |arr| arr[0] }.map { |arr| arr[1] }
-    fill = arr3.index(grp)
+    fill = arr3.index(sheet)
     return nil unless fill
     arr2 = parts[flag].sort_by { |arr| arr[0] }.map { |arr| arr[1] }
     arr2[[fill, arr2.length - 1].min]
@@ -213,36 +213,36 @@ module KSU::Bottom
     return true unless ent.get_attribute("ABF", "board-index").nil?
     !KSU::Cutting.cutting_group(ent).nil?
   end
-  def empty?(grp)
-    return false unless grp && grp.valid?
-    !grp.definition.entities.any? { |ent| KSU.container?(ent) && _ed46427a(ent) }
+  def empty?(sheet)
+    return false unless sheet && sheet.valid?
+    !sheet.definition.entities.any? { |ent| KSU.container?(ent) && _ed46427a(ent) }
   end
   def _27ecfdd1(entity)
     return false unless entity && entity.respond_to?(:get_attribute)
     !!entity.get_attribute("ABF", "is-sheet-border", nil)
   end
-  def world_bbox(grp, nesting)
-    return nil unless grp && grp.valid? && nesting && nesting.valid?
-    bd2 = border_of(grp)
+  def world_bbox(sheet, nesting)
+    return nil unless sheet && sheet.valid? && nesting && nesting.valid?
+    bd2 = border_of(sheet)
     if bd2 && bd2.respond_to?(:definition) && bd2.definition
-      tr = nesting.transformation * grp.transformation * bd2.transformation
+      tr = nesting.transformation * sheet.transformation * bd2.transformation
       bb = bd2.definition.bounds
     else
-      tr = nesting.transformation * grp.transformation
-      bb = grp.definition.bounds
+      tr = nesting.transformation * sheet.transformation
+      bb = sheet.definition.bounds
     end
     bbox = Geom::BoundingBox.new
-    (0..7).each { |_a4ab9a59| bbox.add(bb.corner(_a4ab9a59).transform(tr)) }
+    (0..7).each { |i| bbox.add(bb.corner(i).transform(tr)) }
     bbox
   end
-  def _7b0a38ee(grp)
-    return [nil, nil] unless grp && grp.respond_to?(:get_attribute)
-    [grp.get_attribute("ABF", "sheet-thickness"), grp.get_attribute("ABF", "sheet-type")]
+  def _7b0a38ee(sheet)
+    return [nil, nil] unless sheet && sheet.respond_to?(:get_attribute)
+    [sheet.get_attribute("ABF", "sheet-thickness"), sheet.get_attribute("ABF", "sheet-type")]
   end
-  def hidden?(grp)
-    return false unless grp && grp.valid?
-    return true if grp.respond_to?(:get_attribute) && grp.get_attribute("ABF", "is-bottom-sheet")
-    bottom_sheet?(grp)
+  def hidden?(sheet)
+    return false unless sheet && sheet.valid?
+    return true if sheet.respond_to?(:get_attribute) && sheet.get_attribute("ABF", "is-bottom-sheet")
+    bottom_sheet?(sheet)
   end
   def _f74b0a99(source_sheet, _ca47420d, nesting)
     return nil unless source_sheet && source_sheet.valid? && nesting && nesting.valid?
@@ -264,11 +264,11 @@ module KSU::Bottom
     _7c7845a7(source_sheet, grp)
     grp
   end
-  def _e9938e09(grp, source_sheet, bbox)
+  def _e9938e09(sheet, source_sheet, bbox)
     _3e7613f3, _9ba1a361 = inset_of(source_sheet)
     return nil unless _3e7613f3 > 0 && _9ba1a361 > 0
     z = bbox.min.z
-    gr = grp.entities.add_group
+    gr = sheet.entities.add_group
     gr.set_attribute("ABF", "is-mark-square", true)
     gr.name = "__ABF_markSquare"
     gr.entities.add_curve(

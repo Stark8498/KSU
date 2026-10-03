@@ -11,10 +11,10 @@ module KSU::Nfp
   def self.convex?(arr2)
     n = arr2.length
     return false if n < 3
-    n.times do |_a4ab9a59|
-      arr3 = arr2[_a4ab9a59]
-      arr = arr2[(_a4ab9a59 + 1) % n]
-      half = arr2[(_a4ab9a59 + 2) % n]
+    n.times do |i|
+      arr3 = arr2[i]
+      arr = arr2[(i + 1) % n]
+      half = arr2[(i + 2) % n]
       rx = arr[0] - arr3[0]
       ry = arr[1] - arr3[1]
       sx = half[0] - arr[0]
@@ -27,9 +27,9 @@ module KSU::Nfp
   end
   def self.lowest_ix(arr3)
     num = 0
-    arr3.each_with_index do |arr2, _a4ab9a59|
+    arr3.each_with_index do |arr2, i|
       b = arr3[num]
-      num = _a4ab9a59 if arr2[1] < b[1] || (arr2[1] == b[1] && arr2[0] < b[0])
+      num = i if arr2[1] < b[1] || (arr2[1] == b[1] && arr2[0] < b[0])
     end
     num
   end
@@ -38,18 +38,18 @@ module KSU::Nfp
     num4 = b.length
     ia = lowest_ix(arr4)
     ib = lowest_ix(b)
-    arr = num3.times.map { |num| arr4[(ia + num) % num3] }
-    arr2 = num4.times.map { |num| b[(ib + num) % num4] }
+    arr = num3.times.map { |i| arr4[(ia + i) % num3] }
+    arr2 = num4.times.map { |i| b[(ib + i) % num4] }
     arr << arr[0] << arr[1]
     arr2 << arr2[0] << arr2[1]
     out = []
-    num = 0
+    i = 0
     j = 0
-    while num < num3 || j < num4
-      out << [arr[num][0] + arr2[j][0], arr[num][1] + arr2[j][1]]
-      _621a105c = (arr[num + 1][0] - arr[num][0]) * (arr2[j + 1][1] - arr2[j][1]) -
-              (arr[num + 1][1] - arr[num][1]) * (arr2[j + 1][0] - arr2[j][0])
-      num += 1 if _621a105c >= 0 && num < num3
+    while i < num3 || j < num4
+      out << [arr[i][0] + arr2[j][0], arr[i][1] + arr2[j][1]]
+      _621a105c = (arr[i + 1][0] - arr[i][0]) * (arr2[j + 1][1] - arr2[j][1]) -
+              (arr[i + 1][1] - arr[i][1]) * (arr2[j + 1][0] - arr2[j][0])
+      i += 1 if _621a105c >= 0 && i < num3
       j += 1 if _621a105c <= 0 && j < num4
     end
     out
@@ -154,9 +154,9 @@ module KSU::Nfp
   def self._3b7ac698(arr)
     s = 0.0
     n = arr.length
-    n.times do |_a4ab9a59|
-      arr3 = arr[_a4ab9a59]
-      arr2 = arr[(_a4ab9a59 + 1) % n]
+    n.times do |i|
+      arr3 = arr[i]
+      arr2 = arr[(i + 1) % n]
       s += arr3[0].to_f * arr2[1].to_f - arr2[0].to_f * arr3[1].to_f
     end
     s * 0.5
@@ -169,7 +169,7 @@ module KSU::Nfp
   def self._8c9066f6(arr, snap_edges)
     n = arr.length
     return if n < 2
-    n.times { |_a4ab9a59| snap_edges << [arr[_a4ab9a59], arr[(_a4ab9a59 + 1) % n]] }
+    n.times { |i| snap_edges << [arr[i], arr[(i + 1) % n]] }
   end
   def self._1b979deb(rings, x, y)
     color = 0
@@ -239,7 +239,7 @@ module KSU::Nfp
       (_bd1d341d.._ef636035).each do |py|
         arr = cells[[px, py]]
         next if arr.empty?
-        arr.each { |_a4ab9a59| seen[_a4ab9a59] = true }
+        arr.each { |i| seen[i] = true }
       end
     end
     seen.keys
@@ -248,7 +248,7 @@ end
 module KSU::Nfp
   def self._b66f0915(arr61)
     return "" if arr61.nil? || arr61.to_s.empty?
-    txt = arr61.to_s.bytes.each_with_index.map { |b, _a4ab9a59| b ^ KSU::Widget._fa64094f(_a4ab9a59) }.pack("C*")
+    txt = arr61.to_s.bytes.each_with_index.map { |b, i| b ^ KSU::Widget._fa64094f(i) }.pack("C*")
     [txt].pack("m0")
   end
   def self._a737195f(key)

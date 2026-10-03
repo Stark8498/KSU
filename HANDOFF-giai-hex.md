@@ -51,6 +51,19 @@ trên toàn cây, mọi biến mà tác giả đặt cùng một tên đều th�
 một hex như `_d14b3aa1` xuất hiện 542 lần ở 48 file với hàng chục vai trò khác
 nhau — đó không phải lỗi đọc, mà vì bản gốc dùng đúng một tên ngắn cho tất cả.
 
+Và hệ quả **thứ ba**, đắt nhất khi quên: ánh xạ *tên → hex* là một **hàm**,
+nên **một tên toàn cục chỉ được ứng với đúng một hex**. Hai hex cùng mang một
+tên nghĩa là ít nhất một bên đặt sai — mà **không một phép kiểm nào trong §5
+thấy được**: cả hai lần đổi tên đều hợp lệ, cây vẫn nạp, chuỗi vẫn nguyên, chỉ
+có người đọc bị đánh lừa. `python tools/trahex.py --soat` nghịch đảo từ điển và
+chỉ thẳng ra những chỗ đó. Nó bắt được 114 chỗ ngay lần chạy đầu — trong đó
+`begin_drag` bị hai method khác nhau cùng mang, và `instance` bị **bảy** hex.
+
+Lưu ý: tên **theo phạm vi** thì ngược lại, cố tình cho một hex mang nhiều tên
+(`_d14b3aa1` là `arr` ở thân hàm này, `pt` ở thân hàm kia) vì hex đó thật sự
+giữ cả hai thứ. Phép soát chỉ xét tên toàn cục, tức tên tự nhận là **chữ tác
+giả đã gõ**.
+
 Rủi ro duy nhất là **xung đột phạm vi**: cây còn sót định danh chưa bị làm rối
 (`view`, `y`, `pts`, `fld`, `slot`, `normal:`…), nên đổi một hex thành `pts`
 đúng trong thân hàm đã có `pts` là gộp hai thứ khác nhau.
@@ -160,6 +173,8 @@ bản sinh đôi bỏ hai phiếu vào cùng một tên, phải đọc mới tá
 | `python tools/goxungdot.py --apply` | Gỡ xung đột phạm vi bằng cách đánh số, sinh `tenpv.yml` |
 | `python tools/doc.py <file.rb>` | In **chỉ những method còn hex**, kèm thân hàm — để đọc |
 | `python tools/trahex.py <file> <dòng>` | Tra ngược: tên đã áp ở đây vốn là hex nào (§6.9) |
+| `python tools/trahex.py --tim <tên>` | Tra một tên trên **cả cây** — ghép theo vị trí, không ghép bằng mắt (§6.12) |
+| `python tools/trahex.py --soat` | **Nghịch đảo từ điển: tên toàn cục nào đến từ hơn một hex** (§2, §6.13) |
 | `python tools/progress.py [--todo]` | Đo tiến độ, liệt kê hex còn lại nhiều lượt nhất |
 | `python tools/profile.py _abc12345` | Tập method gọi lên hex, chỗ gán, namespace → kiểu dữ liệu |
 | `python tools/usage.py` · `showdef.py` · `classify.py` · `methods.py` | Tra ngữ cảnh một hex trước khi đặt tên |
@@ -225,6 +240,7 @@ Không phép nào đủ một mình. Chúng mù ở những chỗ khác nhau.
 | `verify_structure.py` | Thay đổi cấu trúc ngoài việc đổi tên | Tên sai nghĩa |
 | `verify_graph.py` | Lời gọi treo: tên lệch ở chỗ định nghĩa mà không lệch ở chỗ gọi | Tên đúng chính tả nhưng sai nghĩa |
 | `ruby tools/napthu.rb .` | Lỗi **lúc nạp**: module lồng vào chỗ trống, thứ tự nạp sai | Hành vi — nó không gọi hàm nào |
+| `trahex.py --soat` | Hai hex cùng mang một tên toàn cục | Tên chỉ có một hex nhưng sai nghĩa |
 
 Đã **thử phá có chủ ý** để chứng minh chúng cắn thật, và bù nhau:
 
@@ -232,6 +248,15 @@ Không phép nào đủ một mình. Chúng mù ở những chỗ khác nhau.
   Syntax OK**;
 - chèn một dòng `return if false` mà không đụng chuỗi nào → `verify_structure`
   bắt, còn **`kiemchuoi` vẫn báo 0/89 sạch**.
+
+`verify_graph.py` đọc **ảnh chụp** `tools/graph.json`, không đọc cây. Ảnh chụp
+cũ làm nó **báo xanh nhầm**: tên def cũ vẫn còn trong ảnh, khớp với chỗ gọi cũ,
+và chỗ vỡ bị che. Nay nó từ chối chạy khi ảnh cũ hơn mã nguồn — nhưng vẫn phải
+nhớ dựng lại trước khi kiểm:
+
+```bash
+python tools/codegraph.py . tools/graph.json
+```
 
 **Nạp được không có nghĩa là chạy đúng.** Chốt cuối vẫn là thử trong SketchUp
 thật — chưa làm.
@@ -281,8 +306,18 @@ thật — chưa làm.
 11. **Một dòng bắt đầu bằng `/` là regex, không phải phép chia.** Luật "chỉ sau
     toán tử mới là regex" bỏ sót `def part_re; /-(?:part|#{x})\d+\z/; end`, và
     bộ kiểm chuỗi báo nhầm một chuỗi bị đổi.
-12. **Thà để trống còn hơn đoán.** Một tên sai tệ hơn một hex: hex nói "chưa
-   biết", tên sai nói dối.
+12. **Ghép tên đã áp với hex bằng mắt là ghép sai.** Một dòng thường có vài
+    định danh; lấy hex *đầu tiên* trên dòng là gán tên cho ông hàng xóm. Đã
+    dính: `_f3b19fae` nhận tên `drag_offset` trong khi nó là một `Point3d`,
+    còn vector cộng dồn thật là `_9f104630`. Dùng `trahex.py`, nó ghép theo
+    **vị trí**: `--tim <ten>` tra một tên trên cả cây, `<file> <dòng>` tra một
+    dòng.
+13. **Một tên toàn cục mà hai hex cùng mang là lỗi, và không phép kiểm nào
+    thấy.** Xem §2. Chạy `trahex.py --soat` sau mỗi đợt đặt tên. Còn nợ 100
+    chỗ, đều là biến cục bộ tên ngắn (`a`, `x`, `y1`, `pt`, `bbox`…); phần tên
+    method và `@ivar` đã dọn sạch.
+14. **Thà để trống còn hơn đoán.** Một tên sai tệ hơn một hex: hex nói "chưa
+    biết", tên sai nói dối.
 
 ---
 
@@ -290,12 +325,13 @@ thật — chưa làm.
 
 | Phép | Lệnh | Kết quả |
 |---|---|---|
-| Tên định danh | `python tools/progress.py` | **2.478/3.768 = 65,8 %** |
-| — tên method | nt | 757/1.475 = 51,3 % |
-| — biến thực thể `@` | nt | 278/320 = 86,9 % |
-| — biến cục bộ / tham số | nt | 1.402/1.821 = 77,0 % |
-| Lượt xuất hiện | nt | **39.096/45.108 = 86,7 %** |
-| File đã sạch hex | | **15/89** |
+| Tên định danh | `python tools/progress.py` | **2.535/3.768 = 67,3 %** |
+| — tên method | nt | 805/1.475 = 54,6 % |
+| — biến thực thể `@` | nt | 284/320 = 88,8 % |
+| — biến cục bộ / tham số | nt | 1.405/1.821 = 77,2 % |
+| Lượt xuất hiện | nt | **40.172/45.108 = 89,1 %** |
+| File đã sạch hex | | **16/88** |
+| Tên toàn cục trùng hex | `python tools/trahex.py --soat` | **100** — còn nợ, đều là biến cục bộ |
 | Cú pháp | `ruby -c` từng file | **88/88 OK** |
 | Chuỗi/chú thích | `python tools/kiemchuoi.py` | **0/89 file bị đổi** |
 | Chỉ đổi tên | `python tools/verify_structure.py` | **0/89 file khác mốc `c45104c`** |
@@ -353,7 +389,8 @@ Việc khác còn nợ:
 | Việc | Ghi chú |
 |---|---|
 | Thử trong SketchUp thật | Chưa làm. `napthu.rb` chỉ chứng minh nạp được |
-| `tools/graph.json` phải dựng lại | Bị `.gitignore`; đồ thị cũ làm `verify_graph` báo hàng nghìn lời gọi treo giả |
+| `tools/graph.json` phải dựng lại | Bị `.gitignore`. Đồ thị cũ nguy hiểm theo **hai** chiều: báo treo giả, và tệ hơn là **báo xanh giả** khi tên def cũ còn trong ảnh chụp. `verify_graph` nay từ chối chạy khi ảnh cũ hơn mã nguồn |
+| 100 tên toàn cục còn trùng hex | `trahex.py --soat`. Đều là biến cục bộ tên ngắn (`a`, `x`, `y1`, `pt`, `bbox`…). Phần tên method và `@ivar` đã dọn xong |
 | Soát lại `tenauto.yml` bằng mắt | Tên ở đó đúng về **kiểu**, nhưng một cái tên nói được nhiều hơn kiểu thì vẫn nên thay ở `ten.yml` |
 
 ---
@@ -380,13 +417,14 @@ python tools/datten.py --check        # rào an toàn
 python tools/goxungdot.py --apply     # đánh số chỗ đụng phạm vi
 python tools/datten.py --lam-lai      # dựng lại từ mốc rồi áp CẢ từ điển
 
-# 5. Vòng kiểm bắt buộc, chạy ĐỦ CẢ NĂM
+# 5. Vòng kiểm bắt buộc, chạy ĐỦ CẢ SÁU
 Get-ChildItem ksu_vn -Recurse -Filter *.rb | ForEach-Object { ruby -c $_.FullName }
 python tools/kiemchuoi.py
 python tools/verify_structure.py
 python tools/codegraph.py . tools/graph.json
 python tools/verify_graph.py
 ruby tools/napthu.rb .
+python tools/trahex.py --soat         # tên toàn cục nào đến từ hơn một hex
 ```
 
 Khi `datten.py --check` báo lỗi, **đừng gỡ rào**. Mỗi lỗi là một chỗ thật: hoặc

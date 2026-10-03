@@ -106,6 +106,16 @@ def main() -> int:
     if not GRAPH.exists():
         print("thieu tools/graph.json -- chay: python tools/codegraph.py . tools/graph.json")
         return 1
+    # A stale graph can report green when it should not: this check only asks
+    # whether a called name is in `defined`, so a snapshot taken before a rename
+    # still holds the old def name, matches the old call site, and hides the
+    # break. Refuse to run against a graph older than the sources it describes.
+    newest = max((q.stat().st_mtime for q in ROOT.rglob("*.rb")
+                  if "tools" not in q.parts), default=0.0)
+    if GRAPH.stat().st_mtime < newest:
+        print("tools/graph.json cu hon ma nguon -- chay lai:\n"
+              "  python tools/codegraph.py . tools/graph.json")
+        return 1
     g = json.loads(GRAPH.read_text(encoding="utf-8"))
     defsite: dict[str, list] = g["defsite"]
 

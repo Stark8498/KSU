@@ -12,7 +12,7 @@ module KSU::Postproc
       msg2 = "Trong vùng chọn có chi tiết bị lỗi. Điều này có thể tạo ra kết quả không như ý muốn khi tối ưu, ví dụ như chồng lấn hoặc mất tấm. Tiếp tục?"
       return unless UI.messagebox(msg2, MB_YESNO) == IDYES
     end
-    _a815fdc9(@arr27)
+    _a815fdc9(@sel_panels)
     if flag
       _b9664cc7(true)
     elsif !!defined?(KSU::Nesting::Engine)
@@ -23,13 +23,13 @@ module KSU::Postproc
   end
   def _11554dfd
     return false unless @arr11 && @arr11.any?
-    return false unless @arr27 && @sheets
+    return false unless @sel_panels && @sheets
     tol = 1.mm.to_f
-    @arr27.each do |_73dc38ac|
-      arr = @sheets.find { |s| s[:instance] == _73dc38ac }
-      next unless arr && arr[:bbox]
-      lo = arr[:bbox].min
-      hi = arr[:bbox].max
+    @sel_panels.each do |sheet|
+      rec = @sheets.find { |s| s[:instance] == sheet }
+      next unless rec && rec[:bbox]
+      lo = rec[:bbox].min
+      hi = rec[:bbox].max
       @arr11.each do |pt|
         next if pt.x.to_f < lo.x.to_f - tol || pt.x.to_f > hi.x.to_f + tol
         next if pt.y.to_f < lo.y.to_f - tol || pt.y.to_f > hi.y.to_f + tol
@@ -42,23 +42,23 @@ module KSU::Postproc
     arr = Array(sheets).compact.select { |s| s && s.valid? && _545a8b49(s) }.uniq
     return if arr.empty?
     KSU.start
-    arr.each do |grp|
-      grp.definition.entities.grep(Sketchup::Group).each do |g|
+    arr.each do |sheet|
+      sheet.definition.entities.grep(Sketchup::Group).each do |g|
         g.erase! if KSU::Nesting.last_cut?(g)
       end
-      grp.attribute_dictionary("ABF")&.delete_key("sheet-last-cut")
+      sheet.attribute_dictionary("ABF")&.delete_key("sheet-last-cut")
     end
     KSU.commit
   rescue StandardError
     KSU.abort_op
   end
-  def _545a8b49(grp)
-    return true if grp.get_attribute("ABF", "sheet-last-cut", nil)
-    grp.definition.entities.grep(Sketchup::Group).any? { |g| KSU::Nesting.last_cut?(g) }
+  def _545a8b49(sheet)
+    return true if sheet.get_attribute("ABF", "sheet-last-cut", nil)
+    sheet.definition.entities.grep(Sketchup::Group).any? { |g| KSU::Nesting.last_cut?(g) }
   end
   def _8ffda7d7(groups)
     _d6f11a0e = run(groups)
-    @arr27 = (@arr27 + _d6f11a0e).select { |s| s && s.valid? }.uniq
+    @sel_panels = (@sel_panels + _d6f11a0e).select { |s| s && s.valid? }.uniq
     KSU::View.clear_cache
     KSU::View.view&.invalidate
   rescue StandardError => ent
@@ -71,24 +71,24 @@ module KSU::Postproc
     @num12 = 0
     @str = "Đang tính dữ liệu"
     KSU::View.view&.invalidate
-    _da79a376
+    optimize_next
   rescue StandardError => ent
     KSU.abort_op
     UI.messagebox("Lỗi tối ưu: #{ent.message}")
   end
-  def _da79a376
+  def optimize_next
     if @arr6.nil? || @arr6.empty?
-      _4ec1b153
+      optimize_done
       return
     end
     sheets = @arr6.shift
-    _23d70e90(sheets)
+    pack_batch(sheets)
   end
-  def _4ec1b153
+  def optimize_done
     @num12 = nil
     @str = nil
     drop_empty_sheets
-    @arr27 = (@arr27 + @arr17).select { |s| s && s.valid? }.uniq
+    @sel_panels = (@sel_panels + @arr17).select { |s| s && s.valid? }.uniq
     _10248dd2
     KSU::View.clear_cache
     KSU::View.view&.invalidate
@@ -195,7 +195,7 @@ module KSU::Postproc
     return :done if @flag44
     @flag44 = true
     drop_empty_sheets
-    @arr27 = @arr27.select { |s| s && s.valid? }
+    @sel_panels = @sel_panels.select { |s| s && s.valid? }
     sheet_list
     KSU::View.clear_cache
     :round
@@ -322,37 +322,37 @@ module KSU::Postproc
       next unless s && s.valid?
       next if KSU::Sheet.hidden?(s)
       next if KSU::Sheet.bottom(s, @nesting)
-      _9dcbc6c4 = sheet_recs.find { |arr| arr[:instance] == s }
-      next unless _9dcbc6c4
-      plan = _b54811d0(s, _9dcbc6c4, ix, gap_for, gap2, node)
+      rec = sheet_recs.find { |i| i[:instance] == s }
+      next unless rec
+      plan = _b54811d0(s, rec, ix, gap_for, gap2, node)
       KSU::Nesting.apply_moves(@nesting, plan) if plan
       @h19.delete(s.entityID) if @h19
     end
   rescue StandardError
     nil
   end
-  def _b54811d0(_73dc38ac, _9dcbc6c4, ix, gap_for, gap2, node)
-    arr = [KSU::Nesting.plan_corner(@nesting, _73dc38ac, _9dcbc6c4, ix, gap_for, gap2, false, Time.now + 0.5)]
+  def _b54811d0(sheet, rec, ix, gap_for, gap2, node)
+    arr = [KSU::Nesting.plan_corner(@nesting, sheet, rec, ix, gap_for, gap2, false, Time.now + 0.5)]
     [ix, (ix + 3) % 4].each do |ent|
-      arr << KSU::Nesting.plan_edge(@nesting, _73dc38ac, _9dcbc6c4, ent, gap_for, gap2)
+      arr << KSU::Nesting.plan_edge(@nesting, sheet, rec, ent, gap_for, gap2)
     end
     arr = arr.compact
     return nil if arr.empty?
     return arr.first if arr.length == 1
-    str2 = node ? _06a8054e(_73dc38ac, node, gap_for).first(12) : []
+    str2 = node ? _06a8054e(sheet, node, gap_for).first(12) : []
     _477c927d = arr.first
-    _488638cf = _c4f153fd(_73dc38ac, gap_for, _477c927d, str2)
+    _488638cf = _c4f153fd(sheet, gap_for, _477c927d, str2)
     arr[1..].each do |members|
-      score = _c4f153fd(_73dc38ac, gap_for, members, str2)
+      score = _c4f153fd(sheet, gap_for, members, str2)
       next unless score > _488638cf + 1e-6
       _477c927d = members
       _488638cf = score
     end
     _477c927d
   end
-  def _c4f153fd(_73dc38ac, gap_for, plan, str2)
+  def _c4f153fd(sheet, gap_for, plan, str2)
     return 0.0 if str2.nil? || str2.empty?
-    usable_w, usable_h = usable_size(_73dc38ac, gap_for)
+    usable_w, usable_h = usable_size(sheet, gap_for)
     return 0.0 unless usable_w && usable_h && usable_w > 0 && usable_h > 0
     ctrl = {}
     (plan[:moves] || []).each do |arr3|
@@ -361,7 +361,7 @@ module KSU::Postproc
         ctrl[grp.entityID] = [arr3[:dx], arr3[:dy]]
       end
     end
-    arr4 = _aeea1f26(_73dc38ac, gap_for).map do |ent|
+    arr4 = _aeea1f26(sheet, gap_for).map do |ent|
       len2d = ctrl[ent[:panel].entityID] || [0.0, 0.0]
       { lx: ent[:bx] + len2d[0], ly: ent[:by] + len2d[1], w: ent[:bw], h: ent[:bh] }
     end
@@ -485,8 +485,8 @@ module KSU::Postproc
   def _086b9b67(arr2, gap_for)
     target = arr2[:target]
     screen_box = arr2[:box]
-    arr3 = sheet_recs.find { |s| s[:instance] == target }
-    return nil unless arr3
+    rec = sheet_recs.find { |s| s[:instance] == target }
+    return nil unless rec
     root_tr = @nesting.transformation
     tr2 = root_tr * target.transformation
     if arr2[:virtual]
@@ -498,7 +498,7 @@ module KSU::Postproc
           lx: screen_box[:lx] + (arr[:bx] - arr2[:refx]), ly: screen_box[:ly] + (arr[:by] - arr2[:refy]),
           w: arr[:bw], h: arr[:bh], rot: 0
         }
-        flag = true if place_panel(_799e513f, target, tr2, arr3[:bbox], gap_for, root_tr)
+        flag = true if place_panel(_799e513f, target, tr2, rec[:bbox], gap_for, root_tr)
       end
       return flag ? arr2[:panel] : nil
     end
@@ -506,7 +506,7 @@ module KSU::Postproc
       panel: arr2[:panel], source_sheet: arr2[:src], bbox: arr2[:bbox],
       lx: screen_box[:lx], ly: screen_box[:ly], w: screen_box[:w], h: screen_box[:h], rot: screen_box[:rot]
     }
-    bbox = place_panel(members, target, tr2, arr3[:bbox], gap_for, root_tr)
+    bbox = place_panel(members, target, tr2, rec[:bbox], gap_for, root_tr)
     return nil unless bbox
     (arr2[:kids] || []).each do |arr|
       next unless arr[:panel] && arr[:panel].valid?
@@ -515,28 +515,28 @@ module KSU::Postproc
         lx: screen_box[:lx] + (arr[:bx] - arr2[:refx]), ly: screen_box[:ly] + (arr[:by] - arr2[:refy]),
         w: arr[:bw], h: arr[:bh], rot: 0
       }
-      place_panel(_799e513f, target, tr2, arr3[:bbox], gap_for, root_tr)
+      place_panel(_799e513f, target, tr2, rec[:bbox], gap_for, root_tr)
     end
     bbox
   end
-  def _aeea1f26(grp, gap_for)
-    key = grp.entityID
+  def _aeea1f26(sheet, gap_for)
+    key = sheet.entityID
     partner = @h19 && @h19[key]
     return partner if partner
-    answer = _c5297436(grp, gap_for)
+    answer = _c5297436(sheet, gap_for)
     @h19[key] = answer if @h19
     answer
   end
-  def _c5297436(_73dc38ac, gap_for)
-    arr2 = sheet_recs.find { |s| s[:instance] == _73dc38ac }
-    return [] unless arr2
-    num = arr2[:bbox].min.x.to_f
-    num2 = arr2[:bbox].min.y.to_f
-    dx, dy = KSU::Sheet.edit_offset(_73dc38ac) || [0.0, 0.0]
+  def _c5297436(sheet, gap_for)
+    rec = sheet_recs.find { |s| s[:instance] == sheet }
+    return [] unless rec
+    num = rec[:bbox].min.x.to_f
+    num2 = rec[:bbox].min.y.to_f
+    dx, dy = KSU::Sheet.edit_offset(sheet) || [0.0, 0.0]
     _c9bc3f08 = num + [dx, 0.0].max
     _1d9bcdf1 = num2 + [dy, 0.0].max
-    _5ae18fa7, _b4835d15 = KSU::Avail.gaps_for(_73dc38ac, gap_for)
-    _cce35269(_73dc38ac, arr2).map do |pt|
+    _5ae18fa7, _b4835d15 = KSU::Avail.gaps_for(sheet, gap_for)
+    _cce35269(sheet, rec).map do |pt|
       loops = _0579a704(pt)
       holes = loops[1..] || []
       _5fb96e91 = poly_area(loops.first) - holes.inject(0.0) { |s, arr52| s + poly_area(arr52) }
@@ -554,17 +554,17 @@ module KSU::Postproc
       }
     end
   end
-  def _cce35269(grp, arr)
-    transform = arr[:transform]
-    return collect_parts([grp]) unless transform && @h7
+  def _cce35269(sheet, rec)
+    transform = rec[:transform]
+    return collect_parts([sheet]) unless transform && @h7
     @_b933b59e ||= KSU::Nesting.two_sided_set(@nesting)
     out = []
-    grp.definition.entities.each do |panel|
+    sheet.definition.entities.each do |panel|
       next unless _1a400713(panel)
-      key = [grp.entityID, panel.entityID, panel.transformation.to_a]
+      key = [sheet.entityID, panel.entityID, panel.transformation.to_a]
       slot = @h7[key]
       unless slot
-        slot = _3fe7c4d4(panel, grp, transform, @_b933b59e)
+        slot = _3fe7c4d4(panel, sheet, transform, @_b933b59e)
         @h7[key] = slot
       end
       out << slot

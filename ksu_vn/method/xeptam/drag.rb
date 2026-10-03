@@ -1,69 +1,69 @@
 module KSU::Drag
   private
-  def _f3bdae07(view, x, y)
+  def corner_handle_at(view, x, y)
     return nil unless @flag37 && @flag37.valid?
-    arr = record_for(@flag37)
-    return nil unless arr
-    KSU::View._c5f21c57(view, arr[:top_corners], x, y)
+    rec = record_for(@flag37)
+    return nil unless rec
+    KSU::View.bracket_hit(view, rec[:top_corners], x, y)
   end
-  def _30c1f1e6(view, x, y)
+  def edge_handle_at(view, x, y)
     return nil unless @flag37 && @flag37.valid?
-    arr = record_for(@flag37)
-    return nil unless arr
-    KSU::View._ec07b26f(view, arr[:top_corners], x, y)
+    rec = record_for(@flag37)
+    return nil unless rec
+    KSU::View.edge_hit(view, rec[:top_corners], x, y)
   end
-  def _f098d644(corner)
+  def snap_to_corner(corner)
     return unless @flag37 && @flag37.valid?
-    _9dcbc6c4 = record_for(@flag37)
-    return unless _9dcbc6c4
+    rec = record_for(@flag37)
+    return unless rec
     KSU.start
-    bbox = KSU::Nesting.pack_to_corner(@nesting, @flag37, _9dcbc6c4, corner, @tam_cach_le.to_f, @tam_cach_nhau.to_f)
+    bbox = KSU::Nesting.pack_to_corner(@nesting, @flag37, rec, corner, @tam_cach_le.to_f, @tam_cach_nhau.to_f)
     KSU.commit
     return if bbox.empty?
-    _6deb8789(bbox)
+    after_snap(bbox)
   rescue StandardError
     KSU.abort_op
   end
-  def _6deb8789(bbox)
+  def after_snap(bbox)
     bbox = bbox.uniq
-    _8f1f5186(bbox)
+    drop_panel_cache(bbox)
     refresh_after_move(bbox, sheets_of(bbox))
-    _285eca92
+    rebuild_outlines
   end
-  def _fa7e4609(edge_ix)
+  def snap_to_edge(edge_ix)
     return unless @flag37 && @flag37.valid?
-    _9dcbc6c4 = record_for(@flag37)
-    return unless _9dcbc6c4
+    rec = record_for(@flag37)
+    return unless rec
     KSU.start
-    bbox = KSU::Nesting.pack_to_edge(@nesting, @flag37, _9dcbc6c4, edge_ix, @tam_cach_le.to_f, @tam_cach_nhau.to_f)
+    bbox = KSU::Nesting.pack_to_edge(@nesting, @flag37, rec, edge_ix, @tam_cach_le.to_f, @tam_cach_nhau.to_f)
     KSU.commit
     return if bbox.empty?
-    _6deb8789(bbox)
+    after_snap(bbox)
   rescue StandardError
     KSU.abort_op
   end
-  def _cfe1b27c(vec)
+  def optimize_sheet(sheet)
     return unless @nesting && @nesting.valid?
-    return unless vec && vec.valid?
+    return unless sheet && sheet.valid?
     return if @num12
     @flag10 = false
     @flag46 = false
-    _cad2f815
+    load_optimize_settings
     reload_sheets
-    groups = { KSU::Sheet._7b0a38ee(vec) => [vec] }
+    groups = { KSU::Sheet._7b0a38ee(sheet) => [sheet] }
     unless defined?(KSU::Nesting::Engine)
       @arr17 = []
       run(groups)
-      _59c48478(vec)
+      refresh_after_optimize(sheet)
       return
     end
-    @_b7599404 = vec
+    @opt_sheet = sheet
     @arr17 = []
     @arr6 = groups.values
     @num12 = 0
     @str = "Đang tính dữ liệu"
     KSU::View.view&.invalidate
-    _da79a376
+    optimize_next
   rescue StandardError => ent
     KSU.abort_op
     @num12 = nil
@@ -71,7 +71,7 @@ module KSU::Drag
     @arr6 = nil
     UI.messagebox("Lỗi tối ưu: #{ent.message}")
   end
-  def _cad2f815
+  def load_optimize_settings
     @thu_tu_don = KSU::Settings.get("thu_tu_don", "mac_dinh", "toi_uu_van").to_s
     @tach_nhom_2_mat = !!KSU::Settings.get("tach_nhom_2_mat", true, "toi_uu_van")
     @don_ve_dau_hang = !!KSU::Settings.get("don_ve_dau_hang", true, "toi_uu_van")
@@ -82,43 +82,43 @@ module KSU::Drag
     @xoay_theo_vat_lieu = !!KSU::Settings.get("xoay_theo_vat_lieu", false, "toi_uu_van")
     @danh_sach_vat_lieu = KSU::Settings.get("danh_sach_vat_lieu", "TRƠN, TRẮNG, XANH, HỒNG", "toi_uu_van").to_s
   end
-  def _da79a376
+  def optimize_next
     if @arr6.nil? || @arr6.empty?
-      _4ec1b153
+      optimize_done
       return
     end
     sheets = @arr6.shift
-    _23d70e90(sheets)
+    pack_batch(sheets)
   end
-  def _4ec1b153
+  def optimize_done
     @num12 = nil
     @str = nil
     @arr6 = nil
     drop_empty_sheets
-    arr = ([@_b7599404] + @arr17.to_a).select { |s| s && s.valid? }.uniq
+    arr = ([@opt_sheet] + @arr17.to_a).select { |s| s && s.valid? }.uniq
     unless arr.empty?
       KSU.start
-      _14184f07(arr)
+      pack_all_to_corner(arr)
       KSU.commit
     end
-    _59c48478(@_b7599404)
-    @_b7599404 = nil
+    refresh_after_optimize(@opt_sheet)
+    @opt_sheet = nil
   rescue StandardError
     KSU.abort_op
-    @_b7599404 = nil
+    @opt_sheet = nil
   end
-  def _59c48478(vec)
+  def refresh_after_optimize(sheet)
     @sheet_memo = nil
     rebuild_all
-    @flag37 = vec if vec && vec.valid?
+    @flag37 = sheet if sheet && sheet.valid?
     update_status
     KSU::View.view&.invalidate
   end
-  def _40219b95
+  def optimize_cancel
     return unless @num12
     KSU::Nesting::Engine.instance.stop if defined?(KSU::Nesting::Engine)
     @arr6 = nil
-    @_b7599404 = nil
+    @opt_sheet = nil
     @num12 = nil
     @str = nil
   rescue StandardError
@@ -127,7 +127,7 @@ module KSU::Drag
   def hit_targets
     @hit_list ||= KSU::Flip.hit_targets(@nesting)
   end
-  def _ecb07074(view, x, y)
+  def panel_at(view, x, y)
     src = hit_targets
     return nil if src.empty?
     sig = KSU::View.cam_sig(view)
@@ -161,32 +161,32 @@ module KSU::Drag
     end
     nil
   end
-  def _b903d1e6(view)
+  def draw_hover(view)
     return unless @vec3 && @vec3.valid?
     [@vec3, partner_of2(@vec3)].each do |panel|
       next unless panel && panel.valid?
-      _73dc38ac = sheet_of(panel)
-      next unless _73dc38ac
-      _9a1f1a22(panel, _73dc38ac, KSU::View.main_face_color, KSU::View.edge_color)
+      sheet = sheet_of(panel)
+      next unless sheet
+      draw_panel_fill(panel, sheet, KSU::View.main_face_color, KSU::View.edge_color)
     end
   end
-  def _903c1e24(vec)
+  def flip_panel(vec)
     return unless vec && vec.valid?
     return unless KSU::Flip.flip_pair(@nesting, vec)
     rebuild_all
   end
   def sheet_of(panel)
     return nil unless panel && panel.valid?
-    arr = rec_by_def(panel.parent)
-    instance = arr && arr[:instance]
-    instance if instance && instance.valid?
+    rec = rec_by_def(panel.parent)
+    inst = rec && rec[:instance]
+    inst if inst && inst.valid?
   end
-  def _eca6a79f(pt)
+  def nearest_sheet(pt)
     _477c927d = nil
     _aa866019 = nil
     @arr23.each do |s|
-      instance = s[:instance]
-      next unless instance && instance.valid? && !KSU::Sheet.hidden?(instance)
+      inst = s[:instance]
+      next unless inst && inst.valid? && !KSU::Sheet.hidden?(inst)
       len2d = KSU::Sheet.dist_to_box(pt, s[:bbox])
       if _aa866019.nil? || len2d < _aa866019
         _aa866019 = len2d
@@ -199,162 +199,162 @@ module KSU::Drag
     @arr23 = KSU::Sheet.sheet_list(nesting, include_bottom: true)
     @h14 = {}
     @h25 = {}
-    @arr23.each do |arr|
-      instance = arr[:instance]
-      next unless instance && instance.valid?
-      @h14[instance.entityID] = arr
-      len2d = instance.definition
-      @h25[len2d.entityID] = arr if len2d
+    @arr23.each do |rec|
+      inst = rec[:instance]
+      next unless inst && inst.valid?
+      @h14[inst.entityID] = rec
+      len2d = inst.definition
+      @h25[len2d.entityID] = rec if len2d
     end
     @hit_list = nil unless flag
     @grid = nil
     @h6 = {}
   end
-  def _eed07b86(arr, color)
-    return unless arr && arr[:top_corners]
+  def draw_thick_outline(rec, color)
+    return unless rec && rec[:top_corners]
     unless KSU::View.respond_to?(:_bbaa2919)
-      KSU::View.draw_outline(arr[:top_corners], color)
+      KSU::View.draw_outline(rec[:top_corners], color)
       return
     end
-    instance = arr[:instance]
-    tris = if instance && instance.valid?
-        @h6[instance.entityID] ||= KSU::View._bbaa2919(arr[:top_corners], thickness: 50.mm.to_f, position: :outside)
+    inst = rec[:instance]
+    tris = if inst && inst.valid?
+        @h6[inst.entityID] ||= KSU::View._bbaa2919(rec[:top_corners], thickness: 50.mm.to_f, position: :outside)
       else
-        KSU::View._bbaa2919(arr[:top_corners], thickness: 50.mm.to_f, position: :outside)
+        KSU::View._bbaa2919(rec[:top_corners], thickness: 50.mm.to_f, position: :outside)
       end
     return if tris.nil? || tris.empty?
     KSU::View.set_pen(color)
     KSU::View.view.draw(GL_TRIANGLES, tris)
   end
-  def record_for(grp)
-    return nil unless grp && grp.valid?
-    @h14[grp.entityID]
+  def record_for(sheet)
+    return nil unless sheet && sheet.valid?
+    @h14[sheet.entityID]
   end
   def rec_by_def(grp)
     return nil unless grp && grp.respond_to?(:entityID)
     @h25[grp.entityID]
   end
-  def _78c88320(arr)
+  def select_many(arr)
     panels = arr.map { |half| half[:panel] }
     sheets = arr.map { |half| half[:sheet] }
     if @flag5
       h = {}
-      @arr27.each_with_index { |_23505ef9, _a4ab9a59| h[_23505ef9] = @arr12[_a4ab9a59] }
-      panels.each_with_index { |_23505ef9, _a4ab9a59| h[_23505ef9] = sheets[_a4ab9a59] }
-      @arr27 = h.keys
-      @arr12 = h.values
+      @sel_panels.each_with_index { |_23505ef9, i| h[_23505ef9] = @sel_sheets[i] }
+      panels.each_with_index { |_23505ef9, i| h[_23505ef9] = sheets[i] }
+      @sel_panels = h.keys
+      @sel_sheets = h.values
     else
-      @arr27 = panels
-      @arr12 = sheets
+      @sel_panels = panels
+      @sel_sheets = sheets
     end
     expand_selection
   end
-  def _2171a7c6(answer)
+  def select_one(answer)
     panel = answer[:panel]
-    _73dc38ac = answer[:sheet]
+    sheet = answer[:sheet]
     if @flag5
-      if @arr27.include?(panel)
+      if @sel_panels.include?(panel)
         remove_from_selection(panel)
       else
-        @arr27 << panel
-        @arr12 << _73dc38ac
+        @sel_panels << panel
+        @sel_sheets << sheet
         expand_selection
       end
     else
-      @arr27 = [panel]
-      @arr12 = [_73dc38ac]
+      @sel_panels = [panel]
+      @sel_sheets = [sheet]
       expand_selection
     end
   end
-  def _afb25a1e(view, x, y)
+  def drag_begin(view, x, y)
     KSU.select_only(nil)
     @flag37 = nil
     sheet_list(@nesting, true)
-    _285eca92
+    rebuild_outlines
     @arr3 = nil
     @flag56 = true
     @flag50 = false
     @pt14 = view.inputpoint(x, y).position
-    @tr = @arr27.map { |grp| grp.transformation.clone }
-    @pt8 = Geom::Vector3d.new(0, 0, 0)
-    @flag45 = @arr12.any? { |s| s.nil? }
-    panel = @arr27.first
+    @tr = @sel_panels.map { |grp| grp.transformation.clone }
+    @drag_offset = Geom::Vector3d.new(0, 0, 0)
+    @flag45 = @sel_sheets.any? { |s| s.nil? }
+    panel = @sel_panels.first
     if panel && panel.valid?
-      tr2 = _68d76957(panel, @arr12.first)
+      tr2 = panel_tf(panel, @sel_sheets.first)
       @pt3 = @pt14.transform(tr2.inverse)
     else
       @pt3 = nil
     end
     KSU.start
-    _c1caf616
-    _4f4ecb72
-    _9004d10e
-    _ddbd086b = record_for(@arr12.first)
+    hide_originals
+    rebuild_sel_polys
+    reset_anchor
+    _ddbd086b = record_for(@sel_sheets.first)
     @flag33 = !@flag45 && _ddbd086b &&
                                !_7f17a5c5(_ddbd086b)
-    _f8e75e9d
+    save_drag_state
   end
-  def _f8e75e9d
-    @_27cbbc5a = @arr63
-    @_ee3eb631 = @arr55
-    @_8a0971a9 = @arr19
-    @_bf23acb3 = @arr53
-    @pt2 = @pt8 &&
-                           Geom::Vector3d.new(@pt8.x, @pt8.y, @pt8.z)
-    @flag3 = @h26 ? @h26.dup : nil
+  def save_drag_state
+    @saved_polys = @sel_polys
+    @saved_bounds = @sel_bounds
+    @saved_hulls = @sel_hulls
+    @saved_hull = @sel_hull
+    @saved_offset = @drag_offset &&
+                           Geom::Vector3d.new(@drag_offset.x, @drag_offset.y, @drag_offset.z)
+    @saved_outlines = @outlines ? @outlines.dup : nil
   end
-  def _70a50d49
-    return unless @_27cbbc5a
-    @arr63 = @_27cbbc5a
-    @arr55 = @_ee3eb631
-    @arr19 = @_8a0971a9
-    @arr53 = @_bf23acb3
-    @pt8 = @pt2 ?
-      Geom::Vector3d.new(@pt2.x, @pt2.y, @pt2.z) :
+  def restore_drag_state
+    return unless @saved_polys
+    @sel_polys = @saved_polys
+    @sel_bounds = @saved_bounds
+    @sel_hulls = @saved_hulls
+    @sel_hull = @saved_hull
+    @drag_offset = @saved_offset ?
+      Geom::Vector3d.new(@saved_offset.x, @saved_offset.y, @saved_offset.z) :
       Geom::Vector3d.new(0, 0, 0)
-    @h26 = @flag3 ? @flag3.dup : {}
+    @outlines = @saved_outlines ? @saved_outlines.dup : {}
   end
-  def _9f96b850
+  def force_free_mode
     return if @xep_tam_tu_do
-    @_8bfa6763 = @xep_tam_tu_do
+    @saved_free_mode = @xep_tam_tu_do
     @flag4 = true
     @xep_tam_tu_do = true
   end
-  def _066c900b
+  def restore_free_mode
     return unless @flag4
-    @xep_tam_tu_do = @_8bfa6763
+    @xep_tam_tu_do = @saved_free_mode
     @flag4 = false
-    @_8bfa6763 = nil
+    @saved_free_mode = nil
   end
-  def _98834989(vec7)
+  def add_offset(vec7)
     return if vec7.length < 1e-9
-    @pt8 ||= Geom::Vector3d.new(0, 0, 0)
-    @pt8 = Geom::Vector3d.new(
-      @pt8.x.to_f + vec7.x.to_f,
-      @pt8.y.to_f + vec7.y.to_f,
-      @pt8.z.to_f + vec7.z.to_f
+    @drag_offset ||= Geom::Vector3d.new(0, 0, 0)
+    @drag_offset = Geom::Vector3d.new(
+      @drag_offset.x.to_f + vec7.x.to_f,
+      @drag_offset.y.to_f + vec7.y.to_f,
+      @drag_offset.z.to_f + vec7.z.to_f
     )
     num = -vec7.x.to_f
     num2 = vec7.y.to_f
-    @arr27.each do |vec|
+    @sel_panels.each do |vec|
       next unless vec && vec.valid?
       partner_of = partner_of2(vec)
       next unless partner_of && partner_of.valid?
-      pts = @h26[partner_of.object_id]
+      pts = @outlines[partner_of.object_id]
       next unless pts
-      @h26[partner_of.object_id] = pts.map do |pt|
+      @outlines[partner_of.object_id] = pts.map do |pt|
         Geom::Point3d.new(pt.x.to_f + num, pt.y.to_f + num2, pt.z)
       end
     end
   end
-  def _8f5311bb
-    return unless @pt8
-    ax = @pt8.x.to_f
-    ay = @pt8.y.to_f
-    az = @pt8.z.to_f
+  def apply_offset
+    return unless @drag_offset
+    ax = @drag_offset.x.to_f
+    ay = @drag_offset.y.to_f
+    az = @drag_offset.z.to_f
     return if ax.abs < 1e-9 && ay.abs < 1e-9 && az.abs < 1e-9
-    gtr = Geom::Transformation.translation(@pt8)
-    @arr27.each do |pt|
+    gtr = Geom::Transformation.translation(@drag_offset)
+    @sel_panels.each do |pt|
       next unless pt && pt.valid?
       pt.transform!(gtr)
       partner_of = partner_of2(pt)
@@ -362,38 +362,38 @@ module KSU::Drag
       transform = KSU::Sheet.mirror_tf(pt, sheet_of(pt), sheet_of(partner_of))
       partner_of.transformation = transform if transform
     end
-    @pt8 = Geom::Vector3d.new(0, 0, 0)
+    @drag_offset = Geom::Vector3d.new(0, 0, 0)
   end
-  def _7fd07e0b(view, x, y)
+  def drag_plane_point(view, x, y)
     return nil unless @pt14
     ray = view.pickray(x, y)
     pt = [Geom::Point3d.new(0, 0, @pt14.z), Geom::Vector3d.new(0, 0, 1)]
     Geom.intersect_line_plane(ray, pt)
   end
-  def _50ab81be
+  def drag_follow
     return unless @pt3 && @pt5
-    panel = @arr27.first
-    grp = @arr12.first
-    return unless panel && panel.valid? && grp && grp.valid?
-    tr = @nesting.transformation * grp.transformation * panel.transformation
+    panel = @sel_panels.first
+    sheet = @sel_sheets.first
+    return unless panel && panel.valid? && sheet && sheet.valid?
+    tr = @nesting.transformation * sheet.transformation * panel.transformation
     pt = @pt3.transform(tr)
-    if @pt8
+    if @drag_offset
       pt = Geom::Point3d.new(
-        pt.x + @pt8.x.to_f,
-        pt.y + @pt8.y.to_f,
-        pt.z + @pt8.z.to_f
+        pt.x + @drag_offset.x.to_f,
+        pt.y + @drag_offset.y.to_f,
+        pt.z + @drag_offset.z.to_f
       )
     end
     vec = @pt5 - pt
     return if vec.length < KSU::TOL
-    _98834989(vec)
-    _52bcd343(vec)
+    add_offset(vec)
+    shift_cached_polys(vec)
     @pt14 = @pt5.clone
   end
-  def _c1caf616
+  def hide_originals
     @arr2 = []
-    arr = @arr27.dup
-    @arr27.each do |panel|
+    arr = @sel_panels.dup
+    @sel_panels.each do |panel|
       partner_of = partner_of2(panel)
       arr << partner_of if partner_of && partner_of.valid? && !arr.include?(partner_of)
     end
@@ -403,7 +403,7 @@ module KSU::Drag
       panel.hidden = true
     end
   end
-  def _4601b4c9
+  def show_originals
     @arr2.each { |_23505ef9| _23505ef9.hidden = false if _23505ef9&.valid? }
     @arr2 = []
     clear_preview
@@ -412,35 +412,35 @@ module KSU::Drag
     @arr33.each { |vec| vec.hidden = false if vec && vec.valid? && vec.hidden? }
     @arr33 = []
   end
-  def _1e2e7709
+  def build_snap_grid
     return if @flag45 || @flag50 || @xep_tam_tu_do
-    arr = @arr46 || record_for(@arr12.first)
-    return unless arr && arr[:instance] && arr[:instance].valid?
-    build_grid(arr)
+    rec = @arr46 || record_for(@sel_sheets.first)
+    return unless rec && rec[:instance] && rec[:instance].valid?
+    build_grid(rec)
   rescue StandardError
     nil
   end
-  def _f97c64c2
+  def drag_end
     @flag56 = false
-    _066c900b
+    restore_free_mode
     @arr57 = []
-    _4601b4c9
-    _1e2e7709
-    _8f5311bb
-    _09012de8 = @arr12.compact
+    show_originals
+    build_snap_grid
+    apply_offset
+    _09012de8 = @sel_sheets.compact
     _09012de8 += [@arr46[:instance]] if @arr46 && @arr46[:instance]
     flag = false
     if @arr46 && !@flag45
-      @arr27.each_with_index do |panel, ix|
-        next if @arr12[ix] == @arr46[:instance]
-        sheet = @arr12[ix]
+      @sel_panels.each_with_index do |panel, ix|
+        next if @sel_sheets[ix] == @arr46[:instance]
+        cur_sheet = @sel_sheets[ix]
         pair = back_of(panel)
-        _2f683801 = clone_to(panel, sheet, @arr46)
+        _2f683801 = clone_to(panel, cur_sheet, @arr46)
         next unless _2f683801&.valid?
-        @arr27[ix] = _2f683801
-        @arr12[ix] = @arr46[:instance]
+        @sel_panels[ix] = _2f683801
+        @sel_sheets[ix] = @arr46[:instance]
         flag = true
-        sync_back(_2f683801, pair, sheet, @arr46[:instance]) if pair
+        sync_back(_2f683801, pair, cur_sheet, @arr46[:instance]) if pair
       end
       KSU::Sheet.prune_bottoms(@nesting) if flag
     end
@@ -450,32 +450,32 @@ module KSU::Drag
       sheet_list(@nesting)
       build_pairs
     end
-    _b1981961 = partners_of(@arr27)
-    _8f1f5186(@arr27)
-    _8f1f5186(_b1981961)
-    @arr63 = nil
-    @arr53 = nil
+    _b1981961 = partners_of(@sel_panels)
+    drop_panel_cache(@sel_panels)
+    drop_panel_cache(_b1981961)
+    @sel_polys = nil
+    @sel_hull = nil
     @arr3 = nil
     if flag
       @h15 = {}
-      _5b9cf20b
+      clear_grid_cache
     else
       _b7284874 = (_09012de8 + sheets_of(_b1981961)).uniq
       drop_sheet_cache(_b7284874)
-      _1cc6124b(_b7284874)
+      drop_grid_cache(_b7284874)
     end
     @h27 = {}
     @arr15 = nil
-    @pt13 = nil
+    @anchor_pt = nil
     @flag35 = false
-    refresh_hits(@arr27 + _b1981961)
-    _285eca92
-    instance = @arr46&.dig(:instance)
-    @flag37 = instance if instance&.valid? && !@flag45
+    refresh_hits(@sel_panels + _b1981961)
+    rebuild_outlines
+    inst2 = @arr46&.dig(:instance)
+    @flag37 = inst2 if inst2&.valid? && !@flag45
     @sheet2 = @flag37
     @flag45 = false
     stamp_sig
-    KSU::View.refresh_panels(@nesting, @arr27 + _b1981961, @flag11)
+    KSU::View.refresh_panels(@nesting, @sel_panels + _b1981961, @flag11)
     update_status
   end
 end

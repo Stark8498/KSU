@@ -7,9 +7,9 @@ module KSU::Pack
     id_str = KSU::Method.pack_bl(parts.map { |len2d| len2d[:w] }, parts.map { |len2d| len2d[:h] },
                                  width_mm, height_mm, gap2, arr, num2, num, seed)
     h = {}
-    id_str.each_with_index do |(placements, x, y, num3, arr52), _a4ab9a59|
+    id_str.each_with_index do |(placements, x, y, num3, arr52), i|
       next if placements < 0
-      len2d = parts[_a4ab9a59]
+      len2d = parts[i]
       rot = (num3 - len2d[:w]).abs > 1e-6 ? 90 : 0
       (h[placements] ||= []) << {
         panel: len2d[:panel], source_sheet: len2d[:sheet], bbox: len2d[:bbox],
@@ -39,8 +39,8 @@ module KSU::Pack
   end
   def sort_by_x(arr3)
     arr3.sort_by do |s|
-      arr = sheet_recs.find { |arr2| arr2[:instance] == s }
-      arr ? arr[:bbox].center.x.to_f : 0.0
+      rec = sheet_recs.find { |i| i[:instance] == s }
+      rec ? rec[:bbox].center.x.to_f : 0.0
     end
   end
   def try_place(arr4, grp, width_mm, height_mm, gap2, allow_rot)
@@ -151,11 +151,11 @@ module KSU::Pack
   def edited_sheet(sheets)
     sheets.find { |s| s && s.valid? && KSU::Sheet.edit_offset(s) } || sheets.first
   end
-  def sheet_size(_73dc38ac)
-    arr = sheet_recs.find { |s| s[:instance] == _73dc38ac }
-    return [nil, nil] unless arr
-    bbox = arr[:bbox]
-    dx, dy = KSU::Sheet.edit_offset(_73dc38ac) || [0.0, 0.0]
+  def sheet_size(sheet)
+    rec = sheet_recs.find { |s| s[:instance] == sheet }
+    return [nil, nil] unless rec
+    bbox = rec[:bbox]
+    dx, dy = KSU::Sheet.edit_offset(sheet) || [0.0, 0.0]
     [bbox.width.to_f - dx.abs, bbox.height.to_f - dy.abs]
   end
 end

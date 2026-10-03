@@ -56,10 +56,10 @@ module KSU::Xuatdxf
   end
   def self._1cb4f865(nesting)
     arr = []
-    nesting.definition.entities.each do |grp2|
-      next unless KSU.container?(grp2)
-      next unless grp2.get_attribute("ABF", "sheet-id")
-      (KSU.entities_in(grp2) || []).each do |ent|
+    nesting.definition.entities.each do |sheet|
+      next unless KSU.container?(sheet)
+      next unless sheet.get_attribute("ABF", "sheet-id")
+      (KSU.entities_in(sheet) || []).each do |ent|
         if ent.get_attribute("ABF", "is-sheet-id") || ent.get_attribute("ABF", "is-sheet-material")
           arr << ent
         end
@@ -124,9 +124,9 @@ module KSU::Xuatdxf
     sheets.each { |s| h[s[:key]] = true if s[:bottom] }
     str4 = KSU::Settings.get("toi_uu_xuong_dao", false, "xuat_dxf").to_s == "true"
     ok = true
-    arr2.each_with_index do |key, _a4ab9a59|
+    arr2.each_with_index do |key, i|
       node = sheets.select { |s| s[:key] == key }
-      str = File.join(_c04fb39c, (_a4ab9a59 + 1).to_s.rjust(3, "0") + "_" + _091b9335(node.first))
+      str = File.join(_c04fb39c, (i + 1).to_s.rjust(3, "0") + "_" + _091b9335(node.first))
       FileUtils.mkdir_p(str)
       str3 = str
       str2 = str
@@ -140,8 +140,8 @@ module KSU::Xuatdxf
         _f60dec30(s) if str4
         layer_name = KSU::Xuatdxf::Dxf.new(collect_in_rect[:true_color])
         _de24fd0f(layer_name, s[:ents], str4)
-        instance = s[:bottom] ? str2 : str3
-        ok = false unless layer_name.write_file(File.join(instance, _c57d63ae(s, h)))
+        inst2 = s[:bottom] ? str2 : str3
+        ok = false unless layer_name.write_file(File.join(inst2, _c57d63ae(s, h)))
       end
     end
     ok
@@ -169,12 +169,12 @@ module KSU::Xuatdxf
 end
 module KSU::Xuatdxf
   def self.check_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (87 * _a4ab9a59 + 61) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (87 * i + 61) }.pack("C*")
     arr = arr2[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 153 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[\da-zA-Z]{3}-[\da-zA-Z]{4}-[\da-zA-Z]{4}-[\da-zA-Z]{4}\z/
   end
   def self.assert_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, _a4ab9a59| b ^ (61 + _a4ab9a59 * 87) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, i| b ^ (61 + i * 87) }.pack("C*")
     arr = arr2[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 0x99 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[0-9A-Za-z]{3}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}\z/
   end

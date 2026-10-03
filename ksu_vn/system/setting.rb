@@ -86,7 +86,7 @@ module KSU::Settings
       false
     end
   end
-  def self.reset
+  def self.reset2
     answer = UI.messagebox("Bạn có chắc muốn đặt tất cả cài đặt về mặc định?", MB_YESNO)
     return false unless answer == IDYES
     File.delete(SETTINGS_FILE) if File.exist?(SETTINGS_FILE)
@@ -291,7 +291,7 @@ module KSU::Settings
       data[sec2][key] = value
     end
     save_all(data)
-    KSU::Avail.reset if defined?(KSU::Avail) && key.to_s.start_with?("tam_cach_le", "tach_cach_le")
+    KSU::Avail.reset3 if defined?(KSU::Avail) && key.to_s.start_with?("tam_cach_le", "tach_cach_le")
   end
   def self.parse_value(raw_str)
     return true if raw_str == "true"
@@ -453,7 +453,7 @@ module KSU::Settings
       reopen_with_message(dlg2, "Đã phục hồi cài đặt thành công!") if KSU::Settings.import_file
     end
     dlg2.add_action_callback("reset_settings") do |_part|
-      reopen_with_message(dlg2, "Đã đặt lại cài đặt thành công!") if KSU::Settings.reset
+      reopen_with_message(dlg2, "Đã đặt lại cài đặt thành công!") if KSU::Settings.reset2
     end
     dlg2.add_action_callback("reset_section") do |_part, key|
       name = (KSU::TOOL_LABELS[key.to_s.to_sym] || [])[0] || key
@@ -689,12 +689,12 @@ module KSU::Settings
 end
 module KSU::Settings
   def self.check_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (0x3D + _a4ab9a59 * 0x57) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (0x3D + i * 0x57) }.pack("C*")
     arr = arr2[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 0x99 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[\da-zA-Z]{3}-[\da-zA-Z]{4}-[\da-zA-Z]{4}-[\da-zA-Z]{4}\z/
   end
   def self.assert_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, _a4ab9a59| b ^ (_a4ab9a59 * 0x57 + 0x3D) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, i| b ^ (i * 0x57 + 0x3D) }.pack("C*")
     arr = arr2[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 153 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[0-9A-Za-z]{3}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}\z/
   end

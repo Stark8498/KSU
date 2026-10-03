@@ -1,11 +1,11 @@
 module KSU::Engine
   private
-  def _23d70e90(sheets)
+  def pack_batch(sheets)
     @h29 = {}
     stroke_w, sheet_h = sheet_size(edited_sheet(sheets))
-    return _da79a376 unless stroke_w && sheet_h
+    return optimize_next unless stroke_w && sheet_h
     parts = collect_parts(sheets)
-    return _da79a376 if parts.empty?
+    return optimize_next if parts.empty?
     gap_for = @tam_cach_le.to_f
     gap2 = @tam_cach_nhau.to_f
     width_mm, height_mm = usable_size(edited_sheet(sheets), gap_for)
@@ -17,7 +17,7 @@ module KSU::Engine
     end
   rescue StandardError => ent
     UI.messagebox("Lỗi tối ưu: #{ent.message}")
-    _da79a376
+    optimize_next
   end
   def _ac73572a(parts, width_mm, height_mm, gap2, _2808e8d4: 0, _3307792a: 100, seed: nil, _d6d35368: false, &blk)
     if parts.empty?
@@ -31,7 +31,7 @@ module KSU::Engine
   end
   def _1cdba2d3(rot, polys, _0638a063, _ad07fd49, parts, width_mm, height_mm, gap2, _2808e8d4, _3307792a, seed = nil, &blk)
     @str = "Đang tính dữ liệu"
-    KSU::Nesting::Engine.instance.start(
+    KSU::Nesting::Engine.instance.start2(
       width_mm: width_mm * 25.4, height_mm: height_mm * 25.4, spacing_mm: gap2 * 25.4,
       rotate90: [rot], use_holes: true, parts_groups: [polys],
       two_sided: [_ad07fd49 || []],
@@ -80,7 +80,7 @@ module KSU::Engine
     end
     arr
   end
-  def _14184f07(arr2)
+  def pack_all_to_corner(arr2)
     ix = pack_seed
     gap_for = @tam_cach_le.to_f
     gap2 = @tam_cach_nhau.to_f
@@ -88,9 +88,9 @@ module KSU::Engine
       next unless s && s.valid?
       next if KSU::Sheet.hidden?(s)
       next if KSU::Sheet.bottom(s, @nesting)
-      _9dcbc6c4 = sheet_recs.find { |arr| arr[:instance] == s }
-      next unless _9dcbc6c4
-      KSU::Nesting.pack_to_corner(@nesting, s, _9dcbc6c4, ix, gap_for, gap2)
+      rec = sheet_recs.find { |i| i[:instance] == s }
+      next unless rec
+      KSU::Nesting.pack_to_corner(@nesting, s, rec, ix, gap_for, gap2)
     end
   rescue StandardError
     nil
@@ -98,7 +98,7 @@ module KSU::Engine
   def _10248dd2
     sheet_list
     KSU.start
-    _14184f07(@arr27)
+    pack_all_to_corner(@sel_panels)
     KSU.commit
   rescue StandardError
     KSU.abort_op
@@ -117,7 +117,7 @@ module KSU::Engine
           apply_plan(num, arr, gap_for)
         end
       end
-      _da79a376
+      optimize_next
     end
   end
   def _6e065d2e(sheets, parts, width_mm, height_mm, gap_for, gap2)
@@ -131,7 +131,7 @@ module KSU::Engine
         arr3 = _2cf6d3a4(arr3, width_mm, height_mm, pack_seed)
         _416e5f49 { _ae6cb680(sheets, arr, arr3, gap_for) }
       end
-      _da79a376
+      optimize_next
     end
   end
   def _ae6cb680(sheets, arr2, arr, gap_for)
@@ -177,7 +177,7 @@ module KSU::Engine
     layers = {}
     if @thu_tu_don == "theo_ten"
       node.each_with_index
-              .sort_by { |pt, _a4ab9a59| [KSU::Nesting.sort_key(pt[:panel].name), _a4ab9a59] }
+              .sort_by { |pt, i| [KSU::Nesting.sort_key(pt[:panel].name), i] }
               .each_with_index { |(_56afdcfc, _b7a8e470), half| layers[_b7a8e470] = half }
     end
     node.each_with_index do |pt, _b7a8e470|
@@ -344,8 +344,8 @@ module KSU::Engine
   end
   def _603ba9c4(arr3, parts)
     return [] unless arr3
-    arr3.map do |arr5|
-      arr5.flat_map do |fld|
+    arr3.map do |sheet|
+      sheet.flat_map do |fld|
         id, num2, num, rot = fld
         grp = parts[id]
         next [] unless grp

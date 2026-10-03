@@ -5,26 +5,26 @@ module KSU::Push
       arr2 = _1adb886a(arr3[:instance])
       return Geom::Vector3d.new(0, 0, 0) unless arr2
       h2 = {}
-      @arr27.each { |_23505ef9| h2[_23505ef9.object_id] = true }
+      @sel_panels.each { |_23505ef9| h2[_23505ef9.object_id] = true }
       arr = []
-      @arr27.each_with_index do |panel, ix|
-        poly = (@arr63 && @arr63[ix]) ||
-                  _8e5202c8(panel, @arr12[ix])
+      @sel_panels.each_with_index do |panel, ix|
+        poly = (@sel_polys && @sel_polys[ix]) ||
+                  outer_pts_of(panel, @sel_sheets[ix])
         arr << poly if poly.length >= 3
       end
       return Geom::Vector3d.new(0, 0, 0) if arr.empty?
-      num = (@arr53 && @arr53.length >= 3) ? [@arr53] : arr
+      num = (@sel_hull && @sel_hull.length >= 3) ? [@sel_hull] : arr
       grid = arr2[:grid]
       items = arr2[:items]
       h = {}
       arr.each do |poly|
-        KSU::Nfp._a6cf3d0d(grid, KSU::Geom.bounds(poly), @tam_cach_nhau).each { |_a4ab9a59| h[_a4ab9a59] = true }
+        KSU::Nfp._a6cf3d0d(grid, KSU::Geom.bounds(poly), @tam_cach_nhau).each { |i| h[i] = true }
       end
       borders = arr2[:borders].map { |fld| fld[:poly] }
       arr4 = []
       flag2 = false
-      h.each_key do |_a4ab9a59|
-        fld = items[_a4ab9a59]
+      h.each_key do |i|
+        fld = items[i]
         next if fld[:is_border]
         next if h2[fld[:panel].object_id]
         if _79fb30a5(num, fld[:holes])
@@ -59,26 +59,26 @@ module KSU::Push
     Geom::Vector3d.new(ax, ay, 0)
   end
   def _7f17a5c5(arr3)
-    instance = arr3[:instance]
-    arr2 = _1adb886a(instance)
+    inst5 = arr3[:instance]
+    arr2 = _1adb886a(inst5)
     return true unless arr2
     items = arr2[:items]
     borders = arr2[:borders]
     grid = arr2[:grid]
     h = {}
-    @arr27.each { |_23505ef9| h[_23505ef9.object_id] = true }
-    @arr27.each_with_index do |panel, ix|
-      arr = (@arr63 && @arr63[ix]) ||
-                      _8e5202c8(panel, @arr12[ix])
+    @sel_panels.each { |_23505ef9| h[_23505ef9.object_id] = true }
+    @sel_panels.each_with_index do |panel, ix|
+      arr = (@sel_polys && @sel_polys[ix]) ||
+                      outer_pts_of(panel, @sel_sheets[ix])
       next if arr.length < 3
-      _f38e85e6 = (@arr55 && @arr55[ix]) ||
+      _f38e85e6 = (@sel_bounds && @sel_bounds[ix]) ||
                     KSU::Geom.bounds(arr)
-      _6a5c7d09 = (@arr19 && @arr19[ix]) || arr
+      _6a5c7d09 = (@sel_hulls && @sel_hulls[ix]) || arr
       borders.each do |fld|
         return false if KSU::Geom._0c91518b(arr, fld[:poly], _970aa8ae)
       end
-      KSU::Nfp._a6cf3d0d(grid, _f38e85e6, @tam_cach_nhau).each do |_a4ab9a59|
-        fld = items[_a4ab9a59]
+      KSU::Nfp._a6cf3d0d(grid, _f38e85e6, @tam_cach_nhau).each do |i|
+        fld = items[i]
         next if h[fld[:panel].object_id]
         _33f52d3e = _79fb30a5([arr], fld[:holes])
         if _33f52d3e
@@ -92,20 +92,20 @@ module KSU::Push
     end
     true
   end
-  def _5b9cf20b
-    @h23 = {}
+  def clear_grid_cache
+    @grid_cache = {}
   end
-  def _1cc6124b(sheets)
-    @h23 ||= {}
+  def drop_grid_cache(sheets)
+    @grid_cache ||= {}
     sheets.each do |s|
       next unless s && s.respond_to?(:object_id)
-      @h23.delete(s.object_id)
+      @grid_cache.delete(s.object_id)
     end
   end
   def _0b16f3d7
     key = [@xep_tam_tu_do, @tam_cach_nhau.to_f, KSU::Avail.sides(@tam_cach_le.to_f)]
     if key != @_02765833
-      @h23 = {}
+      @grid_cache = {}
       @_02765833 = key
     end
     if @xep_tam_tu_do
@@ -119,20 +119,20 @@ module KSU::Push
     end
     sheet_list(@nesting) if @arr23.nil? || @arr23.empty?
     arr = []
-    @arr23.each do |arr2|
-      vec = arr2[:instance]
-      next unless vec && vec.valid?
-      sheet = vec.object_id
-      partner = @h23[sheet]
+    @arr23.each do |rec|
+      sheet = rec[:instance]
+      next unless sheet && sheet.valid?
+      sheet_id = sheet.object_id
+      partner = @grid_cache[sheet_id]
       if partner.nil?
-        partner = _726c65ba(vec)
-        @h23[sheet] = partner
+        partner = _726c65ba(sheet)
+        @grid_cache[sheet_id] = partner
       end
       arr.concat(partner)
     end
     @arr18 = arr
   end
-  def _726c65ba(_73dc38ac)
+  def _726c65ba(sheet)
     gap_for = _970aa8ae
     tol = 0.5.mm.to_f
     tol2 = 0.1.mm.to_f
@@ -140,7 +140,7 @@ module KSU::Push
     num = 0.0 if num < 0.0
     answer = []
     begin
-      arr = _1adb886a(_73dc38ac)
+      arr = _1adb886a(sheet)
       return answer unless arr
       items = arr[:items]
       grid = arr[:grid]
@@ -160,25 +160,25 @@ module KSU::Push
       end
       h = {}
       h3 = {}
-      h2.each_key do |_a4ab9a59|
-        fld = items[_a4ab9a59]
-        _2e113abe = (h3[_a4ab9a59] ||= _5dc6e713(fld[:poly], tol2))
+      h2.each_key do |i|
+        fld = items[i]
+        _2e113abe = (h3[i] ||= _5dc6e713(fld[:poly], tol2))
         fld_bbox = fld[:bbox]
         hull = fld[:hull]
         unless flag.nil? || gap_for <= 0.0
           if fld_bbox[:min_x] < flag + gap_for - tol || fld_bbox[:max_x] > flag3 - gap_for + tol ||
              fld_bbox[:min_y] < flag4 + gap_for - tol || fld_bbox[:max_y] > flag2 - gap_for + tol
-            h[_a4ab9a59] = true
+            h[i] = true
           end
         end
         KSU::Nfp._a6cf3d0d(grid, fld_bbox, num).each do |j|
-          next if j == _a4ab9a59
+          next if j == i
           next unless h2[j]
           panel = items[j]
           _33f52d3e = _79fb30a5([_2e113abe], panel[:holes])
           if _33f52d3e
             if KSU::Geom._0c91518b(_2e113abe, _33f52d3e, num)
-              h[_a4ab9a59] = true
+              h[i] = true
               h[j] = true
             end
             next
@@ -187,7 +187,7 @@ module KSU::Push
           if _3e1d5f51
             _982c8eb9 = (h3[j] ||= _5dc6e713(panel[:poly], tol2))
             if KSU::Geom._0c91518b(_982c8eb9, _3e1d5f51, num)
-              h[_a4ab9a59] = true
+              h[i] = true
               h[j] = true
             end
             next
@@ -195,13 +195,13 @@ module KSU::Push
           next unless KSU::Geom.boxes_overlap?(fld_bbox, panel[:bbox], num)
           next unless _af0cebe5(hull, panel[:hull], num)
           if _af0cebe5(_2e113abe, panel[:poly], num)
-            h[_a4ab9a59] = true
+            h[i] = true
             h[j] = true
           end
         end
       end
-      h.each_key do |_a4ab9a59|
-        fill = _89bccf8d(items[_a4ab9a59][:panel], _73dc38ac)
+      h.each_key do |i|
+        fill = panel_outline(items[i][:panel], sheet)
         answer << fill if fill && fill[:outer] && fill[:outer].length >= 3
       end
     rescue StandardError
@@ -221,14 +221,14 @@ module KSU::Push
     poly
   end
   def _3ea06bed(_f222cc53)
-    return if @arr27.empty?
-    _8f5311bb if @flag56
+    return if @sel_panels.empty?
+    apply_offset if @flag56
     KSU.start unless @flag56
     bb = Geom::BoundingBox.new
-    @arr27.each { |grp| bb.add(KSU::View._fa674c93(grp)) }
+    @sel_panels.each { |grp| bb.add(KSU::View._fa674c93(grp)) }
     _32310dba = bb.center
     tr2 = Geom::Transformation.rotation(_32310dba, [0, 0, 1], _f222cc53)
-    @arr27.each do |panel|
+    @sel_panels.each do |panel|
       next unless panel.valid?
       panel.transform!(tr2)
       partner_of = partner_of2(panel)
@@ -236,29 +236,29 @@ module KSU::Push
       transform = KSU::Sheet.mirror_tf(panel, sheet_of(panel), sheet_of(partner_of))
       partner_of.transformation = transform if transform
     end
-    @tr = @arr27.map { |grp| grp.transformation.clone } if @flag56
-    _b1981961 = partners_of(@arr27)
-    _8f1f5186(@arr27)
-    _8f1f5186(_b1981961)
+    @tr = @sel_panels.map { |grp| grp.transformation.clone } if @flag56
+    _b1981961 = partners_of(@sel_panels)
+    drop_panel_cache(@sel_panels)
+    drop_panel_cache(_b1981961)
     KSU.commit unless @flag56
     if @flag56
-      _4f4ecb72
-      _9004d10e
+      rebuild_sel_polys
+      reset_anchor
     else
-      bbox = @arr27 + _b1981961
+      bbox = @sel_panels + _b1981961
       refresh_after_move(bbox, sheets_of(bbox))
     end
-    _285eca92
+    rebuild_outlines
     KSU::View.view.invalidate
   end
   def _2bff4638(side)
-    _8f5311bb if @flag56
+    apply_offset if @flag56
     h = {}
-    @arr27.each_with_index do |panel, ix|
-      vec = @arr12[ix]
-      next unless panel && panel.valid? && vec && vec.valid?
+    @sel_panels.each_with_index do |panel, ix|
+      sheet = @sel_sheets[ix]
+      next unless panel && panel.valid? && sheet && sheet.valid?
       key = group_id(panel) || "solo#{panel.entityID}"
-      (h[key] ||= []) << [panel, vec, _c7b0bc62(panel, vec)]
+      (h[key] ||= []) << [panel, sheet, _c7b0bc62(panel, sheet)]
     end
     arr4 = h.values
     return if arr4.length < 2
@@ -286,14 +286,14 @@ module KSU::Push
         when :top then Geom::Vector3d.new(0, anchor - screen_box[3], 0)
         end
       next if vec2.length < KSU::TOL
-      members.each do |panel, vec, _part|
-        panel.transform!(_d1eefbfb(vec, vec2))
+      members.each do |panel, sheet, _part|
+        panel.transform!(_d1eefbfb(sheet, vec2))
       end
     end
     _32c9a9b9 = (side == :left || side == :right)
     gap2 = @tam_cach_nhau.to_f
     items = arr4.map do |members|
-      polys = members.map { |panel, vec, _part| _8e5202c8(panel, vec) }
+      polys = members.map { |panel, sheet, _part| outer_pts_of(panel, sheet) }
                            .select { |poly| poly.length >= 3 }
       next nil if polys.empty?
       umin = nil
@@ -324,8 +324,8 @@ module KSU::Push
       num = umin3 - _9acecc6a
       if num.abs >= KSU::TOL
         vec2 = _32c9a9b9 ? Geom::Vector3d.new(0, num, 0) : Geom::Vector3d.new(num, 0, 0)
-        arr[:members].each do |panel, vec, _part|
-          panel.transform!(_d1eefbfb(vec, vec2))
+        arr[:members].each do |panel, sheet, _part|
+          panel.transform!(_d1eefbfb(sheet, vec2))
         end
       end
       arr[:polys].each do |poly|
@@ -334,14 +334,14 @@ module KSU::Push
       _9708309a = arr[:umax] + num
       umax2 = _9708309a if _9708309a > umax2
     end
-    _8f1f5186(@arr27)
+    drop_panel_cache(@sel_panels)
     KSU.commit unless @flag56
     if @flag56
-      _4f4ecb72
+      rebuild_sel_polys
     else
-      refresh_after_move(@arr27, sheets_of(@arr27))
+      refresh_after_move(@sel_panels, sheets_of(@sel_panels))
     end
-    _285eca92
+    rebuild_outlines
     KSU::View.view.invalidate
   end
   def _e099da59(arr, _7f4cfb48, _32c9a9b9, umin, _7ddb69ec, gap2)
@@ -378,15 +378,15 @@ module KSU::Push
     end
     num
   end
-  def _d1eefbfb(grp, pt)
-    inv = (@nesting.transformation * grp.transformation).inverse
+  def _d1eefbfb(sheet, pt)
+    inv = (@nesting.transformation * sheet.transformation).inverse
     Geom::Transformation.translation(pt.transform(inv))
   end
-  def _c7b0bc62(panel, grp)
-    tf = @nesting.transformation * grp.transformation * panel.transformation
+  def _c7b0bc62(panel, sheet)
+    tf = @nesting.transformation * sheet.transformation * panel.transformation
     box = panel.definition.bounds
     bb = Geom::BoundingBox.new
-    (0..7).each { |_a4ab9a59| bb.add(box.corner(_a4ab9a59).transform(tf)) }
+    (0..7).each { |i| bb.add(box.corner(i).transform(tf)) }
     bb
   end
 end

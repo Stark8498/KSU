@@ -35,9 +35,9 @@ module KSU::Geom
   end
   def self.edge_normals(arr)
     n = arr.size
-    n.times.each_with_object([]) do |_a4ab9a59, out|
-      pt = arr[_a4ab9a59]
-      pt2 = arr[(_a4ab9a59 + 1) % n]
+    n.times.each_with_object([]) do |i, out|
+      pt = arr[i]
+      pt2 = arr[(i + 1) % n]
       rx = pt2.x.to_f - pt.x.to_f
       ry = pt2.y.to_f - pt.y.to_f
       len = Math.sqrt(rx * rx + ry * ry)
@@ -88,15 +88,15 @@ module KSU::Geom
     flag = false
     n = arr.size
     j = n - 1
-    n.times do |_a4ab9a59|
-      xi = arr[_a4ab9a59].x.to_f
-      yi = arr[_a4ab9a59].y.to_f
+    n.times do |i|
+      xi = arr[i].x.to_f
+      yi = arr[i].y.to_f
       xj = arr[j].x.to_f
       yj = arr[j].y.to_f
       if ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)
         flag = !flag
       end
-      j = _a4ab9a59
+      j = i
     end
     flag
   end
@@ -145,9 +145,9 @@ module KSU::Geom
     num = 0.0
     _a9cb01d0 = _7150030a = 0.0
     n = arr.size
-    n.times do |_a4ab9a59|
-      pt = arr[_a4ab9a59]
-      b = arr[(_a4ab9a59 + 1) % n]
+    n.times do |i|
+      pt = arr[i]
+      b = arr[(i + 1) % n]
       rx = b.x.to_f - pt.x.to_f
       ry = b.y.to_f - pt.y.to_f
       len = Math.sqrt(rx * rx + ry * ry)
@@ -171,8 +171,8 @@ module KSU::Geom
   end
   def self._3f61ee64(bounds, _9a88c1a2 = nil)
     return [] unless bounds
-    return (0..7).map { |_a4ab9a59| bounds.corner(_a4ab9a59) } unless _9a88c1a2
-    (0..7).map { |_a4ab9a59| bounds.corner(_a4ab9a59).transform(_9a88c1a2) }
+    return (0..7).map { |i| bounds.corner(i) } unless _9a88c1a2
+    (0..7).map { |i| bounds.corner(i).transform(_9a88c1a2) }
   end
   def self._c7b0bc62(bounds, _9a88c1a2 = nil)
     bbox = Geom::BoundingBox.new

@@ -5,14 +5,14 @@ module KSU::Bilan
     gap2 = KSU::Settings.get("tam_cach_nhau", 6.5, "cai_dat").to_f.mm
     gap_for = KSU::Settings.get("tam_cach_le", 3.5, "cai_dat").to_f.mm
     tr = nesting.transformation
-    nesting.definition.entities.each do |grp|
-      next unless KSU.container?(grp)
-      next unless grp.name.to_s.downcase.include?("sheet")
-      answer.concat(sheet_overlaps(grp, tr * grp.transformation, gap2, gap_for))
+    nesting.definition.entities.each do |sheet|
+      next unless KSU.container?(sheet)
+      next unless sheet.name.to_s.downcase.include?("sheet")
+      answer.concat(sheet_overlaps(sheet, tr * sheet.transformation, gap2, gap_for))
     end
     answer
   end
-  def sheet_overlaps(grp, sheet_tr, gap2, gap_for)
+  def sheet_overlaps(sheet, sheet_tr, gap2, gap_for)
     answer = []
     tol = 0.5.mm.to_f
     tol3 = 0.1.mm.to_f
@@ -20,7 +20,7 @@ module KSU::Bilan
     num = 0.0 if num < 0.0
     items = []
     borders = []
-    grp.definition.entities.each do |panel|
+    sheet.definition.entities.each do |panel|
       next unless KSU.container?(panel)
       next unless KSU::Sheet.drawable?(panel)
       str = panel.name.to_s == "__ABF_sheetBorder"
@@ -28,7 +28,7 @@ module KSU::Bilan
       panel_tr = sheet_tr * panel.transformation
       poly = KSU::Cutting.outer_pts(panel, panel_tr)
       next unless poly && poly.length >= 3
-      if str && (arr2 = KSU::Sheet.edit_offset(grp))
+      if str && (arr2 = KSU::Sheet.edit_offset(sheet))
         poly = grow_poly(poly, arr2[0], arr2[1])
       end
       fill = str ? nil : KSU::Cutting.outline(panel, panel_tr)
@@ -54,9 +54,9 @@ module KSU::Bilan
       keys << ix
     end
     num3 = KSU::Avail.two_sided_margin.mm.to_f
-    _035410f9 = KSU::Avail.two_sided?(grp)
-    flag5 = KSU::Sheet.hidden?(grp) && KSU::Sheet.marks_of(grp).any?
-    _88817caf, _5dc624bc, _bee95155, _58b58971 = KSU::Avail.sides_for(grp, gap_for)
+    _035410f9 = KSU::Avail.two_sided?(sheet)
+    flag5 = KSU::Sheet.hidden?(sheet) && KSU::Sheet.marks_of(sheet).any?
+    _88817caf, _5dc624bc, _bee95155, _58b58971 = KSU::Avail.sides_for(sheet, gap_for)
     flag26 = _035410f9 ? num3 : _88817caf
     arr40 = (_035410f9 || flag5) ? num3 : _58b58971
     flag7 = flag5 ? num3 : _5dc624bc
@@ -64,25 +64,25 @@ module KSU::Bilan
     _efb2355c = [flag26, flag7, top, arr40].max
     h = {}
     h2 = {}
-    keys.each do |_a4ab9a59|
-      fld = items[_a4ab9a59]
-      _2e113abe = (h2[_a4ab9a59] ||= _4bed79e1(fld[:poly], tol3))
+    keys.each do |i|
+      fld = items[i]
+      _2e113abe = (h2[i] ||= _4bed79e1(fld[:poly], tol3))
       fld_bbox = fld[:bbox]
       hull = fld[:hull]
       unless flag.nil? || _efb2355c <= 0.0
         if fld_bbox[:min_x] < flag + flag26 - tol || fld_bbox[:max_x] > flag3 - flag7 + tol ||
            fld_bbox[:min_y] < flag4 + arr40 - tol || fld_bbox[:max_y] > flag2 - top + tol
-          h[_a4ab9a59] = true
+          h[i] = true
         end
       end
       keys.each do |j|
-        next if j == _a4ab9a59
+        next if j == i
         panel4 = items[j]
         next unless KSU::Geom.boxes_overlap?(fld_bbox, panel4[:bbox], num)
         _33f52d3e = _d090233d([_2e113abe], panel4[:holes])
         if _33f52d3e
           if KSU::Geom._0c91518b(_2e113abe, _33f52d3e, num)
-            h[_a4ab9a59] = true
+            h[i] = true
             h[j] = true
           end
           next
@@ -91,20 +91,20 @@ module KSU::Bilan
         if _3e1d5f51
           _982c8eb9 = (h2[j] ||= _4bed79e1(panel4[:poly], tol3))
           if KSU::Geom._0c91518b(_982c8eb9, _3e1d5f51, num)
-            h[_a4ab9a59] = true
+            h[i] = true
             h[j] = true
           end
           next
         end
         next unless _faecb1ca(hull, panel4[:hull], num)
         if _faecb1ca(_2e113abe, panel4[:poly], num)
-          h[_a4ab9a59] = true
+          h[i] = true
           h[j] = true
         end
       end
     end
-    h.each_key do |_a4ab9a59|
-      fill = items[_a4ab9a59][:fill]
+    h.each_key do |i|
+      fill = items[i][:fill]
       answer << fill if fill && fill[:outer] && fill[:outer].length >= 3
     end
     answer
@@ -157,8 +157,8 @@ module KSU::Bilan
     return poly unless defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:offset)
     arr = poly.map { |_23505ef9| [_23505ef9.x.to_f * 25.4, _23505ef9.y.to_f * 25.4] }
     num2 = 0.0
-    arr.each_with_index do |_23505ef9, _a4ab9a59|
-      num = arr[(_a4ab9a59 + 1) % arr.length]
+    arr.each_with_index do |_23505ef9, i|
+      num = arr[(i + 1) % arr.length]
       num2 += _23505ef9[0] * num[1] - num[0] * _23505ef9[1]
     end
     arr.reverse! if num2 < 0
@@ -182,9 +182,9 @@ module KSU::Bilan
     g = gap2.to_f
     _e8b69b47 = g > 1e-9
     _035baab0 = g * g
-    num.times do |_a4ab9a59|
-      a1 = poly_a[_a4ab9a59]
-      a2 = poly_a[(_a4ab9a59 + 1) % num]
+    num.times do |i|
+      a1 = poly_a[i]
+      a2 = poly_a[(i + 1) % num]
       num2.times do |j|
         b1 = poly_b[j]
         b2 = poly_b[(j + 1) % num2]

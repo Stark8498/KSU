@@ -37,18 +37,18 @@ module KSU::Thongke::Quet
     }
   end
   def self.each_sheet(scope)
-    expand_roots(scope).each do |grp|
-      sheet = grp.get_attribute("ABF", "sheet-id")
-      yield grp, sheet if sheet
+    expand_roots(scope).each do |sheet|
+      sheet_id = sheet.get_attribute("ABF", "sheet-id")
+      yield sheet, sheet_id if sheet_id
     end
   end
   def self.sheet_of_board
     h = {}
-    each_sheet(all_roots) do |_73dc38ac, sheet|
-      (KSU.entities_in(_73dc38ac) || []).each do |grp|
+    each_sheet(all_roots) do |sheet, sheet_id|
+      (KSU.entities_in(sheet) || []).each do |grp|
         next unless KSU.container?(grp)
         pid = grp.get_attribute("ABF", "board-index")
-        h[pid] = sheet if pid
+        h[pid] = sheet_id if pid
       end
     end
     h
@@ -65,11 +65,11 @@ module KSU::Thongke::Quet
     lo, hi = pts.map { |_23505ef9| axis[0].vector_to(_23505ef9).dot(_c04fb39c) }.minmax
     lo ? hi - lo : 0.0
   end
-  def self.add_edgebands(arr, node, tf, vec, thick_mm, lbl)
+  def self.add_edgebands(rec, node, tf, vec, thick_mm, lbl)
     src = KSU::Cutting.edgeband_spec(node, thick_mm)[0]
     src.each do |f, thickness, disp, fields, stat, joint|
-      arr[:edgeband_thickness][disp] = (thickness * 25.4).round(3)
-      arr[:edgeband_base][disp] = fields[0].to_s
+      rec[:edgeband_thickness][disp] = (thickness * 25.4).round(3)
+      rec[:edgeband_base][disp] = fields[0].to_s
       next if stat == false
       line_vec = vec.cross(f.normal)
       next if line_vec.length == 0
@@ -77,7 +77,7 @@ module KSU::Thongke::Quet
         next unless ent.line[1].parallel?(line_vec)
         len = ent.length(tf).to_f
         len /= 2.0 if joint == "chap"
-        arr[:edgeband_lengths][disp] = (arr[:edgeband_lengths][disp] || 0) + len
+        rec[:edgeband_lengths][disp] = (rec[:edgeband_lengths][disp] || 0) + len
         break
       end
     end
@@ -86,14 +86,14 @@ module KSU::Thongke::Quet
     tf = KSU::Label.world_tf(node)
     src = KSU::Cutting.board_faces(node, tf)
     return nil unless src
-    arr = { edgeband_lengths: {}, edgeband_thickness: {}, edgeband_base: {} }
+    rec = { edgeband_lengths: {}, edgeband_thickness: {}, edgeband_base: {} }
     idx = node.get_attribute("ABF", "board-index") || 0
     name = KSU::Label.label_text(node).to_s
     name = idx.to_s if name.empty?
-    arr[:index] = idx
-    arr[:name] = name
-    arr[:material] = node.material ? node.material.display_name : ""
-    arr[:code_ns] = [
+    rec[:index] = idx
+    rec[:name] = name
+    rec[:material] = node.material ? node.material.display_name : ""
+    rec[:code_ns] = [
       node.get_attribute("ABF", "code_n1"),
       node.get_attribute("ABF", "code_n2"),
       node.get_attribute("ABF", "code_n3"),
@@ -107,11 +107,11 @@ module KSU::Thongke::Quet
     thickness = p2.distance_to_plane([pts[0], ref_p2])
     ext_x = extent_along(pts, [pts[0], vec])
     ext_y = extent_along(pts, [pts[0], vec.cross(ref_p2)])
-    add_edgebands(arr, node, tf, font.normal, thickness.to_f * 25.4, lbl)
-    arr[:length] = [ext_x, ext_y].max.to_f
-    arr[:width] = [ext_x, ext_y].min.to_f
-    arr[:thickness] = thickness
-    arr
+    add_edgebands(rec, node, tf, font.normal, thickness.to_f * 25.4, lbl)
+    rec[:length] = [ext_x, ext_y].max.to_f
+    rec[:width] = [ext_x, ext_y].min.to_f
+    rec[:thickness] = thickness
+    rec
   rescue StandardError
     nil
   end
@@ -119,15 +119,15 @@ module KSU::Thongke::Quet
     arr3 = sheet_of_board
     arr2 = []
     all_boards(scope).each do |g|
-      arr = board_record(g)
-      next unless arr
-      arr[:sheet] = arr3[arr[:index]] || -1
-      arr2 << arr
+      rec = board_record(g)
+      next unless rec
+      rec[:sheet] = arr3[rec[:index]] || -1
+      arr2 << rec
     end
-    arr2.each do |arr|
-      arr[:length] = KSU::Cutting.d(arr[:length])
-      arr[:width] = KSU::Cutting.d(arr[:width])
-      arr[:thickness] = KSU::Cutting.d(arr[:thickness])
+    arr2.each do |rec|
+      rec[:length] = KSU::Cutting.d(rec[:length])
+      rec[:width] = KSU::Cutting.d(rec[:width])
+      rec[:thickness] = KSU::Cutting.d(rec[:thickness])
     end
     arr2
   end

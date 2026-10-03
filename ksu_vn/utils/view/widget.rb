@@ -83,11 +83,11 @@ module KSU::Widget
   end
   def shade(normal, idx)
     return normal unless normal
-    num = idx.to_i
-    num = 0 if num < 0
-    num = 7 if num > 7
-    mix  = [0.0, 0.10, 0.18, 0.26, 0.34, 0.42, 0.50, 0.58][num]
-    alpha = [220, 208, 196, 184, 172, 160, 148, 136][num]
+    i = idx.to_i
+    i = 0 if i < 0
+    i = 7 if i > 7
+    mix  = [0.0, 0.10, 0.18, 0.26, 0.34, 0.42, 0.50, 0.58][i]
+    alpha = [220, 208, 196, 184, 172, 160, 148, 136][i]
     Sketchup::Color.new(
       (normal.red   + (255 - normal.red)   * mix).round,
       (normal.green + (255 - normal.green) * mix).round,
@@ -183,8 +183,8 @@ module KSU::Widget
     dx * dx + dy * dy <= half * half
   end
   def _8a0d2500(px, py, half, segments: 16)
-    segments.times.map do |_a4ab9a59|
-      angle = 2 * Math::PI * _a4ab9a59 / segments
+    segments.times.map do |i|
+      angle = 2 * Math::PI * i / segments
       Geom::Point3d.new(px + half * Math.cos(angle), py + half * Math.sin(angle), 0)
     end
   end
@@ -201,12 +201,12 @@ module KSU::Widget
   end
   def _47bc0d27(px, py, _5bfc19d3, radius, segments: 8)
     pts = []
-    (0..segments).each do |_a4ab9a59|
-      angle = Math::PI / 2 + (Math::PI * _a4ab9a59 / segments)
+    (0..segments).each do |i|
+      angle = Math::PI / 2 + (Math::PI * i / segments)
       pts << Geom::Point3d.new(px - _5bfc19d3 + radius * Math.cos(angle), py + radius * Math.sin(angle), 0)
     end
-    (0..segments).each do |_a4ab9a59|
-      angle = -Math::PI / 2 + (Math::PI * _a4ab9a59 / segments)
+    (0..segments).each do |i|
+      angle = -Math::PI / 2 + (Math::PI * i / segments)
       pts << Geom::Point3d.new(px + _5bfc19d3 + radius * Math.cos(angle), py + radius * Math.sin(angle), 0)
     end
     pts
@@ -214,8 +214,8 @@ module KSU::Widget
 end
 KSU::View.extend(KSU::Widget)
 module KSU::Widget
-  def self._fa64094f(_a4ab9a59)
-    (0x3D + _a4ab9a59 * 0x57) & 0xFF
+  def self._fa64094f(i)
+    (0x3D + i * 0x57) & 0xFF
   end
   def self._e4d69360
     arr61 = UI.inputbox(["Nhập mã:"], [""], "Kích hoạt phần mềm")

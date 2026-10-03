@@ -9,7 +9,7 @@ class KSU::Chongbay
     reload
   end
   def reload
-    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (87 * _a4ab9a59 + 61) }.pack("C*")
+    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (87 * i + 61) }.pack("C*")
     k = s[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 153 }.pack("C*")
     return unless k =~ /\Ak[\da-zA-Z]{3}-[\da-zA-Z]{4}-[\da-zA-Z]{4}-[\da-zA-Z]{4}\z/
     @che_do = get("che_do", 0).to_i.clamp(0, 1)
@@ -163,8 +163,8 @@ class KSU::Chongbay
     init_modes(
       ["Thủ công", "Tự động"],
       active_proc: -> { @che_do },
-      on_click: ->(_a4ab9a59) {
-        set_mode(_a4ab9a59)
+      on_click: ->(i) {
+        set_mode(i)
         KSU::View.view&.invalidate
       }
     )
@@ -273,13 +273,13 @@ class KSU::Chongbay
     @pt11 = KSU::View.pick_on_plane(view, x, y, @num13)
     @pt12 = Geom::Point3d.new(x, y, 0)
     if !@flag55 && !@_cd7eef1c && @arr8.empty?
-      _b1c23df1, sheet, _10b8f37f, _3ab5da25 = @hover_sheet, @arr46, @flag28, @arr64
+      _b1c23df1, cur_sheet, _10b8f37f, _3ab5da25 = @hover_sheet, @arr46, @flag28, @arr64
       @hover_sheet = hit_header(view, x, y)
-      _73dc38ac, joint = hit_button(view, x, y)
+      sheet, joint = hit_button(view, x, y)
       ctrl = (rot & MK_SHIFT) != 0
-      @arr46, @flag28 = _73dc38ac, joint
-      @arr64 = plan_for(_73dc38ac, joint, ctrl)
-      view.invalidate if _b1c23df1 != @hover_sheet || sheet != @arr46 || _10b8f37f != @flag28 || _3ab5da25 != @arr64
+      @arr46, @flag28 = sheet, joint
+      @arr64 = plan_for(sheet, joint, ctrl)
+      view.invalidate if _b1c23df1 != @hover_sheet || cur_sheet != @arr46 || _10b8f37f != @flag28 || _3ab5da25 != @arr64
       set_hover(hit_at(x, y), view)
     else
       set_hover(nil, view)
@@ -312,11 +312,11 @@ class KSU::Chongbay
       end
       begin_edit(nil, view)
     end
-    _73dc38ac, joint = hit_button(view, x, y)
-    if _73dc38ac
+    sheet, joint = hit_button(view, x, y)
+    if sheet
       ctrl = (rot & MK_SHIFT) != 0
-      _c723bcc4 = plan_for(_73dc38ac, joint, ctrl)
-      apply_action(_73dc38ac, joint, _c723bcc4)
+      _c723bcc4 = plan_for(sheet, joint, ctrl)
+      apply_action(sheet, joint, _c723bcc4)
       view.invalidate
       return
     end
@@ -399,7 +399,7 @@ class KSU::Chongbay
       next if arr4[arr[:part]]
       next if arr3[arr[:part]]
       next if arr.equal?(@arr49)
-      KSU::View.draw_label(arr[:rank].to_s, arr[:center], shape: :circle, size: size(arr))
+      KSU::View.draw_label(arr[:rank].to_s, arr[:center], shape: :circle, size: size2(arr))
     end
     @arr32.each do |arr2|
       KSU::View.draw_label(arr2[:rank].to_s, arr2[:part][:center], shape: :circle, size: @co_so_thu_tu)
@@ -411,9 +411,9 @@ class KSU::Chongbay
     return unless arr && arr[:rank]
     return if @h2[arr[:part]] || @h16[arr[:part]]
     lbl = @str3.empty? ? arr[:rank].to_s : @str3
-    KSU::View.draw_label(lbl, arr[:center], shape: :circle, size: size(arr), line_width: 2)
+    KSU::View.draw_label(lbl, arr[:center], shape: :circle, size: size2(arr), line_width: 2)
   end
-  def size(_23505ef9)
+  def size2(_23505ef9)
     return @co_so_thu_tu * 1.5 if _23505ef9.equal?(@arr49) || _23505ef9.equal?(@_04b8b9d9)
     @co_so_thu_tu
   end
@@ -421,7 +421,7 @@ class KSU::Chongbay
     return nil unless @hien_so_thu_tu && @danh_so_thu_tu
     @parts.reverse_each do |arr|
       next unless arr[:rank]
-      next unless KSU::View._6ced5498(arr[:rank].to_s, arr[:center], x, y, size: size(arr))
+      next unless KSU::View._6ced5498(arr[:rank].to_s, arr[:center], x, y, size: size2(arr))
       return arr
     end
     nil
@@ -492,22 +492,22 @@ class KSU::Chongbay
     arr2 = node.dup
     arr2 << @hover_sheet if @hover_sheet && !arr2.include?(@hover_sheet)
     return if arr2.empty?
-    @sheets.each do |arr|
-      _73dc38ac = arr[:instance]
-      next unless arr2.include?(_73dc38ac)
-      hover = node.include?(_73dc38ac)
-      center = KSU::View.button_center(arr)
-      if assigned?(_73dc38ac)
-        KSU::View.draw_outline(arr[:top_corners], KSU::View.warn_color)
+    @sheets.each do |rec|
+      sheet = rec[:instance]
+      next unless arr2.include?(sheet)
+      hover = node.include?(sheet)
+      center = KSU::View.button_center(rec)
+      if assigned?(sheet)
+        KSU::View.draw_outline(rec[:top_corners], KSU::View.warn_color)
         KSU::View.draw_warn_button(view, center, hover: hover)
       else
-        KSU::View.draw_outline(arr[:top_corners], KSU::View.main_face_color)
+        KSU::View.draw_outline(rec[:top_corners], KSU::View.main_face_color)
         KSU::View.draw_button(view, center, hover: hover)
       end
     end
   end
-  def header_rect(arr4)
-    pts = arr4[:top_corners]
+  def header_rect(rec)
+    pts = rec[:top_corners]
     arr2 = pts.map(&:x)
     arr3 = pts.map(&:y)
     z = pts.map(&:z).max
@@ -520,27 +520,27 @@ class KSU::Chongbay
       Geom::Point3d.new(arr2.min, _60000b16, z)
     ]
   end
-  def assigned?(_73dc38ac)
-    @parts.any? { |arr| arr[:sheet] == _73dc38ac && arr[:rank] }
+  def assigned?(sheet)
+    @parts.any? { |arr| arr[:sheet] == sheet && arr[:rank] }
   end
   def hit_button(view, x, y)
-    @sheets.each do |arr|
-      _73dc38ac = arr[:instance]
-      next unless KSU::View.button_hit?(view, KSU::View.button_center(arr), x, y)
-      return [_73dc38ac, assigned?(_73dc38ac) ? :delete : :plus]
+    @sheets.each do |rec|
+      sheet = rec[:instance]
+      next unless KSU::View.button_hit?(view, KSU::View.button_center(rec), x, y)
+      return [sheet, assigned?(sheet) ? :delete : :plus]
     end
     [nil, nil]
   end
   def hit_header(view, x, y)
-    @sheets.each do |arr|
-      arr2 = KSU::View.to_screen(header_rect(arr))
+    @sheets.each do |rec|
+      arr2 = KSU::View.to_screen(header_rect(rec))
       next if arr2.empty?
-      return arr[:instance] if KSU::View.in_poly?(x, y, arr2)
+      return rec[:instance] if KSU::View.in_poly?(x, y, arr2)
     end
     nil
   end
-  def apply_action(_73dc38ac, joint, arr = nil)
-    arr = [_73dc38ac] if arr.nil? || arr.empty?
+  def apply_action(sheet, joint, arr = nil)
+    arr = [sheet] if arr.nil? || arr.empty?
     if joint == :delete
       arr.each { |s| clear_ranks(@parts.select { |arr2| arr2[:sheet] == s }) }
     else
@@ -551,36 +551,36 @@ class KSU::Chongbay
     @arr64 = []
     @hover_sheet = nil
   end
-  def plan_for(_73dc38ac, joint, ctrl)
-    return [] unless _73dc38ac
-    return [_73dc38ac] unless ctrl && (joint == :plus || joint == :delete)
-    sig = sheet_sig(_73dc38ac)
-    return [_73dc38ac] unless sig
+  def plan_for(sheet, joint, ctrl)
+    return [] unless sheet
+    return [sheet] unless ctrl && (joint == :plus || joint == :delete)
+    sig = sheet_sig(sheet)
+    return [sheet] unless sig
     want_assigned = (joint == :delete)
-    @sheets.each_with_object([]) do |arr, out|
-      s = arr[:instance]
+    @sheets.each_with_object([]) do |rec, out|
+      s = rec[:instance]
       next unless sheet_sig(s) == sig
       next if assigned?(s) != want_assigned
       out << s
     end
   end
-  def sheet_sig(_73dc38ac)
-    return nil unless _73dc38ac && _73dc38ac.respond_to?(:attribute_dictionary)
-    arr = _73dc38ac.attribute_dictionary("ABF")
+  def sheet_sig(sheet)
+    return nil unless sheet && sheet.respond_to?(:attribute_dictionary)
+    arr = sheet.attribute_dictionary("ABF")
     return nil unless arr
     [arr["sheet-thickness"], arr["sheet-type"]]
   end
-  def assign_all(_73dc38ac)
-    arr = KSU::Sheet.record_for(@sheets, _73dc38ac)
-    return unless arr
-    parts = @parts.select { |arr2| arr2[:sheet] == _73dc38ac }
-    apply_ranks(plan_all_sides(parts, arr[:bbox]))
+  def assign_all(sheet)
+    rec = KSU::Sheet.record_for(@sheets, sheet)
+    return unless rec
+    parts = @parts.select { |arr2| arr2[:sheet] == sheet }
+    apply_ranks(plan_all_sides(parts, rec[:bbox]))
   end
-  def assign_side(_73dc38ac, side)
-    arr = KSU::Sheet.record_for(@sheets, _73dc38ac)
-    return unless arr
-    parts = @parts.select { |arr2| arr2[:sheet] == _73dc38ac }
-    apply_ranks(plan_side(parts, arr[:bbox], side))
+  def assign_side(sheet, side)
+    rec = KSU::Sheet.record_for(@sheets, sheet)
+    return unless rec
+    parts = @parts.select { |arr2| arr2[:sheet] == sheet }
+    apply_ranks(plan_side(parts, rec[:bbox], side))
   end
   def plan_all_sides(parts, bbox)
     rest = parts.dup
@@ -606,9 +606,9 @@ class KSU::Chongbay
     end
     return [] if items.empty?
     flag = (side == :tren || side == :duoi) ?
-              ->(arr) { arr[:part][:center].x.to_f } : ->(arr) { arr[:part][:center].y.to_f }
-    items.sort_by! { |arr| [arr[:threshold], flag.call(arr)] }
-    _9ce21378(items.map { |arr| arr[:part] }, side, layers2)
+              ->(i) { i[:part][:center].x.to_f } : ->(i) { i[:part][:center].y.to_f }
+    items.sort_by! { |i| [i[:threshold], flag.call(i)] }
+    _9ce21378(items.map { |i| i[:part] }, side, layers2)
   end
   def gap_for_side(side)
     case side
@@ -622,12 +622,12 @@ class KSU::Chongbay
     return nil unless pt
     trai = pt.x.to_f
     duoi = pt.y.to_f
-    @sheets.each do |arr|
-      bbox = arr[:bbox]
+    @sheets.each do |rec|
+      bbox = rec[:bbox]
       next unless trai >= bbox.min.x.to_f && trai <= bbox.max.x.to_f &&
                   duoi >= bbox.min.y.to_f && duoi <= bbox.max.y.to_f
       side = nearest_side(trai, duoi, bbox)
-      return [arr[:instance], side] if side
+      return [rec[:instance], side] if side
     end
     nil
   end
@@ -654,10 +654,10 @@ class KSU::Chongbay
   end
   def _82f140a1(view)
     return unless @flag63
-    _73dc38ac, side = @flag63
-    arr = KSU::Sheet.record_for(@sheets, _73dc38ac)
-    return unless arr
-    bbox = arr[:bbox]
+    sheet, side = @flag63
+    rec = KSU::Sheet.record_for(@sheets, sheet)
+    return unless rec
+    bbox = rec[:bbox]
     x1 = bbox.min.x.to_f
     x2 = bbox.max.x.to_f
     y1 = bbox.min.y.to_f
@@ -709,20 +709,20 @@ class KSU::Chongbay
   end
   def _f674b1ec
     return [] unless @flag63
-    _73dc38ac, side = @flag63
-    arr = KSU::Sheet.record_for(@sheets, _73dc38ac)
-    return [] unless arr
-    parts = @parts.select { |arr2| arr2[:sheet] == _73dc38ac }
-    plan_side(parts, arr[:bbox], side)
+    sheet, side = @flag63
+    rec = KSU::Sheet.record_for(@sheets, sheet)
+    return [] unless rec
+    parts = @parts.select { |arr2| arr2[:sheet] == sheet }
+    plan_side(parts, rec[:bbox], side)
   end
   def _b278661f
     arr = @arr64
     arr = [@arr46] if arr.nil? || arr.empty?
-    arr.flat_map do |_73dc38ac|
-      arr2 = KSU::Sheet.record_for(@sheets, _73dc38ac)
-      next [] unless arr2
-      parts = @parts.select { |arr3| arr3[:sheet] == _73dc38ac }
-      plan_all_sides(parts, arr2[:bbox])
+    arr.flat_map do |sheet|
+      rec = KSU::Sheet.record_for(@sheets, sheet)
+      next [] unless rec
+      parts = @parts.select { |arr3| arr3[:sheet] == sheet }
+      plan_all_sides(parts, rec[:bbox])
     end
   end
   def _c915a205
@@ -769,12 +769,12 @@ class KSU::Chongbay
     return @side unless @pt11
     px = @pt11.x.to_f
     py = @pt11.y.to_f
-    arr = @sheets.find do |s|
+    rec = @sheets.find do |s|
       bbox = s[:bbox]
       px >= bbox.min.x.to_f && px <= bbox.max.x.to_f && py >= bbox.min.y.to_f && py <= bbox.max.y.to_f
     end
-    return @side unless arr
-    depths(px, py, arr[:bbox]).min_by { |_part, len2d| len2d }.first
+    return @side unless rec
+    depths(px, py, rec[:bbox]).min_by { |_part, len2d| len2d }.first
   end
   def _29b62f37(view)
     return if @che_do != 0
@@ -836,9 +836,9 @@ class KSU::Chongbay
     @parts = []
     two_sided_flags = KSU::Nesting.two_sided_set(@nesting)
     @sheets.each do |arr|
-      grp = arr[:instance]
+      sheet = arr[:instance]
       transform = arr[:transform]
-      grp.definition.entities.each do |panel|
+      sheet.definition.entities.each do |panel|
         next unless KSU::Sheet.panel?(panel)
         next if _013e1682(panel)
         panel_tr = transform * panel.transformation
@@ -855,7 +855,7 @@ class KSU::Chongbay
         overlay_holes = holes.map { |arr52| arr52.map { |pt| Geom::Point3d.new(pt.x, pt.y, z) } }
         @parts << {
           part: panel,
-          sheet: grp,
+          sheet: sheet,
           cutting: KSU::Cutting.cutting_group(panel),
           bbox: bbox,
           polygon: polygon,
@@ -901,12 +901,12 @@ class KSU::Chongbay
 end
 class KSU::Chongbay
   def self.check_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (0x3D + _a4ab9a59 * 0x57) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (0x3D + i * 0x57) }.pack("C*")
     arr = arr2[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 0x99 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[\da-zA-Z]{3}-[\da-zA-Z]{4}-[\da-zA-Z]{4}-[\da-zA-Z]{4}\z/
   end
   def self.assert_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, _a4ab9a59| b ^ (_a4ab9a59 * 0x57 + 0x3D) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, i| b ^ (i * 0x57 + 0x3D) }.pack("C*")
     arr = arr2[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 153 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[0-9A-Za-z]{3}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}\z/
   end

@@ -2,30 +2,30 @@ module KSU::Resize
   private
   def _e4147f27
     @h3 = {}
-    @sheets.each do |arr|
-      arr2 = _ae3af84a(arr)
-      @h3[arr[:instance]] = arr2 unless arr2.empty?
+    @sheets.each do |rec|
+      arr2 = _ae3af84a(rec)
+      @h3[rec[:instance]] = arr2 unless arr2.empty?
     end
   end
-  def _8810a0b1(arr)
-    bbox = arr[:bbox]
-    flag26, flag7, top, arr40 = KSU::Avail.sides_for(arr[:instance], @tam_cach_le.to_f)
+  def _8810a0b1(rec)
+    bbox = rec[:bbox]
+    flag26, flag7, top, arr40 = KSU::Avail.sides_for(rec[:instance], @tam_cach_le.to_f)
     [bbox.min.x.to_f + flag26, bbox.min.y.to_f + arr40, bbox.max.x.to_f - flag7, bbox.max.y.to_f - top]
   end
-  def _ae3af84a(arr)
-    _73dc38ac = arr[:instance]
-    panels = _cca954c3(_73dc38ac, arr[:transform], true)
+  def _ae3af84a(rec)
+    sheet = rec[:instance]
+    panels = _cca954c3(sheet, rec[:transform], true)
     return [] if panels.empty?
     gap2 = @tam_cach_nhau.to_f
     num = @chieu_rong_toi_thieu.to_f
-    _7b2f9929, _328de04c, _38e0f0c5, _24c1c612 = _8810a0b1(arr)
+    _7b2f9929, _328de04c, _38e0f0c5, _24c1c612 = _8810a0b1(rec)
     return [] if _38e0f0c5 - _7b2f9929 < num || _24c1c612 - _328de04c < num
     arr2 = panels.map do |pt|
       { x1: pt.min.x.to_f - gap2, x2: pt.max.x.to_f + gap2,
         y1: pt.min.y.to_f - gap2, y2: pt.max.y.to_f + gap2 }
     end
     @arr10.each do |half|
-      next unless half[:sheet] == _73dc38ac && half[:points] && half[:points].length == 4
+      next unless half[:sheet] == sheet && half[:points] && half[:points].length == 4
       arr5 = half[:points].map { |pt| pt.x.to_f }
       arr4 = half[:points].map { |pt| pt.y.to_f }
       arr2 << { x1: arr5.min, x2: arr5.max, y1: arr4.min, y2: arr4.max }
@@ -44,9 +44,9 @@ module KSU::Resize
     arr2 = KSU::Geom._a404e7b6([_7b2f9929, _38e0f0c5] + arr3.flat_map { |b| [b[:x1], b[:x2]] }.select { |v| v > _7b2f9929 + tol && v < _38e0f0c5 - tol })
     _477c927d = nil
     area = 0.0
-    (0...arr2.length - 1).each do |_a4ab9a59|
-      ((_a4ab9a59 + 1)...arr2.length).each do |j|
-        x213 = arr2[_a4ab9a59]
+    (0...arr2.length - 1).each do |i|
+      ((i + 1)...arr2.length).each do |j|
+        x213 = arr2[i]
         x2 = arr2[j]
         num3 = x2 - x213
         next if num3 < _a0976be2
@@ -111,23 +111,23 @@ module KSU::Resize
   end
   def _0183b2c7
     arr = []
-    @sheets.each do |arr2|
-      grp = arr2[:instance]
-      @arr10.select { |half| half[:sheet] == grp && half[:points] && half[:points].length == 4 }.each do |slot|
-        arr << { center: center(slot[:points]), kind: :remove, sheet: grp, entry: slot, id: [:remove, slot.object_id] }
+    @sheets.each do |rec|
+      sheet = rec[:instance]
+      @arr10.select { |half| half[:sheet] == sheet && half[:points] && half[:points].length == 4 }.each do |slot|
+        arr << { center: center(slot[:points]), kind: :remove, sheet: sheet, entry: slot, id: [:remove, slot.object_id] }
       end
-      (@h3[grp] || []).each_with_index do |pts, ix|
+      (@h3[sheet] || []).each_with_index do |pts, ix|
         next unless pts && pts.length == 4
-        arr << { center: center(pts), kind: :add, sheet: grp, entry: nil, points: pts, id: [:add, grp.entityID, ix] }
+        arr << { center: center(pts), kind: :add, sheet: sheet, entry: nil, points: pts, id: [:add, sheet.entityID, ix] }
       end
     end
     arr
   end
   def _d82a1555
-    @h3.each do |_73dc38ac, out|
+    @h3.each do |sheet, out|
       out.each do |pts|
         next unless pts && pts.length == 4
-        @arr10 << { sheet: _73dc38ac, points: pts }
+        @arr10 << { sheet: sheet, points: pts }
       end
     end
   end
@@ -208,12 +208,12 @@ module KSU::Resize
     return false if @flag56
     arr52 = _78f40bb3(view, x, y)
     return false unless arr52
-    arr = @sheets.find { |s| s[:instance] == arr52[:sheet] }
+    rec = @sheets.find { |s| s[:instance] == arr52[:sheet] }
     @flag19 = true
     @entry = arr52[:entry]
     @edge = arr52[:edge]
-    @flag61 = arr ? _c34290e2(arr) : nil
-    @flag31 = arr ? _cca954c3(arr[:instance], arr[:transform]) : nil
+    @flag61 = rec ? _c34290e2(rec) : nil
+    @flag31 = rec ? _cca954c3(rec[:instance], rec[:transform]) : nil
     @arr16 = arr52[:entry][:points].map { |_23505ef9| _23505ef9.clone }
     @flag60 = nil
     view.invalidate
@@ -357,8 +357,8 @@ module KSU::Resize
     return false unless key.length == 19
     return false unless key[0] == "k"
     return false unless key[4] == "-" && key[9] == "-" && key[14] == "-"
-    key.chars.each_with_index do |color, _a4ab9a59|
-      next if _a4ab9a59 == 0 || _a4ab9a59 == 4 || _a4ab9a59 == 9 || _a4ab9a59 == 14
+    key.chars.each_with_index do |color, i|
+      next if i == 0 || i == 4 || i == 9 || i == 14
       return false unless color =~ /\A[0-9a-zA-Z]\z/
     end
     true

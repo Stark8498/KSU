@@ -56,12 +56,12 @@ module KSU::Edit
     return [] unless nesting && nesting.valid?
     out = []
     tr = nesting.transformation
-    nesting.definition.entities.each do |grp|
-      next unless KSU.container?(grp)
-      next unless grp.name.to_s.downcase.include?("sheet")
-      is_bottom = KSU::Sheet.bottom_sheet?(grp)
-      sheet_tr = tr * grp.transformation
-      grp.definition.entities.each do |panel|
+    nesting.definition.entities.each do |sheet|
+      next unless KSU.container?(sheet)
+      next unless sheet.name.to_s.downcase.include?("sheet")
+      is_bottom = KSU::Sheet.bottom_sheet?(sheet)
+      sheet_tr = tr * sheet.transformation
+      sheet.definition.entities.each do |panel|
         next unless KSU::Sheet.panel?(panel)
         next if is_bottom && !KSU::Cutting.cutting_group(panel)
         panel_tr = sheet_tr * panel.transformation
@@ -76,9 +76,9 @@ module KSU::Edit
   def two_sided_set(nesting)
     out = {}
     return out unless nesting && nesting.valid?
-    nesting.definition.entities.each do |grp|
-      next unless KSU::Sheet.sheet?(grp)
-      grp.definition.entities.each do |panel|
+    nesting.definition.entities.each do |sheet|
+      next unless KSU::Sheet.sheet?(sheet)
+      sheet.definition.entities.each do |panel|
         next unless KSU.container?(panel)
         next unless KSU::Cutting.bottom_face?(panel)
         ix = panel.get_attribute("ABF", "board-index")
@@ -146,8 +146,8 @@ module KSU::Edit
   end
   def _7276832b(lp, transform, out, limit)
     snap_edges = lp.edges
-    (0...snap_edges.length - 1).each do |_a4ab9a59|
-      skip1, skip2 = snap_edges[_a4ab9a59], snap_edges[_a4ab9a59 + 1]
+    (0...snap_edges.length - 1).each do |i|
+      skip1, skip2 = snap_edges[i], snap_edges[i + 1]
       v = _59205066(skip1, skip2)
       next unless v
       pt = _f84d71f4(skip1.other_vertex(v).position, v.position, skip2.other_vertex(v).position)
@@ -176,7 +176,7 @@ module KSU::Edit
     return nesting if nesting
     model.definitions.each do |len2d|
       next if len2d.image?
-      len2d.instances.each { |instance| return instance if instance.name == "__ABF_Nesting" }
+      len2d.instances.each { |inst| return inst if inst.name == "__ABF_Nesting" }
     end
     UI.messagebox("Không tìm thấy group nesting!") if notify
     nil
@@ -229,9 +229,9 @@ module KSU::Edit
   def _c5ab406d(nesting)
     hi = 0
     return hi unless nesting && nesting.valid?
-    nesting.definition.entities.each do |_73dc38ac|
-      next unless KSU.container?(_73dc38ac)
-      ents = KSU.entities_in(_73dc38ac)
+    nesting.definition.entities.each do |sheet|
+      next unless KSU.container?(sheet)
+      ents = KSU.entities_in(sheet)
       next unless ents
       ents.each do |panel|
         next unless KSU.container?(panel)

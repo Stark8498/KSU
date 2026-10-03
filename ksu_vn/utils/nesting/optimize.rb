@@ -55,8 +55,8 @@ module KSU::Optimize
       break if num > 200
       reload_sheets
       target = sheet_recs.find do |s|
-        instance = s[:instance]
-        instance && instance.valid? && !KSU::Sheet.hidden?(instance) && KSU::Sheet.empty?(instance)
+        inst = s[:instance]
+        inst && inst.valid? && !KSU::Sheet.hidden?(inst) && KSU::Sheet.empty?(inst)
       end
       break unless target
       break unless KSU::Sheet.remove_sheet(target[:instance], @nesting, sheet_recs)
@@ -123,7 +123,7 @@ module KSU::Optimize
     ix = arr2.index(grp3) || (arr2.length - 1)
     pt = KSU::Sheet.row_offset(rec, arr2, ix, sheet_recs)
     base_tr = grp3.transformation
-    labels4 = KSU::Sheet.labels(anchor, @nesting)
+    labels4 = KSU::Sheet.sheet_labels(anchor, @nesting)
     pt3 = anchor.transformation.origin
     str = KSU::Sheet.sheet_no(anchor.name.to_s)
     KSU::Sheet.shift_sheets(@nesting, str + 1, want) if str
@@ -149,9 +149,9 @@ module KSU::Optimize
     max_x = nil
     out.each do |s|
       next unless s && s.valid?
-      arr = sheet_recs.find { |arr2| arr2[:instance] == s }
-      next unless arr
-      x = arr[:bbox].max.x
+      rec = sheet_recs.find { |i| i[:instance] == s }
+      next unless rec
+      x = rec[:bbox].max.x
       if max_x.nil? || x > max_x
         max_x = x
         _477c927d = s
@@ -172,13 +172,13 @@ module KSU::Optimize
   def collect_parts(sheets)
     parts = []
     two_sided_flags = KSU::Nesting.two_sided_set(@nesting)
-    sheets.each do |grp|
-      arr = sheet_recs.find { |s| s[:instance] == grp }
-      next unless arr
-      sheet_tr = arr[:transform]
-      grp.definition.entities.each do |panel|
+    sheets.each do |sheet|
+      rec = sheet_recs.find { |s| s[:instance] == sheet }
+      next unless rec
+      sheet_tr = rec[:transform]
+      sheet.definition.entities.each do |panel|
         next unless _1a400713(panel)
-        parts << _3fe7c4d4(panel, grp, sheet_tr, two_sided_flags)
+        parts << _3fe7c4d4(panel, sheet, sheet_tr, two_sided_flags)
       end
     end
     parts
@@ -193,20 +193,20 @@ module KSU::Optimize
     return false if back_face2?(panel)
     true
   end
-  def _3fe7c4d4(panel, _73dc38ac, sheet_tr, two_sided_flags)
+  def _3fe7c4d4(panel, sheet, sheet_tr, two_sided_flags)
     bbox = KSU::View._66e14707(panel, sheet_tr)
     fill = KSU::Cutting.outline(panel, sheet_tr * panel.transformation)
     holes = fill && fill[:holes] && !fill[:holes].empty? ? fill[:holes] : nil
     outer = fill && fill[:outer] && fill[:outer].length >= 3 ? fill[:outer] : nil
     {
       panel: panel,
-      sheet: _73dc38ac,
+      sheet: sheet,
       bbox: bbox,
       w: bbox.width.to_f,
       h: bbox.height.to_f,
       outer: outer,
       holes: holes,
-      rotatable: rotatable(panel, _73dc38ac),
+      rotatable: rotatable2(panel, sheet),
       two_sided: !(ix = panel.get_attribute("ABF", "board-index")).nil? && !!two_sided_flags[ix],
       cano: cano(panel, sheet_tr),
     }
@@ -225,13 +225,13 @@ module KSU::Optimize
   rescue StandardError
     0.0
   end
-  def rotatable(panel, grp)
-    return _5709b6da(panel, grp) if @arr31.is_a?(Hash)
+  def rotatable2(panel, sheet)
+    return _5709b6da(panel, sheet) if @arr31.is_a?(Hash)
     arr2 = rotate_by_material? ? _b617070b(material_list) : []
     arr = rotate_by_keyword? ? _b617070b(keyword_list) : []
     return true if arr2.empty? && arr.empty?
-    if !arr2.empty? && grp && grp.respond_to?(:get_attribute)
-      lbl = grp.get_attribute("ABF", "sheet-type").to_s.downcase
+    if !arr2.empty? && sheet && sheet.respond_to?(:get_attribute)
+      lbl = sheet.get_attribute("ABF", "sheet-type").to_s.downcase
       return true if !lbl.empty? && arr2.any? { |_0cc812ea| lbl.include?(_0cc812ea) }
     end
     if !arr.empty? && panel && panel.respond_to?(:name)
@@ -240,8 +240,8 @@ module KSU::Optimize
     end
     false
   end
-  def _5709b6da(panel, grp)
-    sheet_type = grp && grp.respond_to?(:get_attribute) ? grp.get_attribute("ABF", "sheet-type").to_s : ""
+  def _5709b6da(panel, sheet)
+    sheet_type = sheet && sheet.respond_to?(:get_attribute) ? sheet.get_attribute("ABF", "sheet-type").to_s : ""
     color = @arr31[sheet_type]
     return false unless color
     return true if color[:on]

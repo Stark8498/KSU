@@ -9,7 +9,7 @@ class KSU::Xeptam
     reload
   end
   def reload
-    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (0x3D + _a4ab9a59 * 0x57) }.pack("C*")
+    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (0x3D + i * 0x57) }.pack("C*")
     k = s[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 0x99 }.pack("C*")
     return unless k =~ /\Ak[\da-zA-Z]{3}-[\da-zA-Z]{4}-[\da-zA-Z]{4}-[\da-zA-Z]{4}\z/
     @xep_tam_tu_do = !!get("xep_tam_tu_do", false)
@@ -36,10 +36,10 @@ class KSU::Xeptam
                         defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:union) && KSU::Clipper.respond_to?(:difference)
     @h27 = {}
     @arr15 = nil
-    @pt13 = nil
+    @anchor_pt = nil
     @flag35 = false
-    @arr27 = []
-    @arr12 = []
+    @sel_panels = []
+    @sel_sheets = []
     @flag56 = false
     @flag45 = false
     @flag10 = false
@@ -78,22 +78,22 @@ class KSU::Xeptam
     @flag30 = false
     @flag52 = false
     @flag36 = false
-    @arr63 = nil
-    @arr53 = nil
-    @arr55 = nil
+    @sel_polys = nil
+    @sel_hull = nil
+    @sel_bounds = nil
     @h15 = {}
     @arr3 = nil
-    @h26 = {}
+    @outlines = {}
     @_75ce293c = nil
     @flag4 = false
-    @_8bfa6763 = nil
+    @saved_free_mode = nil
     @pt3 = nil
-    @pt8 = nil
-    @_27cbbc5a = nil
-    @_ee3eb631 = nil
-    @_8a0971a9 = nil
-    @pt2 = nil
-    @flag3 = nil
+    @drag_offset = nil
+    @saved_polys = nil
+    @saved_bounds = nil
+    @saved_hulls = nil
+    @saved_offset = nil
+    @saved_outlines = nil
     @arr57 = []
     @arr33 = []
     @flag50 = false
@@ -101,12 +101,12 @@ class KSU::Xeptam
     @arr11 = []
     @arr18 = []
     @_02765833 = nil
-    @h23 = {}
+    @grid_cache = {}
     @flag11 = nil
     @num12 = nil
     @str = nil
     @arr6 = nil
-    @_b7599404 = nil
+    @opt_sheet = nil
     if Sketchup.active_model.tools.active_tool == self
       @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, @an_nhan_tiet_dien, @label_section_hidden)
     end
@@ -122,7 +122,7 @@ class KSU::Xeptam
     @h4 = {}
     sheet_list(@nesting)
     _1817fa46
-    _5b9cf20b
+    clear_grid_cache
     @presets = get("presets", nil)
     setup_fields(
       "Xếp tấm tự do" => {
@@ -150,10 +150,10 @@ class KSU::Xeptam
   end
   def deactivate(view)
     KSU::Avail.set_override(nil)
-    _40219b95
+    optimize_cancel
     save_selected_preset
     KSU::View.off_change("xep_tam")
-    _4601b4c9
+    show_originals
     @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, false, @label_section_hidden)
     KSU::Nesting.leave_edit
     view.invalidate
@@ -181,14 +181,14 @@ class KSU::Xeptam
     _de5cc9a8
     @h27 = {}
     @h15 = {}
-    _5b9cf20b
+    clear_grid_cache
   end
   def reload_settings
     super
     _de5cc9a8
     @h27 = {}
     @h15 = {}
-    _5b9cf20b
+    clear_grid_cache
   end
   def rebuild_all
     if @flag36
@@ -197,9 +197,9 @@ class KSU::Xeptam
     end
     return if @flag56
     return unless @nesting && @nesting.valid?
-    keep_existing = @arr27.each_index.select { |_a4ab9a59| @arr27[_a4ab9a59] && @arr27[_a4ab9a59].valid? }
-    @arr27 = keep_existing.map { |_a4ab9a59| @arr27[_a4ab9a59] }
-    @arr12 = keep_existing.map { |_a4ab9a59| @arr12[_a4ab9a59] }
+    keep_existing = @sel_panels.each_index.select { |i| @sel_panels[i] && @sel_panels[i].valid? }
+    @sel_panels = keep_existing.map { |i| @sel_panels[i] }
+    @sel_sheets = keep_existing.map { |i| @sel_sheets[i] }
     @flag37 = nil unless @flag37 && @flag37.valid?
     sheet_list(@nesting)
     _1817fa46
@@ -277,12 +277,12 @@ class KSU::Xeptam
       if @_75ce293c.nil?
         @_75ce293c = @xep_tam_tu_do
         @xep_tam_tu_do = true
-        _50ab81be if @flag56
+        drag_follow if @flag56
         view.invalidate
       end
       return
     end
-    if @flag37 && @flag37.valid? && @arr27.empty? &&
+    if @flag37 && @flag37.valid? && @sel_panels.empty? &&
        !KSU::Sheet.hidden?(@flag37)
       case key
       when VK_LEFT, VK_RIGHT
@@ -301,12 +301,12 @@ class KSU::Xeptam
         return
       end
     end
-    return if @arr27.empty?
+    return if @sel_panels.empty?
     if key == 9
       _3ea06bed(@goc_xoay_van.degrees)
       return
     end
-    if @arr27.length >= 2
+    if @sel_panels.length >= 2
       case key
       when VK_LEFT then _2bff4638(:left)
       when VK_RIGHT then _2bff4638(:right)
@@ -330,17 +330,17 @@ class KSU::Xeptam
     elsif key == ALT_MODIFIER_KEY && !@_75ce293c.nil?
       @xep_tam_tu_do = @_75ce293c
       @_75ce293c = nil
-      _f8e75e9d if @flag56
+      save_drag_state if @flag56
       view.invalidate
     end
   end
   def onReturn(view)
     return if @num12
     return if @flag56
-    return unless @arr27.empty?
+    return unless @sel_panels.empty?
     return unless @flag37 && @flag37.valid?
     return if KSU::Sheet.hidden?(@flag37)
-    _cfe1b27c(@flag37)
+    optimize_sheet(@flag37)
     view.invalidate
   end
   def onLButtonDown(rot, x, y, view)
@@ -354,9 +354,9 @@ class KSU::Xeptam
       @flag38 = true
       return
     end
-    _7a82534c = _ecb07074(view, x, y)
+    _7a82534c = panel_at(view, x, y)
     if _7a82534c
-      _903c1e24(_7a82534c)
+      flip_panel(_7a82534c)
       _37011ad2(x, y, view)
       onSetCursor
       @flag38 = true
@@ -379,17 +379,17 @@ class KSU::Xeptam
         view.invalidate
         return
       end
-      _3b0598af = _f3bdae07(view, x, y)
+      _3b0598af = corner_handle_at(view, x, y)
       if _3b0598af
-        _f098d644(_3b0598af) unless KSU::Sheet.hidden?(@flag37)
+        snap_to_corner(_3b0598af) unless KSU::Sheet.hidden?(@flag37)
         @flag38 = true
         update_status
         view.invalidate
         return
       end
-      edge_ix = _30c1f1e6(view, x, y)
+      edge_ix = edge_handle_at(view, x, y)
       if edge_ix
-        _fa7e4609(edge_ix) unless KSU::Sheet.hidden?(@flag37)
+        snap_to_edge(edge_ix) unless KSU::Sheet.hidden?(@flag37)
         @flag38 = true
         update_status
         view.invalidate
@@ -413,30 +413,30 @@ class KSU::Xeptam
     if @flag46
       arr = _101ef2e3(view, @_3a930069, @_0b246bc2, x, y)
       if arr.any?
-        _78c88320(arr)
+        select_many(arr)
         @flag37 = nil
       elsif !@flag5
-        @arr27 = []
-        @arr12 = []
+        @sel_panels = []
+        @sel_sheets = []
         @flag37 = nil
       end
       @flag46 = false
     elsif @flag56
-      _f97c64c2
+      drag_end
     else
       answer = _b01ddcaf(view, x, y)
       if answer
-        _2171a7c6(answer)
-        @flag37 = @arr27.size == 1 ? @arr12[0] : nil
+        select_one(answer)
+        @flag37 = @sel_panels.size == 1 ? @sel_sheets[0] : nil
       else
         _b51e23e4 = sheet_at2(view, x, y)
         if _b51e23e4
-          @arr27 = []
-          @arr12 = []
+          @sel_panels = []
+          @sel_sheets = []
           @flag37 = _b51e23e4
         elsif !@flag5
-          @arr27 = []
-          @arr12 = []
+          @sel_panels = []
+          @sel_sheets = []
           @flag37 = nil
         end
       end
@@ -458,21 +458,21 @@ class KSU::Xeptam
       dy = (y - @_0b246bc2).abs
       if dx > 3 || dy > 3
         answer = _b01ddcaf(view, @_3a930069, @_0b246bc2)
-        if @arr27.any? && answer && @arr27.include?(answer[:panel])
-          _afb25a1e(view, @_3a930069, @_0b246bc2)
+        if @sel_panels.any? && answer && @sel_panels.include?(answer[:panel])
+          drag_begin(view, @_3a930069, @_0b246bc2)
         elsif answer
-          @arr27 = [answer[:panel]]
-          @arr12 = [answer[:sheet]]
+          @sel_panels = [answer[:panel]]
+          @sel_sheets = [answer[:sheet]]
           expand_selection
-          _afb25a1e(view, @_3a930069, @_0b246bc2)
+          drag_begin(view, @_3a930069, @_0b246bc2)
         else
           @flag46 = true
           @panel = @sheet4 = @sheet = nil
         end
       end
     end
-    return unless @flag56 && @arr27.any?
-    @pt5 = _7fd07e0b(view, x, y)
+    return unless @flag56 && @sel_panels.any?
+    @pt5 = drag_plane_point(view, x, y)
     return unless @pt5
     _38196f56 = if @flag25 && @pt7
         dx = (@pt5.x - @pt7.x).abs
@@ -488,16 +488,16 @@ class KSU::Xeptam
     vec = _38196f56 - @pt14
     return if vec.length < 1e-9
     _af333274 = @pt14
-    _98834989(vec)
-    _52bcd343(vec)
+    add_offset(vec)
+    shift_cached_polys(vec)
     @pt14 = _38196f56
     if @flag45
       @flag21 = false
       view.invalidate
       return
     end
-    arr = record_for(@arr12.first)
-    instance = @arr46 && @arr46[:instance]
+    arr = record_for(@sel_sheets.first)
+    inst6 = @arr46 && @arr46[:instance]
     _1f2cf874 = @flag50
     flag = @flag25 ? nil : @arr23.find do |s|
       !KSU::Sheet.hidden?(s[:instance]) && s[:bbox].contains?(@pt5)
@@ -515,7 +515,7 @@ class KSU::Xeptam
     elsif @xep_tam_tu_do
       @arr46 = arr
     else
-      _b4ce762b, _8eedd0f1 = _eca6a79f(@pt5)
+      _b4ce762b, _8eedd0f1 = nearest_sheet(@pt5)
       if _8eedd0f1 && _8eedd0f1 > 0.0
         @flag50 = true
         @arr46 = arr
@@ -524,10 +524,10 @@ class KSU::Xeptam
       end
     end
     _5a7c1be3 = @flag50 && !_1f2cf874
-    if _5a7c1be3 || (@arr46 && @arr46[:instance]) != instance
-      _066c900b
-      _50ab81be if _5a7c1be3
-      _f8e75e9d
+    if _5a7c1be3 || (@arr46 && @arr46[:instance]) != inst6
+      restore_free_mode
+      drag_follow if _5a7c1be3
+      save_drag_state
     end
     _d8a427f3 = @arr46 || arr
     _290b52bf = !!(flag && arr && flag[:instance] != arr[:instance])
@@ -538,7 +538,7 @@ class KSU::Xeptam
         elsif @flag25 || @xep_tam_tu_do
           cap = _7f17a5c5(_d8a427f3)
           @flag21 = !cap
-          _066c900b if cap && @flag4
+          restore_free_mode if cap && @flag4
         else
           arr5 = _0feae552(_d8a427f3)
           if arr5 && arr5[:valid]
@@ -548,19 +548,19 @@ class KSU::Xeptam
           else
             _33b33533 = _19030d1a(_d8a427f3)
             if _33b33533
-              _98834989(_33b33533)
-              _52bcd343(_33b33533)
+              add_offset(_33b33533)
+              shift_cached_polys(_33b33533)
             end
             arr4 = compute_push_back(_d8a427f3, true)
             if arr4.length.to_f >= KSU::TOL
-              _98834989(arr4)
-              _52bcd343(arr4)
+              add_offset(arr4)
+              shift_cached_polys(arr4)
               _63b8ba0b(_d8a427f3, vec, arr4)
               if compute_push_back(_d8a427f3, true).length.to_f < KSU::TOL
                 build_grid(_d8a427f3)
                 @flag21 = false
               elsif _290b52bf
-                _9f96b850
+                force_free_mode
                 @flag21 = false
               else
                 @flag21 = true
@@ -578,13 +578,13 @@ class KSU::Xeptam
     _03d703fa = !@xep_tam_tu_do && !@flag50 && _d8a427f3 && _11075c77(_d8a427f3)
     if (@flag21 || _03d703fa) && !@xep_tam_tu_do && !@flag50
       if _03d703fa || !@flag33
-        _70a50d49
+        restore_drag_state
         @pt14 = _af333274
         @flag21 = false
       end
     else
       @flag33 = false
-      _f8e75e9d
+      save_drag_state
     end
     rebuild_preview
     view.invalidate
@@ -606,35 +606,35 @@ class KSU::Xeptam
     warning_face_color = KSU::View.warn_color
     if @panel2 && @panel2.valid? && !@flag56 &&
        (@sheet4.nil? || @sheet4.valid?) &&
-       !@arr27.include?(@panel2)
+       !@sel_panels.include?(@panel2)
       arr5 = [[@panel2, @sheet4]] + @arr41
       arr5.each do |vec, vec2|
         next unless vec && vec.valid?
         next if vec2 && !vec2.valid?
-        next if @arr27.include?(vec)
-        _9a1f1a22(vec, vec2, mat)
+        next if @sel_panels.include?(vec)
+        draw_panel_fill(vec, vec2, mat)
         partner_of = partner_of2(vec)
         next unless partner_of && partner_of.valid?
         arr3 = rec_by_def(partner_of.parent)
-        _9a1f1a22(partner_of, arr3[:instance], mat) if arr3
+        draw_panel_fill(partner_of, arr3[:instance], mat) if arr3
       end
     end
-    if @arr27.any?
+    if @sel_panels.any?
       _4e78f5d5 = @flag56 && @flag21
       flag = _4e78f5d5 ? warn : edge_color2
       color = _4e78f5d5 ? warning_face_color : mat
-      if @arr63
-        _83ee7e20(@arr63, flag)
+      if @sel_polys
+        _83ee7e20(@sel_polys, flag)
       else
-        @arr27.each_with_index do |panel, ix|
+        @sel_panels.each_with_index do |panel, ix|
           next unless panel && panel.valid?
-          vec3 = @arr12[ix]
-          next if vec3 && !vec3.valid?
-          _9a1f1a22(panel, vec3, color, flag)
+          sheet = @sel_sheets[ix]
+          next if sheet && !sheet.valid?
+          draw_panel_fill(panel, sheet, color, flag)
         end
       end
     end
-    _eed07b86(@_955ee93a, @flag21 ? warning_face_color : mat) if @_955ee93a && @flag56
+    draw_thick_outline(@_955ee93a, @flag21 ? warning_face_color : mat) if @_955ee93a && @flag56
     mat3 = Sketchup::Color.new(mat.red, mat.green, mat.blue, [mat.alpha * 3, 255].min)
     mat4 = Sketchup::Color.new(warn.red, warn.green, warn.blue, [mat.alpha * 3, 255].min)
     mat2 = Sketchup::Color.new(warn.red, warn.green, warn.blue, mat.alpha)
@@ -642,12 +642,12 @@ class KSU::Xeptam
       arr = record_for(@flag37)
       if arr
         if KSU::Sheet.hidden?(@flag37)
-          _eed07b86(arr, mat4)
-          KSU::View.draw_brackets(view, arr[:top_corners], color: warn, active: KSU::Sheet.corner_index(@flag37, @nesting)) { |_a4ab9a59| @flag39 == _a4ab9a59 }
+          draw_thick_outline(arr, mat4)
+          KSU::View.draw_brackets(view, arr[:top_corners], color: warn, active: KSU::Sheet.corner_index(@flag37, @nesting)) { |i| @flag39 == i }
         else
-          _eed07b86(arr, mat3)
-          KSU::View.draw_brackets(view, arr[:top_corners]) { |_a4ab9a59| @flag39 == _a4ab9a59 }
-          KSU::View._2873a79b(view, arr[:top_corners]) { |_a4ab9a59| @flag51 == _a4ab9a59 }
+          draw_thick_outline(arr, mat3)
+          KSU::View.draw_brackets(view, arr[:top_corners]) { |i| @flag39 == i }
+          KSU::View._2873a79b(view, arr[:top_corners]) { |i| @flag51 == i }
           draw_side_buttons(view, arr)
           KSU::View.draw_warn_button(view, KSU::View.center_of(arr[:top_corners]), hover: @flag12) if KSU::Sheet.empty?(@flag37)
         end
@@ -656,44 +656,44 @@ class KSU::Xeptam
     if @sheet && @sheet.valid? && !@flag56 &&
        @sheet != @flag37
       _d5f2cd75 = record_for(@sheet)
-      _eed07b86(_d5f2cd75, KSU::Sheet.hidden?(@sheet) ? mat2 : mat) if _d5f2cd75
+      draw_thick_outline(_d5f2cd75, KSU::Sheet.hidden?(@sheet) ? mat2 : mat) if _d5f2cd75
     end
-    unless @arr27.empty? || @arr28.empty?
+    unless @sel_panels.empty? || @arr28.empty?
       _ce2de26a = @flag56 && @flag21
       flag3 = _ce2de26a ? warning_face_color : mat
       flag2 = _ce2de26a ? warn : edge_color2
       if @flag56
         arr4 = []
-        @arr27.each do |panel|
+        @sel_panels.each do |panel|
           partner_of = partner_of2(panel)
           next unless partner_of && partner_of.valid?
-          next if @arr27.include?(partner_of)
+          next if @sel_panels.include?(partner_of)
           next if @arr57.any? { |panel3| panel3[:front] == panel }
-          pts = @h26[partner_of.object_id]
+          pts = @outlines[partner_of.object_id]
           unless pts && pts.length >= 3
-            arr2 = rec_by_def(partner_of.parent)
-            next unless arr2
-            pts = _8e5202c8(partner_of, arr2[:instance])
+            rec = rec_by_def(partner_of.parent)
+            next unless rec
+            pts = outer_pts_of(partner_of, rec[:instance])
             next if pts.length < 3
-            @h26[partner_of.object_id] = pts
+            @outlines[partner_of.object_id] = pts
           end
           arr4 << pts
         end
         _83ee7e20(arr4, flag2)
       else
-        @arr27.each do |panel|
+        @sel_panels.each do |panel|
           partner_of = partner_of2(panel)
           next unless partner_of && partner_of.valid?
-          next if @arr27.include?(partner_of)
+          next if @sel_panels.include?(partner_of)
           next if @arr57.any? { |panel3| panel3[:front] == panel }
-          arr2 = rec_by_def(partner_of.parent)
-          next unless arr2
-          _9a1f1a22(partner_of, arr2[:instance], flag3, flag2)
+          rec = rec_by_def(partner_of.parent)
+          next unless rec
+          draw_panel_fill(partner_of, rec[:instance], flag3, flag2)
         end
       end
     end
     _f42544d1(view) if @flag56
-    _b903d1e6(view) unless @flag56
+    draw_hover(view) unless @flag56
     draw_presets(view)
     draw_fields(view)
     draw_mode_hint(view, "#{@str || "Đang tối ưu"}... #{@num12}%") if @num12
@@ -712,12 +712,12 @@ class KSU::Xeptam
 end
 class KSU::Xeptam
   def self.check_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (0x3D + _a4ab9a59 * 0x57) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (0x3D + i * 0x57) }.pack("C*")
     arr = arr2[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 0x99 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[\da-zA-Z]{3}-[\da-zA-Z]{4}-[\da-zA-Z]{4}-[\da-zA-Z]{4}\z/
   end
   def self.assert_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, _a4ab9a59| b ^ (_a4ab9a59 * 0x57 + 0x3D) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, i| b ^ (i * 0x57 + 0x3D) }.pack("C*")
     arr = arr2[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 153 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[0-9A-Za-z]{3}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}\z/
   end

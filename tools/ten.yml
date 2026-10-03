@@ -23,7 +23,7 @@ ten:
   _01b9b578: transform
   _04113f8e: src
   _0a2eb43e: box           # Geom::BoundingBox gom dan; _506bc226 la bbox tung phan
-  _0cb7d924: instance
+  _0cb7d924: inst5                 # rec[:instance] (4 lan)
   _0f1bcb43: center
   _13279171: sxmax
   _13764272: holes
@@ -34,7 +34,7 @@ ten:
   _2354b759: h
   _3127e008: jobs
   _31340967: slot_panel    # lay tu `slot[:panel]`; _df507b9e moi la `panel` cua than ham
-  _350b38b7: sheet
+  _350b38b7: cur_sheet     # van tam DANG nam tren; @_c6dfd687 moi la van dich
   _36d8b3e1: members
   _3844ae34: side
   _38b05e7a: center
@@ -48,10 +48,10 @@ ten:
   _4ed2ca52: cells
   _506bc226: bbox
   _5905ac8d: w
-  _5923aa9d: layer
+  _5923aa9d: layer2                # bien cuc bo, khong phai method `layer` cua cutting.rb
   _5e179248: hover
   _62ef82e9: rows
-  _674e4a4a: instance
+  _674e4a4a: inst                  # rec[:instance] -- Group cua van (66 lan)
   _6d908092: cell_size
   _6e6c93db: items
   _71ed151a: grid
@@ -59,7 +59,7 @@ ten:
   _7a6f113f: size
   _8141925d: additive
   _83f64320: type_set
-  _889cb6ec: size
+  _889cb6ec: size2                 # method/chongbay.rb; preset/field.rb giu `size` (39 lan)
   _90df5e07: thickness_mm
   _92d4d1b7: two_tris      # ro tam giac mat hai phia (`two_sided`)
   _992232bd: poly
@@ -71,14 +71,14 @@ ten:
   _b255f5fc: sig
   _b3afd6c1: normal_tris   # view.rb: ro tam giac mat thuong; `normal:` la tham so tu khoa cung than ham
   _b6259b04: borders
-  _bbad7f9f: sheet
+  _bbad7f9f: sheet_id      # gia tri get_attribute("ABF", "sheet-id") -- la id, khong phai Group
   _be1c5d10: pid
   _c2148d5e: x
   _c65c0a0a: pts
   _c8636cca: bottom
   _cab2c36f: target
   _ce67eacc: polys
-  _d395e9f8: layer
+  _d395e9f8: dxf_layer             # xuatdxf/scan.rb: ten lop DXF; cutting.rb giu `layer`
   _d51b4ab3: members
   _d61658e0: sheets
   _d94ef3ef: name
@@ -116,11 +116,11 @@ ten:
   _11e34195: list_sheet
   _12ed1707: tf3d
   _149549b9: keep_existing
-  _149def6d: instance
+  _149def6d: inst6                 # rec[:instance] (2 lan)
   _16028ecb: cups
   _179db7c2: rect
   _17a4f8f8: align
-  _192c3ea3: labels
+  _192c3ea3: sheet_labels          # utils/sheet.rb; main.rb giu `labels`
   _1b474acd: panels
   _1cfbd98a: slots
   _2003a262: lines
@@ -145,7 +145,7 @@ ten:
   _37e96ea1: entry
   _3808febe: pp_vec
   _3a0c02a8: main_face_color
-  _3b0c3409: rect
+  _3b0c3409: rect2                 # nesting/corner.rb; quet.rb+svg.rb giu `rect` (72 lan)
   _3d7c9b5b: margin
   _3fdbf866: overlay_holes
   _44d5d3cd: az
@@ -172,7 +172,7 @@ ten:
   _634b4336: bulge
   _63637b35: random
   _64fab651: large_size
-  _674dab41: instance
+  _674dab41: inst4                 # rec[:instance] (6 lan)
   _68b00887: width_mm
   _68c3d347: half_width
   _68d73ae7: index_map
@@ -212,7 +212,7 @@ ten:
   _93f47db6: panel_two_color
   _9404be8f: part_data
   _95c9f846: height_mm
-  _969cfcac: instance
+  _969cfcac: inst3                 # rec[:instance] (6 lan)
   _98b32411: vec
   _9950f40c: part_tf
   _9dcc2bb2: edge_color
@@ -222,7 +222,7 @@ ten:
   _a4dd2feb: fields
   _a993db0c: closed
   _aa4a165c: edge
-  _aa882630: instance
+  _aa882630: inst2                 # rec[:instance] (13 lan)
   _ab458684: edge_band_lines
   _ab655ee0: rot
   _b290ad49: len
@@ -259,7 +259,7 @@ ten:
   _e455e902: fill
   _e552c98e: mat_order
   _e8dae2a9: ly
-  _ea460feb: rotatable
+  _ea460feb: rotatable2            # nesting/optimize.rb; nesting/collect.rb giu `rotatable`
   _eb0d2b5d: pts
   _ecd10f9f: edge_band_desc
   _edb225ed: bottom
@@ -498,13 +498,13 @@ ten:
   # ================= ME 4: nesting/engine, xuatdxf/dxf, thongke/tonghop =====
   # utils/nesting/engine.rb -- dieu khien bo xep tam viet bang JS qua HtmlDialog
   _31703f3f: instance          # singleton
-  _78bceed0: start
+  _78bceed0: start2                # nesting/engine.rb; isolate.rb+other.rb giu `start` (69 lan)
   _da0b701e: start_jobs
   _31149a7c: stop
   _09067a9e: close_later       # dong o lan nhan roi ke tiep
   _b4942f6a: close_if_idle
   _113017ed: run_pending       # gui doan script dang cho sang dialog
-  _96ff6f1e: open_dialog
+  _96ff6f1e: open_dialog2          # nesting/engine.rb; setting.rb giu `open_dialog`
   _54396b88: load_html
   _cfb1ae11: script
   _5489c3cd: cb
@@ -723,7 +723,7 @@ ten:
   _f1809a61: two_sided_margin
   _c85de110: two_sided_gap
   _ba1c7e14: two_sided?       # thuoc tinh "two-sided-sheet"
-  _b99ccf0c: reset
+  _b99ccf0c: reset3                # utils/nesting/avail.rb
   _a1ef9d08: margins          # [le chung, [trai,phai,tren,duoi], le hai mat]
   _6973ab8d: margins_memo
   _d94029a7: set_override
@@ -1361,7 +1361,7 @@ ten:
   _a1c2994a: cancel
   _82cb7b1f: refine_parts
   _703c6ac2: rotate_by_name
-  _dea868ae: start
+  _dea868ae: start3                # method/nesting.rb
   _402c7fb0: split_two?       # co tach rieng nhom tam hai mat khong
   _38a1edc5: sheet_area       # kich thuoc dung duoc sau khi tru le
   _e61a0b91: margins_of
@@ -1392,7 +1392,7 @@ ten:
   _bf30112e: erase_nesting
   _37ca75a7: ask_relabel
   _7fd705b6: err
-  _ce4b1e4e: run
+  _ce4b1e4e: run2                  # method/nesting.rb; nesting/optimize.rb giu `run`
   _7a0c567a: label_step
 
   # ================= ME 33: method/chongbay.rb -- chong bay (dat thanh giang) =
@@ -1553,6 +1553,107 @@ ten:
   _788720c1: screen_items     # nho theo chu ky camera
   _e8c0ca6d: screen_rec
 
+  # ================= ME 39: method/xeptam/drag.rb -- keo tam bang chuot =======
+  # Vong doi mot cu keo: begin_drag -> drag_follow (moi lan chuot di) ->
+  # end_drag. Giua chung la mot vector cong don (@drag_offset) chu khong phai
+  # dich that: tam that chi bi transform! mot lan, o apply_offset.
+  _afb25a1e: drag_begin            # Drag: quet.rb da giu `begin_drag`
+  _50ab81be: drag_follow         # moi lan chuot di: tinh lech roi cong vao offset
+  _f97c64c2: drag_end              # Drag: quet.rb da giu `end_drag`
+  _7fd07e0b: drag_plane_point    # pickray cat mat phang z cua diem bam dau
+  _98834989: add_offset          # cong them vec vao @drag_offset + dich vien cache
+  _8f5311bb: apply_offset        # transform! that su mot lan, roi reset offset
+  _c1caf616: hide_originals      # an tam that trong luc keo, chi con preview
+  _4601b4c9: show_originals
+  _f8e75e9d: save_drag_state     # chep 4 cache hinh hoc de huy keo tra lai duoc
+  _70a50d49: restore_drag_state
+  _9f96b850: force_free_mode     # ep che do xep tu do trong mot thao tac
+  _066c900b: restore_free_mode
+  _1e2e7709: build_snap_grid
+
+  # Bat diem tren man hinh. corner/edge_handle_at chi hoi lai KSU::View --
+  # tay cam goc dung hang so BRACKET_*, tay cam canh dung EDGE_*.
+  _f3bdae07: corner_handle_at
+  _30c1f1e6: edge_handle_at
+  _c5f21c57: bracket_hit         # utils/view.rb: tra ve chi so goc 0..3 hoac nil
+  _ec07b26f: edge_hit            # utils/view.rb: tra ve chi so canh 0..3 hoac nil
+  _f098d644: snap_to_corner      # -> KSU::Nesting.pack_to_corner
+  _fa7e4609: snap_to_edge        # -> KSU::Nesting.pack_to_edge
+  _6deb8789: after_snap          # bo cache, ve lai, dung chung cho ca hai
+  _ecb07074: panel_at            # bam tam: loc nhanh bang hop bao man hinh roi hit?
+  _eca6a79f: nearest_sheet       # tra [ban ghi van, khoang cach] gan diem nhat
+
+  # Toi uu mot van: chay theo lo, moi lan mot nhom, de khong treo SketchUp.
+  _cfe1b27c: optimize_sheet
+  _cad2f815: load_optimize_settings   # doc ca nhom "toi_uu_van" tu Settings
+  _da79a376: optimize_next       # shift mot lo khoi hang doi roi giao cho engine
+  _4ec1b153: optimize_done
+  _40219b95: optimize_cancel
+  _59c48478: refresh_after_optimize
+  _23d70e90: pack_batch          # toiuuvan/engine.rb: xep mot lo van
+  _14184f07: pack_all_to_corner  # toiuuvan/engine.rb: don tung van ve goc mam
+
+  _b903d1e6: draw_hover          # to tam dang tro chuot va tam doi dien cua no
+  _eed07b86: draw_thick_outline  # vien day 50mm, cache tam giac theo entityID
+  _903c1e24: flip_panel
+  _78c88320: select_many         # quet chon: gop hoac thay ca danh sach
+  _2171a7c6: select_one          # bam chon: Ctrl thi dao trang thai mot tam
+
+  # Cac method file nay goi sang, dinh nghia o xeptam/mirror.rb va collide.rb.
+  _68d76957: panel_tf              # nesting.tf * sheet.tf * panel.tf; label.rb giu `world_tf`
+  _8e5202c8: outer_pts_of        # duong vien ngoai cua tam, toa do the gioi
+  _89bccf8d: panel_outline         # Cutting.outline(panel, panel_tf); corner.rb giu `outline_of`
+  _9a1f1a22: draw_panel_fill
+  _8f1f5186: drop_panel_cache
+  _285eca92: rebuild_outlines    # dung lai @outlines tu @arr28
+  _4f4ecb72: rebuild_sel_polys   # dung lai ca 4 cache hinh hoc cua vung chon
+  _7ceb2cd7: selection_hull      # bao loi cua TAT CA tam dang chon, gop lam mot
+  _52bcd343: shift_cached_polys  # dich ca 4 cache do, khong tinh lai tu dau
+  _9004d10e: reset_anchor
+  _c2ef690d: anchor_poly
+  _5b9cf20b: clear_grid_cache
+  _1cc6124b: drop_grid_cache
+
+  # Bon cache hinh hoc cua vung chon, dung chung cho va cham va day tam.
+  # Chung di theo nhau: rebuild_sel_polys dung ca bon, shift_cached_polys dich
+  # ca bon, save_drag_state chep ca bon.
+  _ed21e073: sel_polys           # @: duong vien tung tam dang chon
+  _d53673d2: sel_bounds          # @: hop bao cua tung duong vien do
+  _5734858e: sel_hulls           # @: bao loi tung tam (>12 diem moi rut gon)
+  _d03c667e: sel_hull            # @: mot bao loi phu het ca vung chon
+
+  # Hai mang song song, chi so i cua mang nay ung voi chi so i cua mang kia:
+  # tam thu i dang nam tren van thu i. Moi cho trong cay deu dua vao dieu do.
+  _7e48d1c7: sel_panels          # @
+  _2b615a10: sel_sheets          # @
+  _f455f5fc: outlines            # @: object_id -> duong vien, dung khi va cham
+  _0782d74a: saved_outlines      # @
+  _9f104630: drag_offset         # @: VECTOR cong don trong luc keo, khong phai diem
+  _f3b19fae: anchor_pt           # @: diem dau cua da giac neo, Point3d
+  _3749d3a8: saved_offset        # @
+  _c8292a80: grid_cache          # @: object_id cua van -> luoi bat da tinh
+  _73dc38ac: sheet               # van chua tam -- la Group, khong phai vector
+  _9dcbc6c4: rec                 # ban ghi van tu record_for
+  _27cbbc5a: saved_polys
+  _ee3eb631: saved_bounds
+  _8a0971a9: saved_hulls
+  _bf23acb3: saved_hull
+  _b7599404: opt_sheet           # @: van dang duoc toi uu, giu de chon lai sau
+  _8bfa6763: saved_free_mode
+  # ================= ME 40: hai bien vong lap dung khap cay =================
+  # 615 lan, va gan nhu lan nao cung la CHI SO: `n.times do |..|`,
+  # `each_with_index do |x, ..|`, `arr[..]`, `(.. + 1) % 4`, `(0...n).each`.
+  # Mot cho duy nhat dung no lam phan tu (`map { |..| ..[:gr] }`) -- tac gia
+  # dung lai `i` cho tien, va dat ten `i` thi chep lai dung cai tac gia viet.
+  _a4ab9a59: i
+
+  # ============ ME 41: go 23 cho hai hex cung mang mot ten ============
+  # `python tools/trahex.py --soat` nghich dao tu dien va bat duoc: mot
+  # ten toan cuc phai ung voi dung mot hex. Ben nao chung cu yeu hon thi
+  # doi, ben kia giu nguyen. So dem o cuoi ten khong noi them dieu gi --
+  # no chi noi day la mot thu khac cung loai.
+  _4fd9a20e: reset2                # system/setting.rb; quet.rb giu `reset`
+
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,
@@ -1566,10 +1667,8 @@ bo:
   - _727b63c7
   - _7c10a028
   - _884dee16
-  - _9a1f1a22
   - _9e1d7ab3
   - _d8a5a5cb
-  - _f97c64c2
   - _fec87097
   # Ban sinh doi ZSU goi hex nay la `arr`. Ben nay no la thu khac va doc theo
   # ngu canh thi ro hon. (_6e6c93db va _9535dc0b da co ten that: xem tren.)

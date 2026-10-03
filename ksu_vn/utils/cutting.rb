@@ -52,9 +52,9 @@ module KSU::Cutting
   end
   def self.largest_face(src, arr, skip1 = nil, skip2 = nil, skip3 = nil)
     flag = nil
-    src.each_with_index do |f, _a4ab9a59|
+    src.each_with_index do |f, i|
       next if f == skip1 || f == skip2 || f == skip3
-      flag = [f, arr[_a4ab9a59]] if flag.nil? || arr[_a4ab9a59] > flag[1]
+      flag = [f, arr[i]] if flag.nil? || arr[i] > flag[1]
     end
     flag
   end
@@ -104,13 +104,13 @@ module KSU::Cutting
     arr = g.get_attribute("ZSU", "thuoc_tinh_dan_canh")
     arr = g.get_attribute("ZSU", "dan_canh_meta") unless arr.is_a?(Array)
     return out unless arr.is_a?(Array)
-    (0...(arr.size / 4)).each do |_a4ab9a59|
-      num2 = arr[_a4ab9a59 * 4 + 2].to_i
-      b = arr[_a4ab9a59 * 4 + 3].to_i
-      out[arr[_a4ab9a59 * 4]] = if num2 == 2
-        [arr[_a4ab9a59 * 4 + 1].to_s, false, false, b == 1]
+    (0...(arr.size / 4)).each do |i|
+      num2 = arr[i * 4 + 2].to_i
+      b = arr[i * 4 + 3].to_i
+      out[arr[i * 4]] = if num2 == 2
+        [arr[i * 4 + 1].to_s, false, false, b == 1]
       else
-        [arr[_a4ab9a59 * 4 + 1].to_s, num2 == 1, b == 1, true]
+        [arr[i * 4 + 1].to_s, num2 == 1, b == 1, true]
       end
     end
     out
@@ -151,12 +151,12 @@ module KSU::Cutting
     mat = material_for(g)
     thick_mm = board_thickness(g)
     out = []
-    (0...arr.size / 5).each do |_a4ab9a59|
-      meta = arr2[arr[_a4ab9a59 * 5]]
+    (0...arr.size / 5).each do |i|
+      meta = arr2[arr[i * 5]]
       next unless meta
-      thickness = arr[_a4ab9a59 * 5 + 2].to_f
+      thickness = arr[i * 5 + 2].to_f
       str = thickness > thickness.to_i ? thickness.to_s : thickness.to_i.to_s
-      out << edgeband_row(meta, arr[_a4ab9a59 * 5 + 1].to_s, mat, thick_mm, str)
+      out << edgeband_row(meta, arr[i * 5 + 1].to_s, mat, thick_mm, str)
     end
     out
   end
@@ -168,10 +168,10 @@ module KSU::Cutting
     thick_mm2 = thick_mm || (arr3.empty? ? nil : board_thickness(g))
     _419b7d17 = separator
     h = {}
-    (0...arr2.size / 5).each do |_a4ab9a59|
-      id = arr2[_a4ab9a59 * 5]
-      name = arr2[_a4ab9a59 * 5 + 1].to_s
-      thickness = arr2[_a4ab9a59 * 5 + 2].to_f
+    (0...arr2.size / 5).each do |i|
+      id = arr2[i * 5]
+      name = arr2[i * 5 + 1].to_s
+      thickness = arr2[i * 5 + 2].to_f
       str = thickness > thickness.to_i ? thickness.to_s : thickness.to_i.to_s
       fields = edgeband_row(arr3[id], name, mat, thick_mm2, str)
       stat = arr3[id] ? arr3[id][3] != false : true
@@ -219,8 +219,8 @@ module KSU::Cutting
   end
   def self._b344f39a(bounds, tf)
     p_ref = bounds.corner(0).transform(tf)
-    [1, 2, 4].map { |_a4ab9a59|
-      _23505ef9 = bounds.corner(_a4ab9a59).transform(tf)
+    [1, 2, 4].map { |i|
+      _23505ef9 = bounds.corner(i).transform(tf)
       [p_ref.distance(_23505ef9), p_ref.vector_to(_23505ef9)]
     }.sort_by { |arr| arr[0] }
   end
@@ -250,10 +250,10 @@ module KSU::Cutting
           axis = [ent.line[0].transform(tf), ent.line[1].transform(tf)]
           num = ent.length(tf)
           num *= ent.curve.edges.size if ent.curve
-          edgeband_spec.each do |arr5|
-            font = arr5[0]
+          edgeband_spec.each do |rec|
+            font = rec[0]
             vec = font.normal.transform(tf)
-            thickness = arr5[1]
+            thickness = rec[1]
             next unless ent.used_by?(font)
             axis[0] = axis[0].offset(vec, -thickness)
             next unless h.key?(ent.entityID)
@@ -263,14 +263,14 @@ module KSU::Cutting
             pp_vec = vec.cross(vec2)
             next unless pp_vec.length.to_f > 0.0
             arr3 << { p0: p_ref, vec: vec, pp_vec: pp_vec, size: [_022c78bd, num / 2].min }
-            edge_band_desc << { p0: pt, p1: pt.offset(vec, 1), name: arr5[2], fields: arr5[3], kind: arr5[5] }
+            edge_band_desc << { p0: pt, p1: pt.offset(vec, 1), name: rec[2], fields: rec[3], kind: rec[5] }
           end
           count_by_length << axis
         end
         next if count_by_length.empty?
         out = []
-        (0...count_by_length.length - 1).each do |_a4ab9a59|
-          _9ba5a7e0 = Geom.intersect_line_line(count_by_length[_a4ab9a59], count_by_length[_a4ab9a59 + 1])
+        (0...count_by_length.length - 1).each do |i|
+          _9ba5a7e0 = Geom.intersect_line_line(count_by_length[i], count_by_length[i + 1])
           out << _9ba5a7e0 if _9ba5a7e0
         end
         _d28e4f82 = Geom.intersect_line_line(count_by_length[-1], count_by_length[0])
@@ -283,8 +283,8 @@ module KSU::Cutting
         out << out[0]
         loops << { pts: out.map { |pt2| Geom::Point3d.new(pt2.x, pt2.y, 0) }, outer: face.outer? }
       end
-      arr3.each_with_index do |arr, _a4ab9a59|
-        (_a4ab9a59 + 1...arr3.size).each do |j|
+      arr3.each_with_index do |arr, i|
+        (i + 1...arr3.size).each do |j|
           arr4 = arr3[j]
           len2d = arr[:p0].distance(arr4[:p0])
           s = (arr[:size] + arr4[:size]) / 0.85

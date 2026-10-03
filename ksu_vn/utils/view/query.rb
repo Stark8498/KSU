@@ -109,13 +109,13 @@ module KSU::Query
     flag = false
     n = poly.length
     j = n - 1
-    n.times do |_a4ab9a59|
-      xi, yi = poly[_a4ab9a59].x, poly[_a4ab9a59].y
+    n.times do |i|
+      xi, yi = poly[i].x, poly[i].y
       xj, yj = poly[j].x, poly[j].y
       if ((yi > duoi) != (yj > duoi)) && (trai < (xj - xi) * (duoi - yi) / (yj - yi) + xi)
         flag = !flag
       end
-      j = _a4ab9a59
+      j = i
     end
     flag
   end
@@ -191,9 +191,9 @@ module KSU::Query
     n = pts.length
     px = pts.inject(0.0) { |s, pt3| s + pt3.x.to_f } / n
     py = pts.inject(0.0) { |s, pt3| s + pt3.y.to_f } / n
-    arr2 = n.times.map do |_a4ab9a59|
-      pt2 = pts[_a4ab9a59]
-      b = pts[(_a4ab9a59 + 1) % n]
+    arr2 = n.times.map do |i|
+      pt2 = pts[i]
+      b = pts[(i + 1) % n]
       rx = b.x.to_f - pt2.x.to_f
       ry = b.y.to_f - pt2.y.to_f
       len = Math.sqrt(rx * rx + ry * ry)
@@ -219,8 +219,8 @@ module KSU::Query
     outer = _5f44dc53(pts, arr2, _ab78248b, 1.0)
     arr3 = _5f44dc53(pts, arr2, _3c01cc7b, -1.0)
     tris = []
-    n.times do |_a4ab9a59|
-      _2ea74b89 = [arr3[_a4ab9a59], outer[_a4ab9a59], outer[(_a4ab9a59 + 1) % n], arr3[(_a4ab9a59 + 1) % n]]
+    n.times do |i|
+      _2ea74b89 = [arr3[i], outer[i], outer[(i + 1) % n], arr3[(i + 1) % n]]
       tris.concat(Geom.tesselate(_2ea74b89))
     end
     tris
@@ -233,11 +233,11 @@ module KSU::Query
   end
   def _5f44dc53(pts, arr3, _a157beb9, _21a59ec3)
     n = pts.length
-    n.times.map do |_a4ab9a59|
-      pt = pts[_a4ab9a59]
+    n.times.map do |i|
+      pt = pts[i]
       next pt if _a157beb9 <= 0
-      arr2 = arr3[(_a4ab9a59 - 1) % n]
-      arr = arr3[_a4ab9a59]
+      arr2 = arr3[(i - 1) % n]
+      arr = arr3[i]
       bx2 = arr2[0] + arr[0]
       by2 = arr2[1] + arr[1]
       _9686c624 = Math.sqrt(bx2 * bx2 + by2 * by2)

@@ -58,12 +58,12 @@ module KSU::Thongke::Xuat
       _a925e834 = num20 + 1
       num2 = items.empty? ? nil : "SUM(H#{_a925e834}:H#{num20 + items.size})"
       rows << { cells: build_cells(arr3["title"], arr3["tong"], num2) }
-      items.each_with_index do |arr, _a4ab9a59|
-        half = _a925e834 + _a4ab9a59
+      items.each_with_index do |arr, i|
+        half = _a925e834 + i
         lines = arr["mota"].to_s
         rows << {
           cells: [
-            [_a4ab9a59 + 1, ST_CENTER], [arr["loai"].to_s, ST_TEXT], [lines, ST_TEXT],
+            [i + 1, ST_CENTER], [arr["loai"].to_s, ST_TEXT], [lines, ST_TEXT],
             [num(arr["sl"]), ST_CENTER], [arr["dv"].to_s, ST_CENTER], [num(arr["he_so"]), ST_CENTER],
             [num(arr["gia"]), ST_MONEY], [num(arr["tien"]), ST_MONEY, "D#{half}*F#{half}*G#{half}"],
           ],
@@ -91,11 +91,11 @@ module KSU::Thongke::Xuat
   end
   def self._20ca4ec8(idx)
     name = ""
-    _a4ab9a59 = idx
+    i = idx
     loop do
-      name = ((_a4ab9a59 % 26) + 65).chr + name
-      _a4ab9a59 = _a4ab9a59 / 26 - 1
-      break if _a4ab9a59 < 0
+      name = ((i % 26) + 65).chr + name
+      i = i / 26 - 1
+      break if i < 0
     end
     name
   end
@@ -110,17 +110,17 @@ module KSU::Thongke::Xuat
     "<c r=\"#{pt}\" s=\"#{_e7b2b17b}\" t=\"inlineStr\"><is><t xml:space=\"preserve\">#{_c9faf4c6(text)}</t></is></c>"
   end
   def self._278dd154(arr)
-    out = arr.each_with_index.map { |num3, _a4ab9a59|
-      "<col min=\"#{_a4ab9a59 + 1}\" max=\"#{_a4ab9a59 + 1}\" width=\"#{num3}\" customWidth=\"1\"/>"
+    out = arr.each_with_index.map { |num3, i|
+      "<col min=\"#{i + 1}\" max=\"#{i + 1}\" width=\"#{num3}\" customWidth=\"1\"/>"
     }.join
     "<cols>#{out}</cols>"
   end
-  def self._4ae1e5d9(arr2)
+  def self._4ae1e5d9(sheet)
     _bd6ab6e1 = XML_HEAD + "<worksheet xmlns=\"#{NS_MAIN}\">"
     _bd6ab6e1 += "<sheetViews><sheetView workbookViewId=\"0\"><pane ySplit=\"1\" topLeftCell=\"A2\" activePane=\"bottomLeft\" state=\"frozen\"/></sheetView></sheetViews>"
-    _bd6ab6e1 += _278dd154(arr2[:cols])
+    _bd6ab6e1 += _278dd154(sheet[:cols])
     _bd6ab6e1 += "<sheetData>"
-    arr2[:rows].each_with_index do |arr, half|
+    sheet[:rows].each_with_index do |arr, half|
       count_by_length = arr[:lines] || 1
       attr = count_by_length > 1 ? " ht=\"#{count_by_length * 15}\" customHeight=\"1\"" : ""
       _bd6ab6e1 += "<row r=\"#{half + 1}\"#{attr}>"
@@ -132,21 +132,21 @@ module KSU::Thongke::Xuat
     _bd6ab6e1 + "</sheetData></worksheet>"
   end
   def self._46b90971(sheets)
-    out = sheets.each_with_index.map { |arr, _a4ab9a59|
-      "<sheet name=\"#{_c9faf4c6(arr[:name])}\" sheetId=\"#{_a4ab9a59 + 1}\" r:id=\"rId#{_a4ab9a59 + 1}\"/>"
+    out = sheets.each_with_index.map { |sheet, i|
+      "<sheet name=\"#{_c9faf4c6(sheet[:name])}\" sheetId=\"#{i + 1}\" r:id=\"rId#{i + 1}\"/>"
     }.join
     XML_HEAD + "<workbook xmlns=\"#{NS_MAIN}\" xmlns:r=\"#{NS_REL}\"><sheets>#{out}</sheets><calcPr fullCalcOnLoad=\"1\"/></workbook>"
   end
   def self._e4092e6c(sheets)
-    out = sheets.each_with_index.map { |_part, _a4ab9a59|
-      "<Relationship Id=\"rId#{_a4ab9a59 + 1}\" Type=\"#{NS_REL}/worksheet\" Target=\"worksheets/sheet#{_a4ab9a59 + 1}.xml\"/>"
+    out = sheets.each_with_index.map { |_part, i|
+      "<Relationship Id=\"rId#{i + 1}\" Type=\"#{NS_REL}/worksheet\" Target=\"worksheets/sheet#{i + 1}.xml\"/>"
     }.join
     out += "<Relationship Id=\"rId#{sheets.size + 1}\" Type=\"#{NS_REL}/styles\" Target=\"styles.xml\"/>"
     XML_HEAD + "<Relationships xmlns=\"#{NS_PKG}\">#{out}</Relationships>"
   end
   def self._7fb3dc0f(sheets)
-    out = sheets.each_with_index.map { |_part, _a4ab9a59|
-      "<Override PartName=\"/xl/worksheets/sheet#{_a4ab9a59 + 1}.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>"
+    out = sheets.each_with_index.map { |_part, i|
+      "<Override PartName=\"/xl/worksheets/sheet#{i + 1}.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>"
     }.join
     XML_HEAD +
     "<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">" \
@@ -200,7 +200,7 @@ module KSU::Thongke::Xuat
     arr << ["xl/workbook.xml", _46b90971(sheets)]
     arr << ["xl/_rels/workbook.xml.rels", _e4092e6c(sheets)]
     arr << ["xl/styles.xml", _7144b643]
-    sheets.each_with_index { |_73dc38ac, _a4ab9a59| arr << ["xl/worksheets/sheet#{_a4ab9a59 + 1}.xml", _4ae1e5d9(_73dc38ac)] }
+    sheets.each_with_index { |sheet, i| arr << ["xl/worksheets/sheet#{i + 1}.xml", _4ae1e5d9(sheet)] }
     _713c8e2b(arr)
   end
   def self._e8a07557

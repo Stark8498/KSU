@@ -17,12 +17,12 @@ module KSU::View
   def self.compute_sig(nesting)
     return nil unless nesting && nesting.valid?
     tr = [nesting.entityID, nesting.transformation.to_a.hash]
-    nesting.definition.entities.each do |grp|
-      next unless KSU.container?(grp)
-      next unless grp.name.to_s.downcase.include?("sheet")
-      tr << grp.entityID
-      tr << grp.transformation.to_a.hash
-      grp.definition.entities.each do |panel|
+    nesting.definition.entities.each do |sheet|
+      next unless KSU.container?(sheet)
+      next unless sheet.name.to_s.downcase.include?("sheet")
+      tr << sheet.entityID
+      tr << sheet.transformation.to_a.hash
+      sheet.definition.entities.each do |panel|
         next unless KSU.container?(panel)
         tr << panel.entityID
         tr << panel.transformation.to_a.hash
@@ -181,11 +181,11 @@ module KSU::View
       next unless panel && panel.valid? && KSU::Sheet.panel?(panel)
       defn = panel.parent
       next unless defn && defn.respond_to?(:entityID)
-      grp3 = h[defn.entityID]
-      next unless grp3
-      is_bottom = KSU::Sheet.bottom_sheet?(grp3)
+      sheet = h[defn.entityID]
+      next unless sheet
+      is_bottom = KSU::Sheet.bottom_sheet?(sheet)
       next if is_bottom && !KSU::Cutting.cutting_group(panel)
-      fill = KSU::Cutting.outline(panel, tr * grp3.transformation * panel.transformation)
+      fill = KSU::Cutting.outline(panel, tr * sheet.transformation * panel.transformation)
       polygon = fill[:outer]
       next unless polygon && polygon.length >= 3
       board_index = panel.get_attribute("ABF", "board-index")
@@ -259,17 +259,17 @@ module KSU::View
   end
   def self.expand_corners(scr)
     thick = 50.mm.to_f
-    scr.each_with_index.map do |color, _a4ab9a59|
-      u1 = unit_to(color, scr[(_a4ab9a59 + 1) % 4])
-      u2 = unit_to(color, scr[(_a4ab9a59 - 1) % 4])
+    scr.each_with_index.map do |color, i|
+      u1 = unit_to(color, scr[(i + 1) % 4])
+      u2 = unit_to(color, scr[(i - 1) % 4])
       Geom::Point3d.new(color.x + (u1.x + u2.x) * thick,
                         color.y + (u1.y + u2.y) * thick,
                         color.z + (u1.z + u2.z) * thick)
     end
   end
-  def self.corner_dirs(scr, _a4ab9a59)
-    color = scr[_a4ab9a59]
-    [unit2d(color, scr[(_a4ab9a59 + 1) % 4]), unit2d(color, scr[(_a4ab9a59 - 1) % 4])]
+  def self.corner_dirs(scr, i)
+    color = scr[i]
+    [unit2d(color, scr[(i + 1) % 4]), unit2d(color, scr[(i - 1) % 4])]
   end
   def self.bracket_pts(color, d1, d2, arm, thickness_mm)
     a1x = d1[0] * arm
@@ -309,42 +309,42 @@ module KSU::View
     view.line_stipple = ""
     view.line_width = 1
     view.drawing_color = color || edge_color
-    4.times do |_a4ab9a59|
-      c = scr[_a4ab9a59]
-      cd1, cd2 = corner_dirs(scr, _a4ab9a59)
+    4.times do |i|
+      c = scr[i]
+      cd1, cd2 = corner_dirs(scr, i)
       color4 = Geom::Point3d.new(c.x - (cd1[0] + cd2[0]) * inset,
                             c.y - (cd1[1] + cd2[1]) * inset, 0)
-      fill = _a4ab9a59 == active || (block_given? && yield(_a4ab9a59))
+      fill = i == active || (block_given? && yield(i))
       quad = bracket_pts(color4, cd1, cd2, arm, thickness_mm)
       view.draw2d(GL_QUADS, quad) if fill
       view.draw2d(GL_LINE_LOOP, quad.values_at(0, 1, 2, 5, 6, 7))
     end
   end
-  def self._c5f21c57(view, corners, x, y, pad: KSU::Const::BRACKET_PAD_MM)
+  def self.bracket_hit(view, corners, x, y, pad: KSU::Const::BRACKET_PAD_MM)
     outer_pts = expand_corners(corners)
     scr = outer_pts.map { |_23505ef9| view.screen_coords(_23505ef9) }
     scale = screen_scale(view, outer_pts[0])
     arm = KSU::Const::BRACKET_ARM_MM * scale
     inset = KSU::Const::BRACKET_INSET_MM * scale
     pad_x = pad * scale
-    4.times do |_a4ab9a59|
-      c = scr[_a4ab9a59]
-      cd1, cd2 = corner_dirs(scr, _a4ab9a59)
+    4.times do |i|
+      c = scr[i]
+      cd1, cd2 = corner_dirs(scr, i)
       px = c.x - (cd1[0] + cd2[0]) * inset
       py = c.y - (cd1[1] + cd2[1]) * inset
       _6facb951 = (x - px) * cd1[0] + (y - py) * cd1[1]
       v = (x - px) * cd2[0] + (y - py) * cd2[1]
-      return _a4ab9a59 if _6facb951 >= -pad_x && v >= -pad_x && _6facb951 <= arm + pad_x && v <= arm + pad_x
+      return i if _6facb951 >= -pad_x && v >= -pad_x && _6facb951 <= arm + pad_x && v <= arm + pad_x
     end
     nil
   end
-  def self._c9d9f590(arr, outer, _a4ab9a59)
-    ix = (arr[_a4ab9a59].x + arr[(_a4ab9a59 + 1) % 4].x) * 0.5
-    _c8573e56 = (arr[_a4ab9a59].y + arr[(_a4ab9a59 + 1) % 4].y) * 0.5
-    _3e7613f3 = (outer[_a4ab9a59].x + outer[(_a4ab9a59 + 1) % 4].x) * 0.5
-    _9ba1a361 = (outer[_a4ab9a59].y + outer[(_a4ab9a59 + 1) % 4].y) * 0.5
-    rx = outer[(_a4ab9a59 + 1) % 4].x - outer[_a4ab9a59].x
-    ry = outer[(_a4ab9a59 + 1) % 4].y - outer[_a4ab9a59].y
+  def self._c9d9f590(arr, outer, i)
+    ix = (arr[i].x + arr[(i + 1) % 4].x) * 0.5
+    _c8573e56 = (arr[i].y + arr[(i + 1) % 4].y) * 0.5
+    _3e7613f3 = (outer[i].x + outer[(i + 1) % 4].x) * 0.5
+    _9ba1a361 = (outer[i].y + outer[(i + 1) % 4].y) * 0.5
+    rx = outer[(i + 1) % 4].x - outer[i].x
+    ry = outer[(i + 1) % 4].y - outer[i].y
     len = Math.sqrt(rx * rx + ry * ry)
     return nil if len < 1e-6
     num2 = rx / len
@@ -384,27 +384,27 @@ module KSU::View
     view.line_stipple = ""
     view.line_width = 1
     view.drawing_color = color || edge_color
-    4.times do |_a4ab9a59|
-      g = _c9d9f590(_1d34ab11, outer, _a4ab9a59)
+    4.times do |i|
+      g = _c9d9f590(_1d34ab11, outer, i)
       next unless g
       _2ea74b89 = _ff87db56(g, _fe2b89ec, _a1bf6a3a)
-      view.draw2d(GL_QUADS, _2ea74b89) if block_given? && yield(_a4ab9a59)
+      view.draw2d(GL_QUADS, _2ea74b89) if block_given? && yield(i)
       view.draw2d(GL_LINE_LOOP, _2ea74b89)
     end
   end
-  def self._ec07b26f(view, corners, x, y, pad: KSU::Const::EDGE_PAD_MM)
+  def self.edge_hit(view, corners, x, y, pad: KSU::Const::EDGE_PAD_MM)
     _1d34ab11, outer = _49bdeaba(view, corners)
     scale = screen_scale(view, corners[0])
     _fe2b89ec = KSU::Const::EDGE_HALF_MM * scale
     _a1bf6a3a = KSU::Const::EDGE_THICK_MM * scale
     pad_x = pad * scale
-    4.times do |_a4ab9a59|
-      g = _c9d9f590(_1d34ab11, outer, _a4ab9a59)
+    4.times do |i|
+      g = _c9d9f590(_1d34ab11, outer, i)
       next unless g
       bx2, by2, _82825d9e, _1608dd7e, nx, ny = g
       thick = (x - bx2) * _82825d9e + (y - by2) * _1608dd7e
       s = (x - bx2) * nx + (y - by2) * ny
-      return _a4ab9a59 if thick.abs <= _fe2b89ec + pad_x && s >= -pad_x && s <= _a1bf6a3a + pad_x
+      return i if thick.abs <= _fe2b89ec + pad_x && s >= -pad_x && s <= _a1bf6a3a + pad_x
     end
     nil
   end
@@ -429,8 +429,8 @@ module KSU::View
     out.add(bbox.max.offset(vec))
     out
   end
-  def self.button_center(arr)
-    x1, x2, y1, _60000b16, z = extents(arr[:top_corners])
+  def self.button_center(rec)
+    x1, x2, y1, _60000b16, z = extents(rec[:top_corners])
     Geom::Point3d.new((x1 + x2) / 2.0, _60000b16 + 200.mm, z)
   end
   def self.in_rect?(x, y, rect)
@@ -450,8 +450,8 @@ module KSU::View
     _35b1b769 = duoi - py
     _130a8af3 * _130a8af3 + _35b1b769 * _35b1b769 <= tol * tol
   end
-  def self._919af578(view, x, y, arr)
-    outer = arr[:top_corners].map { |_23505ef9| view.screen_coords(_23505ef9) }
+  def self._919af578(view, x, y, rec)
+    outer = rec[:top_corners].map { |_23505ef9| view.screen_coords(_23505ef9) }
     in_poly?(x, y, outer)
   end
   def self.hit?(view, fill, x, y)

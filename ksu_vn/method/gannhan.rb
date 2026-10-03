@@ -12,7 +12,7 @@ class KSU::Gannhan
     reload
   end
   def reload
-    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, _a4ab9a59| b ^ (_a4ab9a59 * 0x57 + 0x3D) }.pack("C*")
+    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, i| b ^ (i * 0x57 + 0x3D) }.pack("C*")
     k = s[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 0x99 }.pack("C*")
     return unless k =~ /\Ak[0-9a-z]{3}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}\z/i
     @num11 ||= 0
@@ -63,7 +63,7 @@ class KSU::Gannhan
     init_modes(
       ["Gắn nhãn", "Sửa nhãn", "Kiểm nhãn"],
       active_proc: -> { @num11 },
-      on_click: ->(_a4ab9a59) { _04adac52(_a4ab9a59) },
+      on_click: ->(i) { _04adac52(i) },
     )
     setup_fields(
       "Tên mặc định" => {
@@ -191,8 +191,8 @@ class KSU::Gannhan
   def _a599c8e1(view, x, y)
     ph = view.pick_helper
     ph.do_pick(x, y)
-    (0...ph.count).each do |_a4ab9a59|
-      path = ph.path_at(_a4ab9a59)
+    (0...ph.count).each do |i|
+      path = ph.path_at(i)
       next unless path
       path.reverse_each do |_310b620e|
         hit = yield(_310b620e)
@@ -204,9 +204,9 @@ class KSU::Gannhan
   def _6b0ff197(view, x, y)
     _a599c8e1(view, x, y) { |_310b620e| _e33f3af2(_310b620e) ? _310b620e : nil }
   end
-  def _04adac52(_a4ab9a59)
-    return if @num11 == _a4ab9a59
-    @num11 = _a4ab9a59
+  def _04adac52(i)
+    return if @num11 == i
+    @num11 = i
     @flag17 = false
     reset
     if @num11 == MODE_KIEM
@@ -280,7 +280,7 @@ class KSU::Gannhan
   def _b9550635(lbl)
     _49fd085d = lbl.parent
     return nil unless _49fd085d.is_a?(Sketchup::ComponentDefinition)
-    _49fd085d.instances.find { |grp| grp.valid? && grp.get_attribute(KSU::Label::DICT, KSU::Label::K_BOARD_INDEX) }
+    _49fd085d.instances.find { |i| i.valid? && i.get_attribute(KSU::Label::DICT, KSU::Label::K_BOARD_INDEX) }
   end
   def _d6e2c8ac
     items = _383d85a8
@@ -331,7 +331,7 @@ class KSU::Gannhan
       return
     end
     @jobs = renumber[:jobs]
-    @layer = renumber[:layer]
+    @layer2 = renumber[:layer]
     @_dc5a9dc0 = {
       max_size: @kich_thuoc_nhan,
       gap: @do_gian_chu,
@@ -355,7 +355,7 @@ class KSU::Gannhan
     while n < 16 && @label_done < @label_total
       job = @jobs[@label_done]
       if job && job[0] && job[0].valid?
-        KSU::Label.draw_label_on(job[0], job[1], @layer, @_dc5a9dc0)
+        KSU::Label.draw_label_on(job[0], job[1], @layer2, @_dc5a9dc0)
         KSU::Chuanhoa.normalize_group(job[0]) if @chuan_hoa_vat_lieu
       end
       @label_done += 1
@@ -409,12 +409,12 @@ class KSU::Gannhan
 end
 class KSU::Gannhan
   def self.check_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (87 * _a4ab9a59 + 61) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (87 * i + 61) }.pack("C*")
     arr = arr2[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 153 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[\da-zA-Z]{3}-[\da-zA-Z]{4}-[\da-zA-Z]{4}-[\da-zA-Z]{4}\z/
   end
   def self.assert_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, _a4ab9a59| b ^ (61 + _a4ab9a59 * 87) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, i| b ^ (61 + i * 87) }.pack("C*")
     arr = arr2[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 0x99 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[0-9A-Za-z]{3}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}\z/
   end

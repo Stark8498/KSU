@@ -9,7 +9,7 @@ class KSU::Netcatcuoi
     reload
   end
   def reload
-    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, _a4ab9a59| b ^ (0x3D + _a4ab9a59 * 0x57) }.pack("C*")
+    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, i| b ^ (0x3D + i * 0x57) }.pack("C*")
     k = s[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 0x99 }.pack("C*")
     return unless k =~ /\Ak[0-9A-Za-z]{3}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}\z/
     _97011c68 = @nesting
@@ -30,7 +30,7 @@ class KSU::Netcatcuoi
     @nesting = nil
     @sheets = []
     @flag56 = false
-    @instance = nil
+    @inst3 = nil
     @pt9 = nil
     @pt = nil
     @_1cb11a43 = nil
@@ -77,7 +77,7 @@ class KSU::Netcatcuoi
     init_modes(
       ["Thủ công", "Tự động"],
       active_proc: -> { @num11 },
-      on_click: ->(_a4ab9a59) { _04adac52(_a4ab9a59) }
+      on_click: ->(i) { _04adac52(i) }
     )
     setup_fields(
       "Chiều rộng tối thiểu" => {
@@ -99,7 +99,7 @@ class KSU::Netcatcuoi
   def deactivate(view)
     save_selected_preset
     _52c178c0(false)
-    _70785283(@sheets.map { |arr| arr[:instance] })
+    _70785283(@sheets.map { |rec| rec[:instance] })
     @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, false, @label_section_hidden)
     KSU::Nesting.leave_edit
     view&.invalidate
@@ -167,7 +167,7 @@ class KSU::Netcatcuoi
     @pt11 = KSU::View.pick_on_plane(view, x, y, @num13)
     if @flag19 && @pt11
       _fec87097(view)
-    elsif @flag56 && @instance && @pt11
+    elsif @flag56 && @inst3 && @pt11
       @pt = _d204c38c(@pt11, @_1cb11a43, view)
       @pt = _81184680(@pt9, @pt) if @pt9
       @flag60 = @pt
@@ -210,15 +210,15 @@ class KSU::Netcatcuoi
       view.invalidate
       return
     end
-    arr2 = _0ed68c30(view, x, y)
-    return unless arr2
-    @_1cb11a43 = _c34290e2(arr2)
-    @arr26 = _cca954c3(arr2[:instance], arr2[:transform])
+    rec = _0ed68c30(view, x, y)
+    return unless rec
+    @_1cb11a43 = _c34290e2(rec)
+    @arr26 = _cca954c3(rec[:instance], rec[:transform])
     _d41bb15d = KSU::View.pick_on_plane(view, x, y, @num13)
     _d41bb15d = _d204c38c(_d41bb15d, @_1cb11a43, view)
     return unless _d41bb15d
     @flag56 = true
-    @instance = arr2[:instance]
+    @inst3 = rec[:instance]
     @pt9 = _d41bb15d
     @pt = _d41bb15d
     @arr65 = nil
@@ -246,15 +246,15 @@ class KSU::Netcatcuoi
     draw_fields(view)
   end
   private
-  def _04adac52(_a4ab9a59)
-    @num11 = _a4ab9a59
+  def _04adac52(i)
+    @num11 = i
     set("che_do", @num11)
     if @num11 == 1
       _e4147f27
       @flag56 = false
       @pt9 = nil
       @pt = nil
-      @instance = nil
+      @inst3 = nil
       @arr26 = nil
     else
       @h3 = {}
@@ -270,21 +270,21 @@ class KSU::Netcatcuoi
     @num13 = @sheets.empty? ? 0.0 : @sheets.first[:bbox].center.z.to_f
   end
   def _0ed68c30(view, x, y)
-    @sheets.find do |arr3|
-      bbox = arr3[:bbox]
-      pts = (0..7).map { |_a4ab9a59| view.screen_coords(bbox.corner(_a4ab9a59)) }
+    @sheets.find do |rec|
+      bbox = rec[:bbox]
+      pts = (0..7).map { |i| view.screen_coords(bbox.corner(i)) }
       arr2 = pts.map(&:x)
       arr = pts.map(&:y)
       x.between?(arr2.min, arr2.max) && y.between?(arr.min, arr.max)
     end
   end
-  def _c34290e2(arr)
-    @h5[arr[:instance].entityID] ||= _c6224ad4(arr)
+  def _c34290e2(rec)
+    @h5[rec[:instance].entityID] ||= _c6224ad4(rec)
   end
-  def _c6224ad4(arr2)
-    bbox = arr2[:bbox]
+  def _c6224ad4(rec)
+    bbox = rec[:bbox]
     gap2 = @tam_cach_nhau.to_f
-    num2, num, _7ebf0e82, _b51d21a5 = _8810a0b1(arr2)
+    num2, num, _7ebf0e82, _b51d21a5 = _8810a0b1(rec)
     if num2 > _7ebf0e82
       num2 = _7ebf0e82 = (bbox.min.x.to_f + bbox.max.x.to_f) / 2.0
     end
@@ -293,11 +293,11 @@ class KSU::Netcatcuoi
     end
     x = [{ v: num2, lo: num, hi: _b51d21a5 }, { v: _7ebf0e82, lo: num, hi: _b51d21a5 }]
     y = [{ v: num, lo: num2, hi: _7ebf0e82 }, { v: _b51d21a5, lo: num2, hi: _7ebf0e82 }]
-    _93f5a81b(arr2, gap2).each do |arr|
+    _93f5a81b(rec, gap2).each do |arr|
       n = arr.length
-      n.times do |_a4ab9a59|
-        pt = arr[_a4ab9a59]
-        b = arr[(_a4ab9a59 + 1) % n]
+      n.times do |i|
+        pt = arr[i]
+        b = arr[(i + 1) % n]
         if (pt.x - b.x).abs < 1e-6
           x << { v: pt.x.to_f, lo: [pt.y.to_f, b.y.to_f].min, hi: [pt.y.to_f, b.y.to_f].max }
         elsif (pt.y - b.y).abs < 1e-6
@@ -311,8 +311,8 @@ class KSU::Netcatcuoi
       xs: num2, xe: _7ebf0e82, ys: num, ye: _b51d21a5
     }
   end
-  def _93f5a81b(arr, gap2)
-    arr2 = _cca954c3(arr[:instance], arr[:transform]).map do |bb|
+  def _93f5a81b(rec, gap2)
+    arr2 = _cca954c3(rec[:instance], rec[:transform]).map do |bb|
       points({ x1: bb.min.x.to_f - gap2, y1: bb.min.y.to_f - gap2, x2: bb.max.x.to_f + gap2, y2: bb.max.y.to_f + gap2 })
     end
     return [] if arr2.empty?
@@ -336,16 +336,16 @@ class KSU::Netcatcuoi
   end
   def _63677f15(view, x, y)
     return nil unless @num11 == 0 && @pt11
-    _9dcbc6c4 = _0ed68c30(view, x, y)
-    return nil unless _9dcbc6c4
-    _d204c38c(@pt11, _c34290e2(_9dcbc6c4), view)
+    rec = _0ed68c30(view, x, y)
+    return nil unless rec
+    _d204c38c(@pt11, _c34290e2(rec), view)
   end
   def _d4767c0f
     rect = _d5a5cc33
     return unless rect && _a9ca2ebd(rect)
-    @arr10 << { sheet: @instance, points: rect }
+    @arr10 << { sheet: @inst3, points: rect }
     @flag56 = false
-    @instance = nil
+    @inst3 = nil
     @pt9 = nil
     @pt = nil
     @_1cb11a43 = nil
@@ -369,28 +369,28 @@ class KSU::Netcatcuoi
   end
   def _ca5147c6
     @arr10 = []
-    @sheets.each do |arr|
-      grp = arr[:instance]
-      next unless grp && grp.valid?
-      id_str = grp.get_attribute("ABF", "sheet-last-cut", nil)
+    @sheets.each do |rec|
+      sheet = rec[:instance]
+      next unless sheet && sheet.valid?
+      id_str = sheet.get_attribute("ABF", "sheet-last-cut", nil)
       if id_str
-        _1bba59fa(grp, arr, id_str)
+        _1bba59fa(sheet, rec, id_str)
       else
-        _ca2351da(grp, arr)
+        _ca2351da(sheet, rec)
       end
     end
   rescue
     @arr10 = []
   end
-  def _1bba59fa(_73dc38ac, arr, id_str)
+  def _1bba59fa(sheet, rec, id_str)
     data = begin
       JSON.parse(id_str)
     rescue StandardError
       nil
     end
     return unless data && data["rects"].is_a?(Array)
-    box = arr[:bbox]
-    _bd21b165, _e55fd46f = KSU::Sheet.edit_offset(_73dc38ac) || [0.0, 0.0]
+    box = rec[:bbox]
+    _bd21b165, _e55fd46f = KSU::Sheet.edit_offset(sheet) || [0.0, 0.0]
     num2 = box.min.x.to_f + _bd21b165
     num4 = box.min.y.to_f + _e55fd46f
     data["rects"].each do |half|
@@ -400,12 +400,12 @@ class KSU::Netcatcuoi
       num3 = half[2].to_f
       arr52 = half[3].to_f
       next if num3 <= 0 || arr52 <= 0
-      @arr10 << { sheet: _73dc38ac, points: points({ x1: x, y1: y, x2: x + num3, y2: y + arr52 }) }
+      @arr10 << { sheet: sheet, points: points({ x1: x, y1: y, x2: x + num3, y2: y + arr52 }) }
     end
   end
-  def _ca2351da(grp2, arr)
-    transform = arr[:transform]
-    grp2.definition.entities.each do |node|
+  def _ca2351da(sheet, rec)
+    transform = rec[:transform]
+    sheet.definition.entities.each do |node|
       next unless _75723f03(node)
       ents = KSU.entities_in(node)
       tr = transform * node.transformation
@@ -416,7 +416,7 @@ class KSU::Netcatcuoi
       bbox = Geom::BoundingBox.new
       out.each { |_23505ef9| bbox.add(_23505ef9) }
       @arr10 << {
-        sheet: grp2,
+        sheet: sheet,
         points: points({ x1: bbox.min.x, y1: bbox.min.y, x2: bbox.max.x, y2: bbox.max.y })
       }
     end
@@ -440,12 +440,12 @@ class KSU::Netcatcuoi
 end
 class KSU::Netcatcuoi
   def self.check_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (87 * _a4ab9a59 + 61) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (87 * i + 61) }.pack("C*")
     arr = arr2[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 153 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[\da-zA-Z]{3}-[\da-zA-Z]{4}-[\da-zA-Z]{4}-[\da-zA-Z]{4}\z/
   end
   def self.assert_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, _a4ab9a59| b ^ (61 + _a4ab9a59 * 87) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.each_with_index.map { |b, i| b ^ (61 + i * 87) }.pack("C*")
     arr = arr2[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 0x99 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[0-9A-Za-z]{3}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}\z/
   end

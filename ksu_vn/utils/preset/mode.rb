@@ -11,10 +11,10 @@ module KSU::Mode
     view.line_stipple = ""
     layout = mode_layout(view)
     active_ix = @active_fn.call
-    @modes.each_with_index do |lbl, _a4ab9a59|
-      box2 = layout[_a4ab9a59]
-      active = active_ix == _a4ab9a59
-      hovered = @hover_mode_ix == _a4ab9a59 && !active
+    @modes.each_with_index do |lbl, i|
+      box2 = layout[i]
+      active = active_ix == i
+      hovered = @hover_mode_ix == i && !active
       border, fill, text_color, lw = field_colors(active, hovered)
       draw_round_rect(view, box2, radius, border: border, fill: fill, line_width: lw, outset: 1)
       draw_text(view, lbl, box2[:x] + box2[:width] / 2.0,
@@ -38,9 +38,9 @@ module KSU::Mode
     prev_key = @hover_mode_ix
     @hover_mode_ix = nil
     layout = mode_layout(view)
-    layout.each_with_index do |box2, _a4ab9a59|
+    layout.each_with_index do |box2, i|
       if in_rect?(x, y, box2)
-        @hover_mode_ix = _a4ab9a59
+        @hover_mode_ix = i
         break
       end
     end
@@ -51,9 +51,9 @@ module KSU::Mode
     return false unless @modes
     active_ix = @active_fn.call
     layout = mode_layout(view)
-    layout.each_with_index do |box2, _a4ab9a59|
+    layout.each_with_index do |box2, i|
       if in_rect?(x, y, box2)
-        @click_fn.call(_a4ab9a59) if active_ix != _a4ab9a59
+        @click_fn.call(i) if active_ix != i
         return true
       end
     end

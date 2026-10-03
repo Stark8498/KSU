@@ -2,24 +2,24 @@ module KSU::Arrange
   private
   def sheet_at2(view, x, y)
     return nil unless @nesting && @nesting.valid?
-    @arr23.each do |arr|
-      vec = arr[:instance]
-      next unless vec && vec.valid?
-      next if KSU::Sheet.hidden?(vec)
-      rect = name_rect(view, arr)
-      return vec if rect && KSU::View.in_rect?(x, y, rect)
+    @arr23.each do |rec|
+      sheet = rec[:instance]
+      next unless sheet && sheet.valid?
+      next if KSU::Sheet.hidden?(sheet)
+      rect = name_rect(view, rec)
+      return sheet if rect && KSU::View.in_rect?(x, y, rect)
     end
-    @arr23.each do |arr|
-      vec = arr[:instance]
-      next unless vec && vec.valid?
-      next if KSU::Sheet.hidden?(vec)
-      return vec if KSU::View._919af578(view, x, y, arr) ||
-                         near_outline?(view, x, y, arr)
+    @arr23.each do |rec|
+      sheet = rec[:instance]
+      next unless sheet && sheet.valid?
+      next if KSU::Sheet.hidden?(sheet)
+      return sheet if KSU::View._919af578(view, x, y, rec) ||
+                         near_outline?(view, x, y, rec)
     end
     nil
   end
-  def side_button_pt(arr4, side)
-    top_corners = arr4[:top_corners]
+  def side_button_pt(rec, side)
+    top_corners = rec[:top_corners]
     arr3 = top_corners.map(&:x)
     arr2 = top_corners.map(&:y)
     z = top_corners.map(&:z).max
@@ -27,18 +27,18 @@ module KSU::Arrange
     num = 250.mm
     side == :left ? Geom::Point3d.new(arr3.min - num, py, z) : Geom::Point3d.new(arr3.max + num, py, z)
   end
-  def draw_side_buttons(view, _9dcbc6c4)
+  def draw_side_buttons(view, rec)
     [:left, :right].each do |side|
-      KSU::View.draw_button(view, side_button_pt(_9dcbc6c4, side), hover: @hover_side == side)
+      KSU::View.draw_button(view, side_button_pt(rec, side), hover: @hover_side == side)
     end
   end
   def hit_side_button(view, x, y)
     return nil unless @flag37 && @flag37.valid?
     return nil if KSU::Sheet.hidden?(@flag37)
-    arr = record_for(@flag37)
-    return nil unless arr
+    rec = record_for(@flag37)
+    return nil unless rec
     [:left, :right].each do |side|
-      return side if KSU::View.button_hit?(view, side_button_pt(arr, side), x, y)
+      return side if KSU::View.button_hit?(view, side_button_pt(rec, side), x, y)
     end
     nil
   end
@@ -46,9 +46,9 @@ module KSU::Arrange
     return false unless @flag37 && @flag37.valid?
     return false if KSU::Sheet.hidden?(@flag37)
     return false unless KSU::Sheet.empty?(@flag37)
-    arr = record_for(@flag37)
-    return false unless arr
-    KSU::View.button_hit?(view, KSU::View.center_of(arr[:top_corners]), x, y)
+    rec = record_for(@flag37)
+    return false unless rec
+    KSU::View.button_hit?(view, KSU::View.center_of(rec[:top_corners]), x, y)
   end
   def delete_sheet
     return unless @flag37 && @flag37.valid?
@@ -64,14 +64,14 @@ module KSU::Arrange
   end
   def move_sheet(side)
     return unless @flag37 && @flag37.valid?
-    grp = @flag37
-    _9dcbc6c4 = record_for(grp)
-    return unless _9dcbc6c4
-    arr = KSU::Sheet.row_of(grp, @arr23)
-    ix = arr.index(grp) || 0
-    offset = KSU::Sheet.row_offset(_9dcbc6c4, arr, ix, @arr23)
-    tr2 = grp.transformation
-    grp4 = KSU::Sheet.bottom(grp, @nesting)
+    sheet = @flag37
+    rec = record_for(sheet)
+    return unless rec
+    arr = KSU::Sheet.row_of(sheet, @arr23)
+    ix = arr.index(sheet) || 0
+    offset = KSU::Sheet.row_offset(rec, arr, ix, @arr23)
+    tr2 = sheet.transformation
+    grp4 = KSU::Sheet.bottom(sheet, @nesting)
     tr = (grp4&.valid?) ? grp4.transformation : nil
     load_data = if side == :right
         [
@@ -86,9 +86,9 @@ module KSU::Arrange
     tr3 = load_data[1]
     _fde5708a = load_data[2]
     arr4 = arr2.each_with_object({}) do |s, arr52|
-      arr52[s] = KSU::Sheet.labels(s, @nesting) if s && s.valid?
+      arr52[s] = KSU::Sheet.sheet_labels(s, @nesting) if s && s.valid?
     end
-    labels3 = KSU::Sheet.labels(grp, @nesting)
+    labels3 = KSU::Sheet.sheet_labels(sheet, @nesting)
     KSU.start
     arr2.each do |s|
       next unless s && s.valid?
@@ -97,10 +97,10 @@ module KSU::Arrange
       bottom3 = KSU::Sheet.bottom(s, @nesting)
       bottom3.transformation = Geom::Transformation.translation(offset) * bottom3.transformation if bottom3&.valid?
     end
-    str2 = KSU::Sheet.sheet_no(grp.name.to_s)
+    str2 = KSU::Sheet.sheet_no(sheet.name.to_s)
     new_id = str2 ? (side == :left ? str2 : str2 + 1) : nil
     KSU::Sheet.shift_sheets(@nesting, new_id, +1) if new_id
-    grp2 = KSU::Sheet._f74b0a99(grp, tr3, @nesting)
+    grp2 = KSU::Sheet._f74b0a99(sheet, tr3, @nesting)
     if grp2
       if new_id
         str = "sheet-#{new_id}"
@@ -127,21 +127,21 @@ module KSU::Arrange
     sheet_list(@nesting)
     _b5e0ad4b
   end
-  def name_rect(view, arr)
-    outer = arr[:top_corners].map { |_23505ef9| view.screen_coords(_23505ef9) }
+  def name_rect(view, rec)
+    outer = rec[:top_corners].map { |_23505ef9| view.screen_coords(_23505ef9) }
     arr2 = outer.map(&:x)
     arr3 = outer.map(&:y)
     cx = (arr2.min + arr2.max) / 2.0
     _ab593548 = arr3.max + 2
-    row_w = [arr[:instance].name.to_s.length * 7, 56].max
+    row_w = [rec[:instance].name.to_s.length * 7, 56].max
     { left: cx - row_w / 2.0, right: cx + row_w / 2.0, top: _ab593548, bottom: _ab593548 + 20 }
   end
-  def near_outline?(view, x, y, arr)
-    outer = arr[:top_corners].map { |_23505ef9| view.screen_coords(_23505ef9) }
+  def near_outline?(view, x, y, rec)
+    outer = rec[:top_corners].map { |_23505ef9| view.screen_coords(_23505ef9) }
     tol = 8
-    outer.length.times do |_a4ab9a59|
-      _9710d820 = outer[_a4ab9a59]
-      b = outer[(_a4ab9a59 + 1) % outer.length]
+    outer.length.times do |i|
+      _9710d820 = outer[i]
+      b = outer[(i + 1) % outer.length]
       return true if KSU::View.near_seg?(x, y, _9710d820, b, tol)
     end
     false
@@ -232,17 +232,17 @@ module KSU::Arrange
     num2 = pt2.x.to_f * tx + pt2.y.to_f * num5
     return if num2.abs < KSU::TOL
     pt = Geom::Vector3d.new(tx * num2, num5 * num2, 0)
-    _98834989(pt)
-    _52bcd343(pt)
+    add_offset(pt)
+    shift_cached_polys(pt)
     arr = compute_push_back(_435e9c11, true)
     num4 = arr.length.to_f
     return if num4 < KSU::TOL
     if num4 > num + KSU::TOL
-      _98834989(Geom::Vector3d.new(-pt.x.to_f, -pt.y.to_f, 0))
-      _52bcd343(Geom::Vector3d.new(-pt.x.to_f, -pt.y.to_f, 0))
+      add_offset(Geom::Vector3d.new(-pt.x.to_f, -pt.y.to_f, 0))
+      shift_cached_polys(Geom::Vector3d.new(-pt.x.to_f, -pt.y.to_f, 0))
     else
-      _98834989(arr)
-      _52bcd343(arr)
+      add_offset(arr)
+      shift_cached_polys(arr)
     end
   end
   def _c574b8db(_c04fb39c)

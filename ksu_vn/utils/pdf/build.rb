@@ -14,8 +14,8 @@ module KSU::Pdf
     font_id = write_font(add, font, used, "Arial", arr)
     bold_id = write_font(add, font_bold, used_bold, "Arial-Bold", arr)
     arr3 = []
-    arr5.each_with_index do |_0bc8ddc6, _a4ab9a59|
-      group_rgb = arr4[_a4ab9a59]
+    arr5.each_with_index do |_0bc8ddc6, i|
+      group_rgb = arr4[i]
       content_id = add.call(stream_obj(_0bc8ddc6))
       page_id = add.call(
         "<< /Type /Page /Parent #{pages_id} 0 R /MediaBox [0 0 #{num(group_rgb[:pw])} #{num(group_rgb[:ph])}] " \
@@ -81,9 +81,9 @@ module KSU::Pdf
   def serialize(arr)
     out = String.new("%PDF-1.4\n%ÿÿÿÿ\n", encoding: "BINARY")
     arr2 = []
-    arr.each_with_index do |obj, _a4ab9a59|
-      arr2[_a4ab9a59] = out.bytesize
-      out << "#{_a4ab9a59 + 1} 0 obj\n"
+    arr.each_with_index do |obj, i|
+      arr2[i] = out.bytesize
+      out << "#{i + 1} 0 obj\n"
       if obj.is_a?(Hash)
         out << obj[:dict].dup.force_encoding("BINARY") << "\nstream\n"
         out << obj[:stream].dup.force_encoding("BINARY") << "\nendstream"

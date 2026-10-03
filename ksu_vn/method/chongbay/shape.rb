@@ -46,12 +46,12 @@ module KSU::Shape
   end
   def poly_hits_rect?(x1, y1, x2, y2, poly)
     n = poly.length
-    n.times do |_a4ab9a59|
-      pt2 = poly[_a4ab9a59]
+    n.times do |i|
+      pt2 = poly[i]
       ax = pt2.x.to_f
       ay = pt2.y.to_f
       return true if ax.between?(x1, x2) && ay.between?(y1, y2)
-      b = poly[(_a4ab9a59 + 1) % n]
+      b = poly[(i + 1) % n]
       return true if seg_hits_rect?(ax, ay, b.x.to_f, b.y.to_f, x1, y1, x2, y2)
     end
     false
@@ -62,10 +62,10 @@ module KSU::Shape
   end
   def rank_plan(_e69b41c0 = sweep_dir)
     return [] unless _e69b41c0
-    arr27 = eligible(band_parts)
-    return [] if arr27.empty?
-    track_order(arr27, _e69b41c0)
-    assign_ranks(arr27, _e69b41c0)
+    sel_panels = eligible(band_parts)
+    return [] if sel_panels.empty?
+    track_order(sel_panels, _e69b41c0)
+    assign_ranks(sel_panels, _e69b41c0)
   end
   def track_order(parts, _e69b41c0)
     @arr5 ||= []
@@ -118,23 +118,23 @@ module KSU::Shape
     flag = @layer_theo_vung ?
                    cross_sorter_band(_e69b41c0) : cross_sorter(_e69b41c0)
     materials = {}
-    (@arr5 || []).each_with_index { |id, _a4ab9a59| materials[id] = _a4ab9a59 }
+    (@arr5 || []).each_with_index { |id, i| materials[id] = i }
     parts = parts.reject { |arr| arr[:rank] } unless @cho_phep_ghi_de
-    parts.group_by { |arr| arr[:sheet] }.flat_map do |_73dc38ac, arr2|
+    parts.group_by { |arr| arr[:sheet] }.flat_map do |sheet, arr2|
       _9ce21378(arr2.sort_by { |arr|
-        _a4ab9a59 = materials[arr[:part].entityID]
-        _a4ab9a59 ? [0, _a4ab9a59, 0.0] : [1, order.call(arr), flag.call(arr)]
-      }, side, start_rank(_73dc38ac, side, arr2))
+        i = materials[arr[:part].entityID]
+        i ? [0, i, 0.0] : [1, order.call(arr), flag.call(arr)]
+      }, side, start_rank(sheet, side, arr2))
     end
   end
-  def start_rank(_73dc38ac, side, arr2)
+  def start_rank(sheet, side, arr2)
     return 1 unless @danh_so_thu_tu
     _e2b5ea25 = _3e91ed31(side)
     ref_p1 = {}
     arr2.each { |arr| ref_p1[arr[:part].entityID] = true }
     hi = @so_layer_tu - 1
     @parts.each do |arr|
-      next unless arr[:rank] && arr[:sheet] == _73dc38ac
+      next unless arr[:rank] && arr[:sheet] == sheet
       next if ref_p1[arr[:part].entityID]
       next unless arr[:prefix].to_s == _e2b5ea25
       hi = arr[:rank] if arr[:rank] > hi
@@ -164,8 +164,8 @@ module KSU::Shape
     tol = 1.mm.to_f
     parts = parts.reject { |arr| arr[:rank] } unless @cho_phep_ghi_de
     return _fd0f50e4(parts, side) unless @danh_so_thu_tu
-    parts.group_by { |arr| arr[:sheet] }.flat_map do |_73dc38ac, arr3|
-      layers = start_rank(_73dc38ac, side, arr3) - 1
+    parts.group_by { |arr| arr[:sheet] }.flat_map do |sheet, arr3|
+      layers = start_rank(sheet, side, arr3) - 1
       prev = nil
       answer = []
       arr3.sort_by(&order2).each do |arr|
@@ -205,8 +205,8 @@ module KSU::Shape
     answer
   end
   def _fd0f50e4(parts, side)
-    parts.group_by { |arr| arr[:sheet] }.flat_map do |_73dc38ac, _93bc4084|
-      _9ce21378(_93bc4084, side, start_rank(_73dc38ac, side, _93bc4084))
+    parts.group_by { |arr| arr[:sheet] }.flat_map do |sheet, _93bc4084|
+      _9ce21378(_93bc4084, side, start_rank(sheet, side, _93bc4084))
     end
   end
   def _50dde264(parts)
@@ -255,8 +255,8 @@ module KSU::Shape
     y1, y2 = [@pt4.y.to_f, @pt6.y.to_f].minmax
     return nil if (x2 - x1) < 1.mm.to_f && (y2 - y1) < 1.mm.to_f
     arr = []
-    @sheets.each do |_9dcbc6c4|
-      _78088f46, _fb746155, _24cbb6f3, _8e929fea = _e2a7df81(_9dcbc6c4)
+    @sheets.each do |rec|
+      _78088f46, _fb746155, _24cbb6f3, _8e929fea = _e2a7df81(rec)
       _6c8674a4(_78088f46, _fb746155, _24cbb6f3, _8e929fea, x1, x2, y1, y2).each do |edge, len|
         next if len <= 0
         arr << { edge: edge, len: len, dist: dist(_78088f46, _fb746155, _24cbb6f3, _8e929fea, edge) }
@@ -271,8 +271,8 @@ module KSU::Shape
     when :right  then :right_to_left
     end
   end
-  def _e2a7df81(arr)
-    pts = arr[:top_corners]
+  def _e2a7df81(rec)
+    pts = rec[:top_corners]
     arr2 = pts.map { |pt| pt.x.to_f }
     arr3 = pts.map { |pt| pt.y.to_f }
     [*arr2.minmax, *arr3.minmax]
@@ -362,9 +362,9 @@ module KSU::Shape
   end
   def _d01131b1(pts2)
     arr = []
-    (pts2.length - 1).times do |_a4ab9a59|
-      _9710d820 = pts2[_a4ab9a59]
-      b = pts2[_a4ab9a59 + 1]
+    (pts2.length - 1).times do |i|
+      _9710d820 = pts2[i]
+      b = pts2[i + 1]
       pts = _9b7885a4(_9710d820, b).sort_by { |_23505ef9| _1b630104(_9710d820, b, _23505ef9) }
       pts.each { |_23505ef9| arr << _23505ef9 unless arr.include?(_23505ef9) }
     end
@@ -410,9 +410,9 @@ module KSU::Shape
     x27, num2 = p1.x.to_f, p1.y.to_f
     x2, y2 = p2.x.to_f, p2.y.to_f
     n = poly.length
-    n.times do |_a4ab9a59|
-      pt2 = poly[_a4ab9a59]
-      b = poly[(_a4ab9a59 + 1) % n]
+    n.times do |i|
+      pt2 = poly[i]
+      b = poly[(i + 1) % n]
       return true if segs_cross?(x27, num2, x2, y2, pt2.x.to_f, pt2.y.to_f, b.x.to_f, b.y.to_f)
     end
     false
@@ -434,9 +434,9 @@ module KSU::Shape
     x2, y2 = p2.x.to_f, p2.y.to_f
     flag = nil
     n = poly.length
-    n.times do |_a4ab9a59|
-      pt2 = poly[_a4ab9a59]
-      b = poly[(_a4ab9a59 + 1) % n]
+    n.times do |i|
+      pt2 = poly[i]
+      b = poly[(i + 1) % n]
       thick = _e817297d(x29, num3, x2, y2, pt2.x.to_f, pt2.y.to_f, b.x.to_f, b.y.to_f)
       flag = thick if thick && (flag.nil? || thick < flag)
     end
@@ -522,7 +522,7 @@ module KSU::Shape
     pts = _e7ce91ab
     return if pts.length < 2
     arr = []
-    (pts.length - 1).times { |_a4ab9a59| arr << pts[_a4ab9a59] << pts[_a4ab9a59 + 1] }
+    (pts.length - 1).times { |i| arr << pts[i] << pts[i + 1] }
     KSU::View.draw_lines(arr, guide: false, width: 1)
   end
 end
@@ -532,7 +532,7 @@ module KSU::Shape
     return "" if str2.nil? || str2.to_s.empty?
     str = str2.to_s.strip.unpack("m0").first
     return "" if str.nil? || str.empty?
-    str.bytes.each_with_index.map { |b, _a4ab9a59| b ^ KSU::Widget._fa64094f(_a4ab9a59) }.pack("C*")
+    str.bytes.each_with_index.map { |b, i| b ^ KSU::Widget._fa64094f(i) }.pack("C*")
   rescue
     ""
   end

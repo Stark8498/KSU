@@ -24,7 +24,7 @@ module KSU::Loop
     _1bba05d9 = hull_of(ents, tf)
     return _1bba05d9 if _1bba05d9
     box = entity.definition.bounds
-    _7db17b8e(box).map { |_a4ab9a59| box.corner(_a4ab9a59).transform(transform) }
+    _7db17b8e(box).map { |i| box.corner(i).transform(transform) }
   rescue StandardError
     []
   end
@@ -124,9 +124,9 @@ module KSU::Loop
   end
   def each_panel(nesting)
     return unless nesting && nesting.valid?
-    nesting.definition.entities.each do |grp|
-      next unless KSU::Sheet.sheet?(grp)
-      grp.definition.entities.each do |panel|
+    nesting.definition.entities.each do |sheet|
+      next unless KSU::Sheet.sheet?(sheet)
+      sheet.definition.entities.each do |panel|
         next unless KSU::Sheet.panel?(panel)
         yield panel
       end
@@ -257,9 +257,9 @@ module KSU::Loop
   def area(out)
     num = 0.0
     n = out.length
-    n.times do |_a4ab9a59|
-      pt2 = out[_a4ab9a59]
-      b = out[(_a4ab9a59 + 1) % n]
+    n.times do |i|
+      pt2 = out[i]
+      b = out[(i + 1) % n]
       num += (pt2.x.to_f * b.y.to_f) - (b.x.to_f * pt2.y.to_f)
     end
     num * 0.5
@@ -293,9 +293,9 @@ module KSU::Loop
     ix = board_index(panel)
     return nil if ix.nil?
     want_back = !bottom_face?(panel)
-    nesting.definition.entities.each do |grp|
-      next unless KSU::Sheet.sheet?(grp)
-      partner = grp.definition.entities.find do |ent|
+    nesting.definition.entities.each do |sheet|
+      next unless KSU::Sheet.sheet?(sheet)
+      partner = sheet.definition.entities.find do |ent|
         KSU.container?(ent) && ent != panel &&
           board_index(ent) == ix && (bottom_face?(ent) == want_back)
       end

@@ -7,8 +7,8 @@ module KSU::Reorder
     cur_type = h[num19].get_attribute("ABF", "sheet-type")
     box = keys.index(num19)
     random = forward ? (box + 1...keys.size).to_a : (box - 1).downto(0).to_a
-    random.each do |_a4ab9a59|
-      thick = h[keys[_a4ab9a59]].get_attribute("ABF", "sheet-type")
+    random.each do |i|
+      thick = h[keys[i]].get_attribute("ABF", "sheet-type")
       return thick if thick != cur_type
     end
     nil
@@ -28,8 +28,8 @@ module KSU::Reorder
     flag = forward ? arr.first : arr2.first
     _bdf6b67b = arr.index(num19)
     materials = forward ? (arr2 + arr) : (arr + arr2)
-    materials.each_with_index do |id, _a4ab9a59|
-      new_id = flag + _a4ab9a59
+    materials.each_with_index do |id, i|
+      new_id = flag + i
       h2[id].set_attribute("ABF", "sheet-id", new_id)
       bot[id].set_attribute("ABF", "sheet-id", new_id) if bot[id]
     end
@@ -43,10 +43,10 @@ module KSU::Reorder
   def erase_sheet(nesting, num19)
     return false unless nesting && nesting.valid?
     arr2, bot = sheet_maps(nesting)
-    grp = arr2[num19]
-    return false unless grp && grp.valid?
-    return false unless empty?(grp)
-    grp.erase!
+    sheet = arr2[num19]
+    return false unless sheet && sheet.valid?
+    return false unless empty?(sheet)
+    sheet.erase!
     bot[num19].erase! if bot[num19] && bot[num19].valid?
     renumber_ids(nesting)
     true
@@ -138,10 +138,10 @@ module KSU::Reorder
     renumber_ids(nesting)
     num
   end
-  def sheet_dim(grp, nesting)
-    arr = grp.get_attribute("ABF", "sheet-dimension")
+  def sheet_dim(sheet, nesting)
+    arr = sheet.get_attribute("ABF", "sheet-dimension")
     return [arr[0].mm.to_f, arr[1].mm.to_f] if arr && arr[0] && arr[1]
-    bbox = world_bbox(grp, nesting)
+    bbox = world_bbox(sheet, nesting)
     [bbox.width.to_f, bbox.height.to_f]
   end
   def renumber_ids(nesting)
@@ -278,14 +278,14 @@ module KSU::Reorder
     ent2.text_position = Sketchup::DimensionLinear::TEXT_OUTSIDE_START
     ent2.set_attribute("KSU", "row-label", true)
   end
-  def _06da7172(_73dc38ac, sheet_type, thickness_mm, want, _1e94f865, _f35ddd0a, _91035266)
+  def _06da7172(sheet, sheet_type, thickness_mm, want, _1e94f865, _f35ddd0a, _91035266)
     _ad1ad2d8 = _a7dc970c(thickness_mm)
-    head_off = _f4f71a73(_73dc38ac, sheet_type, _ad1ad2d8)
+    head_off = _f4f71a73(sheet, sheet_type, _ad1ad2d8)
     if head_off.empty? && _ad1ad2d8
       head_off = _ad1ad2d8
       _ad1ad2d8 = nil
     end
-    phan = _c989e8e4(_73dc38ac, sheet_type)
+    phan = _c989e8e4(sheet, sheet_type)
     head_off = "#{head_off}-#{part_suffix}#{phan}" if phan > 0
     arr2 = []
     arr2 << _ad1ad2d8 if _1e94f865 && _ad1ad2d8
@@ -295,16 +295,16 @@ module KSU::Reorder
     return str if head_off.empty?
     _91035266 ? "#{head_off}\n#{str}" : "#{head_off} - #{str}"
   end
-  def _f4f71a73(grp, sheet_type, _ad1ad2d8)
-    mat = grp.get_attribute("KSU", "sheet-material")
+  def _f4f71a73(sheet, sheet_type, _ad1ad2d8)
+    mat = sheet.get_attribute("KSU", "sheet-material")
     return mat.to_s.strip unless mat.nil?
-    str = grp.get_attribute("KSU", "sheet-type")
+    str = sheet.get_attribute("KSU", "sheet-type")
     normal = str.nil? || str.to_s.empty? ? sheet_type.sub(part_re, "") : str.to_s
     return normal.strip if _ad1ad2d8.nil?
     _bd935f02(normal)
   end
-  def _c989e8e4(grp, sheet_type)
-    phan = grp.get_attribute("KSU", "phan")
+  def _c989e8e4(sheet, sheet_type)
+    phan = sheet.get_attribute("KSU", "phan")
     phan.nil? ? part_no(sheet_type) : phan.to_i
   end
   def _bd935f02(normal)
@@ -361,8 +361,8 @@ module KSU::Reorder
     arr2 = rows.flat_map { |half| half.sort_by { |ent| ent[:x] } }
     want = arr2.size
     transform = nesting.transformation
-    plan = arr2.each_with_index.map do |ent, _a4ab9a59|
-      new_id = _a4ab9a59 + 1
+    plan = arr2.each_with_index.map do |ent, i|
+      new_id = i + 1
       num = _ef09a8a7(new_id, want, pad_x)
       {
         gr: ent[:gr],

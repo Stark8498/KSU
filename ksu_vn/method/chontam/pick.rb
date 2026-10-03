@@ -15,7 +15,7 @@ class KSU::Chontam
     def hit_targets(nesting)
       @hit_targets ||= KSU::Flip.hit_targets(nesting)
     end
-    def _ecb07074(view, x, y)
+    def panel_at(view, x, y)
       nesting = KSU::Nesting.find_nesting(notify: false)
       return nil unless nesting
       KSU::Flip.hit_panel(view, hit_targets(nesting), x, y)
@@ -47,11 +47,11 @@ class KSU::Chontam
       nesting = KSU::Nesting.find_nesting(notify: false)
       return [] unless nesting
       arr2 = []
-      nesting.definition.entities.each do |grp|
-        next unless KSU.container?(grp)
-        next unless grp.name.to_s.downcase.include?("sheet")
-        next if KSU::Sheet.bottom_sheet?(grp)
-        ents = KSU.entities_in(grp)
+      nesting.definition.entities.each do |sheet|
+        next unless KSU.container?(sheet)
+        next unless sheet.name.to_s.downcase.include?("sheet")
+        next if KSU::Sheet.bottom_sheet?(sheet)
+        ents = KSU.entities_in(sheet)
         next unless ents
         ents.each do |entity|
           next unless KSU.container?(entity)
@@ -131,9 +131,9 @@ class KSU::Chontam
          !_07d87f58(_477c927d) && !KSU::Sheet._27ecfdd1(_477c927d)
         return { kind: :panel, entity: _477c927d }
       end
-      (0...ph.count).each do |_a4ab9a59|
-        next unless ph.leaf_at(_a4ab9a59).is_a?(Sketchup::Edge)
-        path = ph.path_at(_a4ab9a59)
+      (0...ph.count).each do |i|
+        next unless ph.leaf_at(i).is_a?(Sketchup::Edge)
+        path = ph.path_at(i)
         lbl = _827d4a81(path)
         return lbl if lbl
         panel = _1db77630(path)
@@ -144,19 +144,19 @@ class KSU::Chontam
     end
     def _827d4a81(path)
       return nil unless path
-      path.each_with_index do |_310b620e, num|
-        next if num.zero?
+      path.each_with_index do |_310b620e, i|
+        next if i.zero?
         next unless KSU.container?(_310b620e) && _6d620197(_310b620e)
-        panel = path[num - 1]
+        panel = path[i - 1]
         return nil unless panel && KSU.container?(panel)
         transform = Geom::Transformation.new
-        (0...num).each do |j|
+        (0...i).each do |j|
           n = path[j]
           transform = transform * n.transformation if n.respond_to?(:transformation)
         end
-        flag = num >= 2 ? path[num - 2] : nil
+        sheet = i >= 2 ? path[i - 2] : nil
         _c9fa72f2 = KSU::Cutting.label_pts(panel, transform)
-        return { kind: :label, panel: panel, sheet: flag, loop: _c9fa72f2 }
+        return { kind: :label, panel: panel, sheet: sheet, loop: _c9fa72f2 }
       end
       nil
     end
@@ -176,7 +176,7 @@ class KSU::Chontam
         next unless color[:external]
         entity = color[:entity]
         next unless entity.valid?
-        pts = (0..7).map { |_a4ab9a59| entity.definition.bounds.corner(_a4ab9a59).transform(color[:transform]) }
+        pts = (0..7).map { |i| entity.definition.bounds.corner(i).transform(color[:transform]) }
         x1, x2 = pts.map { |pt2| pt2.x.to_f }.minmax
         y1, y2 = pts.map { |pt2| pt2.y.to_f }.minmax
         next unless num2.between?(x1, x2) && num.between?(y1, y2)
@@ -189,10 +189,10 @@ class KSU::Chontam
     end
     def _1db77630(path)
       return nil unless path
-      path.each_with_index do |_310b620e, num|
-        next if num.zero?
+      path.each_with_index do |_310b620e, i|
+        next if i.zero?
         next unless KSU.container?(_310b620e) && _08a03619(_310b620e)
-        return path[num - 1]
+        return path[i - 1]
       end
       nil
     end
@@ -228,7 +228,7 @@ class KSU::Chontam
         next unless entity && entity.valid?
         begin
           bbox = entity.local_bounds
-          pt = (0..7).map { |_a4ab9a59| view.screen_coords(bbox.corner(_a4ab9a59).transform(color[:transform])) }
+          pt = (0..7).map { |i| view.screen_coords(bbox.corner(i).transform(color[:transform])) }
           sxmin, sxmax = pt.map(&:x).minmax
           symin, symax = pt.map(&:y).minmax
           items << {
@@ -273,9 +273,9 @@ class KSU::Chontam
       return [] unless h
       h.fetch(ix.to_i, []).select { |ent| ent && ent.valid? }
     end
-    def _7c845e31(name, arr27 = nil)
+    def _7c845e31(name, sel_panels = nil)
       return [] unless @cache
-      (@cache[:external_map][name] || []).reject { |ent| ent == arr27 || !ent.valid? }
+      (@cache[:external_map][name] || []).reject { |ent| ent == sel_panels || !ent.valid? }
     end
     def _670981eb(name)
       return [] unless @cache
@@ -482,10 +482,10 @@ class KSU::Chontam
       end
       nesting = arr[:nesting]
       if nesting && nesting.valid?
-        nesting.definition.entities.each do |_73dc38ac|
-          next unless KSU.container?(_73dc38ac)
-          next unless KSU::Sheet.hidden?(_73dc38ac)
-          ents = KSU.entities_in(_73dc38ac)
+        nesting.definition.entities.each do |sheet|
+          next unless KSU.container?(sheet)
+          next unless KSU::Sheet.hidden?(sheet)
+          ents = KSU.entities_in(sheet)
           next unless ents
           ents.each do |panel|
             next unless KSU.container?(panel)

@@ -26,8 +26,8 @@ module KSU::Ttf
   def table_offsets(data)
     num = data[4, 2].unpack1("n")
     hmtx_off = {}
-    num.times do |_a4ab9a59|
-      normal = 12 + _a4ab9a59 * 16
+    num.times do |i|
+      normal = 12 + i * 16
       tag = data[normal, 4]
       _4bcb6213 = data[normal + 8, 4].unpack1("N")
       hmtx_off[tag] = _4bcb6213
@@ -37,8 +37,8 @@ module KSU::Ttf
   def cmap(data, _4bcb6213)
     num = data[_4bcb6213 + 2, 2].unpack1("n")
     flag = nil
-    num.times do |_a4ab9a59|
-      normal = _4bcb6213 + 4 + _a4ab9a59 * 8
+    num.times do |i|
+      normal = _4bcb6213 + 4 + i * 8
       pid = data[normal, 2].unpack1("n")
       _507dcc2d = data[normal + 2, 2].unpack1("n")
       kids = data[normal + 4, 4].unpack1("N")
@@ -65,17 +65,17 @@ module KSU::Ttf
     _1ef61ee4 = _cd0dfa0c + _cd2f261c
     _774060b6 = _1ef61ee4 + _cd2f261c
     h = {}
-    pts.times do |_a4ab9a59|
-      _781628f9 = data[_b44355cf + _a4ab9a59 * 2, 2].unpack1("n")
-      start = data[_cd0dfa0c + _a4ab9a59 * 2, 2].unpack1("n")
-      delta = data[_1ef61ee4 + _a4ab9a59 * 2, 2].unpack1("n")
-      _52d8d4a9 = data[_774060b6 + _a4ab9a59 * 2, 2].unpack1("n")
+    pts.times do |i|
+      _781628f9 = data[_b44355cf + i * 2, 2].unpack1("n")
+      start = data[_cd0dfa0c + i * 2, 2].unpack1("n")
+      delta = data[_1ef61ee4 + i * 2, 2].unpack1("n")
+      _52d8d4a9 = data[_774060b6 + i * 2, 2].unpack1("n")
       next if start == 0xffff
       (start.._781628f9).each do |color|
         if _52d8d4a9 == 0
           g = (color + delta) & 0xffff
         else
-          _b7a8e470 = _774060b6 + _a4ab9a59 * 2 + _52d8d4a9 + (color - start) * 2
+          _b7a8e470 = _774060b6 + i * 2 + _52d8d4a9 + (color - start) * 2
           g = data[_b7a8e470, 2].unpack1("n")
           g = (g + delta) & 0xffff if g != 0
         end
@@ -87,8 +87,8 @@ module KSU::Ttf
   def _19412587(data, _4bcb6213)
     num = data[_4bcb6213 + 12, 4].unpack1("N")
     h = {}
-    num.times do |_a4ab9a59|
-      normal = _4bcb6213 + 16 + _a4ab9a59 * 12
+    num.times do |i|
+      normal = _4bcb6213 + 16 + i * 12
       screen = data[normal, 4].unpack1("N")
       edge_color = data[normal + 4, 4].unpack1("N")
       _6048e0bb = data[normal + 8, 4].unpack1("N")

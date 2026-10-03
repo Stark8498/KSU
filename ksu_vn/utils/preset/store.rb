@@ -75,9 +75,9 @@ module KSU::Store
     arr2 = []
     groups = {}
     arr3 = []
-    preset2.each_with_index do |arr, _a4ab9a59|
+    preset2.each_with_index do |arr, i|
       next if arr["disabled"]
-      choice = { id: "preset_#{_a4ab9a59}".to_sym, label: arr["name"] }
+      choice = { id: "preset_#{i}".to_sym, label: arr["name"] }
       sub = arr["group"]
       if sub && !sub.empty?
         unless groups[sub]
@@ -261,8 +261,8 @@ module KSU::Store
         [bx2 + half, by2 + half, Math::PI],
         [bx2 + bw2 - half, by2 + half, Math::PI * 1.5]
       ].flat_map { |px, py, a1b|
-        9.times.map { |_a4ab9a59|
-          _9710d820 = a1b + _a4ab9a59 * Math::PI / 16
+        9.times.map { |i|
+          _9710d820 = a1b + i * Math::PI / 16
           Geom::Point3d.new(px + Math.cos(_9710d820) * half, py + Math.sin(_9710d820) * half, 0)
         }
       }

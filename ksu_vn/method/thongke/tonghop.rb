@@ -5,14 +5,14 @@ module KSU::Thongke::Tonghop
   ].freeze
   def self.list_edgeband(arr3)
     h = {}
-    arr3.each do |arr|
-      arr[:edgeband_lengths].each do |k, v|
-        key = [k, arr[:material].to_s, arr[:thickness]]
+    arr3.each do |rec|
+      rec[:edgeband_lengths].each do |k, v|
+        key = [k, rec[:material].to_s, rec[:thickness]]
         h[key] ||= {
-          thickness: arr[:edgeband_thickness].fetch(k, 0),
-          name: arr[:edgeband_base][k].to_s,
-          material: arr[:material].to_s,
-          board_thickness: arr[:thickness],
+          thickness: rec[:edgeband_thickness].fetch(k, 0),
+          name: rec[:edgeband_base][k].to_s,
+          material: rec[:material].to_s,
+          board_thickness: rec[:thickness],
           quantity: 0,
         }
         h[key][:quantity] += v
@@ -25,13 +25,13 @@ module KSU::Thongke::Tonghop
     h = {}
     thickness = {}
     min_sheet_id = {}
-    KSU::Thongke::Quet.each_sheet(scope) do |ent, sheet|
+    KSU::Thongke::Quet.each_sheet(scope) do |ent, sheet_id|
       next if KSU::Sheet.hidden?(ent)
       sheet_type = ent.get_attribute("ABF", "sheet-type", "")
       thick = ent.get_attribute("ABF", "sheet-thickness")
       thickness[sheet_type] = thick if thick
       h[sheet_type] = (h[sheet_type] || 0) + 1
-      min_sheet_id[sheet_type] = [(min_sheet_id[sheet_type] || 9999), sheet].min
+      min_sheet_id[sheet_type] = [(min_sheet_id[sheet_type] || 9999), sheet_id].min
     end
     arr = h.map { |k, v|
       { thickness: thickness.fetch(k, k), name: k, quantity: v, min_sheet_id: min_sheet_id[k] }
@@ -39,14 +39,14 @@ module KSU::Thongke::Tonghop
     arr.sort_by { |fld| fld[:min_sheet_id].to_i }
   end
   def self.part_data(arr2)
-    arr2 = arr2.sort_by { |arr| [arr[:sheet].to_i, arr[:material].to_s, arr[:name].to_s] }
-    rows = arr2.map { |arr|
+    arr2 = arr2.sort_by { |rec| [rec[:sheet].to_i, rec[:material].to_s, rec[:name].to_s] }
+    rows = arr2.map { |rec|
       [
-        arr[:index],
-        arr[:sheet] != -1 ? arr[:sheet] : "",
-        arr[:name],
-        arr[:length], arr[:width], arr[:thickness], arr[:material],
-        arr[:code_ns][0], arr[:code_ns][1], arr[:code_ns][2],
+        rec[:index],
+        rec[:sheet] != -1 ? rec[:sheet] : "",
+        rec[:name],
+        rec[:length], rec[:width], rec[:thickness], rec[:material],
+        rec[:code_ns][0], rec[:code_ns][1], rec[:code_ns][2],
       ]
     }
     { headers: HEADERS, rows: rows }

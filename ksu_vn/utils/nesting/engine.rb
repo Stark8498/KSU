@@ -19,7 +19,7 @@ module KSU::Nesting
       @h10 = {}
       @num16 = 0
     end
-    def start(width_mm:, height_mm:, spacing_mm:, rotate90:, use_holes:, parts_groups:,
+    def start2(width_mm:, height_mm:, spacing_mm:, rotate90:, use_holes:, parts_groups:,
                on_done:, on_progress: nil, on_place_progress: nil, on_fail: nil, two_sided: nil, orders: nil,
                pair: true)
       @on_done = on_done
@@ -95,10 +95,10 @@ module KSU::Nesting
           load_html
         end
       else
-        open_dialog
+        open_dialog2
       end
     end
-    def open_dialog
+    def open_dialog2
       @dlg2 = UI::HtmlDialog.new(
         dialog_title: "KSU Nesting",
         preferences_key: "ksu_nesting_engine",

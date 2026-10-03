@@ -39,11 +39,11 @@ module KSU::Flip
   def hit_targets(nesting)
     out = []
     return out unless nesting && nesting.valid?
-    nesting.definition.entities.each do |grp2|
-      next unless KSU::Sheet.sheet?(grp2)
-      next unless KSU::Sheet.bottom_sheet?(grp2)
-      transform = nesting.transformation * grp2.transformation
-      grp2.definition.entities.each do |grp|
+    nesting.definition.entities.each do |sheet|
+      next unless KSU::Sheet.sheet?(sheet)
+      next unless KSU::Sheet.bottom_sheet?(sheet)
+      transform = nesting.transformation * sheet.transformation
+      sheet.definition.entities.each do |grp|
         next unless KSU.container?(grp) && KSU::Cutting.bottom_face?(grp)
         out << { panel: grp, fill: KSU::Cutting.outline(grp, transform * grp.transformation) }
       end
@@ -60,9 +60,9 @@ module KSU::Flip
   end
   def panel_fill(nesting, panel)
     return nil unless nesting && nesting.valid? && panel && panel.valid?
-    grp = sheet_of(nesting, panel)
-    return nil unless grp
-    KSU::Cutting.outline(panel, nesting.transformation * grp.transformation * panel.transformation)
+    sheet = sheet_of(nesting, panel)
+    return nil unless sheet
+    KSU::Cutting.outline(panel, nesting.transformation * sheet.transformation * panel.transformation)
   end
   def sheet_of(nesting, panel)
     return nil unless nesting && nesting.valid? && panel && panel.valid?
@@ -76,14 +76,14 @@ module KSU::Flip
     return true if ent.respond_to?(:get_attribute) && ent.get_attribute("ABF", "is-edge-banding-notation")
     ent.name.to_s.include?("_ABF_edgeBanding")
   end
-  def edgeband_groups(panel, grp2)
-    return [] unless panel && panel.valid? && grp2 && grp2.valid?
+  def edgeband_groups(panel, sheet)
+    return [] unless panel && panel.valid? && sheet && sheet.valid?
     ents2 = panel.definition.entities.select { |ent| _cae3470a(ent) }
     return [] if ents2.empty?
     tr = panel.transformation
     _884dee16 = ents2.map { |ent| [ent, ent.transformation.clone] }
     bbox = _884dee16.map do |ent, _eef8786a|
-      ents = KSU::Nesting.clone_panel(grp2.definition.entities, ent, tr * _eef8786a)
+      ents = KSU::Nesting.clone_panel(sheet.definition.entities, ent, tr * _eef8786a)
       [ents, _eef8786a]
     end
     tr2 = Geom::Transformation.scaling(panel.definition.bounds.center, 1, -1, 1)
@@ -97,9 +97,9 @@ module KSU::Flip
   end
   def apply_edgeband(panel, arr)
     return unless panel && panel.valid?
-    arr.each do |instance, _b5060b46|
-      next unless instance && instance.valid?
-      KSU::Nesting.clone_panel(panel.definition.entities, instance, panel.transformation.inverse * _b5060b46)
+    arr.each do |inst, _b5060b46|
+      next unless inst && inst.valid?
+      KSU::Nesting.clone_panel(panel.definition.entities, inst, panel.transformation.inverse * _b5060b46)
     end
   end
   def attr_snapshot(entity)
@@ -112,10 +112,10 @@ module KSU::Flip
     end
     arr
   end
-  def restore_attrs(instance, arr)
-    return unless instance && instance.valid?
-    instance.attribute_dictionaries&.map(&:name)&.each { |n| instance.delete_attribute(n) }
-    arr.each { |name, arr2| arr2.each { |k, v| instance.set_attribute(name, k, v) } }
+  def restore_attrs(inst, arr)
+    return unless inst && inst.valid?
+    inst.attribute_dictionaries&.map(&:name)&.each { |n| inst.delete_attribute(n) }
+    arr.each { |name, arr2| arr2.each { |k, v| inst.set_attribute(name, k, v) } }
   end
   def move_panel(nesting, panel, grp3, grp, grp2)
     return nil unless panel && panel.valid? && grp && grp.valid?

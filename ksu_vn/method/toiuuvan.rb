@@ -9,12 +9,12 @@ class KSU::Toiuuvan
     reload
   end
   def reload
-    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (61 + 87 * _a4ab9a59) }.pack("C*")
+    s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (61 + 87 * i) }.pack("C*")
     k = s[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 153 }.pack("C*")
     return unless k =~ /\Ak[0-9a-z]{3}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}\z/i
     @nesting = nil
     @sheets = []
-    @arr27 = []
+    @sel_panels = []
     @arr64 = []
     @_3e453efd = nil
     @_096c8c23 = nil
@@ -125,7 +125,7 @@ class KSU::Toiuuvan
       _37011ad2(true, view)
       _92d864e9(view, true)
     when VK_LEFT, VK_RIGHT
-      return if @arr27.empty?
+      return if @sel_panels.empty?
       _b5af8dbf = (rot & CONSTRAIN_MODIFIER_MASK) != 0
       _c04fb39c = if key == VK_LEFT
           _b5af8dbf ? :first : :prev
@@ -147,7 +147,7 @@ class KSU::Toiuuvan
     _92d864e9(view, false)
   end
   def onReturn(view)
-    return if @arr27.empty?
+    return if @sel_panels.empty?
     _28a699c9(@flag23)
     view&.invalidate
   end
@@ -179,14 +179,14 @@ class KSU::Toiuuvan
   def _37011ad2(ctrl, view)
     return unless @_3e453efd && @_096c8c23
     prev_key = @arr64
-    _73dc38ac = _0fe26c5f(view, @_3e453efd, @_096c8c23)
-    @arr64 = if _73dc38ac && ctrl
-                      key = KSU::Sheet._7b0a38ee(_73dc38ac)
+    sheet = _0fe26c5f(view, @_3e453efd, @_096c8c23)
+    @arr64 = if sheet && ctrl
+                      key = KSU::Sheet._7b0a38ee(sheet)
                       @sheets
-                        .select { |arr| KSU::Sheet._7b0a38ee(arr[:instance]) == key }
-                        .map { |arr| arr[:instance] }
+                        .select { |rec| KSU::Sheet._7b0a38ee(rec[:instance]) == key }
+                        .map { |rec| rec[:instance] }
                     else
-                      _73dc38ac ? [_73dc38ac] : []
+                      sheet ? [sheet] : []
                     end
     view.invalidate if prev_key != @arr64
   end
@@ -226,19 +226,19 @@ class KSU::Toiuuvan
   def onLButtonUp(rot, x, y, view)
     if @flag46
       sheets = _ce5c626c(view, @_3a930069, @_0b246bc2, x, y)
-      @arr27 = @flag34 ? (@arr27 + sheets).uniq : sheets
+      @sel_panels = @flag34 ? (@sel_panels + sheets).uniq : sheets
     elsif @flag10
       additive = (rot & MK_CONTROL) != 0
       ctrl = (rot & MK_SHIFT) != 0
-      _73dc38ac = _0fe26c5f(view, x, y)
-      if _73dc38ac
+      sheet = _0fe26c5f(view, x, y)
+      if sheet
         if ctrl
-          _fb7c57bd(_73dc38ac, additive: additive)
+          _fb7c57bd(sheet, additive: additive)
         else
-          _164a615b(_73dc38ac, additive)
+          _164a615b(sheet, additive)
         end
       elsif !additive && !ctrl
-        @arr27 = []
+        @sel_panels = []
       end
     end
     @flag10 = false
@@ -248,36 +248,36 @@ class KSU::Toiuuvan
   end
   def onLButtonDoubleClick(rot, x, y, view)
     additive = (rot & MK_CONTROL) != 0
-    _73dc38ac = _0fe26c5f(view, x, y)
-    return unless _73dc38ac
-    _fb7c57bd(_73dc38ac, additive: additive)
+    sheet = _0fe26c5f(view, x, y)
+    return unless sheet
+    _fb7c57bd(sheet, additive: additive)
     view.invalidate
   end
-  def _fb7c57bd(_73dc38ac, additive:)
-    key = KSU::Sheet._7b0a38ee(_73dc38ac)
+  def _fb7c57bd(sheet, additive:)
+    key = KSU::Sheet._7b0a38ee(sheet)
     node = @sheets
-      .select { |arr| KSU::Sheet._7b0a38ee(arr[:instance]) == key }
-      .map { |arr| arr[:instance] }
-    @arr27 = additive ? (@arr27 + node).uniq : node
+      .select { |rec| KSU::Sheet._7b0a38ee(rec[:instance]) == key }
+      .map { |rec| rec[:instance] }
+    @sel_panels = additive ? (@sel_panels + node).uniq : node
   end
   def draw(view)
     KSU::View.draw_faces(@nesting, normal: @phu_mau_tam, two_sided: @phu_mau_tam_hai_mat)
     KSU::View.draw_polys(@arr20, color: KSU::View.warn_color, line: false) if @arr20 && @arr20.any?
     draw_overlay(view, @nesting)
-    @arr27.each do |_73dc38ac|
-      arr = @sheets.find { |s| s[:instance] == _73dc38ac }
-      KSU::View.draw_outline(arr[:top_corners], KSU::View.main_face_color) if arr
+    @sel_panels.each do |sheet|
+      rec = @sheets.find { |s| s[:instance] == sheet }
+      KSU::View.draw_outline(rec[:top_corners], KSU::View.main_face_color) if rec
     end
-    @arr64.each do |_73dc38ac|
-      next if @arr27.include?(_73dc38ac)
-      arr = @sheets.find { |s| s[:instance] == _73dc38ac }
-      KSU::View.draw_outline(arr[:top_corners], KSU::View.face_color) if arr
+    @arr64.each do |sheet|
+      next if @sel_panels.include?(sheet)
+      rec = @sheets.find { |s| s[:instance] == sheet }
+      KSU::View.draw_outline(rec[:top_corners], KSU::View.face_color) if rec
     end
-    @arr27.each do |_73dc38ac|
-      arr = @sheets.find { |s| s[:instance] == _73dc38ac }
-      next unless arr
-      KSU::View.draw_brackets(view, arr[:top_corners]) { |_a4ab9a59| _4ada6475(_73dc38ac, _a4ab9a59, @flag39, @flag13) }
-      KSU::View._2873a79b(view, arr[:top_corners]) { |_a4ab9a59| _4ada6475(_73dc38ac, _a4ab9a59, @flag51, @flag13) }
+    @sel_panels.each do |sheet|
+      rec = @sheets.find { |s| s[:instance] == sheet }
+      next unless rec
+      KSU::View.draw_brackets(view, rec[:top_corners]) { |i| _4ada6475(sheet, i, @flag39, @flag13) }
+      KSU::View._2873a79b(view, rec[:top_corners]) { |i| _4ada6475(sheet, i, @flag51, @flag13) }
     end
     draw_rect2d(view) if @flag46
     _a42dd0f4(view)
@@ -306,27 +306,27 @@ class KSU::Toiuuvan
     sheet_list
   end
   def _0fe26c5f(view, x, y)
-    partner = @sheets.find { |_9dcbc6c4| KSU::View._919af578(view, x, y, _9dcbc6c4) }
+    partner = @sheets.find { |rec| KSU::View._919af578(view, x, y, rec) }
     partner && partner[:instance]
   end
-  def _164a615b(_73dc38ac, additive)
+  def _164a615b(sheet, additive)
     if additive
-      @arr27.include?(_73dc38ac) ? @arr27.delete(_73dc38ac) : @arr27 << _73dc38ac
+      @sel_panels.include?(sheet) ? @sel_panels.delete(sheet) : @sel_panels << sheet
     else
-      @arr27 = @arr27 == [_73dc38ac] ? [] : [_73dc38ac]
+      @sel_panels = @sel_panels == [sheet] ? [] : [sheet]
     end
   end
   def hit_delete_button(view, x, y)
-    @sheets.each do |arr|
-      next unless KSU::Sheet.empty?(arr[:instance])
-      return arr[:instance] if KSU::View.button_hit?(view, KSU::View.center_of(arr[:top_corners]), x, y)
+    @sheets.each do |rec|
+      next unless KSU::Sheet.empty?(rec[:instance])
+      return rec[:instance] if KSU::View.button_hit?(view, KSU::View.center_of(rec[:top_corners]), x, y)
     end
     nil
   end
   def _a42dd0f4(view)
-    @sheets.each do |arr|
-      next unless KSU::Sheet.empty?(arr[:instance])
-      KSU::View.draw_warn_button(view, KSU::View.center_of(arr[:top_corners]), hover: @_e14ef301 == arr[:instance])
+    @sheets.each do |rec|
+      next unless KSU::Sheet.empty?(rec[:instance])
+      KSU::View.draw_warn_button(view, KSU::View.center_of(rec[:top_corners]), hover: @_e14ef301 == rec[:instance])
     end
   end
   def _92d864e9(view, ctrl)
@@ -340,37 +340,37 @@ class KSU::Toiuuvan
     view.invalidate if @flag39 != _8734f930 || @flag13 != _c3288067 || @flag51 != _522da39c
   end
   def _8c688891(view, x, y, joint)
-    @arr27.each do |_73dc38ac|
-      arr = @sheets.find { |s| s[:instance] == _73dc38ac }
-      next unless arr
+    @sel_panels.each do |sheet|
+      rec = @sheets.find { |s| s[:instance] == sheet }
+      next unless rec
       ix = if joint == :corner
-                 KSU::View._c5f21c57(view, arr[:top_corners], x, y)
+                 KSU::View.bracket_hit(view, rec[:top_corners], x, y)
                else
-                 KSU::View._ec07b26f(view, arr[:top_corners], x, y)
+                 KSU::View.edge_hit(view, rec[:top_corners], x, y)
                end
-      return { sheet: _73dc38ac, idx: ix } if ix
+      return { sheet: sheet, idx: ix } if ix
     end
     nil
   end
-  def _4ada6475(_73dc38ac, _a4ab9a59, hover, ctrl)
+  def _4ada6475(sheet, i, hover, ctrl)
     return false unless hover
     if ctrl
-      hover[:idx] == _a4ab9a59 && @arr27.include?(_73dc38ac)
+      hover[:idx] == i && @sel_panels.include?(sheet)
     else
-      hover[:sheet] == _73dc38ac && hover[:idx] == _a4ab9a59
+      hover[:sheet] == sheet && hover[:idx] == i
     end
   end
-  def _c211b5aa(_73dc38ac, ix, ctrl, num11)
-    arr = (ctrl ? @arr27.dup : [_73dc38ac]).select { |s| s && s.valid? }
+  def _c211b5aa(sheet, ix, ctrl, num11)
+    arr = (ctrl ? @sel_panels.dup : [sheet]).select { |s| s && s.valid? }
     return if arr.empty?
     KSU.start
     arr.each do |s|
-      _9dcbc6c4 = @sheets.find { |arr2| arr2[:instance] == s }
-      next unless _9dcbc6c4
+      rec = @sheets.find { |i| i[:instance] == s }
+      next unless rec
       if num11 == :corner
-        KSU::Nesting.pack_to_corner(@nesting, s, _9dcbc6c4, ix, @tam_cach_le.to_f, @tam_cach_nhau.to_f)
+        KSU::Nesting.pack_to_corner(@nesting, s, rec, ix, @tam_cach_le.to_f, @tam_cach_nhau.to_f)
       else
-        KSU::Nesting.pack_to_edge(@nesting, s, _9dcbc6c4, ix, @tam_cach_le.to_f, @tam_cach_nhau.to_f)
+        KSU::Nesting.pack_to_edge(@nesting, s, rec, ix, @tam_cach_le.to_f, @tam_cach_nhau.to_f)
       end
     end
     KSU.commit
@@ -380,16 +380,16 @@ class KSU::Toiuuvan
     KSU.abort_op
   end
   def _d0431df5(_c04fb39c)
-    _9535dc0b = @arr27.select { |s| s && s.valid? }
+    _9535dc0b = @sel_panels.select { |s| s && s.valid? }
     return if _9535dc0b.empty?
     arr3 = []
     arr4 = []
-    _9535dc0b.each do |_73dc38ac|
-      next if arr4.include?(_73dc38ac)
-      arr = KSU::Sheet.row_of(_73dc38ac, @sheets)
-      arr2 = arr.each_index.select { |_a4ab9a59| _9535dc0b.include?(arr[_a4ab9a59]) }
+    _9535dc0b.each do |sheet|
+      next if arr4.include?(sheet)
+      arr = KSU::Sheet.row_of(sheet, @sheets)
+      arr2 = arr.each_index.select { |i| _9535dc0b.include?(arr[i]) }
       next if arr2.empty?
-      arr4.concat(arr2.map { |_a4ab9a59| arr[_a4ab9a59] })
+      arr4.concat(arr2.map { |i| arr[i] })
       materials = _ea9e841c(arr.length, arr2, _c04fb39c)
       arr3 << [arr, arr2, materials] if materials
     end
@@ -405,7 +405,7 @@ class KSU::Toiuuvan
       end
     end
     KSU.commit
-    @arr27 = ((_9535dc0b - arr6) + arr5).select { |s| s && s.valid? }.uniq
+    @sel_panels = ((_9535dc0b - arr6) + arr5).select { |s| s && s.valid? }.uniq
     sheet_list
     KSU::View.clear_cache
   rescue StandardError
@@ -414,7 +414,7 @@ class KSU::Toiuuvan
   def _ea9e841c(n, arr, _c04fb39c)
     materials = (0...n).to_a
     _9535dc0b = Array.new(n, false)
-    arr.each { |_a4ab9a59| _9535dc0b[_a4ab9a59] = true }
+    arr.each { |i| _9535dc0b[i] = true }
     flag = (_c04fb39c == :prev || _c04fb39c == :first) ? :prev : :next
     _4ce596b6 = _c04fb39c == :first || _c04fb39c == :last
     bbox = false
@@ -429,17 +429,17 @@ class KSU::Toiuuvan
     n = materials.length
     bbox = false
     if _89bad203 == :next
-      (n - 2).downto(0) do |_a4ab9a59|
-        next unless _9535dc0b[_a4ab9a59] && !_9535dc0b[_a4ab9a59 + 1]
-        materials[_a4ab9a59], materials[_a4ab9a59 + 1] = materials[_a4ab9a59 + 1], materials[_a4ab9a59]
-        _9535dc0b[_a4ab9a59], _9535dc0b[_a4ab9a59 + 1] = _9535dc0b[_a4ab9a59 + 1], _9535dc0b[_a4ab9a59]
+      (n - 2).downto(0) do |i|
+        next unless _9535dc0b[i] && !_9535dc0b[i + 1]
+        materials[i], materials[i + 1] = materials[i + 1], materials[i]
+        _9535dc0b[i], _9535dc0b[i + 1] = _9535dc0b[i + 1], _9535dc0b[i]
         bbox = true
       end
     else
-      1.upto(n - 1) do |_a4ab9a59|
-        next unless _9535dc0b[_a4ab9a59] && !_9535dc0b[_a4ab9a59 - 1]
-        materials[_a4ab9a59], materials[_a4ab9a59 - 1] = materials[_a4ab9a59 - 1], materials[_a4ab9a59]
-        _9535dc0b[_a4ab9a59], _9535dc0b[_a4ab9a59 - 1] = _9535dc0b[_a4ab9a59 - 1], _9535dc0b[_a4ab9a59]
+      1.upto(n - 1) do |i|
+        next unless _9535dc0b[i] && !_9535dc0b[i - 1]
+        materials[i], materials[i - 1] = materials[i - 1], materials[i]
+        _9535dc0b[i], _9535dc0b[i - 1] = _9535dc0b[i - 1], _9535dc0b[i]
         bbox = true
       end
     end
@@ -449,22 +449,22 @@ class KSU::Toiuuvan
     panels = arr.map { |s| s.definition.entities.to_a.select { |ent| KSU::Nesting._88f4d2bb(ent) } }
     arr2 = arr.map { |s| KSU::Sheet.bottom_for(s, @nesting) }
     pt = arr.map { |s| s.transformation.origin }
-    materials.each_with_index do |src, instance|
-      next if src == instance
-      panels[src].each { |vec| KSU::Nesting._d78e0ff0(vec, arr[instance]) if vec && vec.valid? }
+    materials.each_with_index do |src, inst2|
+      next if src == inst2
+      panels[src].each { |vec| KSU::Nesting._d78e0ff0(vec, arr[inst2]) if vec && vec.valid? }
       bot = arr2[src]
       next unless bot && bot.valid?
-      delta = pt[instance] - pt[src]
+      delta = pt[inst2] - pt[src]
       bot.transformation = Geom::Transformation.translation(delta) * bot.transformation
-      bot.name = arr[instance].name.to_s + "-bottom"
-      str = KSU::Sheet.sheet_no(arr[instance].name.to_s)
+      bot.name = arr[inst2].name.to_s + "-bottom"
+      str = KSU::Sheet.sheet_no(arr[inst2].name.to_s)
       bot.set_attribute("ABF", "sheet-id", str) if str
     end
   end
-  def _256cdef5(_73dc38ac)
-    return unless KSU::Sheet.remove_sheet(_73dc38ac, @nesting, @sheets)
-    @arr27.delete(_73dc38ac)
-    @arr64.delete(_73dc38ac)
+  def _256cdef5(sheet)
+    return unless KSU::Sheet.remove_sheet(sheet, @nesting, @sheets)
+    @sel_panels.delete(sheet)
+    @arr64.delete(sheet)
     @_e14ef301 = nil
     sheet_list
     KSU::View.clear_cache
@@ -472,20 +472,20 @@ class KSU::Toiuuvan
   def _ce5c626c(view, x218, _60000b16, x2, y2)
     rect = KSU::Quet.rect([x218, _60000b16], [x2, y2])
     strict = x2 >= x218
-    @sheets.each_with_object([]) do |arr, out|
-      pts = (0..7).map { |_a4ab9a59| view.screen_coords(arr[:bbox].corner(_a4ab9a59)) }
+    @sheets.each_with_object([]) do |rec, out|
+      pts = (0..7).map { |i| view.screen_coords(rec[:bbox].corner(i)) }
       arr3 = pts.map(&:x)
       arr2 = pts.map(&:y)
       next unless KSU::Quet.rect_hit?([arr3.min, arr2.min, arr3.max, arr2.max], rect, strict)
-      out << arr[:instance]
+      out << rec[:instance]
     end
   end
   def draw_rect2d(view)
     return unless @_3a930069 && @_86277c8a
     KSU::View.draw_rect2d(view, @_3a930069, @_0b246bc2, @_86277c8a, @_e76905aa)
-    _ce5c626c(view, @_3a930069, @_0b246bc2, @_86277c8a, @_e76905aa).each do |_73dc38ac|
-      arr = @sheets.find { |s| s[:instance] == _73dc38ac }
-      KSU::View.draw_outline(arr[:top_corners], KSU::View.face_color) if arr
+    _ce5c626c(view, @_3a930069, @_0b246bc2, @_86277c8a, @_e76905aa).each do |sheet|
+      rec = @sheets.find { |s| s[:instance] == sheet }
+      KSU::View.draw_outline(rec[:top_corners], KSU::View.face_color) if rec
     end
   end
 end
@@ -496,12 +496,12 @@ class KSU::Toiuuvan
 end
 class KSU::Toiuuvan
   def self.check_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, _a4ab9a59| b ^ (0x3D + _a4ab9a59 * 0x57) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack("m0")[0].bytes.each_with_index.map { |b, i| b ^ (0x3D + i * 0x57) }.pack("C*")
     arr = arr2[/"k":"KSU_(.*?)"/, 1].to_s.unpack("m0")[0].bytes.map { |b| b ^ 0x99 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[\da-zA-Z]{3}-[\da-zA-Z]{4}-[\da-zA-Z]{4}-[\da-zA-Z]{4}\z/
   end
   def self.assert_license
-    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, _a4ab9a59| b ^ (_a4ab9a59 * 0x57 + 0x3D) }.pack("C*")
+    arr2 = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, i| b ^ (i * 0x57 + 0x3D) }.pack("C*")
     arr = arr2[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 153 }.pack("C*")
     raise "KSU" unless arr =~ /\Ak[0-9A-Za-z]{3}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}\z/
   end

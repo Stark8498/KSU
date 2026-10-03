@@ -91,12 +91,12 @@ module KSU::Detail
     max_eb = edgeband_spec(grp)
     small_size = _f7a09903(vec2, tf3d)
     arr2 = _e4e88386(small_size)
-    arr = _4605a894(grp, vec2, part_tf, max_eb[0], arr2[0], arr2[1])
-    return false if arr[:loops].empty?
-    _2422ecf1, tr2 = build_lines_group(panel, cutting, tr, arr[:loops])
+    rec = _4605a894(grp, vec2, part_tf, max_eb[0], arr2[0], arr2[1])
+    return false if rec[:loops].empty?
+    _2422ecf1, tr2 = build_lines_group(panel, cutting, tr, rec[:loops])
     return false unless _2422ecf1
-    draw_edgeband(panel, tr2.inverse, arr[:edge_band_lines])
-    save_edgeband_desc(panel, arr[:edge_band_desc], tr2)
+    draw_edgeband(panel, tr2.inverse, rec[:edge_band_lines])
+    save_edgeband_desc(panel, rec[:edge_band_desc], tr2)
     bottom = _babeb881(grp, vec2, tf3d)
     draw_bands(panel, bottom[:up], tr2 * part_tf)
     _c6e26747(panel, _32f2e5fc(grp, vec2, part_tf), tr2)
@@ -106,7 +106,7 @@ module KSU::Detail
       if bottom[:bottom].empty?
         erase_partner(nesting, panel)
       else
-        build_partner(nesting, panel, arr[:loops], bottom[:bottom], holes, tf2)
+        build_partner(nesting, panel, rec[:loops], bottom[:bottom], holes, tf2)
       end
     end
     true
@@ -114,11 +114,11 @@ module KSU::Detail
   def erase_partner(nesting, panel)
     back = partner_panel(nesting, panel)
     return unless back && back.valid?
-    grp = KSU::Flip.sheet_of(nesting, back)
+    sheet = KSU::Flip.sheet_of(nesting, back)
     back.erase!
-    return unless grp && grp.valid?
-    return unless KSU::Sheet.hidden?(grp)
-    grp.erase! if KSU::Sheet.empty?(grp)
+    return unless sheet && sheet.valid?
+    return unless KSU::Sheet.hidden?(sheet)
+    sheet.erase! if KSU::Sheet.empty?(sheet)
   end
   def align_tf(grp, up_face, tf3d)
     arr = kids_with_attr(grp, "is-label")
@@ -174,11 +174,11 @@ module KSU::Detail
     ents = KSU.entities_in(panel)
     return unless ents
     clear_labels(panel)
-    instance = ents.add_instance(label3d.definition, inv_tf * label3d.transformation)
-    _56b0abb5(instance, label3d)
-    _5edc6938(instance, arr)
-    instance.transformation = instance.transformation * Geom::Transformation.rotation(ORIGIN, Y_AXIS, 180.degrees) if _93bcf54e
-    _81410e9d(instance, label3d)
+    inst = ents.add_instance(label3d.definition, inv_tf * label3d.transformation)
+    _56b0abb5(inst, label3d)
+    _5edc6938(inst, arr)
+    inst.transformation = inst.transformation * Geom::Transformation.rotation(ORIGIN, Y_AXIS, 180.degrees) if _93bcf54e
+    _81410e9d(inst, label3d)
   end
   def _5edc6938(lbl, arr)
     _6967f87f = lbl.get_attribute("ABF", "label-width")
@@ -209,14 +209,14 @@ module KSU::Detail
     s = _b344f39a(font.bounds, tf)
     [s[2][0], s[1][0]]
   end
-  def tf_of(instance)
-    transform = instance.transformation
+  def tf_of(inst)
+    transform = inst.transformation
     loop do
-      defn = instance.parent
+      defn = inst.parent
       break unless defn.is_a?(Sketchup::ComponentDefinition)
-      instance = defn.instances[0]
-      return transform unless instance
-      transform = instance.transformation * transform
+      inst = defn.instances[0]
+      return transform unless inst
+      transform = inst.transformation * transform
     end
     transform
   end
@@ -332,8 +332,8 @@ module KSU::Detail
     arr2.each do |g|
       next unless g.respond_to?(:definition) && g.definition
       transform = inv_tf ? inv_tf * g.transformation : g.transformation
-      instance = ents.add_instance(g.definition, transform)
-      _81410e9d(instance, g)
+      inst = ents.add_instance(g.definition, transform)
+      _81410e9d(inst, g)
     end
   end
   def depth(value, _2164146c, _041c4285)
@@ -350,8 +350,8 @@ module KSU::Detail
   end
   def _975e7df6(vec)
     arr = [Y_AXIS.reverse, X_AXIS.reverse, Y_AXIS, X_AXIS]
-    (0...arr.size).each do |_a4ab9a59|
-      return _a4ab9a59 if vec.samedirection?(arr[_a4ab9a59])
+    (0...arr.size).each do |i|
+      return i if vec.samedirection?(arr[i])
     end
     nil
   end
@@ -434,15 +434,15 @@ module KSU::Detail
   end
   def _c6e26747(panel, data, tf)
     _61b21e0a = data[0]
-    arr2 = data[1].map do |arr|
-      kids = [arr[:d], arr[:depth]]
-      if arr[:depth] > 0 && arr[:poly]
-        arr[:poly].each do |pt2|
+    arr2 = data[1].map do |rec|
+      kids = [rec[:d], rec[:depth]]
+      if rec[:depth] > 0 && rec[:poly]
+        rec[:poly].each do |pt2|
           pt = pt2.transform(tf)
           kids << [pt.x.to_f, pt.y.to_f, pt.z.to_f]
         end
       else
-        pt = arr[:pos].transform(tf)
+        pt = rec[:pos].transform(tf)
         kids << [pt.x.to_f, pt.y.to_f, pt.z.to_f]
       end
       kids

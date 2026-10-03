@@ -1,6 +1,6 @@
 module KSU::Corner
-  def pack_to_corner(nesting, _73dc38ac, _9dcbc6c4, corner, gap_for, gap2, flag = false, deadline = nil)
-    apply_moves(nesting, plan_corner(nesting, _73dc38ac, _9dcbc6c4, corner, gap_for, gap2, flag, deadline))
+  def pack_to_corner(nesting, sheet, rec, corner, gap_for, gap2, flag = false, deadline = nil)
+    apply_moves(nesting, plan_corner(nesting, sheet, rec, corner, gap_for, gap2, flag, deadline))
   end
   def apply_moves(nesting, plan)
     return [] unless nesting && nesting.valid? && plan && plan[:moves]
@@ -29,34 +29,34 @@ module KSU::Corner
     end
     bbox
   end
-  def plan_corner(nesting, grp2, arr3, corner, gap_for, gap2, flag3 = false, deadline = nil)
-    return nil unless nesting && nesting.valid? && grp2 && grp2.valid? && arr3
-    seed = arr3[:top_corners][corner]
+  def plan_corner(nesting, sheet, rec, corner, gap_for, gap2, flag3 = false, deadline = nil)
+    return nil unless nesting && nesting.valid? && sheet && sheet.valid? && rec
+    seed = rec[:top_corners][corner]
     return nil unless seed
     px = seed.x.to_f
     py = seed.y.to_f
-    center = arr3[:bbox].center
+    center = rec[:bbox].center
     start_x = px < center.x.to_f ? 1 : -1
     ly0 = py < center.y.to_f ? 1 : -1
-    flag26, flag7, top, arr40 = KSU::Avail.sides_for(grp2, gap_for)
-    width_mm = arr3[:bbox].width.to_f - flag26 - flag7
-    height_mm = arr3[:bbox].height.to_f - top - arr40
+    flag26, flag7, top, arr40 = KSU::Avail.sides_for(sheet, gap_for)
+    width_mm = rec[:bbox].width.to_f - flag26 - flag7
+    height_mm = rec[:bbox].height.to_f - top - arr40
     x = start_x > 0 ? flag26 : flag7
     y = ly0 > 0 ? arr40 : top
-    if (v = KSU::Sheet.edit_offset(grp2))
+    if (v = KSU::Sheet.edit_offset(sheet))
       px += (start_x > 0 ? [v[0], 0.0].max : [v[0], 0.0].min)
       py += (ly0 > 0 ? [v[1], 0.0].max : [v[1], 0.0].min)
       width_mm -= v[0].abs
       height_mm -= v[1].abs
-      if KSU::Avail.two_sided?(grp2)
+      if KSU::Avail.two_sided?(sheet)
         g = KSU::Avail.two_sided_margin.mm.to_f
         x = g if start_x > 0 ? v[0] > 0 : v[0] < 0
         y = g if ly0 > 0 ? v[1] > 0 : v[1] < 0
       end
     end
-    base_tr = nesting.transformation * grp2.transformation
+    base_tr = nesting.transformation * sheet.transformation
     arr = []
-    grp2.definition.entities.each do |grp|
+    sheet.definition.entities.each do |grp|
       next unless KSU.container?(grp) && KSU::Sheet.drawable?(grp)
       next if grp.name.to_s == "__ABF_sheetBorder"
       next if KSU::Sheet._27ecfdd1(grp)
@@ -64,7 +64,7 @@ module KSU::Corner
       next if grp.respond_to?(:get_attribute) && grp.get_attribute("ABF", "is-last-cut")
       world_tr = base_tr * grp.transformation
       bb = Geom::BoundingBox.new
-      (0..7).each { |_a4ab9a59| bb.add(grp.definition.bounds.corner(_a4ab9a59).transform(world_tr)) }
+      (0..7).each { |i| bb.add(grp.definition.bounds.corner(i).transform(world_tr)) }
       arr << { panel: grp, w: bb.width.to_f, h: bb.height.to_f, bbox: bb, members: [grp] }
     end
     return nil if arr.empty?
@@ -94,34 +94,34 @@ module KSU::Corner
   def rotated(items)
     items.map { |len2d| len2d.merge(w: len2d[:h], h: len2d[:w]) }
   end
-  def pack_to_edge(nesting, _73dc38ac, _9dcbc6c4, edge_ix, gap_for, gap2)
-    apply_moves(nesting, plan_edge(nesting, _73dc38ac, _9dcbc6c4, edge_ix, gap_for, gap2))
+  def pack_to_edge(nesting, sheet, rec, edge_ix, gap_for, gap2)
+    apply_moves(nesting, plan_edge(nesting, sheet, rec, edge_ix, gap_for, gap2))
   end
-  def plan_edge(nesting, grp2, arr3, edge_ix, gap_for, gap2)
-    return nil unless nesting && nesting.valid? && grp2 && grp2.valid? && arr3
-    pt = arr3[:top_corners][edge_ix]
-    b = arr3[:top_corners][(edge_ix + 1) % 4]
+  def plan_edge(nesting, sheet, rec, edge_ix, gap_for, gap2)
+    return nil unless nesting && nesting.valid? && sheet && sheet.valid? && rec
+    pt = rec[:top_corners][edge_ix]
+    b = rec[:top_corners][(edge_ix + 1) % 4]
     return nil unless pt && b
-    center = arr3[:bbox].center
+    center = rec[:bbox].center
     x = (pt.x.to_f + b.x.to_f) * 0.5
     y = (pt.y.to_f + b.y.to_f) * 0.5
     num4 = (b.x.to_f - pt.x.to_f).abs <= (b.y.to_f - pt.y.to_f).abs
-    pt3 = arr3[:bbox].min
-    flag26, flag7, top, arr40 = KSU::Avail.sides_for(grp2, gap_for)
-    width_mm = arr3[:bbox].width.to_f - flag26 - flag7
-    height_mm = arr3[:bbox].height.to_f - top - arr40
+    pt3 = rec[:bbox].min
+    flag26, flag7, top, arr40 = KSU::Avail.sides_for(sheet, gap_for)
+    width_mm = rec[:bbox].width.to_f - flag26 - flag7
+    height_mm = rec[:bbox].height.to_f - top - arr40
     num2 = 0.0
     num = 0.0
-    if (v = KSU::Sheet.edit_offset(grp2))
+    if (v = KSU::Sheet.edit_offset(sheet))
       num2 = v[0]
       num = v[1]
       width_mm -= num2.abs
       height_mm -= num.abs
     end
-    g = KSU::Avail.two_sided?(grp2) ? KSU::Avail.two_sided_margin.mm.to_f : nil
-    base_tr = nesting.transformation * grp2.transformation
+    g = KSU::Avail.two_sided?(sheet) ? KSU::Avail.two_sided_margin.mm.to_f : nil
+    base_tr = nesting.transformation * sheet.transformation
     arr = []
-    grp2.definition.entities.each do |grp|
+    sheet.definition.entities.each do |grp|
       next unless KSU.container?(grp) && KSU::Sheet.drawable?(grp)
       next if grp.name.to_s == "__ABF_sheetBorder"
       next if KSU::Sheet._27ecfdd1(grp)
@@ -129,7 +129,7 @@ module KSU::Corner
       next if grp.respond_to?(:get_attribute) && grp.get_attribute("ABF", "is-last-cut")
       world_tr = base_tr * grp.transformation
       bb = Geom::BoundingBox.new
-      (0..7).each { |_a4ab9a59| bb.add(grp.definition.bounds.corner(_a4ab9a59).transform(world_tr)) }
+      (0..7).each { |i| bb.add(grp.definition.bounds.corner(i).transform(world_tr)) }
       arr << { panel: grp, w: bb.width.to_f, h: bb.height.to_f, bbox: bb, members: [grp] }
     end
     return nil if arr.empty?
@@ -235,8 +235,8 @@ module KSU::Corner
     tol = 1e-4
     ents3 = {}
     h24 = {}
-    ordered.each_with_index do |arr, _a4ab9a59|
-      (0..._a4ab9a59).each do |j|
+    ordered.each_with_index do |arr, i|
+      (0...i).each do |j|
         next unless box_inside?(arr[:bbox], ordered[j][:bbox], tol)
         next unless inside_hole?(arr, ordered[j], h24)
         ents3[arr[:panel].object_id] = ordered[j][:panel].object_id
@@ -279,9 +279,9 @@ module KSU::Corner
   def _5d9dd503(poly)
     num = 0.0
     n = poly.length
-    n.times do |_a4ab9a59|
-      b = poly[(_a4ab9a59 + 1) % n]
-      num += poly[_a4ab9a59][0] * b[1] - b[0] * poly[_a4ab9a59][1]
+    n.times do |i|
+      b = poly[(i + 1) % n]
+      num += poly[i][0] * b[1] - b[0] * poly[i][1]
     end
     num * 0.5
   end
@@ -323,11 +323,11 @@ module KSU::Corner
     [Geom::Point3d.new(num, num4, 0), Geom::Point3d.new(num2, num4, 0),
      Geom::Point3d.new(num2, num3, 0), Geom::Point3d.new(num, num3, 0)]
   end
-  def rect(poly)
+  def rect2(poly)
     return false unless poly.length == 4
-    (0..3).all? do |_a4ab9a59|
-      b = poly[(_a4ab9a59 + 1) % 4]
-      (poly[_a4ab9a59][0] - b[0]).abs < 1e-3 || (poly[_a4ab9a59][1] - b[1]).abs < 1e-3
+    (0..3).all? do |i|
+      b = poly[(i + 1) % 4]
+      (poly[i][0] - b[0]).abs < 1e-3 || (poly[i][1] - b[1]).abs < 1e-3
     end
   end
   def _812a997b(items, gap2, deadline = nil)
@@ -400,8 +400,8 @@ module KSU::Corner
         end
         rings.each do |arr2|
           n = arr2.length
-          n.times do |_a4ab9a59|
-            thick = _3caaabb9(_23505ef9, _c04fb39c, arr2[_a4ab9a59], arr2[(_a4ab9a59 + 1) % n], pen)
+          n.times do |i|
+            thick = _3caaabb9(_23505ef9, _c04fb39c, arr2[i], arr2[(i + 1) % n], pen)
             num = thick if thick && thick < num
           end
         end
@@ -459,9 +459,9 @@ module KSU::Corner
     num2 = 1.0 / 0.0
     rings.each do |arr3|
       n = arr3.length
-      n.times do |_a4ab9a59|
-        arr = arr3[_a4ab9a59]
-        b = arr3[(_a4ab9a59 + 1) % n]
+      n.times do |i|
+        arr = arr3[i]
+        b = arr3[(i + 1) % n]
         if (arr[1] > duoi) != (b[1] > duoi)
           xi = arr[0] + (duoi - arr[1]) * (b[0] - arr[0]) / (b[1] - arr[1])
           cross += 1 if trai < xi
@@ -518,15 +518,15 @@ module KSU::Corner
       arr4 = h[:poly].map { |arr| arr[0] }
       style = h[:poly].map { |arr| arr[1] }
       h.merge(su: 0.0, sv: 0.0, u0: arr4.min, u1: arr4.max, v0: style.min, v1: style.max,
-                  rect: rect(h[:poly]))
+                  rect: rect2(h[:poly]))
     end
     (arr2.size + 2).times do
       break if deadline && Time.now > deadline
       bbox = false
       arr2.sort_by! { |half| half[:u0] + half[:v0] }
-      arr2.each_with_index do |half, _a4ab9a59|
+      arr2.each_with_index do |half, i|
         arr3 = []
-        arr2.each_with_index { |_65570dfe, k| arr3 << _65570dfe unless k == _a4ab9a59 }
+        arr2.each_with_index { |_65570dfe, k| arr3 << _65570dfe unless k == i }
         _c040f779 = _39ad1aa8(half, arr3, true, gap2)
         if _c040f779 > 1e-6
           half[:poly] = half[:poly].map { |arr| [arr[0] - _c040f779, arr[1]] }
@@ -580,9 +580,9 @@ module KSU::Corner
     _a1abb318 = [-_c04fb39c[0], -_c04fb39c[1]]
     num = 1.0 / 0.0
     num3 = panel.length
-    num3.times do |_a4ab9a59|
-      _9710d820 = panel[_a4ab9a59]
-      b = panel[(_a4ab9a59 + 1) % num3]
+    num3.times do |i|
+      _9710d820 = panel[i]
+      b = panel[(i + 1) % num3]
       arr.each do |_23505ef9|
         thick = _ebae3e53(_23505ef9, _c04fb39c, _9710d820, b)
         if thick && thick < num
@@ -592,9 +592,9 @@ module KSU::Corner
       end
     end
     name = arr.length
-    name.times do |_a4ab9a59|
-      _9710d820 = arr[_a4ab9a59]
-      b = arr[(_a4ab9a59 + 1) % name]
+    name.times do |i|
+      _9710d820 = arr[i]
+      b = arr[(i + 1) % name]
       panel.each do |_23505ef9|
         thick = _ebae3e53(_23505ef9, _a1abb318, _9710d820, b)
         if thick && thick < num

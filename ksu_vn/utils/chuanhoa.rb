@@ -33,7 +33,7 @@ module KSU::Chuanhoa
     arr = board.get_attribute("ABF", "edge-band-types")
     return {} unless arr.is_a?(Array)
     h = {}
-    (0...(arr.size / 5)).each { |_a4ab9a59| h[arr[_a4ab9a59 * 5]] = arr[_a4ab9a59 * 5 + 3] }
+    (0...(arr.size / 5)).each { |i| h[arr[i * 5]] = arr[i * 5 + 3] }
     colors = {}
     ents.grep(Sketchup::Face).each do |f|
       id = f.get_attribute("ABF", "edge-band-id")
@@ -93,11 +93,11 @@ module KSU::Chuanhoa
     anchor = Geom::Point3d.new(pt3.map(&:x).min, pt3.map(&:y).min, pt3.map(&:z).min).transform(box2)
     tr = Geom::Transformation.axes(anchor, vec, vec2, pt2)
     container.transform_entities(tr.inverse, container.to_a)
-    grp4.instances.each do |grp3|
-      grp3.transformation *= tr
-      mat = grp3.material
-      grp3.material = nil
-      grp3.material = mat
+    grp4.instances.each do |i|
+      i.transformation *= tr
+      mat = i.material
+      i.material = nil
+      i.material = mat
     end
     grp4.invalidate_bounds
   end

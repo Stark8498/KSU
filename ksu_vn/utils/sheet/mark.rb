@@ -4,16 +4,16 @@ module KSU::Mark
     return true if entity.get_attribute("ABF", "is-mark-square")
     entity.name.to_s.include?("ABF_markSquare")
   end
-  def marks_of(grp)
-    return [] unless grp && grp.valid? && grp.respond_to?(:definition) && grp.definition
-    grp.definition.entities.select { |ent| mark?(ent) }
+  def marks_of(sheet)
+    return [] unless sheet && sheet.valid? && sheet.respond_to?(:definition) && sheet.definition
+    sheet.definition.entities.select { |ent| mark?(ent) }
   end
-  def border_of(grp)
-    return nil unless grp && grp.valid? && grp.respond_to?(:definition) && grp.definition
-    grp.definition.entities.find { |ent| KSU.container?(ent) && ent.name.to_s == "__ABF_sheetBorder" }
+  def border_of(sheet)
+    return nil unless sheet && sheet.valid? && sheet.respond_to?(:definition) && sheet.definition
+    sheet.definition.entities.find { |ent| KSU.container?(ent) && ent.name.to_s == "__ABF_sheetBorder" }
   end
-  def border_polys(_73dc38ac)
-    marks_of(_73dc38ac).map { |grp|
+  def border_polys(sheet)
+    marks_of(sheet).map { |grp|
       next nil unless grp.respond_to?(:definition) && grp.definition
       lp = grp.definition.entities.grep(Sketchup::Edge).map(&:curve).compact.uniq.first
       next nil unless lp
@@ -21,8 +21,8 @@ module KSU::Mark
       pts.length >= 2 ? pts : nil
     }.compact
   end
-  def mark_point(_73dc38ac)
-    arr3 = border_polys(_73dc38ac)
+  def mark_point(sheet)
+    arr3 = border_polys(sheet)
     return nil if arr3.empty?
     pts = arr3.first
     return nil if pts.length < 2
@@ -43,22 +43,22 @@ module KSU::Mark
     bx2, by2 = scr[(_a14aed83 + 2) % 4]
     Geom::Point3d.new(bx2, by2, z)
   end
-  def mark_corner(grp, nesting = nil)
-    color = mark_point(grp)
-    bd2 = border_of(grp)
+  def mark_corner(sheet, nesting = nil)
+    color = mark_point(sheet)
+    bd2 = border_of(sheet)
     return nil unless color && bd2
     if nesting && nesting.valid?
-      bbox = world_bbox(grp, nesting)
+      bbox = world_bbox(sheet, nesting)
       return nil unless bbox
-      ccw = color.transform(nesting.transformation * grp.transformation)
+      ccw = color.transform(nesting.transformation * sheet.transformation)
       center = bbox.center
       return [ccw.x < center.x ? :left : :right, ccw.y < center.y ? :bottom : :top]
     end
     center = bd2.bounds.center
     [color.x < center.x ? :left : :right, color.y < center.y ? :bottom : :top]
   end
-  def corner_index(_73dc38ac, nesting = nil)
-    start_x, ly0 = mark_corner(_73dc38ac, nesting)
+  def corner_index(sheet, nesting = nil)
+    start_x, ly0 = mark_corner(sheet, nesting)
     return nil unless start_x
     return 1 if start_x == :right && ly0 == :bottom
     return 2 if start_x == :right && ly0 == :top
