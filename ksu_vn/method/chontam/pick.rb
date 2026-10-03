@@ -104,7 +104,7 @@ class KSU::Chontam
       model.selection.remove(arr3) if arr3.any?
       model.selection.add(arr2) if arr2.any?
     end
-    def _34feb22a(model, container)
+    def add_to_selection(model, container)
       arr = Array(container).select { |ent| ent.valid? && !model.selection.contains?(ent) }
       return [] if arr.empty?
       model.selection.add(arr)
@@ -470,7 +470,7 @@ class KSU::Chontam
       arr2 = arr[:nesting_map].values.inject(0) { |s, v| s + v.length }
       log("cache_build XONG, ticks=#{arr[:ticks]}, t=#{ms_since(arr[:t_start])}ms, candidates=#{@cache[:candidates].length}, ext_3d=#{entity}, tam_nesting=#{arr2}, roots=#{arr[:roots_map].length}")
       tool = arr[:tool]
-      tool._723ded7c if tool == arr[:model].tools.active_tool
+      tool.cache_done if tool == arr[:model].tools.active_tool
     end
     def index_map(arr)
       h9 = Hash.new { |h, k| h[k] = [] }

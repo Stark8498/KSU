@@ -47,8 +47,8 @@ class KSU::Toiuuvan
     load_overlay_settings
     @presets = get("presets", nil)
     @label_section_hidden = []
-    @arr20 = []
-    @arr11 = []
+    @overlap_fills = []
+    @err_pts = []
     @_x_bi_lan_polys = nil
     @progress = nil
     @str = nil
@@ -262,7 +262,7 @@ class KSU::Toiuuvan
   end
   def draw(view)
     KSU::View.draw_faces(@nesting, normal: @phu_mau_tam, two_sided: @phu_mau_tam_hai_mat)
-    KSU::View.draw_polys(@arr20, color: KSU::View.warn_color, line: false) if @arr20 && @arr20.any?
+    KSU::View.draw_polys(@overlap_fills, color: KSU::View.warn_color, line: false) if @overlap_fills && @overlap_fills.any?
     draw_overlay(view, @nesting)
     @sel.each do |sheet|
       rec = @sheets.find { |s| s[:instance] == sheet }
@@ -295,8 +295,8 @@ class KSU::Toiuuvan
   end
   def sheet_list
     @sheets = KSU::Sheet.sheet_list(@nesting)
-    @arr20 = KSU::Nesting.overlap_polys(@nesting)
-    @arr11 = KSU::Nesting.error_points(@nesting)
+    @overlap_fills = KSU::Nesting.overlap_polys(@nesting)
+    @err_pts = KSU::Nesting.error_points(@nesting)
     @_x_bi_lan_polys = nil
   end
   def sheet_recs

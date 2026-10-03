@@ -451,8 +451,8 @@ module KSU::Shape
     thick
   end
   def draw_ranked(view)
-    arr2 = @h2
-    arr3 = @h16
+    arr2 = @in_plan
+    arr3 = @in_clear
     h = {}
     @parts.each do |arr|
       next unless arr[:rank]
@@ -540,7 +540,7 @@ module KSU::Shape
     _2cf18878 = resp.dig("data", "activations_left")
     return _2cf18878 unless _2cf18878.nil?
     _1043dd79 = begin
-      KSU::Chontam._4edb8ec1(key)
+      KSU::Chontam.validate_key(key)
     rescue StandardError
       nil
     end

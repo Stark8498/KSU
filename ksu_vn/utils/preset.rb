@@ -85,7 +85,7 @@ module KSU::Preset
       @_x_bi_lan_polys ||= KSU::Nesting.overlaps(nesting || KSU::Nesting.find_nesting(notify: false))
       KSU::View.draw_polys(@_x_bi_lan_polys, color: KSU::View.warn_color, line: false) if @_x_bi_lan_polys.any?
     end
-    KSU::View.draw_error_dots(view, @arr11) if @danh_dau_loi
+    KSU::View.draw_error_dots(view, @err_pts) if @danh_dau_loi
   end
   def self.included(normal)
     normal.extend(ClassMethods)

@@ -1,6 +1,6 @@
 module KSU::Assign
   private
-  def _2868a9dd
+  def load_ranks
     arr3 = _9d1ea6a7
     @parts.each do |arr|
       tag = _0c3fd272(arr[:cutting])
@@ -116,7 +116,7 @@ module KSU::Assign
     end
     commit_changes(arr3)
   end
-  def _bd503ff9(arr, layers)
+  def set_rank(arr, layers)
     return unless arr[:rank]
     arr[:rank] = layers
     arr[:fill_color] = fill_color_of(arr)
@@ -170,7 +170,7 @@ module KSU::Assign
   def self._91d00075(key)
     id = KSU::Xephang.normalize_id(KSU::Gannhan.license_field("i"))
     return false if id.to_s.empty?
-    resp = KSU::Chontam._4edb8ec1(key)
+    resp = KSU::Chontam.validate_key(key)
     return false if resp.nil?
     data = resp["data"]
     return false unless data.is_a?(Hash)

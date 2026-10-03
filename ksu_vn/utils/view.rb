@@ -466,7 +466,7 @@ module KSU::View
     end
     true
   end
-  def self._2c42fd38(outer, holes, color)
+  def self.draw_loops(outer, holes, color)
     return unless color && outer && outer.length >= 3
     draw_loop(outer, color: color)
     (holes || []).each { |h| draw_loop(h, color: color) if h && h.length >= 3 }

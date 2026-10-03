@@ -2257,6 +2257,100 @@ ten:
   _2ea74b89:
     "ksu_vn/utils/view/query.rb#_bbaa2919": quad
 
+  # ----- ME 58: method/chontam.rb -- cong cu chon tam -----
+  # Ba trang thai chuot chay song song: ro tam, ro nhan, va keo khung chon.
+  # Moi trang thai co cap bien "dang ro" / "da bam", vi mot cu bam chi tinh
+  # khi tha ra ma tro van con tren dung thu da bam.
+  _806c93bf: clear_hover
+  _73ed002f: track_panel_hover    # duong nhanh: chi hoi co tam duoi tro khong
+  _0ea29105: track_pick_hover     # duong day du: nhan truoc, roi den tam
+  _b33cf558: set_hover_target
+  _8081f07a: clear_twin_preview   # bo cac tam sinh doi da them tam vao selection
+  _43f86e54: was_click?           # tha ra ma chua di du xa thi tinh la bam
+  _45c0e8be: do_flip
+  _d0fd0398: rebuild_caches
+  _a436f886: draw_label_hover
+  _28d52c56: rebuild_panel
+  _7596df47: external_twin        # ban 3D ngoai so do, tra theo board-index roi ten
+  _d597cb2a: refresh_errors
+  _723ded7c: cache_done           # pick.rb goi lai khi dung xong cache nen
+  _4edb8ec1: validate_key
+
+  _42372563: building             # @building: dang nen cache, chan moi thao tac
+  _9729889d: preview_sel
+  _3e42ee5c: label_hover
+  _2266e384: hover_panel
+  _b9dfd839: press_pt
+  _aa31c3e9: add_mode             # Shift/Ctrl luc bam, giu den luc tha
+  _043e7a32: hover_target
+  _ccba1d56: press_label
+  _45df09b4: press_panel
+  _22866a7a: err_pts              # luon la KSU::Nesting.error_points
+  _5762d307: overlap_fills        # luon la KSU::Nesting.overlap_polys
+
+  _18b17626:
+    ksu_vn/method/chontam.rb: pressed
+  _506e8e1a:
+    ksu_vn/method/chontam.rb: panels
+  _d45630d6:
+    ksu_vn/method/chontam.rb: pt0
+
+  # ----- ME 58b: ban quyen va vai ham chontam.rb goi -----
+  # URL that: "...wc-api=serial-numbers-api&product_id=...&serial_key=...&request="
+  _107e6bdc: license_url
+  _b9fa83ff: serial_key
+  _f5898cbe: request              # validate / activate / deactivate
+  _ecf7ba06: deactivate_key
+  _2c42fd38: draw_loops           # vien ngoai cong cac vien lo
+  _34feb22a: add_to_selection     # tra ve dung nhung gi vua them, de con bo ra
+
+  # ----- ME 59: method/chongbay.rb -- danh so chong bay -----
+  # Moi tam duoc gan mot "rank" (so lop) va mot "side" (vung tren/duoi/
+  # trai/phai). Bang mau canh tro cho biet vung nao se duoc gan neu bam.
+  _8784e3f2: part_list            # dung @parts tu cac van, doi xung voi sheet_list
+  _2868a9dd: load_ranks           # doc rank/side da luu len lai @parts
+  _bd503ff9: set_rank
+  _59875b1f: on_model_change
+  _013e1682: skip_panel?          # mark, hoac ABF_axisOfSymmetry
+  _de1ac9fc: draw_overlay_fills
+  _a72e7349: draw_ranks
+  _c8f21829: draw_editing_rank
+  _82f140a1: draw_side_line       # net doc canh van dang ro, che do "Net"
+  _29b62f37: draw_color_chip      # o mau nho canh tro, mau theo vung se gan
+  _1122eba1: fill_rect2d
+  _9935b535: cur_side
+  _b7735d5c: side_at_cursor       # vung co canh gan tro nhat
+  _6b8ec6a7: type_digit           # go so lop, toi da 3 chu so
+  _d855ea50: commit_edit
+  _7b49f69e: read_bindings        # doi xung voi clear_bindings
+
+  _04b8b9d9: hover_rec        # ban ghi tam dang ro;  da thuoc field.rb
+  _be1ff2f2: fill_colors_for      # gia tri @danh_so_thu_tu ma mau to dang theo
+  _84259f74: typed            # @typed: cac chu so vua go, chua chot
+  _8b814601: plan_preview
+  _d261536b: clear_plan
+  _17bd3b32: in_plan          # tra nhanh: tam nay co trong plan_preview khong
+  _af7506d0: in_clear
+
+  # Cuc bo cua rieng file nay. _23505ef9 la hex con lai duoc dung nhieu nhat
+  # trong ca cay (178 lan) va moi noi mot nghia; o day luon la mot ban ghi tam.
+  _23505ef9:
+    ksu_vn/method/chongbay.rb: rec
+  _60000b16:
+    ksu_vn/method/chongbay.rb: y2
+  _c723bcc4:
+    ksu_vn/method/chongbay.rb: plan
+  _d41bb15d:
+    ksu_vn/method/chongbay.rb: pt
+  _b1c23df1:
+    ksu_vn/method/chongbay.rb: prev_hover
+  _10b8f37f:
+    ksu_vn/method/chongbay.rb: prev_joint
+  _3ab5da25:
+    ksu_vn/method/chongbay.rb: prev_plan
+  _77f3b22c:
+    ksu_vn/method/chongbay.rb: prev_auto
+
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,

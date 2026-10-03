@@ -372,7 +372,7 @@ module KSU::Mirror
     else
       KSU::View.draw_poly_holes(fill[:outer], fill[:holes], color: color, line: false)
     end
-    KSU::View._2c42fd38(fill[:outer], fill[:holes], _4a7d3cee)
+    KSU::View.draw_loops(fill[:outer], fill[:holes], _4a7d3cee)
     true
   end
   def _b5e0ad4b
@@ -383,8 +383,8 @@ module KSU::Mirror
   end
   def _1817fa46
     _b5e0ad4b
-    @arr20 = KSU::Nesting.overlap_polys(@nesting)
-    @arr11 = KSU::Nesting.error_points(@nesting)
+    @overlap_fills = KSU::Nesting.overlap_polys(@nesting)
+    @err_pts = KSU::Nesting.error_points(@nesting)
     KSU::Sheet.invalidate_cache
     KSU::View.clear_cache
   end

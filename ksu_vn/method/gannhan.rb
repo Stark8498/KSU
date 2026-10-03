@@ -39,14 +39,14 @@ class KSU::Gannhan
       @arr4 ||= []
       collect_in_rect if @mode == MODE_KIEM
       nesting = KSU::Nesting.find_nesting(notify: false)
-      @arr11 = KSU::Nesting.error_points(nesting)
+      @err_pts = KSU::Nesting.error_points(nesting)
       @_x_bi_lan_polys = nil
       @label_section_hidden = KSU::Cutting.apply_label_hiding(nesting, @an_nhan_tiet_dien, @label_section_hidden)
     else
       @label_section_hidden = []
       @scope = []
       @arr4 = []
-      @arr11 = []
+      @err_pts = []
       @_x_bi_lan_polys = nil
     end
   end

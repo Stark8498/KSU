@@ -137,7 +137,7 @@ end
 require "json"
 module KSU::Flip
   def self._8351e254
-    return KSU::Chongbay._7b49f69e unless File.exist?(KSU::Collide._2b15ac41)
+    return KSU::Chongbay.read_bindings unless File.exist?(KSU::Collide._2b15ac41)
     _29e00ce2 = begin
       File.read(KSU::Collide._2b15ac41)
     rescue StandardError

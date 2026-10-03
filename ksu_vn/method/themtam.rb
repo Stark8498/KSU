@@ -25,8 +25,8 @@ class KSU::Themtam
     load_overlay_settings
     @presets = get("presets", nil)
     @label_section_hidden = []
-    @arr20 = []
-    @arr11 = []
+    @overlap_fills = []
+    @err_pts = []
     @_x_bi_lan_polys = nil
     @overwrite_preview = []
     @hover_overwrite = nil
@@ -59,8 +59,8 @@ class KSU::Themtam
     restore_selected_preset
     @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, @an_nhan_tiet_dien, @label_section_hidden)
     refresh_overlays
-    @arr20 = KSU::Nesting.overlap_polys(@nesting)
-    @arr11 = KSU::Nesting.error_points(@nesting)
+    @overlap_fills = KSU::Nesting.overlap_polys(@nesting)
+    @err_pts = KSU::Nesting.error_points(@nesting)
     @_x_bi_lan_polys = nil
     update_status
     KSU::View.view&.invalidate
@@ -338,8 +338,8 @@ class KSU::Themtam
     sheet_list
     scan_loose
     refresh_overlays
-    @arr20 = KSU::Nesting.overlap_polys(@nesting)
-    @arr11 = KSU::Nesting.error_points(@nesting)
+    @overlap_fills = KSU::Nesting.overlap_polys(@nesting)
+    @err_pts = KSU::Nesting.error_points(@nesting)
     @_x_bi_lan_polys = nil
     KSU::View.clear_cache
     KSU::View.view&.invalidate
@@ -357,8 +357,8 @@ class KSU::Themtam
     sheet_list
     scan_loose
     refresh_overlays
-    @arr20 = KSU::Nesting.overlap_polys(@nesting)
-    @arr11 = KSU::Nesting.error_points(@nesting)
+    @overlap_fills = KSU::Nesting.overlap_polys(@nesting)
+    @err_pts = KSU::Nesting.error_points(@nesting)
     @_x_bi_lan_polys = nil
     KSU::View.clear_cache
     KSU::View.view&.invalidate
@@ -683,8 +683,8 @@ class KSU::Themtam
     end
   end
   def draw_overlaps(view)
-    return if @arr20.nil? || @arr20.empty?
-    KSU::View.draw_polys(@arr20, color: KSU::View.warn_color, line: false)
+    return if @overlap_fills.nil? || @overlap_fills.empty?
+    KSU::View.draw_polys(@overlap_fills, color: KSU::View.warn_color, line: false)
   end
   def draw_overwrite_preview(view)
     return if @overwrite_preview.nil? || @overwrite_preview.empty?

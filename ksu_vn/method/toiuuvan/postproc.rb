@@ -22,7 +22,7 @@ module KSU::Postproc
     end
   end
   def errors_in_selection?
-    return false unless @arr11 && @arr11.any?
+    return false unless @err_pts && @err_pts.any?
     return false unless @sel && @sheets
     tol = 1.mm.to_f
     @sel.each do |sheet|
@@ -30,7 +30,7 @@ module KSU::Postproc
       next unless rec && rec[:bbox]
       lo = rec[:bbox].min
       hi = rec[:bbox].max
-      @arr11.each do |pt|
+      @err_pts.each do |pt|
         next if pt.x.to_f < lo.x.to_f - tol || pt.x.to_f > hi.x.to_f + tol
         next if pt.y.to_f < lo.y.to_f - tol || pt.y.to_f > hi.y.to_f + tol
         return true
@@ -611,7 +611,7 @@ module KSU::Postproc
   end
   def self._7b2b347d
     return false unless UI.messagebox("Bạn có chắc muốn gỡ kích hoạt trên máy tính này?", MB_YESNO) == IDYES
-    resp = KSU::Cutting._ecf7ba06(KSU::Gannhan.license_field("k"))
+    resp = KSU::Cutting.deactivate_key(KSU::Gannhan.license_field("k"))
     if resp.nil?
       UI.messagebox "Gỡ kích hoạt thất bại! Không kết nối được với máy chủ."
       return false

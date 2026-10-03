@@ -48,14 +48,14 @@ class KSU::Netcatcuoi
     @flag31 = nil
     @arr65 = nil
     @arr37 = []
-    @arr11 = []
+    @err_pts = []
     @_x_bi_lan_polys = nil
     if Sketchup.active_model.tools.active_tool == self
       @nesting = _97011c68
       @sheets = _513e6514
       @label_section_hidden = _b849fe49
       @h5 = {}
-      @arr11 = KSU::Nesting.error_points(@nesting)
+      @err_pts = KSU::Nesting.error_points(@nesting)
       find_free_rects if @mode == 1
       @label_section_hidden = KSU::Cutting.apply_label_hiding(
         @nesting, @an_nhan_tiet_dien, @label_section_hidden
@@ -72,7 +72,7 @@ class KSU::Netcatcuoi
     return KSU.select_tool(nil) unless @nesting
     sheet_list
     _ca5147c6
-    @arr11 = KSU::Nesting.error_points(@nesting)
+    @err_pts = KSU::Nesting.error_points(@nesting)
     @_x_bi_lan_polys = nil
     init_modes(
       ["Thủ công", "Tự động"],

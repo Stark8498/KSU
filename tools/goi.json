@@ -230,7 +230,7 @@
   },
   {
    "ns": "KSU::Chontam",
-   "m": "_4edb8ec1",
+   "m": "validate_key",
    "f": "ksu_vn/method/chongbay/assign.rb",
    "l": 173
   },
@@ -632,7 +632,7 @@
   },
   {
    "ns": "KSU::View",
-   "m": "_2c42fd38",
+   "m": "draw_loops",
    "f": "ksu_vn/method/chontam.rb",
    "l": 274
   },
@@ -680,7 +680,7 @@
   },
   {
    "ns": "KSU::Loop",
-   "m": "_107e6bdc",
+   "m": "license_url",
    "f": "ksu_vn/method/chontam.rb",
    "l": 334
   },
@@ -1748,7 +1748,7 @@
   },
   {
    "ns": "KSU::Cutting",
-   "m": "_ecf7ba06",
+   "m": "deactivate_key",
    "f": "ksu_vn/method/toiuuvan/postproc.rb",
    "l": 614
   },
@@ -2504,7 +2504,7 @@
   },
   {
    "ns": "KSU::Chongbay",
-   "m": "_7b49f69e",
+   "m": "read_bindings",
    "f": "ksu_vn/utils/flip.rb",
    "l": 140
   },

@@ -18,8 +18,8 @@ class KSU::Danhsovan
     load_overlay_settings
     @presets = get("presets", nil)
     @nesting = KSU::Nesting.find_nesting(notify: false)
-    @arr20 = @nesting ? KSU::Nesting.overlap_polys(@nesting) : []
-    @arr11 = @nesting ? KSU::Nesting.error_points(@nesting) : []
+    @overlap_fills = @nesting ? KSU::Nesting.overlap_polys(@nesting) : []
+    @err_pts = @nesting ? KSU::Nesting.error_points(@nesting) : []
     @_x_bi_lan_polys = nil
     if Sketchup.active_model.tools.active_tool == self
       @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, @an_nhan_tiet_dien, @label_section_hidden)
@@ -69,8 +69,8 @@ class KSU::Danhsovan
   end
   def draw(view)
     KSU::View.draw_faces(normal: @phu_mau_tam, two_sided: @phu_mau_tam_hai_mat)
-    if @danh_dau_tam_bi_lan && @arr20 && @arr20.any?
-      KSU::View.draw_polys(@arr20, color: KSU::View.warn_color, line: false)
+    if @danh_dau_tam_bi_lan && @overlap_fills && @overlap_fills.any?
+      KSU::View.draw_polys(@overlap_fills, color: KSU::View.warn_color, line: false)
     end
     draw_overlay(view, @nesting)
     if @plan

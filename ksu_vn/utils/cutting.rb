@@ -319,7 +319,7 @@ module KSU::Cutting
   def self.license_path
     File.join(KSU::Settings.data_dir, "license.dat")
   end
-  def self._ecf7ba06(_b9fa83ff)
-    KSU::Const.fetch_json(KSU::Loop._107e6bdc(_b9fa83ff, "deactivate") + "&instance=" + URI.encode_www_form_component(KSU::Gannhan.license_field("i")))
+  def self.deactivate_key(serial_key)
+    KSU::Const.fetch_json(KSU::Loop.license_url(serial_key, "deactivate") + "&instance=" + URI.encode_www_form_component(KSU::Gannhan.license_field("i")))
   end
 end

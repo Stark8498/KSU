@@ -562,7 +562,7 @@ module KSU::Settings
     end
     dlg2.add_action_callback("uninstall") do |_part|
       key2 = KSU::Gannhan.license_field("k")
-      KSU::Cutting._ecf7ba06(key2) unless key2.to_s.empty?
+      KSU::Cutting.deactivate_key(key2) unless key2.to_s.empty?
       KSU::Store.set_binding("k", "")
       KSU::Store.set_binding("i", "")
       KSU::Store.set_binding("t", "")
@@ -683,8 +683,8 @@ module KSU::Settings
   def self.data_dir
     File.join(ENV["LOCALAPPDATA"], "KSU")
   end
-  def self.activate_key(_b9fa83ff)
-    KSU::Const.fetch_json(KSU::Loop._107e6bdc(_b9fa83ff, "activate") + "&instance=" + URI.encode_www_form_component(KSU::Mirror._4b6ac4b0))
+  def self.activate_key(serial_key)
+    KSU::Const.fetch_json(KSU::Loop.license_url(serial_key, "activate") + "&instance=" + URI.encode_www_form_component(KSU::Mirror._4b6ac4b0))
   end
 end
 module KSU::Settings

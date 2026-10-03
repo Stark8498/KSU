@@ -269,10 +269,10 @@ module KSU::Resize
     end
     v
   end
-  def _81184680(pt10, pt)
+  def _81184680(press_pt, pt)
     return pt unless @arr26 && !@arr26.empty?
-    start_x = pt10.x.to_f
-    ly0 = pt10.y.to_f
+    start_x = press_pt.x.to_f
+    ly0 = press_pt.y.to_f
     rx = pt.x.to_f
     ry = pt.y.to_f
     _02b82ead = [start_x, rx].min

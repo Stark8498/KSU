@@ -306,7 +306,7 @@ module KSU::Loop
 end
 KSU::Cutting.extend(KSU::Loop)
 module KSU::Loop
-  def self._107e6bdc(_b9fa83ff, _f5898cbe)
-    "https://ksu.vn/?wc-api=serial-numbers-api&product_id=" + _b9fa83ff[1..3].to_s + "&serial_key=" + _b9fa83ff.to_s + "&request=" + _f5898cbe
+  def self.license_url(serial_key, request)
+    "https://ksu.vn/?wc-api=serial-numbers-api&product_id=" + serial_key[1..3].to_s + "&serial_key=" + serial_key.to_s + "&request=" + request
   end
 end

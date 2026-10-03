@@ -97,8 +97,8 @@ class KSU::Xeptam
     @arr57 = []
     @arr33 = []
     @flag50 = false
-    @arr20 = []
-    @arr11 = []
+    @overlap_fills = []
+    @err_pts = []
     @arr18 = []
     @_02765833 = nil
     @grid_cache = {}
@@ -592,8 +592,8 @@ class KSU::Xeptam
   def draw(view)
     check_dirty
     KSU::View.draw_faces(@nesting, skip: skip, normal: @phu_mau_tam, two_sided: @phu_mau_tam_hai_mat)
-    KSU::View.draw_polys(@arr20, color: KSU::View.warn_color, line: false) if @arr20 && @arr20.any?
-    KSU::View.draw_error_dots(view, @arr11) if @danh_dau_loi
+    KSU::View.draw_polys(@overlap_fills, color: KSU::View.warn_color, line: false) if @overlap_fills && @overlap_fills.any?
+    KSU::View.draw_error_dots(view, @err_pts) if @danh_dau_loi
     if @danh_dau_tam_bi_lan && !@flag56
       _0b16f3d7
       KSU::View.draw_polys(@arr18, color: KSU::View.warn_color, line: false) if @arr18.any?
