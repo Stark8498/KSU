@@ -59,7 +59,7 @@ module KSU::Corner
     sheet.definition.entities.each do |grp|
       next unless KSU.container?(grp) && KSU::Sheet.drawable?(grp)
       next if grp.name.to_s == "__ABF_sheetBorder"
-      next if KSU::Sheet._27ecfdd1(grp)
+      next if KSU::Sheet.sheet_border?(grp)
       next if grp.name.to_s == "__ABF_lastCut"
       next if grp.respond_to?(:get_attribute) && grp.get_attribute("ABF", "is-last-cut")
       world_tr = base_tr * grp.transformation
@@ -124,7 +124,7 @@ module KSU::Corner
     sheet.definition.entities.each do |grp|
       next unless KSU.container?(grp) && KSU::Sheet.drawable?(grp)
       next if grp.name.to_s == "__ABF_sheetBorder"
-      next if KSU::Sheet._27ecfdd1(grp)
+      next if KSU::Sheet.sheet_border?(grp)
       next if grp.name.to_s == "__ABF_lastCut"
       next if grp.respond_to?(:get_attribute) && grp.get_attribute("ABF", "is-last-cut")
       world_tr = base_tr * grp.transformation

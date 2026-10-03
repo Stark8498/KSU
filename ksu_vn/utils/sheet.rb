@@ -119,7 +119,7 @@ module KSU::Sheet
       ent2.end = b if ent2.respond_to?(:end=)
     end
   end
-  def self._9728a3d1(ent2)
+  def self.style_dim(ent2)
     return unless ent2 && ent2.valid?
     begin
       ent2.has_aligned_text = true if ent2.respond_to?(:has_aligned_text=)
@@ -130,10 +130,10 @@ module KSU::Sheet
       nil
     end
   end
-  def self._ba804f88(ent2, text)
+  def self.set_dim_text(ent2, text)
     return unless ent2 && ent2.valid? && ent2.respond_to?(:text=)
     ent2.text = text
-    _9728a3d1(ent2)
+    style_dim(ent2)
   end
   def self.sheet_labels(sheet, nesting)
     return [] unless sheet && sheet.valid? && nesting && nesting.valid?

@@ -264,7 +264,7 @@ module KSU::Reorder
       [start_x + sheet_w / 2.0 + 0.1.mm, ly0 - 5.cm, 0], [0, -0.1.mm, 0]
     )
     ent2.arrow_type = Sketchup::Dimension::ARROW_NONE
-    _ba804f88(ent2, text || "sheet-#{id}")
+    set_dim_text(ent2, text || "sheet-#{id}")
     ent2.set_attribute("KSU", "sheet-label", true)
   end
   def _edd17adf(ents, sheet_type, oy, _dcd13e53)

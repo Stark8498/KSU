@@ -4,7 +4,7 @@ module KSU::Back
     groups = Hash.new { |h, k| h[k] = [] }
     @sel.each do |sheet|
       next unless sheet && sheet.valid?
-      groups[KSU::Sheet._7b0a38ee(sheet)] << sheet
+      groups[KSU::Sheet.stock_key(sheet)] << sheet
     end
     groups
   end
@@ -72,7 +72,7 @@ module KSU::Back
       bb2.center.y + (bb3.center.y - bb4.center.y),
       bb3.center.z
     )
-    grp2 = KSU::Sheet._f74b0a99(flag, flag.transformation, @nesting)
+    grp2 = KSU::Sheet.clone_sheet_shell(flag, flag.transformation, @nesting)
     return back_sheet unless grp2 && grp2.valid?
     grp2.set_attribute("ABF", "is-bottom-sheet", true)
     bb = KSU::Sheet.world_bbox(grp2, @nesting)

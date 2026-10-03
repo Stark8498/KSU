@@ -277,7 +277,7 @@ module KSU::Loop
       [1, 3, 7, 5]
     end
   end
-  def _02ce5169
+  def new_label_group
     node = Sketchup.active_model.entities.add_group
     node.name = "_ABF_Label"
     tag = layer("ABF_Label")

@@ -231,7 +231,7 @@ module KSU::View
   end
   def self.draw_outline(scr, color)
     return unless scr
-    _d64f2233(scr, thickness: 50.mm.to_f, position: :outside, color: color)
+    draw_band(scr, thickness: 50.mm.to_f, position: :outside, color: color)
   end
   def self.draw_rect2d(view, x1, y1, x2, _60000b16, stipple: "")
     return unless x1 && x2
@@ -423,7 +423,7 @@ module KSU::View
     return Geom::BoundingBox.new unless panel && panel.valid?
     KSU::Geom._c7b0bc62(panel.definition.bounds, panel.transformation)
   end
-  def self._bb1a9bd8(bbox, vec)
+  def self.offset_bbox(bbox, vec)
     out = Geom::BoundingBox.new
     out.add(bbox.min.offset(vec))
     out.add(bbox.max.offset(vec))

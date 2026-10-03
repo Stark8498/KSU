@@ -186,7 +186,7 @@ module KSU::Query
     set_pen(color || face_color)
     view.draw(GL_TRIANGLES, tris3)
   end
-  def _bbaa2919(pts, thickness:, position: :outside)
+  def band_tris(pts, thickness:, position: :outside)
     return [] unless pts && pts.length >= 3
     n = pts.length
     px = pts.inject(0.0) { |s, pt3| s + pt3.x.to_f } / n
@@ -214,40 +214,40 @@ module KSU::Query
                when :center then [thick / 2.0, thick / 2.0]
                else [thick, 0.0]
                end
-    _ab78248b = arr[0]
-    _3c01cc7b = arr[1]
-    outer = _5f44dc53(pts, arr2, _ab78248b, 1.0)
-    arr3 = _5f44dc53(pts, arr2, _3c01cc7b, -1.0)
+    out_d = arr[0]
+    in_d = arr[1]
+    outer = offset_poly(pts, arr2, out_d, 1.0)
+    arr3 = offset_poly(pts, arr2, in_d, -1.0)
     tris = []
     n.times do |i|
-      _2ea74b89 = [arr3[i], outer[i], outer[(i + 1) % n], arr3[(i + 1) % n]]
-      tris.concat(Geom.tesselate(_2ea74b89))
+      quad = [arr3[i], outer[i], outer[(i + 1) % n], arr3[(i + 1) % n]]
+      tris.concat(Geom.tesselate(quad))
     end
     tris
   end
-  def _d64f2233(pts, thickness:, position: :outside, color: nil)
-    tris = _bbaa2919(pts, thickness: thickness, position: position)
+  def draw_band(pts, thickness:, position: :outside, color: nil)
+    tris = band_tris(pts, thickness: thickness, position: position)
     return if tris.empty?
     set_pen(color || face_color)
     view.draw(GL_TRIANGLES, tris)
   end
-  def _5f44dc53(pts, arr3, _a157beb9, _21a59ec3)
+  def offset_poly(pts, arr3, dist, sign)
     n = pts.length
     n.times.map do |i|
       pt = pts[i]
-      next pt if _a157beb9 <= 0
+      next pt if dist <= 0
       arr2 = arr3[(i - 1) % n]
       arr = arr3[i]
       bx2 = arr2[0] + arr[0]
       by2 = arr2[1] + arr[1]
-      _9686c624 = Math.sqrt(bx2 * bx2 + by2 * by2)
-      if _9686c624 < 1e-9
-        Geom::Point3d.new(pt.x + arr[0] * _a157beb9 * _21a59ec3, pt.y + arr[1] * _a157beb9 * _21a59ec3, pt.z)
+      len = Math.sqrt(bx2 * bx2 + by2 * by2)
+      if len < 1e-9
+        Geom::Point3d.new(pt.x + arr[0] * dist * sign, pt.y + arr[1] * dist * sign, pt.z)
       else
-        _d514317e = arr2[0] * arr[0] + arr2[1] * arr[1]
-        _2a6ec900 = Math.sqrt([(1 - _d514317e) / 2.0, 0.0].max)
-        len2d = _2a6ec900 > 1e-3 ? _a157beb9 / _2a6ec900 : _a157beb9 * 4
-        Geom::Point3d.new(pt.x + bx2 / _9686c624 * len2d * _21a59ec3, pt.y + by2 / _9686c624 * len2d * _21a59ec3, pt.z)
+        dot = arr2[0] * arr[0] + arr2[1] * arr[1]
+        sin_half = Math.sqrt([(1 - dot) / 2.0, 0.0].max)
+        len2d = sin_half > 1e-3 ? dist / sin_half : dist * 4
+        Geom::Point3d.new(pt.x + bx2 / len * len2d * sign, pt.y + by2 / len * len2d * sign, pt.z)
       end
     end
   end

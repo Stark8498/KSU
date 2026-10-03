@@ -8,7 +8,7 @@ module KSU::Overlay
   def movable_kids(sheet)
     return [] unless sheet && sheet.valid? && sheet.respond_to?(:definition) && sheet.definition
     sheet.definition.entities.to_a.select do |ent|
-      KSU.container?(ent) && ent.name.to_s != "__ABF_sheetBorder" && !_27ecfdd1(ent) && !mark?(ent)
+      KSU.container?(ent) && ent.name.to_s != "__ABF_sheetBorder" && !sheet_border?(ent) && !mark?(ent)
     end
   end
   def apply_offsets(nesting)

@@ -206,7 +206,7 @@ module KSU::Lastcut
       next unless KSU.container?(panel)
       next if _75723f03(panel)
       next if panel.name.to_s == "__ABF_sheetBorder"
-      next if KSU::Sheet._27ecfdd1(panel)
+      next if KSU::Sheet.sheet_border?(panel)
       next unless KSU::Sheet.drawable?(panel)
       world_tr = transform * panel.transformation
       flag = flag2 ? nil : _3431a152(panel, world_tr)

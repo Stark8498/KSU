@@ -131,15 +131,15 @@ module KSU::Optimize
       n = k + 1
       vec = Geom::Vector3d.new(pt.x * n, pt.y * n, pt.z * n)
       tr = Geom::Transformation.translation(vec) * base_tr
-      grp2 = KSU::Sheet._f74b0a99(anchor, tr, @nesting)
+      grp2 = KSU::Sheet.clone_sheet_shell(anchor, tr, @nesting)
       next unless grp2 && grp2.valid?
       new_id = str ? str + n : max_sheet_no
       str2 = "sheet-#{new_id}"
       grp2.name = str2
       grp2.set_attribute("ABF", "sheet-id", new_id)
       pt2 = tr.origin - pt3
-      arr3 = KSU::Sheet._a9a86c81(labels, pt2, @nesting)
-      arr3.each { |len2d| KSU::Sheet._ba804f88(len2d, str2) }
+      arr3 = KSU::Sheet.rebuild_dims(labels, pt2, @nesting)
+      arr3.each { |len2d| KSU::Sheet.set_dim_text(len2d, str2) }
       arr << grp2
     end
     arr
@@ -186,7 +186,7 @@ module KSU::Optimize
   def _1a400713(panel)
     return false unless KSU.container?(panel)
     return false if panel.name.to_s == "__ABF_sheetBorder"
-    return false if KSU::Sheet._27ecfdd1(panel)
+    return false if KSU::Sheet.sheet_border?(panel)
     return false if KSU::Sheet.mark?(panel)
     return false if KSU::Nesting.last_cut?(panel)
     return false unless KSU::Sheet.drawable?(panel)

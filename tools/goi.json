@@ -542,7 +542,7 @@
   },
   {
    "ns": "KSU::Sheet",
-   "m": "_27ecfdd1",
+   "m": "sheet_border?",
    "f": "ksu_vn/method/chontam/pick.rb",
    "l": 131
   },
@@ -1322,7 +1322,7 @@
   },
   {
    "ns": "KSU::View",
-   "m": "_d64f2233",
+   "m": "draw_band",
    "f": "ksu_vn/method/themtam.rb",
    "l": 215
   },
@@ -1334,7 +1334,7 @@
   },
   {
    "ns": "KSU::Sheet",
-   "m": "_7b0a38ee",
+   "m": "stock_key",
    "f": "ksu_vn/method/themtam.rb",
    "l": 235
   },
@@ -1346,7 +1346,7 @@
   },
   {
    "ns": "KSU::View",
-   "m": "_bb1a9bd8",
+   "m": "offset_bbox",
    "f": "ksu_vn/method/themtam.rb",
    "l": 245
   },
@@ -1358,13 +1358,13 @@
   },
   {
    "ns": "KSU::Sheet",
-   "m": "_ed46427a",
+   "m": "cut_panel?",
    "f": "ksu_vn/method/themtam.rb",
    "l": 290
   },
   {
    "ns": "KSU::Nesting",
-   "m": "_c5ab406d",
+   "m": "max_board_index",
    "f": "ksu_vn/method/themtam.rb",
    "l": 320
   },
@@ -1382,7 +1382,7 @@
   },
   {
    "ns": "KSU::Nesting",
-   "m": "_339f1198",
+   "m": "hide_temp_layer",
    "f": "ksu_vn/method/themtam.rb",
    "l": 336
   },
@@ -1430,19 +1430,19 @@
   },
   {
    "ns": "KSU::Sheet",
-   "m": "_f74b0a99",
+   "m": "clone_sheet_shell",
    "f": "ksu_vn/method/themtam.rb",
    "l": 545
   },
   {
    "ns": "KSU::Sheet",
-   "m": "_a9a86c81",
+   "m": "rebuild_dims",
    "f": "ksu_vn/method/themtam.rb",
    "l": 551
   },
   {
    "ns": "KSU::Sheet",
-   "m": "_ba804f88",
+   "m": "set_dim_text",
    "f": "ksu_vn/method/themtam.rb",
    "l": 552
   },
@@ -1472,13 +1472,13 @@
   },
   {
    "ns": "KSU::Cutting",
-   "m": "_02ce5169",
+   "m": "new_label_group",
    "f": "ksu_vn/method/themtam.rb",
    "l": 722
   },
   {
    "ns": "KSU::Nesting",
-   "m": "_34135bd8",
+   "m": "add_board_stub",
    "f": "ksu_vn/method/themtam.rb",
    "l": 725
   },
@@ -1832,7 +1832,7 @@
   },
   {
    "ns": "KSU::Nesting",
-   "m": "_d78e0ff0",
+   "m": "clone_panel_into",
    "f": "ksu_vn/method/toiuuvan.rb",
    "l": 454
   },
@@ -2108,7 +2108,7 @@
   },
   {
    "ns": "KSU::View",
-   "m": "_bbaa2919",
+   "m": "band_tris",
    "f": "ksu_vn/method/xeptam/drag.rb",
    "l": 221
   },

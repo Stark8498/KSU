@@ -100,7 +100,7 @@ module KSU::Arrange
     str2 = KSU::Sheet.sheet_no(sheet.name.to_s)
     new_id = str2 ? (side == :left ? str2 : str2 + 1) : nil
     KSU::Sheet.shift_sheets(@nesting, new_id, +1) if new_id
-    grp2 = KSU::Sheet._f74b0a99(sheet, tr3, @nesting)
+    grp2 = KSU::Sheet.clone_sheet_shell(sheet, tr3, @nesting)
     if grp2
       if new_id
         str = "sheet-#{new_id}"
@@ -108,10 +108,10 @@ module KSU::Arrange
         grp2.set_attribute("ABF", "sheet-id", new_id)
       end
       pt = tr3.origin - tr2.origin
-      arr3 = KSU::Sheet._a9a86c81(labels, pt, @nesting)
-      arr3.each { |len2d| KSU::Sheet._ba804f88(len2d, str) } if new_id
+      arr3 = KSU::Sheet.rebuild_dims(labels, pt, @nesting)
+      arr3.each { |len2d| KSU::Sheet.set_dim_text(len2d, str) } if new_id
       if grp4 && _fde5708a
-        grp3 = KSU::Sheet._f74b0a99(grp4, _fde5708a, @nesting)
+        grp3 = KSU::Sheet.clone_sheet_shell(grp4, _fde5708a, @nesting)
         if grp3
           if new_id
             grp3.name = "#{str}-bottom"
@@ -203,8 +203,8 @@ module KSU::Arrange
   def _650fb422(grp, grp2)
     ents2 = grp.definition.entities.to_a.select { |ent| KSU::Nesting._88f4d2bb(ent) }
     ents = grp2.definition.entities.to_a.select { |ent| KSU::Nesting._88f4d2bb(ent) }
-    ents2.each { |vec| KSU::Nesting._d78e0ff0(vec, grp2) if vec.valid? }
-    ents.each { |vec| KSU::Nesting._d78e0ff0(vec, grp) if vec.valid? }
+    ents2.each { |vec| KSU::Nesting.clone_panel_into(vec, grp2) if vec.valid? }
+    ents.each { |vec| KSU::Nesting.clone_panel_into(vec, grp) if vec.valid? }
   end
   def _14a635d9(grp4, grp3, grp2, grp)
     return unless grp2 || grp

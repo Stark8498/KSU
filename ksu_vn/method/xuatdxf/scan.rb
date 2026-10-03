@@ -88,7 +88,7 @@ module KSU::Xuatdxf
     obj.each do |entity|
       next unless KSU.container?(entity)
       pid = entity.get_attribute("ABF", "board-index")
-      if pid && !KSU::Sheet._27ecfdd1(entity)
+      if pid && !KSU::Sheet.sheet_border?(entity)
         name = KSU::Label.label_text(entity).to_s
         name = pid.to_s if name.empty?
         pt = entity.bounds.center
@@ -129,7 +129,7 @@ module KSU::Xuatdxf
     name = gr.name.to_s
     def_name = (gr.respond_to?(:definition) && gr.definition) ? gr.definition.name.to_s : ""
     return if name.include?("_ABF_Label") || def_name.include?("_ABF_Label")
-    _27846c89 = KSU::Sheet._27ecfdd1(gr)
+    _27846c89 = KSU::Sheet.sheet_border?(gr)
     _84dcc166 = gr.get_attribute("ABF", "is-mark-square")
     _bc8516a9 = gr.get_attribute("ABF", "is-cutting-lines")
     _20c319d6 = gr.get_attribute("ABF", "is-intersect")

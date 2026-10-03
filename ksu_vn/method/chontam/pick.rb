@@ -128,7 +128,7 @@ class KSU::Chontam
       ph.do_pick(x, y)
       best = ph.best_picked
       if best && KSU.container?(best) &&
-         !nesting_root?(best) && !KSU::Sheet._27ecfdd1(best)
+         !nesting_root?(best) && !KSU::Sheet.sheet_border?(best)
         return { kind: :panel, entity: best }
       end
       (0...ph.count).each do |i|
@@ -292,7 +292,7 @@ class KSU::Chontam
       return false if name.start_with?("_ABF_")
       return false if cutting_layer?(entity)
       return false if sheet_meta?(entity)
-      !KSU::Sheet._27ecfdd1(entity)
+      !KSU::Sheet.sheet_border?(entity)
     end
     def panel_under?(entity, nesting)
       return false unless entity && nesting

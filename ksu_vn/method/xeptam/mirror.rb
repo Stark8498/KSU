@@ -109,7 +109,7 @@ module KSU::Mirror
       bb3.center.y + (bb.center.y - bb4.center.y),
       bb.center.z
     )
-    grp = KSU::Sheet._f74b0a99(flag, flag.transformation, @nesting)
+    grp = KSU::Sheet.clone_sheet_shell(flag, flag.transformation, @nesting)
     return back_sheet unless grp && grp.valid?
     grp.set_attribute("ABF", "is-bottom-sheet", true)
     bb2 = KSU::Sheet.world_bbox(grp, @nesting)

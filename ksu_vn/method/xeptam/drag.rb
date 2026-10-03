@@ -50,7 +50,7 @@ module KSU::Drag
     @banding = false
     load_optimize_settings
     reload_sheets
-    groups = { KSU::Sheet._7b0a38ee(sheet) => [sheet] }
+    groups = { KSU::Sheet.stock_key(sheet) => [sheet] }
     unless defined?(KSU::Nesting::Engine)
       @added = []
       run(groups)
@@ -212,15 +212,15 @@ module KSU::Drag
   end
   def draw_thick_outline(rec, color)
     return unless rec && rec[:top_corners]
-    unless KSU::View.respond_to?(:_bbaa2919)
+    unless KSU::View.respond_to?(:band_tris)
       KSU::View.draw_outline(rec[:top_corners], color)
       return
     end
     inst = rec[:instance]
     tris = if inst && inst.valid?
-        @h6[inst.entityID] ||= KSU::View._bbaa2919(rec[:top_corners], thickness: 50.mm.to_f, position: :outside)
+        @h6[inst.entityID] ||= KSU::View.band_tris(rec[:top_corners], thickness: 50.mm.to_f, position: :outside)
       else
-        KSU::View._bbaa2919(rec[:top_corners], thickness: 50.mm.to_f, position: :outside)
+        KSU::View.band_tris(rec[:top_corners], thickness: 50.mm.to_f, position: :outside)
       end
     return if tris.nil? || tris.empty?
     KSU::View.set_pen(color)

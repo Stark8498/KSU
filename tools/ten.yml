@@ -2160,14 +2160,109 @@ ten:
   _ba93b302: strip_y             # moi job mot dai, dai sau nam duoi dai truoc
   _8486f8b2: has_bottom
 
+  # ----- ME 57: method/themtam.rb -- chen them van vao so do xep -----
+  # Chen mot van moi NGAY SAU van duoc chon: day cac van phia sau sang mot
+  # khoang bang be rong hang, danh lai so sheet-id, roi sao cac tam sang.
+  _5c6a1c61: insert_sheet_after
+  _0895e188: clone_bottom_sheet   # ban mat duoi, dat lech dung bang luc dau
+  _596e474d: reindex_map          # board-index cu -> board-index moi, lien tiep
+  _a761a084: copy_panels_into
+  _5958c66f: renumber_panel
+  _00102883: clear_cut_desc       # drills-desc / edge-band-desc ve rong
+  _aa983a67: blank_label          # xoa ruot nhan, ve dau cong thay vao
+  _1668ae28: add_label_cross
+  _81e51cdb: mark_added_edges     # set_attribute("KSU", "them_tam", true)
+  _f442aacf: label_root
+  _6ed036a2: add_label_stub
+  _c9bca5df: draw_overlaps
+  _6ae58d17: draw_overwrite_preview
+  _435dfd9d: track_overwrite_hover
+  _26cf11cf: overwrite_hit
+  _dfd63ec2: next_index           # @next_index: so board-index cap tiep theo
+  _9fc90b21: hover_overwrite      # muc overwrite_preview dang nam duoi tro
+
+  # Bien cuc bo chung chung: dat theo PHAM VI. Cung mot hex o file khac la thu
+  # khac han -- _9d8da98b chang han, o day la toa do z cua tam nhan.
+  _cd21b913:
+    ksu_vn/method/themtam.rb: src
+  _9195f5ac:
+    ksu_vn/method/themtam.rb: slots
+  _8904ee37:
+    ksu_vn/method/themtam.rb: ixs
+  _08248783:
+    ksu_vn/method/themtam.rb: anchor
+  _9d8da98b:
+    ksu_vn/method/themtam.rb: pz
+  _8d05dd56:
+    ksu_vn/method/themtam.rb: arm
+  _1dc6660d:
+    ksu_vn/method/themtam.rb: layer
+
+  # ----- ME 57b: cac ham utils ma themtam.rb goi -----
+  # `panel?` da thuoc ve _fff06578 (qua drawable?, nhan ca ten bat dau "__").
+  # _ed46427a chat hon: loai mark, va nhan ca tam chi co cutting group.
+  _ed46427a: cut_panel?
+  _27ecfdd1: sheet_border?        # get_attribute("ABF", "is-sheet-border")
+  _7b0a38ee: stock_key            # [sheet-thickness, sheet-type]
+  _f74b0a99: clone_sheet_shell    # van rong: chi co vien, mark va thuoc tinh
+  _e9938e09: add_mark_square      # nhom "__ABF_markSquare", attr is-mark-square
+  _7c7845a7: copy_sheet_attrs
+  _a9a86c81: rebuild_dims         # dung lai DimensionLinear o vi tri da doi
+  _ba804f88: set_dim_text
+  _9728a3d1: style_dim
+  _c5ab406d: max_board_index
+  _34135bd8: add_board_stub       # hop 1mm mang board-index, attr is-board
+  _339f1198: hide_temp_layer      # lop KSU_TEMP
+  _d78e0ff0: clone_panel_into
+  _f0d22e41: clear_bindings       # xoa phim tat k, i, t
+  _02ce5169: new_label_group      # nhom "_ABF_Label" tren lop "ABF_Label"
+  _d64f2233: draw_band
+  _bbaa2919: band_tris
+  _5f44dc53: offset_poly          # doi dinh ra/vao theo phan giac, co bu miter
+  _bb1a9bd8: offset_bbox
+
+  # _3e7613f3 va _9ba1a361 di thanh cap qua 16 than ham, nhung moi noi mot
+  # nghia: o view.rb la trung diem canh, o loop.rb la mot vector, o scan.rb la
+  # goc van. Khong co nghia chung nao dat ten toan cuc duoc.
+  _ca47420d:
+    "ksu_vn/utils/sheet/bottom.rb#_f74b0a99": tr
+  _3e7613f3:
+    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_x
+  _9ba1a361:
+    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_y
+  _ad02b761:
+    "ksu_vn/utils/sheet/bottom.rb#_a9a86c81": slots
+  _c99d52a7:
+    "ksu_vn/utils/sheet/bottom.rb#_a9a86c81": offset
+  _e4e21066:
+    "ksu_vn/utils/sheet/bottom.rb#_a9a86c81": out
+  _45171888:
+    "ksu_vn/utils/sheet/bottom.rb#_a9a86c81": attr
+  _152f9385:
+    "ksu_vn/utils/nesting/edit.rb#_34135bd8": temp_layer
+  _a157beb9:
+    "ksu_vn/utils/view/query.rb#_5f44dc53": dist
+  _21a59ec3:
+    "ksu_vn/utils/view/query.rb#_5f44dc53": sign
+  _9686c624:
+    "ksu_vn/utils/view/query.rb#_5f44dc53": len
+  _d514317e:
+    "ksu_vn/utils/view/query.rb#_5f44dc53": dot
+  _2a6ec900:
+    "ksu_vn/utils/view/query.rb#_5f44dc53": sin_half
+  _ab78248b:
+    "ksu_vn/utils/view/query.rb#_bbaa2919": out_d
+  _3c01cc7b:
+    "ksu_vn/utils/view/query.rb#_bbaa2919": in_d
+  _2ea74b89:
+    "ksu_vn/utils/view/query.rb#_bbaa2919": quad
+
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,
   # hoac voi mot dinh danh chua bi lam roi. Gop lai la mat mot thu. Chung
   # cho dot dat ten THEO PHAM VI; tu gio den do cu de nguyen hex.
-  - _0895e188
   - _2bff4638
-  - _5c6a1c61
   - _727b63c7
   - _7c10a028
   - _884dee16

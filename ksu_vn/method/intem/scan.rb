@@ -87,7 +87,7 @@ module KSU::Intem
     if ent2.is_a?(Array) && ent2[0].to_f > 0 && ent2[1].to_f > 0
       return [ent2[0].to_f, ent2[1].to_f]
     end
-    ents = sheet.entities.grep(Sketchup::Group).find { |ent| KSU::Sheet._27ecfdd1(ent) }
+    ents = sheet.entities.grep(Sketchup::Group).find { |ent| KSU::Sheet.sheet_border?(ent) }
     return [0.0, 0.0] unless ents
     bbox = ents.bounds
     [(bbox.width * 25.4).round(2), (bbox.height * 25.4).round(2)]
@@ -132,7 +132,7 @@ module KSU::Intem
   end
   def self.sheet_origin(sheet)
     arr = KSU::Sheet.edit_offset(sheet) || [0.0, 0.0]
-    ents = sheet.entities.grep(Sketchup::Group).find { |ent| KSU::Sheet._27ecfdd1(ent) }
+    ents = sheet.entities.grep(Sketchup::Group).find { |ent| KSU::Sheet.sheet_border?(ent) }
     lo = ents && ents.bounds.valid? ? ents.bounds.min : nil
     [(lo ? lo.x.to_f : 0.0) + arr[0], (lo ? lo.y.to_f : 0.0) + arr[1]]
   end
@@ -163,7 +163,7 @@ module KSU::Intem
   def self.part_record(grp, sheet_id, mat, arr, arr4, arr3)
     pid = grp.get_attribute("ABF", "board-index")
     return nil unless pid
-    return nil if KSU::Sheet._27ecfdd1(grp)
+    return nil if KSU::Sheet.sheet_border?(grp)
     cutting_gr = grp.entities.find { |ent| KSU.container?(ent) && ent.get_attribute("ABF", "is-cutting-lines") }
     return nil unless cutting_gr
     part_tf = grp.transformation

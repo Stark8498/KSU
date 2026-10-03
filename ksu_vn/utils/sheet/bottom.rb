@@ -34,7 +34,7 @@ module KSU::Bottom
         bottom4.name = "#{str}-bottom"
         bottom4.set_attribute("ABF", "sheet-id", new_id)
       end
-      len2d[:labels].each { |slot| _ba804f88(slot[:dim], str) }
+      len2d[:labels].each { |slot| set_dim_text(slot[:dim], str) }
     end
   end
   def remove_sheet(sheet, nesting, arr23)
@@ -121,7 +121,7 @@ module KSU::Bottom
     out = {}
     return out unless sheet && sheet.valid?
     sheet.definition.entities.each do |grp2|
-      next unless _ed46427a(grp2)
+      next unless cut_panel?(grp2)
       board_index = grp2.get_attribute("ABF", "board-index")
       out[board_index] = true unless board_index.nil?
     end
@@ -203,21 +203,21 @@ module KSU::Bottom
   def panel?(ent)
     return false unless KSU.container?(ent)
     return false if ent.name.to_s == "__ABF_sheetBorder"
-    return false if _27ecfdd1(ent)
+    return false if sheet_border?(ent)
     return false if KSU::Nesting.last_cut?(ent)
     drawable?(ent)
   end
-  def _ed46427a(ent)
+  def cut_panel?(ent)
     return false unless ent && ent.valid? && KSU.container?(ent)
-    return false if ent.name.to_s == "__ABF_sheetBorder" || _27ecfdd1(ent) || mark?(ent) || KSU::Nesting.last_cut?(ent)
+    return false if ent.name.to_s == "__ABF_sheetBorder" || sheet_border?(ent) || mark?(ent) || KSU::Nesting.last_cut?(ent)
     return true unless ent.get_attribute("ABF", "board-index").nil?
     !KSU::Cutting.cutting_group(ent).nil?
   end
   def empty?(sheet)
     return false unless sheet && sheet.valid?
-    !sheet.definition.entities.any? { |ent| KSU.container?(ent) && _ed46427a(ent) }
+    !sheet.definition.entities.any? { |ent| KSU.container?(ent) && cut_panel?(ent) }
   end
-  def _27ecfdd1(entity)
+  def sheet_border?(entity)
     return false unless entity && entity.respond_to?(:get_attribute)
     !!entity.get_attribute("ABF", "is-sheet-border", nil)
   end
@@ -235,7 +235,7 @@ module KSU::Bottom
     (0..7).each { |i| bbox.add(bb.corner(i).transform(tr)) }
     bbox
   end
-  def _7b0a38ee(sheet)
+  def stock_key(sheet)
     return [nil, nil] unless sheet && sheet.respond_to?(:get_attribute)
     [sheet.get_attribute("ABF", "sheet-thickness"), sheet.get_attribute("ABF", "sheet-type")]
   end
@@ -244,7 +244,7 @@ module KSU::Bottom
     return true if sheet.respond_to?(:get_attribute) && sheet.get_attribute("ABF", "is-bottom-sheet")
     bottom_sheet?(sheet)
   end
-  def _f74b0a99(source_sheet, _ca47420d, nesting)
+  def clone_sheet_shell(source_sheet, tr, nesting)
     return nil unless source_sheet && source_sheet.valid? && nesting && nesting.valid?
     grp = nesting.definition.entities.add_group
     grp.name = "__sheet_tmp_#{grp.entityID}"
@@ -257,30 +257,30 @@ module KSU::Bottom
     end
     if hidden?(source_sheet) && marks_of(source_sheet).any? &&
        bd2 && bd2.respond_to?(:bounds) && bd2.bounds.valid?
-      _e9938e09(grp, source_sheet, bd2.bounds)
+      add_mark_square(grp, source_sheet, bd2.bounds)
     end
-    grp.transformation = _ca47420d
+    grp.transformation = tr
     grp.layer = source_sheet.layer if source_sheet.respond_to?(:layer) && source_sheet.layer
-    _7c7845a7(source_sheet, grp)
+    copy_sheet_attrs(source_sheet, grp)
     grp
   end
-  def _e9938e09(sheet, source_sheet, bbox)
-    _3e7613f3, _9ba1a361 = inset_of(source_sheet)
-    return nil unless _3e7613f3 > 0 && _9ba1a361 > 0
+  def add_mark_square(sheet, source_sheet, bbox)
+    inset_x, inset_y = inset_of(source_sheet)
+    return nil unless inset_x > 0 && inset_y > 0
     z = bbox.min.z
     gr = sheet.entities.add_group
     gr.set_attribute("ABF", "is-mark-square", true)
     gr.name = "__ABF_markSquare"
     gr.entities.add_curve(
-      [bbox.max.x - _3e7613f3, bbox.max.y, z],
-      [bbox.max.x - _3e7613f3, bbox.min.y + _9ba1a361, z],
-      [bbox.min.x, bbox.min.y + _9ba1a361, z]
+      [bbox.max.x - inset_x, bbox.max.y, z],
+      [bbox.max.x - inset_x, bbox.min.y + inset_y, z],
+      [bbox.min.x, bbox.min.y + inset_y, z]
     )
     model = Sketchup.active_model.layers["ABF_markSquare"] || Sketchup.active_model.layers.add("ABF_markSquare")
     KSU::Cutting.set_layer(gr, model) if model
     gr
   end
-  def _7c7845a7(src, grp)
+  def copy_sheet_attrs(src, grp)
     return unless src.respond_to?(:attribute_dictionary)
     arr = src.attribute_dictionary("ABF")
     return unless arr
@@ -290,24 +290,24 @@ module KSU::Bottom
       grp.set_attribute("ABF", key, value)
     end
   end
-  def _a9a86c81(_ad02b761, _c99d52a7, nesting)
-    _ad02b761.each_with_object([]) do |slot, _e4e21066|
+  def rebuild_dims(slots, offset, nesting)
+    slots.each_with_object([]) do |slot, out|
       ent2 = slot[:dim]
       next unless ent2 && ent2.valid?
       s = slot[:start_local]
       ent = slot[:end_local]
       next unless s && ent
-      a, b = offset_pair(s, ent, slot[:container], _c99d52a7, nesting)
+      a, b = offset_pair(s, ent, slot[:container], offset, nesting)
       b = a.offset(Geom::Vector3d.new(1.mm, 0, 0)) if a.distance(b) < 1e-6
       vec2 = slot[:offset_vector] || Geom::Vector3d.new(0, 0, 0)
       grp2 = slot[:container].add_dimension_linear(a, b, vec2)
       next unless grp2 && grp2.valid?
-      _ba804f88(grp2, ent2.text) if ent2.respond_to?(:text)
+      set_dim_text(grp2, ent2.text) if ent2.respond_to?(:text)
       grp2.layer = ent2.layer if ent2.respond_to?(:layer) && ent2.layer && grp2.respond_to?(:layer=)
-      [:text_position, :arrow_type].each do |_45171888|
-        next unless ent2.respond_to?(_45171888) && grp2.respond_to?("#{_45171888}=")
+      [:text_position, :arrow_type].each do |attr|
+        next unless ent2.respond_to?(attr) && grp2.respond_to?("#{attr}=")
         begin
-          grp2.send("#{_45171888}=", ent2.send(_45171888))
+          grp2.send("#{attr}=", ent2.send(attr))
         rescue StandardError
           nil
         end
@@ -317,8 +317,8 @@ module KSU::Bottom
           h.each_pair { |k, v| grp2.set_attribute(h.name, k, v) }
         end
       end
-      _9728a3d1(grp2)
-      _e4e21066 << grp2
+      style_dim(grp2)
+      out << grp2
     end
   end
   def sheet_maps(nesting)

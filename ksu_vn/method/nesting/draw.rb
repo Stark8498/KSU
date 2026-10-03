@@ -273,7 +273,7 @@ module KSU::Draw
     arr.each do |sheet|
       next unless sheet && sheet.valid?
       sheet.entities.grep(Sketchup::Group).each do |grp|
-        next if KSU::Sheet._27ecfdd1(grp)
+        next if KSU::Sheet.sheet_border?(grp)
         _e3d864eb(grp)
       end
     end
@@ -372,7 +372,7 @@ module KSU::Draw
     root.entities.grep(Sketchup::Group).each do |sheet|
       next unless sheet.get_attribute("ABF", "sheet-id")
       ents = sheet.entities.grep(Sketchup::Group)
-      bd2 = ents.find { |color| KSU::Sheet._27ecfdd1(color) }
+      bd2 = ents.find { |color| KSU::Sheet.sheet_border?(color) }
       next unless bd2
       rect = _127808db(bd2)
       ents.each do |entity|

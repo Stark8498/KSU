@@ -325,7 +325,7 @@ module KSU::Detail
       next false if ent.get_attribute("ABF", "is-label")
       name = ent.name.to_s
       next false if name.include?("_ABF_cuttingLines") || name.include?("_ABF_edgeBanding") || name.include?("_ABF_Label")
-      next false if KSU::Sheet._27ecfdd1(ent)
+      next false if KSU::Sheet.sheet_border?(ent)
       true
     end
     ents.erase_entities(prev_key) unless prev_key.empty?

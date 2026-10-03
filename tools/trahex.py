@@ -23,8 +23,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from kscommon import ROOT  # noqa: E402
-from datten import load_dicts  # noqa: E402
+from kscommon import ROOT, code_only  # noqa: E402
+from datten import body_ranges, load_dicts  # noqa: E402
 
 BASELINE = "c45104c"
 IDENT = re.compile(r"[@$]?[A-Za-z_]\w*[?!]?")
@@ -77,6 +77,53 @@ def sweep(name: str, moc: str) -> int:
     return 0
 
 
+def scopes(hx: str, moc: str) -> int:
+    """Every method body of the BASELINE that a hex appears in, as a scope key.
+
+    A short local like `len` or `tr` belongs to one body and means something
+    else in the next, so its entry has to be written `file#method: name`. The
+    key names the body by the method name the SUBSTITUTION sees, and that pass
+    rebuilds the tree from the baseline, where the method is still hex -- so the
+    key is read off the baseline here, not off the readable tree.
+    """
+    rels = subprocess.run(["git", "ls-tree", "-r", "--name-only", moc, "ksu_vn"],
+                          cwd=ROOT, capture_output=True, text=True,
+                          encoding="utf-8").stdout.split()
+    hits: dict[str, int] = {}
+    loose = 0
+    for rel in rels:
+        if not rel.endswith(".rb"):
+            continue
+        src = subprocess.run(["git", "show", f"{moc}:{rel}"], cwd=ROOT,
+                             capture_output=True, text=True,
+                             encoding="utf-8").stdout
+        if src.startswith("XSU_NOTICE"):
+            src = src.split(chr(10), 1)[-1]
+        code = code_only(src)
+        owner: dict[int, str] = {}
+        for lo, hi, mname in body_ranges(code):
+            for i in range(lo, hi + 1):
+                owner[i] = mname
+        want = re.compile(r"\b" + re.escape(hx) + r"\b")
+        for i, line in enumerate(code.splitlines()):
+            if not want.search(line):
+                continue
+            m = owner.get(i)
+            if m is None:
+                loose += 1
+            else:
+                hits[f"{rel}#{m}"] = hits.get(f"{rel}#{m}", 0) + 1
+    if not hits and not loose:
+        print(f"khong thay {hx} trong {moc}")
+        return 1
+    print(f"  {hx}:")
+    for k, n in sorted(hits.items(), key=lambda kv: (-kv[1], kv[0])):
+        print(f'    "{k}": ???      # {n} lan')
+    if loose:
+        print(f"  ({loose} lan nam ngoai moi than ham -- phai dat TOAN CUC)")
+    return 0
+
+
 def audit(moc: str) -> int:
     """Invert the dictionary: which global names come from more than one hex.
 
@@ -114,11 +161,15 @@ def main() -> int:
     ap.add_argument("line", type=int, nargs="?")
     ap.add_argument("--ten", help="chi hoi ve mot ten")
     ap.add_argument("--tim", help="tra mot ten tren CA CAY, khong can file:dong")
+    ap.add_argument("--pham-vi", dest="pham_vi",
+                    help="hex nay nam trong nhung than ham nao (khoa pham vi)")
     ap.add_argument("--soat", action="store_true",
                     help="soat ca cay: ten nao den tu nhieu hon mot hex")
     ap.add_argument("--moc", default=BASELINE)
     args = ap.parse_args()
 
+    if args.pham_vi:
+        return scopes(args.pham_vi, args.moc)
     if args.soat:
         return audit(args.moc)
     if args.tim:

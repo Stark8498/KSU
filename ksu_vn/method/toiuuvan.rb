@@ -181,9 +181,9 @@ class KSU::Toiuuvan
     prev_key = @btn_plan
     sheet = sheet_under(view, @mx, @my)
     @btn_plan = if sheet && ctrl
-                      key = KSU::Sheet._7b0a38ee(sheet)
+                      key = KSU::Sheet.stock_key(sheet)
                       @sheets
-                        .select { |rec| KSU::Sheet._7b0a38ee(rec[:instance]) == key }
+                        .select { |rec| KSU::Sheet.stock_key(rec[:instance]) == key }
                         .map { |rec| rec[:instance] }
                     else
                       sheet ? [sheet] : []
@@ -254,9 +254,9 @@ class KSU::Toiuuvan
     view.invalidate
   end
   def select_group(sheet, additive:)
-    key = KSU::Sheet._7b0a38ee(sheet)
+    key = KSU::Sheet.stock_key(sheet)
     node = @sheets
-      .select { |rec| KSU::Sheet._7b0a38ee(rec[:instance]) == key }
+      .select { |rec| KSU::Sheet.stock_key(rec[:instance]) == key }
       .map { |rec| rec[:instance] }
     @sel = additive ? (@sel + node).uniq : node
   end
@@ -451,7 +451,7 @@ class KSU::Toiuuvan
     pt = arr.map { |s| s.transformation.origin }
     materials.each_with_index do |src, inst2|
       next if src == inst2
-      panels[src].each { |vec| KSU::Nesting._d78e0ff0(vec, arr[inst2]) if vec && vec.valid? }
+      panels[src].each { |vec| KSU::Nesting.clone_panel_into(vec, arr[inst2]) if vec && vec.valid? }
       bot = arr2[src]
       next unless bot && bot.valid?
       delta = pt[inst2] - pt[src]

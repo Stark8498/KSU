@@ -223,10 +223,10 @@ module KSU::Edit
     ents = grp ? grp.definition.entities : nesting.definition.entities
     clone_panel(ents, panel, tr2)
   end
-  def _d78e0ff0(panel, grp)
+  def clone_panel_into(panel, grp)
     clone_panel(grp.definition.entities, panel, panel.transformation)
   end
-  def _c5ab406d(nesting)
+  def max_board_index(nesting)
     hi = 0
     return hi unless nesting && nesting.valid?
     nesting.definition.entities.each do |sheet|
@@ -241,7 +241,7 @@ module KSU::Edit
     end
     hi
   end
-  def _34135bd8(node, z, name = nil)
+  def add_board_stub(node, z, name = nil)
     return unless node && node.valid?
     screen_box = node.entities.add_group
     screen_box.name = name.to_s if name
@@ -250,18 +250,18 @@ module KSU::Edit
     font.pushpull(1.mm)
     screen_box.set_attribute("ABF", "board-index", z)
     screen_box.set_attribute("ABF", "is-board", true)
-    _152f9385 = KSU::Cutting.layer("KSU_TEMP")
-    screen_box.layer = _152f9385 if _152f9385
+    temp_layer = KSU::Cutting.layer("KSU_TEMP")
+    screen_box.layer = temp_layer if temp_layer
     screen_box
   end
-  def _339f1198
+  def hide_temp_layer
     tag = Sketchup.active_model.layers["KSU_TEMP"]
     tag.visible = false if tag
   end
 end
 KSU::Nesting.extend(KSU::Edit)
 module KSU::Edit
-  def self._f0d22e41
+  def self.clear_bindings
     KSU::Mode.write_binding_key("k", "")
     KSU::Mode.write_binding_key("i", "")
     KSU::Mode.write_binding_key("t", "")

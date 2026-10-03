@@ -29,7 +29,7 @@ class KSU::Themtam
     @arr11 = []
     @_x_bi_lan_polys = nil
     @overwrite_preview = []
-    @arr38 = nil
+    @hover_overwrite = nil
     if Sketchup.active_model.tools.active_tool == self
       refresh_overlays
       @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, @an_nhan_tiet_dien, @label_section_hidden)
@@ -76,7 +76,7 @@ class KSU::Themtam
     view&.invalidate
   end
   def onSetCursor
-    if @arr38
+    if @hover_overwrite
       UI.set_cursor(KSU::Const::CURSOR_REFRESH)
       true
     else
@@ -94,7 +94,7 @@ class KSU::Themtam
   def onMouseMove(kflags, x, y, view)
     hover_preset(x, y, view)
     return if hover_field(x, y, view)
-    _435dfd9d(view, x, y) if @overwrite_preview.any?
+    track_overwrite_hover(view, x, y) if @overwrite_preview.any?
     if @chosen.any?
       track_button_hover(view, x, y)
     end
@@ -104,7 +104,7 @@ class KSU::Themtam
     return if click_field(x, y, view)
     return if click_outside(x, y, view)
     if @overwrite_preview.any?
-      arr = _26cf11cf(view, x, y)
+      arr = overwrite_hit(view, x, y)
       if arr
         overwrite_at(arr[:index])
         return
@@ -125,9 +125,9 @@ class KSU::Themtam
   end
   def draw(view)
     KSU::View.draw_faces(@nesting, normal: @phu_mau_tam, two_sided: @phu_mau_tam_hai_mat)
-    _c9bca5df(view)
+    draw_overlaps(view)
     draw_overlay(view, @nesting)
-    _6ae58d17(view)
+    draw_overwrite_preview(view)
     draw_loose(view)
     draw_add_buttons(view) if @chosen.any?
     draw_presets(view)
@@ -212,7 +212,7 @@ class KSU::Themtam
               else
                 KSU::View.sub_face_color
               end
-      KSU::View._d64f2233(rec[:top_corners], thickness: 50.mm.to_f, position: :outside, color: color)
+      KSU::View.draw_band(rec[:top_corners], thickness: 50.mm.to_f, position: :outside, color: color)
     end
   end
   def sheet_rows
@@ -232,17 +232,17 @@ class KSU::Themtam
   def build_add_buttons
     @add_buttons = []
     return if visible_chosen.empty? || @sheets.empty?
-    keys = visible_chosen.map { |s| KSU::Sheet._7b0a38ee(s) }.uniq
+    keys = visible_chosen.map { |s| KSU::Sheet.stock_key(s) }.uniq
     sheet_rows.each do |arr|
       rect = arr.last
       rec = @sheets.find { |s| s[:instance] == rect }
       next unless rec
       unless @them_tam_tu_do
-        next unless keys.length == 1 && KSU::Sheet._7b0a38ee(rect) == keys.first
+        next unless keys.length == 1 && KSU::Sheet.stock_key(rect) == keys.first
       end
       ix = arr.index(rect)
       offset = KSU::Sheet.row_offset(rec, arr, ix, @sheets)
-      bbox = KSU::View._bb1a9bd8(rec[:bbox], offset)
+      bbox = KSU::View.offset_bbox(rec[:bbox], offset)
       @add_buttons << { row: arr, bbox: bbox, center: Geom::Point3d.new((bbox.min.x + bbox.max.x) / 2.0, (bbox.min.y + bbox.max.y) / 2.0, bbox.max.z) }
     end
   end
@@ -255,7 +255,7 @@ class KSU::Themtam
   end
   def build_overwrite_preview
     @overwrite_preview = []
-    @arr38 = nil
+    @hover_overwrite = nil
     return unless overwrite?
     arr = @chosen.select { |s| s && s.valid? }
     return if arr.empty?
@@ -287,7 +287,7 @@ class KSU::Themtam
       next unless sheet.name.to_s.downcase.include?("sheet")
       sheet.definition.entities.each do |panel|
         next unless KSU.container?(panel)
-        next unless KSU::Sheet._ed46427a(panel)
+        next unless KSU::Sheet.cut_panel?(panel)
         ix = KSU::Cutting.board_index(panel)
         next if ix.nil?
         key = [ix, KSU::Cutting.bottom_face?(panel)]
@@ -317,7 +317,7 @@ class KSU::Themtam
     arr2 = pair_jobs
     return unless arr2
     return if arr2.empty?
-    @_dfd63ec2 = KSU::Nesting._c5ab406d(@nesting) + 1
+    @next_index = KSU::Nesting.max_board_index(@nesting) + 1
     @grp = nil if @them_tem_nhan
     flag = arr3.last
     arr2.each do |arr|
@@ -333,7 +333,7 @@ class KSU::Themtam
     end
     KSU::Sheet.apply_offsets(@nesting)
     KSU::Sheet.invalidate_cache
-    KSU::Nesting._339f1198 if @them_tem_nhan
+    KSU::Nesting.hide_temp_layer if @them_tem_nhan
     @chosen = []
     sheet_list
     scan_loose
@@ -349,8 +349,8 @@ class KSU::Themtam
     arr = @chosen.select { |s| s && s.valid? }
     return if arr.empty?
     KSU.start
-    _9195f5ac = slot_map
-    arr.each { |sheet| overwrite_panels(sheet, [ix], _9195f5ac) }
+    slots = slot_map
+    arr.each { |sheet| overwrite_panels(sheet, [ix], slots) }
     arr.each { |sheet| sheet.erase! if sheet.valid? && KSU::Sheet.empty?(sheet) }
     KSU.commit
     @chosen = @chosen.select { |s| s && s.valid? }
@@ -403,12 +403,12 @@ class KSU::Themtam
   def place_one(vec2, grp)
     return nil unless vec2 && vec2.valid? && grp && grp.valid?
     KSU.start
-    vec, = _5c6a1c61(vec2)
+    vec, = insert_sheet_after(vec2)
     unless vec && vec.valid?
       KSU.abort_op
       return nil
     end
-    _a761a084(grp, vec)
+    copy_panels_into(grp, vec)
     grp.erase! if grp.valid?
     KSU.commit
     vec
@@ -420,15 +420,15 @@ class KSU::Themtam
     return place_one(vec2, top) unless bottom && bottom.valid?
     return nil unless vec2 && vec2.valid? && top && top.valid?
     KSU.start
-    vec, new_id = _5c6a1c61(vec2)
+    vec, new_id = insert_sheet_after(vec2)
     unless vec && vec.valid?
       KSU.abort_op
       return nil
     end
-    index_map = _596e474d(top, bottom)
-    _a761a084(top, vec, index_map: index_map)
-    vec3 = _0895e188(top, bottom, vec, new_id)
-    _a761a084(bottom, vec3, index_map: index_map, back: true) if vec3 && vec3.valid?
+    index_map = reindex_map(top, bottom)
+    copy_panels_into(top, vec, index_map: index_map)
+    vec3 = clone_bottom_sheet(top, bottom, vec, new_id)
+    copy_panels_into(bottom, vec3, index_map: index_map, back: true) if vec3 && vec3.valid?
     top.erase! if top.valid?
     bottom.erase! if bottom.valid?
     KSU.commit
@@ -437,29 +437,29 @@ class KSU::Themtam
     KSU.abort_op
     nil
   end
-  def place_overwrite(_08248783, arr)
+  def place_overwrite(anchor, arr)
     top = arr[:top]
     bottom = arr[:bottom]
     return nil unless top && top.valid?
     KSU.start
-    _9195f5ac = slot_map
-    _8904ee37 = overwritable_indices(top, bottom, _9195f5ac)
-    overwrite_panels(top, _8904ee37, _9195f5ac)
-    overwrite_panels(bottom, _8904ee37, _9195f5ac) if bottom && bottom.valid?
+    slots = slot_map
+    ixs = overwritable_indices(top, bottom, slots)
+    overwrite_panels(top, ixs, slots)
+    overwrite_panels(bottom, ixs, slots) if bottom && bottom.valid?
     flag = top.valid? && panels_of(top).any?
     flag2 = bottom && bottom.valid? && panels_of(bottom).any?
     vec = nil
     if flag && flag2
-      vec, new_id = _5c6a1c61(_08248783)
+      vec, new_id = insert_sheet_after(anchor)
       if vec && vec.valid?
-        index_map = _596e474d(top, bottom)
-        _a761a084(top, vec, index_map: index_map)
-        vec2 = _0895e188(top, bottom, vec, new_id)
-        _a761a084(bottom, vec2, index_map: index_map, back: true) if vec2 && vec2.valid?
+        index_map = reindex_map(top, bottom)
+        copy_panels_into(top, vec, index_map: index_map)
+        vec2 = clone_bottom_sheet(top, bottom, vec, new_id)
+        copy_panels_into(bottom, vec2, index_map: index_map, back: true) if vec2 && vec2.valid?
       end
     elsif flag
-      vec, = _5c6a1c61(_08248783)
-      _a761a084(top, vec) if vec && vec.valid?
+      vec, = insert_sheet_after(anchor)
+      copy_panels_into(top, vec) if vec && vec.valid?
     end
     top.erase! if top.valid?
     bottom.erase! if bottom && bottom.valid?
@@ -514,11 +514,11 @@ class KSU::Themtam
       next unless grp
       delta = grp.bounds.center.vector_to(bb)
       grp.transformation = Geom::Transformation.translation(delta) * grp.transformation
-      _00102883(grp)
+      clear_cut_desc(grp)
       slot_panel.erase! if slot_panel.valid?
     end
   end
-  def _5c6a1c61(grp)
+  def insert_sheet_after(grp)
     sheet_list
     rec = @sheets.find { |s| s[:instance] == grp }
     return [nil, nil] unless rec
@@ -542,21 +542,21 @@ class KSU::Themtam
     str = KSU::Sheet.sheet_no(grp.name.to_s)
     new_id = str ? str + 1 : nil
     KSU::Sheet.shift_sheets(@nesting, new_id, +1) if new_id
-    grp2 = KSU::Sheet._f74b0a99(grp, tr2, @nesting)
+    grp2 = KSU::Sheet.clone_sheet_shell(grp, tr2, @nesting)
     if grp2 && new_id
       str2 = "sheet-#{new_id}"
       grp2.name = str2
       grp2.set_attribute("ABF", "sheet-id", new_id)
       pt = tr2.origin - tr.origin
-      arr3 = KSU::Sheet._a9a86c81(labels, pt, @nesting)
-      arr3.each { |len2d| KSU::Sheet._ba804f88(len2d, str2) }
+      arr3 = KSU::Sheet.rebuild_dims(labels, pt, @nesting)
+      arr3.each { |len2d| KSU::Sheet.set_dim_text(len2d, str2) }
     end
     [grp2, new_id]
   end
-  def _0895e188(top, bottom, grp2, new_id)
+  def clone_bottom_sheet(top, bottom, grp2, new_id)
     return nil unless bottom && bottom.valid? && grp2 && grp2.valid?
     tr = @nesting.transformation.inverse * bottom.transformation
-    grp = KSU::Sheet._f74b0a99(bottom, tr, @nesting)
+    grp = KSU::Sheet.clone_sheet_shell(bottom, tr, @nesting)
     return nil unless grp && grp.valid?
     bb2 = KSU::Sheet.world_bbox(grp2, @nesting)
     bbox = record_of(top)[:bbox]
@@ -585,28 +585,28 @@ class KSU::Themtam
     end
     grp
   end
-  def _596e474d(top, bottom)
+  def reindex_map(top, bottom)
     h = {}
     (panels_of(top) + panels_of(bottom)).each do |panel|
       prev_key = panel.get_attribute("ABF", "board-index")
       next if prev_key.nil? || h.key?(prev_key)
-      h[prev_key] = @_dfd63ec2
-      @_dfd63ec2 += 1
+      h[prev_key] = @next_index
+      @next_index += 1
     end
     h
   end
-  def _a761a084(_cd21b913, grp, index_map: nil, back: false)
+  def copy_panels_into(src, grp, index_map: nil, back: false)
     return unless grp && grp.valid?
-    panels_of(_cd21b913).each do |panel|
+    panels_of(src).each do |panel|
       next unless panel.valid?
       tr = KSU::Nesting.clone_panel(grp.definition.entities, panel, panel.transformation)
       next unless tr
-      _5958c66f(tr, index_map: index_map, back: back)
-      _00102883(tr)
-      _aa983a67(tr)
+      renumber_panel(tr, index_map: index_map, back: back)
+      clear_cut_desc(tr)
+      blank_label(tr)
     end
   end
-  def _00102883(panel)
+  def clear_cut_desc(panel)
     cutting = KSU::Cutting.cutting_group(panel)
     return unless cutting && cutting.valid? && cutting.respond_to?(:set_attribute)
     cutting.delete_attribute("ABF", "drills-desc") if cutting.respond_to?(:delete_attribute)
@@ -615,7 +615,7 @@ class KSU::Themtam
     cutting.set_attribute("ABF", "edge-band-desc", [])
     cutting.delete_attribute("ABF", "edge-band-types") if cutting.respond_to?(:delete_attribute)
   end
-  def _aa983a67(panel)
+  def blank_label(panel)
     return unless panel && panel.valid?
     lbl = KSU::Cutting.label_of(panel)
     return unless lbl && lbl.valid?
@@ -634,7 +634,7 @@ class KSU::Themtam
     arr6 = arr.map { |pt| pt.z.to_f }
     px = (arr5.min + arr5.max) / 2.0
     py = (arr4.min + arr4.max) / 2.0
-    _9d8da98b = (arr6.min + arr6.max) / 2.0
+    pz = (arr6.min + arr6.max) / 2.0
     arr3 = box2.edges
     num = box2.length.to_f / 8.0
     arr2 = []
@@ -653,78 +653,78 @@ class KSU::Themtam
       end
     end
     ents.erase_entities(arr2) unless arr2.empty?
-    _1668ae28(ents, px, py, _9d8da98b, num, arr3.first) if num > 0
-    _81e51cdb(ents)
+    add_label_cross(ents, px, py, pz, num, arr3.first) if num > 0
+    mark_added_edges(ents)
   rescue StandardError
     nil
   end
-  def _81e51cdb(ents)
+  def mark_added_edges(ents)
     ents.to_a.each do |ent|
       next unless ent.is_a?(Sketchup::Edge) && ent.valid? && ent.curve
       ent.set_attribute("KSU", "them_tam", true)
     end
   end
-  def _1668ae28(ents, px, py, _9d8da98b, _8d05dd56, grp2)
-    h = _8d05dd56
-    center = Geom::Point3d.new(px, py, _9d8da98b)
+  def add_label_cross(ents, px, py, pz, arm, grp2)
+    h = arm
+    center = Geom::Point3d.new(px, py, pz)
     arr = [
-      ents.add_line(center, Geom::Point3d.new(px + h, py, _9d8da98b)),
-      ents.add_line(center, Geom::Point3d.new(px - h, py, _9d8da98b)),
-      ents.add_line(center, Geom::Point3d.new(px, py + h, _9d8da98b)),
-      ents.add_line(center, Geom::Point3d.new(px, py - h, _9d8da98b)),
+      ents.add_line(center, Geom::Point3d.new(px + h, py, pz)),
+      ents.add_line(center, Geom::Point3d.new(px - h, py, pz)),
+      ents.add_line(center, Geom::Point3d.new(px, py + h, pz)),
+      ents.add_line(center, Geom::Point3d.new(px, py - h, pz)),
     ]
     return unless grp2 && grp2.valid?
-    _1dc6660d = grp2.layer
+    layer = grp2.layer
     mat = grp2.material
     arr.each do |ent|
       next unless ent && ent.valid?
-      ent.layer = _1dc6660d if _1dc6660d
+      ent.layer = layer if layer
       ent.material = mat if mat && ent.respond_to?(:material=)
     end
   end
-  def _c9bca5df(view)
+  def draw_overlaps(view)
     return if @arr20.nil? || @arr20.empty?
     KSU::View.draw_polys(@arr20, color: KSU::View.warn_color, line: false)
   end
-  def _6ae58d17(view)
+  def draw_overwrite_preview(view)
     return if @overwrite_preview.nil? || @overwrite_preview.empty?
     ref_p2 = []
     @overwrite_preview.each do |arr|
-      next if arr.equal?(@arr38)
+      next if arr.equal?(@hover_overwrite)
       ref_p2 << arr[:loose_fill]
       ref_p2 << arr[:nest_fill]
     end
     KSU::View.draw_polys(ref_p2, color: KSU::View.warn_color, line: false) unless ref_p2.empty?
-    return unless @arr38
-    KSU::View.draw_polys([@arr38[:loose_fill], @arr38[:nest_fill]], color: KSU::View.face_color, line: false)
+    return unless @hover_overwrite
+    KSU::View.draw_polys([@hover_overwrite[:loose_fill], @hover_overwrite[:nest_fill]], color: KSU::View.face_color, line: false)
   end
-  def _435dfd9d(view, x, y)
-    prev_key = @arr38
-    @arr38 = _26cf11cf(view, x, y)
-    view.invalidate unless prev_key.equal?(@arr38)
+  def track_overwrite_hover(view, x, y)
+    prev_key = @hover_overwrite
+    @hover_overwrite = overwrite_hit(view, x, y)
+    view.invalidate unless prev_key.equal?(@hover_overwrite)
   end
-  def _26cf11cf(view, x, y)
+  def overwrite_hit(view, x, y)
     @overwrite_preview.find do |arr|
       KSU::View.hit?(view, arr[:loose_fill], x, y) ||
         KSU::View.hit?(view, arr[:nest_fill], x, y)
     end
   end
-  def panels_of(_cd21b913)
-    ents = KSU.entities_in(_cd21b913)
+  def panels_of(src)
+    ents = KSU.entities_in(src)
     return [] unless ents
     ents.to_a.select do |ent|
       KSU.container?(ent) && ent.name.to_s != "__ABF_sheetBorder" &&
-        !KSU::Sheet._27ecfdd1(ent) && !KSU::Sheet.mark?(ent)
+        !KSU::Sheet.sheet_border?(ent) && !KSU::Sheet.mark?(ent)
     end
   end
-  def _f442aacf
+  def label_root
     return @grp if @grp && @grp.valid?
-    @grp = KSU::Cutting._02ce5169
+    @grp = KSU::Cutting.new_label_group
   end
-  def _6ed036a2(z, name)
-    KSU::Nesting._34135bd8(_f442aacf, z, name)
+  def add_label_stub(z, name)
+    KSU::Nesting.add_board_stub(label_root, z, name)
   end
-  def _5958c66f(panel, index_map: nil, back: false)
+  def renumber_panel(panel, index_map: nil, back: false)
     return unless panel && panel.valid?
     if index_map
       prev_key = panel.respond_to?(:get_attribute) ? panel.get_attribute("ABF", "board-index") : nil
@@ -735,16 +735,16 @@ class KSU::Themtam
         cutting.set_attribute("ABF", "board-index", flag) if cutting && cutting.valid? && cutting.respond_to?(:set_attribute)
         name = panel.respond_to?(:name) ? panel.name.to_s.sub(/\A__.*?\. /, "__#{flag}. ") : nil
         panel.name = name if name
-        _6ed036a2(flag, name) if @them_tem_nhan && !back
+        add_label_stub(flag, name) if @them_tem_nhan && !back
         return
       end
     end
     if @them_tem_nhan
-      panel.set_attribute("ABF", "board-index", @_dfd63ec2)
-      name = panel.respond_to?(:name) ? panel.name.to_s.sub(/\A__.*?\. /, "__#{@_dfd63ec2}. ") : nil
+      panel.set_attribute("ABF", "board-index", @next_index)
+      name = panel.respond_to?(:name) ? panel.name.to_s.sub(/\A__.*?\. /, "__#{@next_index}. ") : nil
       panel.name = name if name
-      _6ed036a2(@_dfd63ec2, name) unless back
-      @_dfd63ec2 += 1
+      add_label_stub(@next_index, name) unless back
+      @next_index += 1
       return
     end
     cutting = KSU::Cutting.cutting_group(panel)
