@@ -239,12 +239,12 @@ module KSU::Drag
     sheets = arr.map { |half| half[:sheet] }
     if @flag5
       h = {}
-      @sel_panels.each_with_index { |_23505ef9, i| h[_23505ef9] = @sel_sheets[i] }
+      @sel.each_with_index { |_23505ef9, i| h[_23505ef9] = @sel_sheets[i] }
       panels.each_with_index { |_23505ef9, i| h[_23505ef9] = sheets[i] }
-      @sel_panels = h.keys
+      @sel = h.keys
       @sel_sheets = h.values
     else
-      @sel_panels = panels
+      @sel = panels
       @sel_sheets = sheets
     end
     expand_selection
@@ -253,15 +253,15 @@ module KSU::Drag
     panel = answer[:panel]
     sheet = answer[:sheet]
     if @flag5
-      if @sel_panels.include?(panel)
+      if @sel.include?(panel)
         remove_from_selection(panel)
       else
-        @sel_panels << panel
+        @sel << panel
         @sel_sheets << sheet
         expand_selection
       end
     else
-      @sel_panels = [panel]
+      @sel = [panel]
       @sel_sheets = [sheet]
       expand_selection
     end
@@ -275,10 +275,10 @@ module KSU::Drag
     @flag56 = true
     @flag50 = false
     @pt14 = view.inputpoint(x, y).position
-    @tr = @sel_panels.map { |grp| grp.transformation.clone }
+    @tr = @sel.map { |grp| grp.transformation.clone }
     @drag_offset = Geom::Vector3d.new(0, 0, 0)
     @flag45 = @sel_sheets.any? { |s| s.nil? }
-    panel = @sel_panels.first
+    panel = @sel.first
     if panel && panel.valid?
       tr2 = panel_tf(panel, @sel_sheets.first)
       @pt3 = @pt14.transform(tr2.inverse)
@@ -336,7 +336,7 @@ module KSU::Drag
     )
     num = -vec7.x.to_f
     num2 = vec7.y.to_f
-    @sel_panels.each do |vec|
+    @sel.each do |vec|
       next unless vec && vec.valid?
       partner_of = partner_of2(vec)
       next unless partner_of && partner_of.valid?
@@ -354,7 +354,7 @@ module KSU::Drag
     az = @drag_offset.z.to_f
     return if ax.abs < 1e-9 && ay.abs < 1e-9 && az.abs < 1e-9
     gtr = Geom::Transformation.translation(@drag_offset)
-    @sel_panels.each do |pt|
+    @sel.each do |pt|
       next unless pt && pt.valid?
       pt.transform!(gtr)
       partner_of = partner_of2(pt)
@@ -372,7 +372,7 @@ module KSU::Drag
   end
   def drag_follow
     return unless @pt3 && @pt5
-    panel = @sel_panels.first
+    panel = @sel.first
     sheet = @sel_sheets.first
     return unless panel && panel.valid? && sheet && sheet.valid?
     tr = @nesting.transformation * sheet.transformation * panel.transformation
@@ -392,8 +392,8 @@ module KSU::Drag
   end
   def hide_originals
     @arr2 = []
-    arr = @sel_panels.dup
-    @sel_panels.each do |panel|
+    arr = @sel.dup
+    @sel.each do |panel|
       partner_of = partner_of2(panel)
       arr << partner_of if partner_of && partner_of.valid? && !arr.include?(partner_of)
     end
@@ -431,13 +431,13 @@ module KSU::Drag
     _09012de8 += [@arr46[:instance]] if @arr46 && @arr46[:instance]
     flag = false
     if @arr46 && !@flag45
-      @sel_panels.each_with_index do |panel, ix|
+      @sel.each_with_index do |panel, ix|
         next if @sel_sheets[ix] == @arr46[:instance]
         cur_sheet = @sel_sheets[ix]
         pair = back_of(panel)
         _2f683801 = clone_to(panel, cur_sheet, @arr46)
         next unless _2f683801&.valid?
-        @sel_panels[ix] = _2f683801
+        @sel[ix] = _2f683801
         @sel_sheets[ix] = @arr46[:instance]
         flag = true
         sync_back(_2f683801, pair, cur_sheet, @arr46[:instance]) if pair
@@ -450,8 +450,8 @@ module KSU::Drag
       sheet_list(@nesting)
       build_pairs
     end
-    _b1981961 = partners_of(@sel_panels)
-    drop_panel_cache(@sel_panels)
+    _b1981961 = partners_of(@sel)
+    drop_panel_cache(@sel)
     drop_panel_cache(_b1981961)
     @sel_polys = nil
     @sel_hull = nil
@@ -468,14 +468,14 @@ module KSU::Drag
     @arr15 = nil
     @anchor_pt = nil
     @flag35 = false
-    refresh_hits(@sel_panels + _b1981961)
+    refresh_hits(@sel + _b1981961)
     rebuild_outlines
     inst2 = @arr46&.dig(:instance)
     @flag37 = inst2 if inst2&.valid? && !@flag45
     @sheet2 = @flag37
     @flag45 = false
     stamp_sig
-    KSU::View.refresh_panels(@nesting, @sel_panels + _b1981961, @flag11)
+    KSU::View.refresh_panels(@nesting, @sel + _b1981961, @flag11)
     update_status
   end
 end

@@ -2,7 +2,7 @@ module KSU::Back
   private
   def _e1ab909e
     groups = Hash.new { |arr52, k| arr52[k] = [] }
-    @sel_panels.each do |sheet|
+    @sel.each do |sheet|
       next unless sheet && sheet.valid?
       groups[KSU::Sheet._7b0a38ee(sheet)] << sheet
     end

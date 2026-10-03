@@ -273,9 +273,9 @@ class KSU::Chontam
       return [] unless h
       h.fetch(ix.to_i, []).select { |ent| ent && ent.valid? }
     end
-    def external_by_name(name, sel_panels = nil)
+    def external_by_name(name, sel = nil)
       return [] unless @cache
-      (@cache[:external_map][name] || []).reject { |ent| ent == sel_panels || !ent.valid? }
+      (@cache[:external_map][name] || []).reject { |ent| ent == sel || !ent.valid? }
     end
     def nesting_by_name(name)
       return [] unless @cache

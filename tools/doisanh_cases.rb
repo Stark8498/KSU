@@ -11,6 +11,13 @@ BOX_A = { min_x: 0.0, max_x: 90.0, min_y: 0.0, max_y: 80.0 }
 BOX_B = { min_x: 85.0, max_x: 200.0, min_y: 40.0, max_y: 120.0 }
 BOX_C = { min_x: 300.0, max_x: 400.0, min_y: 0.0, max_y: 10.0 }
 
+# KSU::Sheet.dist_to_box reads .min and .max off a real BoundingBox, not off
+# the { min_x: ... } hash KSU::Geom.bounds returns. Two shapes, both called a
+# box in this tree.
+BB = Geom::BoundingBox.new
+BB.add(pt(0, 0, 0))
+BB.add(pt(90, 80, 0))
+
 CASES = [
   ["KSU::Geom", "convex_hull", "_35c2c696", lambda { [SCATTER] }],
   ["KSU::Geom", "bounds", "_63a66557", lambda { [L] }],
@@ -37,6 +44,9 @@ CASES = [
   ["KSU::Nfp", "minkowski_convex", "_db5a8bb4", lambda { [L2, L2] }],
   ["KSU::Nfp", "nfp_of", "_cc303760", lambda { [L2, L2] }],
   ["KSU::Nfp", "poly_key", "_d0de1f0f", lambda { [L] }],
-  ["KSU::Sheet", "dist_to_box", "_71ed53b5", lambda { [pt(200, 200), BOX_A] }],
-  ["KSU::Sheet", "to_point", "_32121b6c", lambda { [[1.0, 2.0, 3.0]] }],
+  ["KSU::Sheet", "dist_to_box", "_71ed53b5", lambda { [pt(200, 200), BB] }],
+  ["KSU::Sheet", "dist_to_box", "_71ed53b5", lambda { [pt(45, 40), BB] }],
+  ["KSU::Sheet", "to_point", "_32121b6c", lambda { [pt(1, 2, 3)] }],
+  ["KSU::Sheet", "to_point", "_32121b6c", lambda { [[pt(1, 2, 3)]] }],
+  ["KSU::Sheet", "to_point", "_32121b6c", lambda { [nil] }],
 ]

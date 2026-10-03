@@ -14,7 +14,7 @@ class KSU::Toiuuvan
     return unless k =~ /\Ak[0-9a-z]{3}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}\z/i
     @nesting = nil
     @sheets = []
-    @sel_panels = []
+    @sel = []
     @arr64 = []
     @_3e453efd = nil
     @_096c8c23 = nil
@@ -125,7 +125,7 @@ class KSU::Toiuuvan
       _37011ad2(true, view)
       _92d864e9(view, true)
     when VK_LEFT, VK_RIGHT
-      return if @sel_panels.empty?
+      return if @sel.empty?
       _b5af8dbf = (rot & CONSTRAIN_MODIFIER_MASK) != 0
       _c04fb39c = if key == VK_LEFT
           _b5af8dbf ? :first : :prev
@@ -147,7 +147,7 @@ class KSU::Toiuuvan
     _92d864e9(view, false)
   end
   def onReturn(view)
-    return if @sel_panels.empty?
+    return if @sel.empty?
     _28a699c9(@flag23)
     view&.invalidate
   end
@@ -226,7 +226,7 @@ class KSU::Toiuuvan
   def onLButtonUp(rot, x, y, view)
     if @flag46
       sheets = _ce5c626c(view, @_3a930069, @_0b246bc2, x, y)
-      @sel_panels = @flag34 ? (@sel_panels + sheets).uniq : sheets
+      @sel = @flag34 ? (@sel + sheets).uniq : sheets
     elsif @flag10
       additive = (rot & MK_CONTROL) != 0
       ctrl = (rot & MK_SHIFT) != 0
@@ -238,7 +238,7 @@ class KSU::Toiuuvan
           _164a615b(sheet, additive)
         end
       elsif !additive && !ctrl
-        @sel_panels = []
+        @sel = []
       end
     end
     @flag10 = false
@@ -258,22 +258,22 @@ class KSU::Toiuuvan
     node = @sheets
       .select { |rec| KSU::Sheet._7b0a38ee(rec[:instance]) == key }
       .map { |rec| rec[:instance] }
-    @sel_panels = additive ? (@sel_panels + node).uniq : node
+    @sel = additive ? (@sel + node).uniq : node
   end
   def draw(view)
     KSU::View.draw_faces(@nesting, normal: @phu_mau_tam, two_sided: @phu_mau_tam_hai_mat)
     KSU::View.draw_polys(@arr20, color: KSU::View.warn_color, line: false) if @arr20 && @arr20.any?
     draw_overlay(view, @nesting)
-    @sel_panels.each do |sheet|
+    @sel.each do |sheet|
       rec = @sheets.find { |s| s[:instance] == sheet }
       KSU::View.draw_outline(rec[:top_corners], KSU::View.main_face_color) if rec
     end
     @arr64.each do |sheet|
-      next if @sel_panels.include?(sheet)
+      next if @sel.include?(sheet)
       rec = @sheets.find { |s| s[:instance] == sheet }
       KSU::View.draw_outline(rec[:top_corners], KSU::View.face_color) if rec
     end
-    @sel_panels.each do |sheet|
+    @sel.each do |sheet|
       rec = @sheets.find { |s| s[:instance] == sheet }
       next unless rec
       KSU::View.draw_brackets(view, rec[:top_corners]) { |i| _4ada6475(sheet, i, @flag39, @flag13) }
@@ -311,9 +311,9 @@ class KSU::Toiuuvan
   end
   def _164a615b(sheet, additive)
     if additive
-      @sel_panels.include?(sheet) ? @sel_panels.delete(sheet) : @sel_panels << sheet
+      @sel.include?(sheet) ? @sel.delete(sheet) : @sel << sheet
     else
-      @sel_panels = @sel_panels == [sheet] ? [] : [sheet]
+      @sel = @sel == [sheet] ? [] : [sheet]
     end
   end
   def hit_delete_button(view, x, y)
@@ -340,7 +340,7 @@ class KSU::Toiuuvan
     view.invalidate if @flag39 != _8734f930 || @flag13 != _c3288067 || @flag51 != _522da39c
   end
   def _8c688891(view, x, y, joint)
-    @sel_panels.each do |sheet|
+    @sel.each do |sheet|
       rec = @sheets.find { |s| s[:instance] == sheet }
       next unless rec
       ix = if joint == :corner
@@ -355,13 +355,13 @@ class KSU::Toiuuvan
   def _4ada6475(sheet, i, hover, ctrl)
     return false unless hover
     if ctrl
-      hover[:idx] == i && @sel_panels.include?(sheet)
+      hover[:idx] == i && @sel.include?(sheet)
     else
       hover[:sheet] == sheet && hover[:idx] == i
     end
   end
   def _c211b5aa(sheet, ix, ctrl, num11)
-    arr = (ctrl ? @sel_panels.dup : [sheet]).select { |s| s && s.valid? }
+    arr = (ctrl ? @sel.dup : [sheet]).select { |s| s && s.valid? }
     return if arr.empty?
     KSU.start
     arr.each do |s|
@@ -380,7 +380,7 @@ class KSU::Toiuuvan
     KSU.abort_op
   end
   def _d0431df5(_c04fb39c)
-    _9535dc0b = @sel_panels.select { |s| s && s.valid? }
+    _9535dc0b = @sel.select { |s| s && s.valid? }
     return if _9535dc0b.empty?
     arr3 = []
     arr4 = []
@@ -405,7 +405,7 @@ class KSU::Toiuuvan
       end
     end
     KSU.commit
-    @sel_panels = ((_9535dc0b - arr6) + arr5).select { |s| s && s.valid? }.uniq
+    @sel = ((_9535dc0b - arr6) + arr5).select { |s| s && s.valid? }.uniq
     sheet_list
     KSU::View.clear_cache
   rescue StandardError
@@ -463,7 +463,7 @@ class KSU::Toiuuvan
   end
   def _256cdef5(sheet)
     return unless KSU::Sheet.remove_sheet(sheet, @nesting, @sheets)
-    @sel_panels.delete(sheet)
+    @sel.delete(sheet)
     @arr64.delete(sheet)
     @_e14ef301 = nil
     sheet_list

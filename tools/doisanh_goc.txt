@@ -1,0 +1,33 @@
+SketchUp 25.0.571  Ruby 3.2.2  2026-10-03 20:18:55 +0700
+ban: goc   (30 truong hop, 0 loi)
+
+00  KSU::Geom.convex_hull = [(10, 10, 0), (90, 10, 0), (88, 60, 0), (12, 62, 0)]
+01  KSU::Geom.bounds = {max_x: 90, max_y: 80, min_x: 0, min_y: 0}
+02  KSU::Geom.boxes_overlap? = true
+03  KSU::Geom.boxes_overlap? = false
+04  KSU::Geom.boxes_overlap? = true
+05  KSU::Geom.edge_normals = [[-0, 1], [-1, 0], [-0, -1], [-1, 0], [-0, -1], [1, 0]]
+06  KSU::Geom.project_range = [0, 88]
+07  KSU::Geom.centroid = [43.3333333, 36.6666667]
+08  KSU::Geom.translate = [(12.5, -3.25, 0), (102.5, -3.25, 0), (102.5, 26.75, 0), (52.5, 26.75, 0), (52.5, 76.75, 0), (12.5, 76.75, 0)]
+09  KSU::Geom.sat_mtv = (-30, 0, 0)
+10  KSU::Geom.sat_mtv = (-35, 0, 0)
+11  KSU::Geom.point_in? = true
+12  KSU::Geom.point_in? = false
+13  KSU::Geom.cross3 = 100
+14  KSU::Geom.segments_cross? = true
+15  KSU::Geom.segments_cross? = false
+16  KSU::Geom.dist2_to_seg = 81
+17  KSU::Geom.seg_dist2 = 16
+18  KSU::Nfp.simplify_pts = [(0, 0, 0), (90, 0, 0), (90, 30, 0), (40, 30, 0), (40, 80, 0), (0, 80, 0)]
+19  KSU::Nfp.convex? = false
+20  KSU::Nfp.convex? = true
+21  KSU::Nfp.lowest_ix = 0
+22  KSU::Nfp.minkowski_convex = [[120, 40], [320, 40], [320, 140], [120, 140]]
+23  KSU::Nfp.nfp_of = [[[[-40, -30], [160, -30], [160, 70], [-40, 70]], []]]
+24  KSU::Nfp.poly_key = "0,0;900000,0;900000,300000;400000,300000;400000,800000;0,800000"
+25  KSU::Sheet.dist_to_box = 162.788206
+26  KSU::Sheet.dist_to_box = 0
+27  KSU::Sheet.to_point = (1, 2, 3)
+28  KSU::Sheet.to_point = (1, 2, 3)
+29  KSU::Sheet.to_point = nil

@@ -5,9 +5,9 @@ module KSU::Push
       arr2 = _1adb886a(arr3[:instance])
       return Geom::Vector3d.new(0, 0, 0) unless arr2
       h2 = {}
-      @sel_panels.each { |_23505ef9| h2[_23505ef9.object_id] = true }
+      @sel.each { |_23505ef9| h2[_23505ef9.object_id] = true }
       arr = []
-      @sel_panels.each_with_index do |panel, ix|
+      @sel.each_with_index do |panel, ix|
         poly = (@sel_polys && @sel_polys[ix]) ||
                   outer_pts_of(panel, @sel_sheets[ix])
         arr << poly if poly.length >= 3
@@ -66,8 +66,8 @@ module KSU::Push
     borders = arr2[:borders]
     grid = arr2[:grid]
     h = {}
-    @sel_panels.each { |_23505ef9| h[_23505ef9.object_id] = true }
-    @sel_panels.each_with_index do |panel, ix|
+    @sel.each { |_23505ef9| h[_23505ef9.object_id] = true }
+    @sel.each_with_index do |panel, ix|
       arr = (@sel_polys && @sel_polys[ix]) ||
                       outer_pts_of(panel, @sel_sheets[ix])
       next if arr.length < 3
@@ -221,14 +221,14 @@ module KSU::Push
     poly
   end
   def _3ea06bed(_f222cc53)
-    return if @sel_panels.empty?
+    return if @sel.empty?
     apply_offset if @flag56
     KSU.start unless @flag56
     bb = Geom::BoundingBox.new
-    @sel_panels.each { |grp| bb.add(KSU::View._fa674c93(grp)) }
+    @sel.each { |grp| bb.add(KSU::View._fa674c93(grp)) }
     _32310dba = bb.center
     tr2 = Geom::Transformation.rotation(_32310dba, [0, 0, 1], _f222cc53)
-    @sel_panels.each do |panel|
+    @sel.each do |panel|
       next unless panel.valid?
       panel.transform!(tr2)
       partner_of = partner_of2(panel)
@@ -236,16 +236,16 @@ module KSU::Push
       transform = KSU::Sheet.mirror_tf(panel, sheet_of(panel), sheet_of(partner_of))
       partner_of.transformation = transform if transform
     end
-    @tr = @sel_panels.map { |grp| grp.transformation.clone } if @flag56
-    _b1981961 = partners_of(@sel_panels)
-    drop_panel_cache(@sel_panels)
+    @tr = @sel.map { |grp| grp.transformation.clone } if @flag56
+    _b1981961 = partners_of(@sel)
+    drop_panel_cache(@sel)
     drop_panel_cache(_b1981961)
     KSU.commit unless @flag56
     if @flag56
       rebuild_sel_polys
       reset_anchor
     else
-      bbox = @sel_panels + _b1981961
+      bbox = @sel + _b1981961
       refresh_after_move(bbox, sheets_of(bbox))
     end
     rebuild_outlines
@@ -254,7 +254,7 @@ module KSU::Push
   def _2bff4638(side)
     apply_offset if @flag56
     h = {}
-    @sel_panels.each_with_index do |panel, ix|
+    @sel.each_with_index do |panel, ix|
       sheet = @sel_sheets[ix]
       next unless panel && panel.valid? && sheet && sheet.valid?
       key = group_id(panel) || "solo#{panel.entityID}"
@@ -334,12 +334,12 @@ module KSU::Push
       _9708309a = arr[:umax] + num
       umax2 = _9708309a if _9708309a > umax2
     end
-    drop_panel_cache(@sel_panels)
+    drop_panel_cache(@sel)
     KSU.commit unless @flag56
     if @flag56
       rebuild_sel_polys
     else
-      refresh_after_move(@sel_panels, sheets_of(@sel_panels))
+      refresh_after_move(@sel, sheets_of(@sel))
     end
     rebuild_outlines
     KSU::View.view.invalidate

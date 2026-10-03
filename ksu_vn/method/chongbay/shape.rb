@@ -62,10 +62,10 @@ module KSU::Shape
   end
   def rank_plan(_e69b41c0 = sweep_dir)
     return [] unless _e69b41c0
-    sel_panels = eligible(band_parts)
-    return [] if sel_panels.empty?
-    track_order(sel_panels, _e69b41c0)
-    assign_ranks(sel_panels, _e69b41c0)
+    sel = eligible(band_parts)
+    return [] if sel.empty?
+    track_order(sel, _e69b41c0)
+    assign_ranks(sel, _e69b41c0)
   end
   def track_order(parts, _e69b41c0)
     @arr5 ||= []

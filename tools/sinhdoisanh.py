@@ -45,6 +45,13 @@ SCATTER = [pt(10, 10), pt(50, 12), pt(90, 10), pt(50, 50),
 BOX_A = { min_x: 0.0, max_x: 90.0, min_y: 0.0, max_y: 80.0 }
 BOX_B = { min_x: 85.0, max_x: 200.0, min_y: 40.0, max_y: 120.0 }
 BOX_C = { min_x: 300.0, max_x: 400.0, min_y: 0.0, max_y: 10.0 }
+
+# KSU::Sheet.dist_to_box reads .min and .max off a real BoundingBox, not off
+# the { min_x: ... } hash KSU::Geom.bounds returns. Two shapes, both called a
+# box in this tree.
+BB = Geom::BoundingBox.new
+BB.add(pt(0, 0, 0))
+BB.add(pt(90, 80, 0))
 """
 
 # (module, method, file it is defined in, Ruby for the arguments)
@@ -78,8 +85,11 @@ CASES = [
     ("KSU::Nfp", "minkowski_convex", "ksu_vn/method/xeptam/nfp.rb", "L2, L2"),
     ("KSU::Nfp", "nfp_of", "ksu_vn/method/xeptam/nfp.rb", "L2, L2"),
     ("KSU::Nfp", "poly_key", "ksu_vn/method/xeptam/nfp.rb", "L"),
-    ("KSU::Sheet", "dist_to_box", "ksu_vn/utils/sheet.rb", "pt(200, 200), BOX_A"),
-    ("KSU::Sheet", "to_point", "ksu_vn/utils/sheet.rb", "[1.0, 2.0, 3.0]"),
+    ("KSU::Sheet", "dist_to_box", "ksu_vn/utils/sheet.rb", "pt(200, 200), BB"),
+    ("KSU::Sheet", "dist_to_box", "ksu_vn/utils/sheet.rb", "pt(45, 40), BB"),
+    ("KSU::Sheet", "to_point", "ksu_vn/utils/sheet.rb", "pt(1, 2, 3)"),
+    ("KSU::Sheet", "to_point", "ksu_vn/utils/sheet.rb", "[pt(1, 2, 3)]"),
+    ("KSU::Sheet", "to_point", "ksu_vn/utils/sheet.rb", "nil"),
 ]
 
 

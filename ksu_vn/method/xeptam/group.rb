@@ -1,17 +1,17 @@
 module KSU::Group
   private
   def toggle_group
-    return if @sel_panels.empty?
-    arr = @sel_panels.map { |_23505ef9| group_id(_23505ef9) }
+    return if @sel.empty?
+    arr = @sel.map { |_23505ef9| group_id(_23505ef9) }
     arr2 = arr.compact.uniq
     if arr2.size == 1 && !arr.include?(nil)
       ungroup_selected
-    elsif @sel_panels.size >= 2
+    elsif @sel.size >= 2
       group_selected
     else
       return
     end
-    KSU::View.refresh_groups(@sel_panels)
+    KSU::View.refresh_groups(@sel)
   end
   def group_id(panel)
     return nil unless panel && panel.valid?
@@ -50,35 +50,35 @@ module KSU::Group
   end
   def expand_selection
     ids = {}
-    @sel_panels.each do |grp|
+    @sel.each do |grp|
       gid = group_id(grp)
       ids[gid] = true if gid
     end
     return if ids.empty?
     h2 = {}
-    @sel_panels.each { |grp| h2[grp.entityID] = true if grp && grp.valid? }
+    @sel.each { |grp| h2[grp.entityID] = true if grp && grp.valid? }
     all_panels.each do |panel, sheet, gid|
       next unless ids[gid]
       next if h2[panel.entityID]
-      @sel_panels << panel
+      @sel << panel
       @sel_sheets << sheet
     end
   end
   def remove_from_selection(panel)
     gid = group_id(panel)
-    arr = gid ? @sel_panels.select { |_23505ef9| group_id(_23505ef9) == gid } : [panel]
+    arr = gid ? @sel.select { |_23505ef9| group_id(_23505ef9) == gid } : [panel]
     arr.each do |_23505ef9|
-      ix = @sel_panels.index(_23505ef9)
+      ix = @sel.index(_23505ef9)
       next unless ix
-      @sel_panels.delete_at(ix)
+      @sel.delete_at(ix)
       @sel_sheets.delete_at(ix)
     end
   end
   def group_selected
-    return if @sel_panels.size < 2
+    return if @sel.size < 2
     gid = new_group_id
     KSU.start
-    @sel_panels.each do |grp|
+    @sel.each do |grp|
       grp.set_attribute("KSU", "group-id", gid) if grp && grp.valid?
     end
     @flag36 = true
@@ -89,7 +89,7 @@ module KSU::Group
   end
   def ungroup_selected
     KSU.start
-    @sel_panels.each do |vec|
+    @sel.each do |vec|
       vec.delete_attribute("KSU", "group-id") if vec && vec.valid?
     end
     @flag36 = true

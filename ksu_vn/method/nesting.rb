@@ -49,8 +49,8 @@ module KSU::Nest
       sheet_list
       arr = KSU::Nest.refine_parts
       arr3 = arr && !arr.empty? ? arr : @sheets.map { |i| i[:instance] }
-      @sel_panels = arr3.select { |s| s && s.valid? && !KSU::Sheet.hidden?(s) }
-      if @sel_panels.empty?
+      @sel = arr3.select { |s| s && s.valid? && !KSU::Sheet.hidden?(s) }
+      if @sel.empty?
         @flag22 = true
         UI.start_timer(0, false) { KSU::Nest.finish }
         return

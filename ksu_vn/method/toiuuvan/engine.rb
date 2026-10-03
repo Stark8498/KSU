@@ -98,7 +98,7 @@ module KSU::Engine
   def _10248dd2
     sheet_list
     KSU.start
-    pack_all_to_corner(@sel_panels)
+    pack_all_to_corner(@sel)
     KSU.commit
   rescue StandardError
     KSU.abort_op

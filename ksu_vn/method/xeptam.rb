@@ -38,7 +38,7 @@ class KSU::Xeptam
     @arr15 = nil
     @anchor_pt = nil
     @flag35 = false
-    @sel_panels = []
+    @sel = []
     @sel_sheets = []
     @flag56 = false
     @flag45 = false
@@ -197,8 +197,8 @@ class KSU::Xeptam
     end
     return if @flag56
     return unless @nesting && @nesting.valid?
-    keep_existing = @sel_panels.each_index.select { |i| @sel_panels[i] && @sel_panels[i].valid? }
-    @sel_panels = keep_existing.map { |i| @sel_panels[i] }
+    keep_existing = @sel.each_index.select { |i| @sel[i] && @sel[i].valid? }
+    @sel = keep_existing.map { |i| @sel[i] }
     @sel_sheets = keep_existing.map { |i| @sel_sheets[i] }
     @flag37 = nil unless @flag37 && @flag37.valid?
     sheet_list(@nesting)
@@ -282,7 +282,7 @@ class KSU::Xeptam
       end
       return
     end
-    if @flag37 && @flag37.valid? && @sel_panels.empty? &&
+    if @flag37 && @flag37.valid? && @sel.empty? &&
        !KSU::Sheet.hidden?(@flag37)
       case key
       when VK_LEFT, VK_RIGHT
@@ -301,12 +301,12 @@ class KSU::Xeptam
         return
       end
     end
-    return if @sel_panels.empty?
+    return if @sel.empty?
     if key == 9
       _3ea06bed(@goc_xoay_van.degrees)
       return
     end
-    if @sel_panels.length >= 2
+    if @sel.length >= 2
       case key
       when VK_LEFT then _2bff4638(:left)
       when VK_RIGHT then _2bff4638(:right)
@@ -337,7 +337,7 @@ class KSU::Xeptam
   def onReturn(view)
     return if @num12
     return if @flag56
-    return unless @sel_panels.empty?
+    return unless @sel.empty?
     return unless @flag37 && @flag37.valid?
     return if KSU::Sheet.hidden?(@flag37)
     optimize_sheet(@flag37)
@@ -416,7 +416,7 @@ class KSU::Xeptam
         select_many(arr)
         @flag37 = nil
       elsif !@flag5
-        @sel_panels = []
+        @sel = []
         @sel_sheets = []
         @flag37 = nil
       end
@@ -427,15 +427,15 @@ class KSU::Xeptam
       answer = _b01ddcaf(view, x, y)
       if answer
         select_one(answer)
-        @flag37 = @sel_panels.size == 1 ? @sel_sheets[0] : nil
+        @flag37 = @sel.size == 1 ? @sel_sheets[0] : nil
       else
         _b51e23e4 = sheet_at2(view, x, y)
         if _b51e23e4
-          @sel_panels = []
+          @sel = []
           @sel_sheets = []
           @flag37 = _b51e23e4
         elsif !@flag5
-          @sel_panels = []
+          @sel = []
           @sel_sheets = []
           @flag37 = nil
         end
@@ -458,10 +458,10 @@ class KSU::Xeptam
       dy = (y - @_0b246bc2).abs
       if dx > 3 || dy > 3
         answer = _b01ddcaf(view, @_3a930069, @_0b246bc2)
-        if @sel_panels.any? && answer && @sel_panels.include?(answer[:panel])
+        if @sel.any? && answer && @sel.include?(answer[:panel])
           drag_begin(view, @_3a930069, @_0b246bc2)
         elsif answer
-          @sel_panels = [answer[:panel]]
+          @sel = [answer[:panel]]
           @sel_sheets = [answer[:sheet]]
           expand_selection
           drag_begin(view, @_3a930069, @_0b246bc2)
@@ -471,7 +471,7 @@ class KSU::Xeptam
         end
       end
     end
-    return unless @flag56 && @sel_panels.any?
+    return unless @flag56 && @sel.any?
     @pt5 = drag_plane_point(view, x, y)
     return unless @pt5
     _38196f56 = if @flag25 && @pt7
@@ -606,12 +606,12 @@ class KSU::Xeptam
     warning_face_color = KSU::View.warn_color
     if @panel2 && @panel2.valid? && !@flag56 &&
        (@sheet4.nil? || @sheet4.valid?) &&
-       !@sel_panels.include?(@panel2)
+       !@sel.include?(@panel2)
       arr5 = [[@panel2, @sheet4]] + @arr41
       arr5.each do |vec, vec2|
         next unless vec && vec.valid?
         next if vec2 && !vec2.valid?
-        next if @sel_panels.include?(vec)
+        next if @sel.include?(vec)
         draw_panel_fill(vec, vec2, mat)
         partner_of = partner_of2(vec)
         next unless partner_of && partner_of.valid?
@@ -619,14 +619,14 @@ class KSU::Xeptam
         draw_panel_fill(partner_of, arr3[:instance], mat) if arr3
       end
     end
-    if @sel_panels.any?
+    if @sel.any?
       _4e78f5d5 = @flag56 && @flag21
       flag = _4e78f5d5 ? warn : edge_color2
       color = _4e78f5d5 ? warning_face_color : mat
       if @sel_polys
         _83ee7e20(@sel_polys, flag)
       else
-        @sel_panels.each_with_index do |panel, ix|
+        @sel.each_with_index do |panel, ix|
           next unless panel && panel.valid?
           sheet = @sel_sheets[ix]
           next if sheet && !sheet.valid?
@@ -658,16 +658,16 @@ class KSU::Xeptam
       _d5f2cd75 = record_for(@sheet)
       draw_thick_outline(_d5f2cd75, KSU::Sheet.hidden?(@sheet) ? mat2 : mat) if _d5f2cd75
     end
-    unless @sel_panels.empty? || @arr28.empty?
+    unless @sel.empty? || @arr28.empty?
       _ce2de26a = @flag56 && @flag21
       flag3 = _ce2de26a ? warning_face_color : mat
       flag2 = _ce2de26a ? warn : edge_color2
       if @flag56
         arr4 = []
-        @sel_panels.each do |panel|
+        @sel.each do |panel|
           partner_of = partner_of2(panel)
           next unless partner_of && partner_of.valid?
-          next if @sel_panels.include?(partner_of)
+          next if @sel.include?(partner_of)
           next if @arr57.any? { |panel3| panel3[:front] == panel }
           pts = @outlines[partner_of.object_id]
           unless pts && pts.length >= 3
@@ -681,10 +681,10 @@ class KSU::Xeptam
         end
         _83ee7e20(arr4, flag2)
       else
-        @sel_panels.each do |panel|
+        @sel.each do |panel|
           partner_of = partner_of2(panel)
           next unless partner_of && partner_of.valid?
-          next if @sel_panels.include?(partner_of)
+          next if @sel.include?(partner_of)
           next if @arr57.any? { |panel3| panel3[:front] == panel }
           rec = rec_by_def(partner_of.parent)
           next unless rec

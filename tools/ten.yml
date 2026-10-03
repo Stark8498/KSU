@@ -1624,8 +1624,10 @@ ten:
 
   # Hai mang song song, chi so i cua mang nay ung voi chi so i cua mang kia:
   # tam thu i dang nam tren van thu i. Moi cho trong cay deu dua vao dieu do.
-  _7e48d1c7: sel_panels          # @
-  _2b615a10: sel_sheets          # @
+  _7e48d1c7: sel                 # @: thu dang chon. O xeptam la TAM, o toiuuvan
+                                 # la VAN -- mot hex, mot ten, nen ten phai
+                                 # dung ca hai cho. `sel_panels` noi doi mot nua.
+  _2b615a10: sel_sheets          # @: chi ho xeptam dung, nen duoc noi ro hon
   _f455f5fc: outlines            # @: object_id -> duong vien, dung khi va cham
   _0782d74a: saved_outlines      # @
   _9f104630: drag_offset         # @: VECTOR cong don trong luc keo, khong phai diem

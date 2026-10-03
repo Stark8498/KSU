@@ -12,7 +12,7 @@ module KSU::Postproc
       msg2 = "Trong vùng chọn có chi tiết bị lỗi. Điều này có thể tạo ra kết quả không như ý muốn khi tối ưu, ví dụ như chồng lấn hoặc mất tấm. Tiếp tục?"
       return unless UI.messagebox(msg2, MB_YESNO) == IDYES
     end
-    _a815fdc9(@sel_panels)
+    _a815fdc9(@sel)
     if flag
       _b9664cc7(true)
     elsif !!defined?(KSU::Nesting::Engine)
@@ -23,9 +23,9 @@ module KSU::Postproc
   end
   def _11554dfd
     return false unless @arr11 && @arr11.any?
-    return false unless @sel_panels && @sheets
+    return false unless @sel && @sheets
     tol = 1.mm.to_f
-    @sel_panels.each do |sheet|
+    @sel.each do |sheet|
       rec = @sheets.find { |s| s[:instance] == sheet }
       next unless rec && rec[:bbox]
       lo = rec[:bbox].min
@@ -58,7 +58,7 @@ module KSU::Postproc
   end
   def _8ffda7d7(groups)
     _d6f11a0e = run(groups)
-    @sel_panels = (@sel_panels + _d6f11a0e).select { |s| s && s.valid? }.uniq
+    @sel = (@sel + _d6f11a0e).select { |s| s && s.valid? }.uniq
     KSU::View.clear_cache
     KSU::View.view&.invalidate
   rescue StandardError => ent
@@ -88,7 +88,7 @@ module KSU::Postproc
     @num12 = nil
     @str = nil
     drop_empty_sheets
-    @sel_panels = (@sel_panels + @arr17).select { |s| s && s.valid? }.uniq
+    @sel = (@sel + @arr17).select { |s| s && s.valid? }.uniq
     _10248dd2
     KSU::View.clear_cache
     KSU::View.view&.invalidate
@@ -195,7 +195,7 @@ module KSU::Postproc
     return :done if @flag44
     @flag44 = true
     drop_empty_sheets
-    @sel_panels = @sel_panels.select { |s| s && s.valid? }
+    @sel = @sel.select { |s| s && s.valid? }
     sheet_list
     KSU::View.clear_cache
     :round

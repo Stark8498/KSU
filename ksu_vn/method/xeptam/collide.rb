@@ -92,7 +92,7 @@ module KSU::Collide
     tol = 0.05.mm.to_f
     gap2 = @tam_cach_nhau.to_f
     _9535dc0b = {}
-    @sel_panels.each { |arr| _9535dc0b[arr.object_id] = true if arr }
+    @sel.each { |arr| _9535dc0b[arr.object_id] = true if arr }
     rings = []
     items = arr3[:items]
     KSU::Nfp._a6cf3d0d(arr3[:grid], bbox, gap2 + tol).each do |i|
@@ -297,7 +297,7 @@ module KSU::Collide
     arr4 = _1adb886a(arr8[:instance])
     return { valid: false } unless arr4
     _9535dc0b = {}
-    @sel_panels.each { |pt| _9535dc0b[pt.object_id] = true if pt }
+    @sel.each { |pt| _9535dc0b[pt.object_id] = true if pt }
     arr9 = arr4[:items].reject { |arr2| arr2[:is_border] || _9535dc0b[arr2[:panel].object_id] }
     return { valid: false } if arr9.length > 300
     moving = @arr15.map { |pt| [pt.x.to_f, pt.y.to_f] }
@@ -445,8 +445,8 @@ module KSU::Collide
     ay = pt2.y.to_f
     num2 = ax.abs > 0 || ay.abs > 0
     h = {}
-    @sel_panels.each { |_23505ef9| h[_23505ef9.object_id] = true }
-    @sel_panels.each_with_index do |panel, ix|
+    @sel.each { |_23505ef9| h[_23505ef9.object_id] = true }
+    @sel.each_with_index do |panel, ix|
       arr2 = (@sel_polys && @sel_polys[ix]) ||
                 outer_pts_of(panel, @sel_sheets[ix])
       next if arr2.length < 3

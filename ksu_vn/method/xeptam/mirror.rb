@@ -139,7 +139,7 @@ module KSU::Mirror
     return unless inst4 && inst4.valid?
     bb = KSU::Sheet.world_bbox(inst4, @nesting)
     return unless bb
-    @sel_panels.each_with_index do |vec, ix|
+    @sel.each_with_index do |vec, ix|
       anchor = @sel_sheets[ix]
       next if anchor == inst4
       next unless vec && vec.valid? && anchor && anchor.valid?
@@ -396,7 +396,7 @@ module KSU::Mirror
       next unless sheet.respond_to?(:name) && sheet.name.to_s.downcase.include?("sheet")
       sheet.definition.entities.each do |panel|
         next unless KSU::Sheet.drawable?(panel)
-        next if @sel_panels.include?(panel)
+        next if @sel.include?(panel)
         @h21[panel.object_id] = outer_pts_of(panel, sheet)
       end
     end
@@ -409,7 +409,7 @@ module KSU::Mirror
     end
   end
   def rebuild_sel_polys
-    @sel_polys = @sel_panels.each_with_index.map do |panel, ix|
+    @sel_polys = @sel.each_with_index.map do |panel, ix|
       next [] unless panel && panel.valid?
       sheet = @sel_sheets[ix]
       next [] unless sheet && sheet.valid?
@@ -452,7 +452,7 @@ module KSU::Mirror
   def skip
     return nil unless @flag56
     out = {}
-    @sel_panels.each do |vec|
+    @sel.each do |vec|
       next unless vec && vec.valid?
       out[vec] = true
       partner_of = partner_of2(vec)
