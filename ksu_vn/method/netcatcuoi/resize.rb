@@ -131,12 +131,12 @@ module KSU::Resize
       end
     end
   end
-  def _bb230f13(view, x, y)
+  def button_hit(view, x, y)
     buttons.find { |arr| KSU::View.button_hit?(view, arr[:center], x, y) }
   end
   def hover_button(view, x, y)
     prev_key = @id
-    arr = _bb230f13(view, x, y)
+    arr = button_hit(view, x, y)
     @id = arr && arr[:id]
     view.invalidate if prev_key != @id
   end
@@ -269,18 +269,18 @@ module KSU::Resize
     end
     v
   end
-  def _81184680(press_pt, pt)
+  def clamp_point(press_pt, pt)
     return pt unless @arr26 && !@arr26.empty?
     start_x = press_pt.x.to_f
     ly0 = press_pt.y.to_f
     rx = pt.x.to_f
     ry = pt.y.to_f
-    _02b82ead = [start_x, rx].min
-    _7505b7d3 = [start_x, rx].max
-    _e72d1472 = [ly0, ry].min
-    _64662fb0 = [ly0, ry].max
-    flag2 = clamp_to_panels(@arr26, rx >= start_x ? :x2 : :x1, rx, _02b82ead, _7505b7d3, _e72d1472, _64662fb0)
-    flag = clamp_to_panels(@arr26, ry >= ly0 ? :y2 : :y1, ry, _02b82ead, _7505b7d3, _e72d1472, _64662fb0)
+    rx1 = [start_x, rx].min
+    rx2 = [start_x, rx].max
+    ry1 = [ly0, ry].min
+    ry2 = [ly0, ry].max
+    flag2 = clamp_to_panels(@arr26, rx >= start_x ? :x2 : :x1, rx, rx1, rx2, ry1, ry2)
+    flag = clamp_to_panels(@arr26, ry >= ly0 ? :y2 : :y1, ry, rx1, rx2, ry1, ry2)
     num4 = (rx - flag2).abs
     num5 = (ry - flag).abs
     return pt if num4 < 1e-9 && num5 < 1e-9
@@ -290,9 +290,9 @@ module KSU::Resize
       Geom::Point3d.new(rx, flag, @plane_z)
     end
   end
-  def _cd5e80f4
+  def end_resize
     slot = @entry
-    slot[:points] = @arr16 if slot && @arr16 && !_a9ca2ebd(slot[:points])
+    slot[:points] = @arr16 if slot && @arr16 && !big_enough?(slot[:points])
     @flag19 = false
     @entry = nil
     @edge = nil
@@ -301,37 +301,37 @@ module KSU::Resize
     @flag31 = nil
     @flag60 = nil
   end
-  def _786169a2(view)
+  def draw_bad_rect(view)
     return unless @flag19 && @entry
     pts = @entry[:points]
     return unless pts && pts.length == 4
-    return if _a9ca2ebd(pts)
+    return if big_enough?(pts)
     KSU::View.draw_loop2d(pts, color: KSU::View.warning_color)
   end
-  def _b6a93f39(view)
-    @slots.group_by { |ent| ent[:sheet] }.each do |_3b981bf6, entries|
+  def draw_slots(view)
+    @slots.group_by { |ent| ent[:sheet] }.each do |sheet, entries|
       arr = entries.map { |ent| ent[:points] }.select { |pts| pts && pts.length == 4 }
       next if arr.empty?
-      loops = _662cf545(arr)
+      loops = merge_rects(arr)
       if loops.empty?
         arr.each { |pts| KSU::View.draw_fill2d(pts, line: true) }
       else
-        loops.each { |_9b67c55d| KSU::View.draw_fill2d(_9b67c55d, line: true) }
+        loops.each { |loop_pts| KSU::View.draw_fill2d(loop_pts, line: true) }
       end
     end
   end
-  def _f7ec2498(view)
+  def draw_new_rect(view)
     return unless @flag56
-    rect = _d5a5cc33
+    rect = drag_rect
     return unless rect
-    if _a9ca2ebd(rect)
+    if big_enough?(rect)
       KSU::View.draw_fill2d(rect, line: true)
     else
       KSU::View.draw_fill2d(rect, color: KSU::View.warn_color, line: false)
       KSU::View.draw_loop2d(rect, color: KSU::View.warning_color)
     end
   end
-  def _8964db66(view)
+  def draw_free_rects(view)
     @free_rects.each_value do |out|
       out.each do |pts|
         next unless pts && pts.length == 4

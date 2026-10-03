@@ -187,9 +187,9 @@ module KSU::Detail
     return unless lbl_w && lbl_h && lbl_scale && lbl_w > 0 && lbl_h > 0 && lbl_scale != 0
     rotate = arr[:rotate]
     arrow_padding = arr[:arrow_padding]
-    pad2 = arrow_padding
-    pad2 = pad2 * 8 if rotate == 0 || rotate == 180
-    pad_total = arr[:arrow_size] * 2 + arrow_padding * 2 + pad2 * 2 + arr[:max_eb_th] * 2
+    _9b67c55d = arrow_padding
+    _9b67c55d = _9b67c55d * 8 if rotate == 0 || rotate == 180
+    pad_total = arr[:arrow_size] * 2 + arrow_padding * 2 + _9b67c55d * 2 + arr[:max_eb_th] * 2
     arr2 = face_size(arr[:up_face], arr[:tf3d])
     max_h = arr[:max_h]
     if rotate == 0 || rotate == 180

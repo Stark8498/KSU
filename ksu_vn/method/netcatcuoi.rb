@@ -12,9 +12,9 @@ class KSU::Netcatcuoi
     s = File.read(File.join(ENV["LOCALAPPDATA"] || ENV["APPDATA"], "KSU", "license.dat")).strip.unpack1("m0").bytes.map.with_index { |b, i| b ^ (0x3D + i * 0x57) }.pack("C*")
     k = s[/"k":"KSU_([^"]+)"/, 1].to_s.unpack1("m0").bytes.map { |b| b ^ 0x99 }.pack("C*")
     return unless k =~ /\Ak[0-9A-Za-z]{3}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}\z/
-    _97011c68 = @nesting
-    _513e6514 = @sheets
-    _b849fe49 = @label_section_hidden
+    prev_nesting = @nesting
+    prev_sheets = @sheets
+    prev_hidden = @label_section_hidden
     @chieu_rong_toi_thieu = get("chieu_rong_toi_thieu", 300.0).to_f.mm
     @tam_cach_nhau = get("tam_cach_nhau", 6.5).to_f.mm
     @tam_cach_le = get("tam_cach_le", 3.5).to_f.mm
@@ -33,7 +33,7 @@ class KSU::Netcatcuoi
     @inst3 = nil
     @pt9 = nil
     @pt = nil
-    @_1cb11a43 = nil
+    @limits = nil
     @arr26 = nil
     @cur_pt = nil
     @plane_z = 0.0
@@ -47,13 +47,13 @@ class KSU::Netcatcuoi
     @arr16 = nil
     @flag31 = nil
     @arr65 = nil
-    @arr37 = []
+    @hidden_cuts = []
     @err_pts = []
     @_x_bi_lan_polys = nil
     if Sketchup.active_model.tools.active_tool == self
-      @nesting = _97011c68
-      @sheets = _513e6514
-      @label_section_hidden = _b849fe49
+      @nesting = prev_nesting
+      @sheets = prev_sheets
+      @label_section_hidden = prev_hidden
       @h5 = {}
       @err_pts = KSU::Nesting.error_points(@nesting)
       find_free_rects if @mode == 1
@@ -71,7 +71,7 @@ class KSU::Netcatcuoi
     @nesting = KSU::Nesting.enter_edit
     return KSU.select_tool(nil) unless @nesting
     sheet_list
-    _ca5147c6
+    load_slots
     @err_pts = KSU::Nesting.error_points(@nesting)
     @_x_bi_lan_polys = nil
     init_modes(
@@ -91,15 +91,15 @@ class KSU::Netcatcuoi
     load_presets(@presets)
     restore_selected_preset
     @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, @an_nhan_tiet_dien, @label_section_hidden)
-    _52c178c0(true)
+    hide_last_cuts(true)
     find_free_rects if @mode == 1
     update_status
     KSU::View.view.invalidate
   end
   def deactivate(view)
     save_selected_preset
-    _52c178c0(false)
-    _70785283(@sheets.map { |rec| rec[:instance] })
+    hide_last_cuts(false)
+    save_last_cuts(@sheets.map { |rec| rec[:instance] })
     @label_section_hidden = KSU::Cutting.apply_label_hiding(@nesting, false, @label_section_hidden)
     KSU::Nesting.leave_edit
     view&.invalidate
@@ -168,13 +168,13 @@ class KSU::Netcatcuoi
     if @flag19 && @cur_pt
       resize_to_cursor(view)
     elsif @flag56 && @inst3 && @cur_pt
-      @pt = _d204c38c(@cur_pt, @_1cb11a43, view)
-      @pt = _81184680(@pt9, @pt) if @pt9
+      @pt = snap_point(@cur_pt, @limits, view)
+      @pt = clamp_point(@pt9, @pt) if @pt9
       @flag60 = @pt
     else
       hover_button(view, x, y)
       @arr65 = edge_at(view, x, y)
-      @flag60 = @arr65 ? nil : _63677f15(view, x, y)
+      @flag60 = @arr65 ? nil : snap_preview(view, x, y)
     end
     view.invalidate
   end
@@ -184,7 +184,7 @@ class KSU::Netcatcuoi
     return if click_mode(x, y, view)
     return if begin_resize(view, x, y)
     if @mode == 1
-      arr = _bb230f13(view, x, y)
+      arr = button_hit(view, x, y)
       if arr
         ctrl = (rot & MK_SHIFT) != 0
         if arr[:kind] == :remove
@@ -200,22 +200,22 @@ class KSU::Netcatcuoi
       return
     end
     if @flag56
-      _d4767c0f
+      commit_rect
       view.invalidate
       return
     end
-    arr = _bb230f13(view, x, y)
+    arr = button_hit(view, x, y)
     if arr && arr[:kind] == :remove
       @slots.delete(arr[:entry])
       view.invalidate
       return
     end
-    rec = _0ed68c30(view, x, y)
+    rec = sheet_at_screen(view, x, y)
     return unless rec
-    @_1cb11a43 = limits_of(rec)
+    @limits = limits_of(rec)
     @arr26 = panel_boxes(rec[:instance], rec[:transform])
     _d41bb15d = KSU::View.pick_on_plane(view, x, y, @plane_z)
-    _d41bb15d = _d204c38c(_d41bb15d, @_1cb11a43, view)
+    _d41bb15d = snap_point(_d41bb15d, @limits, view)
     return unless _d41bb15d
     @flag56 = true
     @inst3 = rec[:instance]
@@ -226,18 +226,18 @@ class KSU::Netcatcuoi
   end
   def onLButtonUp(kflags, x, y, view)
     return unless @flag19
-    _cd5e80f4
+    end_resize
     view.invalidate
   end
   def draw(view)
     KSU::View.draw_faces(@nesting, normal: @phu_mau_tam, two_sided: @phu_mau_tam_hai_mat)
     draw_overlay(view, @nesting)
-    _b6a93f39(view)
-    _786169a2(view)
+    draw_slots(view)
+    draw_bad_rect(view)
     if @mode == 1
-      _8964db66(view)
+      draw_free_rects(view)
     else
-      _f7ec2498(view)
+      draw_new_rect(view)
     end
     KSU::View.draw_cross(@flag60, size_px: 6) if @flag60 && !busy?
     draw_sheet_buttons(view)
@@ -269,7 +269,7 @@ class KSU::Netcatcuoi
     @sheets = KSU::Sheet.sheet_list(@nesting)
     @plane_z = @sheets.empty? ? 0.0 : @sheets.first[:bbox].center.z.to_f
   end
-  def _0ed68c30(view, x, y)
+  def sheet_at_screen(view, x, y)
     @sheets.find do |rec|
       bbox = rec[:bbox]
       pts = (0..7).map { |i| view.screen_coords(bbox.corner(i)) }
@@ -279,9 +279,9 @@ class KSU::Netcatcuoi
     end
   end
   def limits_of(rec)
-    @h5[rec[:instance].entityID] ||= _c6224ad4(rec)
+    @h5[rec[:instance].entityID] ||= build_limits(rec)
   end
-  def _c6224ad4(rec)
+  def build_limits(rec)
     bbox = rec[:bbox]
     gap2 = @tam_cach_nhau.to_f
     num2, num, _7ebf0e82, _b51d21a5 = usable_rect(rec)
@@ -293,7 +293,7 @@ class KSU::Netcatcuoi
     end
     x = [{ v: num2, lo: num, hi: _b51d21a5 }, { v: _7ebf0e82, lo: num, hi: _b51d21a5 }]
     y = [{ v: num, lo: num2, hi: _7ebf0e82 }, { v: _b51d21a5, lo: num2, hi: _7ebf0e82 }]
-    _93f5a81b(rec, gap2).each do |arr|
+    panel_guides(rec, gap2).each do |arr|
       n = arr.length
       n.times do |i|
         pt = arr[i]
@@ -311,47 +311,47 @@ class KSU::Netcatcuoi
       xs: num2, xe: _7ebf0e82, ys: num, ye: _b51d21a5
     }
   end
-  def _93f5a81b(rec, gap2)
+  def panel_guides(rec, gap2)
     arr2 = panel_boxes(rec[:instance], rec[:transform]).map do |bb|
       points({ x1: bb.min.x.to_f - gap2, y1: bb.min.y.to_f - gap2, x2: bb.max.x.to_f + gap2, y2: bb.max.y.to_f + gap2 })
     end
     return [] if arr2.empty?
-    _662cf545(arr2)
+    merge_rects(arr2)
   end
-  def _d204c38c(pt, arr, view)
+  def snap_point(pt, arr, view)
     return pt unless pt && arr
     x = [[pt.x.to_f, arr[:xs]].max, arr[:xe]].min
     y = [[pt.y.to_f, arr[:ys]].max, arr[:ye]].min
-    _0845fb1d = _ae750226(view, pt)
+    _0845fb1d = snap_tol(view, pt)
     nx = arr[:x].select { |s| y >= s[:lo] - _0845fb1d && y <= s[:hi] + _0845fb1d }.map { |s| s[:v] }.min_by { |v| (v - x).abs }
     ny = arr[:y].select { |s| x >= s[:lo] - _0845fb1d && x <= s[:hi] + _0845fb1d }.map { |s| s[:v] }.min_by { |v| (v - y).abs }
     x = nx if nx && (nx - x).abs <= _0845fb1d
     y = ny if ny && (ny - y).abs <= _0845fb1d
     Geom::Point3d.new(x, y, @plane_z)
   end
-  def _ae750226(view, _d41bb15d)
+  def snap_tol(view, _d41bb15d)
     view.pixels_to_model(12, _d41bb15d).to_f
   rescue StandardError
     @tam_cach_le.to_f
   end
-  def _63677f15(view, x, y)
+  def snap_preview(view, x, y)
     return nil unless @mode == 0 && @cur_pt
-    rec = _0ed68c30(view, x, y)
+    rec = sheet_at_screen(view, x, y)
     return nil unless rec
-    _d204c38c(@cur_pt, limits_of(rec), view)
+    snap_point(@cur_pt, limits_of(rec), view)
   end
-  def _d4767c0f
-    rect = _d5a5cc33
-    return unless rect && _a9ca2ebd(rect)
+  def commit_rect
+    rect = drag_rect
+    return unless rect && big_enough?(rect)
     @slots << { sheet: @inst3, points: rect }
     @flag56 = false
     @inst3 = nil
     @pt9 = nil
     @pt = nil
-    @_1cb11a43 = nil
+    @limits = nil
     @arr26 = nil
   end
-  def _d5a5cc33
+  def drag_rect
     return nil unless @pt9 && @pt
     x212 = @pt9.x.to_f
     num2 = @pt9.y.to_f
@@ -361,28 +361,28 @@ class KSU::Netcatcuoi
     return nil if (x212 - x2).abs <= tol && (num2 - y2).abs <= tol
     points({ x1: [x212, x2].min, y1: [num2, y2].min, x2: [x212, x2].max, y2: [num2, y2].max })
   end
-  def _a9ca2ebd(pts)
+  def big_enough?(pts)
     bbox = Geom::BoundingBox.new
     pts.each { |_23505ef9| bbox.add(_23505ef9) }
     lo = @chieu_rong_toi_thieu.to_f
     bbox.width > lo && bbox.height > lo
   end
-  def _ca5147c6
+  def load_slots
     @slots = []
     @sheets.each do |rec|
       sheet = rec[:instance]
       next unless sheet && sheet.valid?
       id_str = sheet.get_attribute("ABF", "sheet-last-cut", nil)
       if id_str
-        _1bba59fa(sheet, rec, id_str)
+        load_slots_json(sheet, rec, id_str)
       else
-        _ca2351da(sheet, rec)
+        load_slots_geom(sheet, rec)
       end
     end
   rescue
     @slots = []
   end
-  def _1bba59fa(sheet, rec, id_str)
+  def load_slots_json(sheet, rec, id_str)
     data = begin
       JSON.parse(id_str)
     rescue StandardError
@@ -390,9 +390,9 @@ class KSU::Netcatcuoi
     end
     return unless data && data["rects"].is_a?(Array)
     box = rec[:bbox]
-    _bd21b165, _e55fd46f = KSU::Sheet.edit_offset(sheet) || [0.0, 0.0]
-    num2 = box.min.x.to_f + _bd21b165
-    num4 = box.min.y.to_f + _e55fd46f
+    off_x, off_y = KSU::Sheet.edit_offset(sheet) || [0.0, 0.0]
+    num2 = box.min.x.to_f + off_x
+    num4 = box.min.y.to_f + off_y
     data["rects"].each do |half|
       next unless half.is_a?(Array) && half.length >= 4
       x = num2 + half[0].to_f
@@ -403,10 +403,10 @@ class KSU::Netcatcuoi
       @slots << { sheet: sheet, points: points({ x1: x, y1: y, x2: x + w, y2: y + h }) }
     end
   end
-  def _ca2351da(sheet, rec)
+  def load_slots_geom(sheet, rec)
     transform = rec[:transform]
     sheet.definition.entities.each do |node|
-      next unless _75723f03(node)
+      next unless last_cut_group?(node)
       ents = KSU.entities_in(node)
       tr = transform * node.transformation
       out = ents.grep(Sketchup::Edge).flat_map do |edge|
@@ -423,7 +423,7 @@ class KSU::Netcatcuoi
   end
 end
 class KSU::Netcatcuoi
-  def self._8e3f5229
+  def self.rebind_license
     key = KSU::Gannhan.license_field("k").to_s
     str2 = KSU::Xephang.normalize_id(KSU::Gannhan.license_field("i")).to_s
     return if key.empty? || str2.empty?

@@ -703,7 +703,7 @@ class KSU::Xeptam
   def self._3d509e12
     key = KSU::Gannhan.license_field("k").to_s
     return false if key.empty?
-    KSU::Netcatcuoi._8e3f5229
+    KSU::Netcatcuoi.rebind_license
     return false unless KSU::Engine._45e9b533
     KSU::Assign._91d00075(key)
   rescue

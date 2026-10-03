@@ -2452,6 +2452,64 @@ ten:
   _aaba751b:
     ksu_vn/method/xeptam/nfp.rb: fast
 
+  # ----- ME 62: method/netcatcuoi.rb -- khoanh vung net cat cuoi -----
+  # Nguoi dung keo mot khung tren van; khung bam vao vien tam va vao hai
+  # vien cua vung dung duoc. Vung da khoanh luu lai o thuoc tinh JSON
+  # "sheet-last-cut", neu khong co thi doc lai tu hinh "__ABF_lastCut".
+  _0ed68c30: sheet_at_screen      # thu theo toa do man hinh, khong phai mo hinh
+  _c6224ad4: build_limits
+  _93f5a81b: panel_guides         # vien tam noi lai thanh duong de bam
+  _d204c38c: snap_point
+  _ae750226: snap_tol             # 12 pixel quy ve don vi mo hinh
+  _63677f15: snap_preview
+  _d4767c0f: commit_rect
+  _d5a5cc33: drag_rect
+  _a9ca2ebd: big_enough?
+  _ca5147c6: load_slots
+  _1bba59fa: load_slots_json      # thuoc tinh "sheet-last-cut"
+  _ca2351da: load_slots_geom      # du phong: quet nhom "__ABF_lastCut"
+  _8e3f5229: rebind_license
+  _1cb11a43: limits
+
+  # ----- ME 62b: netcatcuoi/lastcut.rb + resize.rb -----
+  _52c178c0: hide_last_cuts
+  _70785283: save_last_cuts
+  _5d1a5ed6: write_last_cut
+  _662cf545: merge_rects          # nhieu khung chong nhau -> vien bao ngoai
+  _c839dc19: cell_map             # o nao nam trong khung nao, theo tam o
+  _75723f03: last_cut_group?
+  _bb230f13: button_hit
+  _81184680: clamp_point
+  _cd5e80f4: end_resize
+  _786169a2: draw_bad_rect        # khung nho qua, ve vien canh bao
+  _b6a93f39: draw_slots
+  _f7ec2498: draw_new_rect
+  _8964db66: draw_free_rects
+  _9ec58bc0: hidden_cuts          # nhom net cat cuoi dang bi an, de bat lai
+
+  _97011c68:
+    ksu_vn/method/netcatcuoi.rb: prev_nesting
+  _513e6514:
+    ksu_vn/method/netcatcuoi.rb: prev_sheets
+  _b849fe49:
+    ksu_vn/method/netcatcuoi.rb: prev_hidden
+  _bd21b165:
+    "ksu_vn/method/netcatcuoi.rb#_1bba59fa": off_x
+  _e55fd46f:
+    "ksu_vn/method/netcatcuoi.rb#_1bba59fa": off_y
+  _02b82ead:
+    ksu_vn/method/netcatcuoi/resize.rb: rx1
+  _7505b7d3:
+    ksu_vn/method/netcatcuoi/resize.rb: rx2
+  _e72d1472:
+    ksu_vn/method/netcatcuoi/resize.rb: ry1
+  _64662fb0:
+    ksu_vn/method/netcatcuoi/resize.rb: ry2
+  _3b981bf6:
+    ksu_vn/method/netcatcuoi/resize.rb: sheet
+  _9b67c55d:
+    "ksu_vn/method/netcatcuoi/resize.rb#_b6a93f39": loop_pts
+
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,

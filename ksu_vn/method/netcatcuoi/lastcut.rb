@@ -1,27 +1,27 @@
 module KSU::Lastcut
   private
-  def _52c178c0(hide)
+  def hide_last_cuts(hide)
     arr = []
     if hide && @nesting && @nesting.valid?
       @sheets.each do |rec|
         sheet = rec[:instance]
         next unless sheet && sheet.valid?
         sheet.definition.entities.grep(Sketchup::Group).each do |g|
-          arr << g if _75723f03(g) && !g.hidden?
+          arr << g if last_cut_group?(g) && !g.hidden?
         end
       end
     end
-    arr2 = @arr37.select { |g| g && g.valid? && g.hidden? }
+    arr2 = @hidden_cuts.select { |g| g && g.valid? && g.hidden? }
     return if arr.empty? && arr2.empty?
     KSU.start(false)
     arr2.each { |g| g.hidden = false }
     arr.each { |g| g.hidden = true }
-    @arr37 = arr
+    @hidden_cuts = arr
     KSU.commit
   rescue
     KSU.abort_op
   end
-  def _70785283(sheets)
+  def save_last_cuts(sheets)
     return unless @nesting && @nesting.valid?
     sheets = sheets.compact.uniq
     return if sheets.empty?
@@ -32,15 +32,15 @@ module KSU::Lastcut
       next unless sheet && sheet.valid?
       rec = @sheets.find { |s| s[:instance] == sheet }
       next unless rec
-      _5d1a5ed6(sheet, rec, h[sheet] || [], tag)
+      write_last_cut(sheet, rec, h[sheet] || [], tag)
     end
     KSU.commit
   rescue
     KSU.abort_op
   end
-  def _5d1a5ed6(sheet, rec, entries, tag)
+  def write_last_cut(sheet, rec, entries, tag)
     sheet.definition.entities.grep(Sketchup::Group).each do |node|
-      node.erase! if _75723f03(node)
+      node.erase! if last_cut_group?(node)
     end
     arr = entries.map { |ent| ent[:points] }.select { |pts| pts && pts.length == 4 }
     if arr.empty?
@@ -69,7 +69,7 @@ module KSU::Lastcut
       b = KSU::Geom.bounds(pts)
       [b[:min_x] - num, b[:min_y] - num2, b[:max_x] - b[:min_x], b[:max_y] - b[:min_y]]
     end
-    loops = _662cf545(arr5)
+    loops = merge_rects(arr5)
     arr8 = loops.map { |arr4| arr4.map { |pt| [pt.x.to_f - num, pt.y.to_f - num2] } }
     arr7 = loops.map do |arr4|
       b = KSU::Geom.bounds(arr4)
@@ -86,7 +86,7 @@ module KSU::Lastcut
     }
     { json: resp, segments: segments }
   end
-  def _662cf545(arr8)
+  def merge_rects(arr8)
     arr5 = arr8.map do |pts|
       arr2 = pts.map { |pt| pt.x.to_f }
       arr3 = pts.map { |pt| pt.y.to_f }
@@ -97,7 +97,7 @@ module KSU::Lastcut
     return [] if arr2.length < 2 || arr3.length < 2
     nx = arr2.length - 1
     ny = arr3.length - 1
-    arr4 = _c839dc19(arr2, arr3) do |px, py|
+    arr4 = cell_map(arr2, arr3) do |px, py|
       arr5.any? { |b| px > b[:x1] && px < b[:x2] && py > b[:y1] && py < b[:y2] }
     end
     arr6 = []
@@ -181,7 +181,7 @@ module KSU::Lastcut
     end
     answer
   end
-  def _c839dc19(arr2, arr)
+  def cell_map(arr2, arr)
     nx = arr2.length - 1
     ny = arr.length - 1
     cells = Array.new(nx) { Array.new(ny, false) }
@@ -194,7 +194,7 @@ module KSU::Lastcut
     end
     cells
   end
-  def _75723f03(entity)
+  def last_cut_group?(entity)
     return false unless entity && entity.valid?
     return false unless KSU.container?(entity)
     return true if entity.get_attribute("ABF", "is-last-cut")
@@ -204,7 +204,7 @@ module KSU::Lastcut
     arr = []
     sheet.definition.entities.each do |panel|
       next unless KSU.container?(panel)
-      next if _75723f03(panel)
+      next if last_cut_group?(panel)
       next if panel.name.to_s == "__ABF_sheetBorder"
       next if KSU::Sheet.sheet_border?(panel)
       next unless KSU::Sheet.drawable?(panel)
@@ -233,7 +233,7 @@ module KSU::Lastcut
     nx = arr2.length - 1
     ny = arr.length - 1
     return nil if nx * ny > 6000
-    cells = _c839dc19(arr2, arr) do |px, py|
+    cells = cell_map(arr2, arr) do |px, py|
       KSU::View.in_poly?(px, py, outer) &&
         holes.none? { |h| KSU::View.in_poly?(px, py, h) }
     end
