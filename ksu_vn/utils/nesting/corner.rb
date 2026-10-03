@@ -72,13 +72,13 @@ module KSU::Corner
     arr4 = nest_in_holes(arr) || arr
     deadline ||= Time.now + 4.0
     if flag3
-      _a81aa358 = to_local_polys(arr4, base_tr, start_x, ly0, px, py, x, gap2, y)
-      arr2 = _812a997b(_a81aa358, gap2, deadline)
+      local_polys = to_local_polys(arr4, base_tr, start_x, ly0, px, py, x, gap2, y)
+      arr2 = compact(local_polys, gap2, deadline)
     else
       arr2 = KSU::Nesting.pack(arr4, width_mm, height_mm, gap2)
       if arr2.empty? || arr2.size < arr4.size
-        _a81aa358 = to_local_polys(arr4, base_tr, start_x, ly0, px, py, x, gap2, y)
-        arr2 = _812a997b(_a81aa358, gap2, deadline)
+        local_polys = to_local_polys(arr4, base_tr, start_x, ly0, px, py, x, gap2, y)
+        arr2 = compact(local_polys, gap2, deadline)
       end
     end
     return nil if arr2.empty?
@@ -276,7 +276,7 @@ module KSU::Corner
       h.merge(poly: poly, lx0: start_x * (bx2 - px) - gap_for, ly0: ly0 * (by2 - py) - gap_y)
     end
   end
-  def _5d9dd503(poly)
+  def signed_area(poly)
     num = 0.0
     n = poly.length
     n.times do |i|
@@ -299,7 +299,7 @@ module KSU::Corner
     if defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:offset)
       begin
         arr = poly.map { |arr2| [arr2[0] * 25.4, arr2[1] * 25.4] }
-        arr = arr.reverse if _5d9dd503(arr) < 0
+        arr = arr.reverse if signed_area(arr) < 0
         _4bc14589 = _e4eb7bdf * 25.4
         arr3 = begin
             KSU::Clipper.offset([arr], _4bc14589, 0, 1, 6)
@@ -330,20 +330,20 @@ module KSU::Corner
       (poly[i][0] - b[0]).abs < 1e-3 || (poly[i][1] - b[1]).abs < 1e-3
     end
   end
-  def _812a997b(items, gap2, deadline = nil)
+  def compact(items, gap2, deadline = nil)
     if defined?(KSU::Nesting) && KSU::Nesting.respond_to?(:nfp)
-      _d59e252b(items, gap2, deadline)
+      compact_nfp(items, gap2, deadline)
     else
-      _19df3e1d(items, gap2, deadline)
+      compact_simple(items, gap2, deadline)
     end
   end
-  def _d59e252b(items, gap2, deadline = nil)
+  def compact_nfp(items, gap2, deadline = nil)
     arr2 = []
     items.each_with_index do |h, ix|
       arr3 = h[:poly].map { |arr| arr[0] }
       style = h[:poly].map { |arr| arr[1] }
       poly0 = h[:poly].map { |arr| [arr[0], arr[1]] }
-      poly0 = poly0.reverse if _5d9dd503(poly0) < 0
+      poly0 = poly0.reverse if signed_area(poly0) < 0
       arr2 << h.merge(ix: ix, su: 0.0, sv: 0.0, poly0: poly0,
                               u0: arr3.min, u1: arr3.max, v0: style.min, v1: style.max)
     end
@@ -354,20 +354,20 @@ module KSU::Corner
       arr2.sort_by! { |half| half[:poly].map { |(_6facb951, v)| _6facb951 * _6facb951 + v * v }.min }
       arr2.each do |half|
         break if deadline && Time.now > deadline
-        _c040f779 = _bca72a10(half, arr2, true, gap2, cache)
-        if _c040f779 > 1e-6
-          half[:poly] = half[:poly].map { |arr| [arr[0] - _c040f779, arr[1]] }
-          half[:u0] -= _c040f779
-          half[:u1] -= _c040f779
-          half[:su] += _c040f779
+        du = slide_dist(half, arr2, true, gap2, cache)
+        if du > 1e-6
+          half[:poly] = half[:poly].map { |arr| [arr[0] - du, arr[1]] }
+          half[:u0] -= du
+          half[:u1] -= du
+          half[:su] += du
           bbox = true
         end
-        _9c1b6267 = _bca72a10(half, arr2, false, gap2, cache)
-        if _9c1b6267 > 1e-6
-          half[:poly] = half[:poly].map { |arr| [arr[0], arr[1] - _9c1b6267] }
-          half[:v0] -= _9c1b6267
-          half[:v1] -= _9c1b6267
-          half[:sv] += _9c1b6267
+        dv = slide_dist(half, arr2, false, gap2, cache)
+        if dv > 1e-6
+          half[:poly] = half[:poly].map { |arr| [arr[0], arr[1] - dv] }
+          half[:v0] -= dv
+          half[:v1] -= dv
+          half[:sv] += dv
           bbox = true
         end
       end
@@ -375,38 +375,38 @@ module KSU::Corner
     end
     arr2.map { |half| half.merge(lx: half[:lx0] - half[:su], ly: half[:ly0] - half[:sv]) }
   end
-  def _bca72a10(half, arr4, _b00ea38a, gap2, cache)
-    per_row = [(_b00ea38a ? half[:u0] : half[:v0]) + gap2 * 0.5, 0.0].max
+  def slide_dist(half, arr4, horiz, gap2, cache)
+    per_row = [(horiz ? half[:u0] : half[:v0]) + gap2 * 0.5, 0.0].max
     return 0.0 if per_row <= 1e-9
-    dir = _b00ea38a ? [-1.0, 0.0] : [0.0, -1.0]
+    dir = horiz ? [-1.0, 0.0] : [0.0, -1.0]
     pen = gap2 * 2
     num = 1.0 / 0.0
     arr4.each do |arr|
       next if arr.equal?(half)
-      if _b00ea38a
+      if horiz
         next if arr[:v1] < half[:v0] - 1e-9 || arr[:v0] > half[:v1] + 1e-9
         next if arr[:u0] > half[:u1] + 1e-9
       else
         next if arr[:u1] < half[:u0] - 1e-9 || arr[:u0] > half[:u1] + 1e-9
         next if arr[:v0] > half[:v1] + 1e-9
       end
-      rings = _bb9d9306(arr, half, cache)
+      rings = nfp_rings(arr, half, cache)
       if rings
         pt = _84160c85(half)[0]
         _23505ef9 = [pt[0] - half[:su] + arr[:su], pt[1] - half[:sv] + arr[:sv]]
-        if _edec0f70(_23505ef9, rings)
+        if in_rings?(_23505ef9, rings)
           num = 0.0
           break
         end
         rings.each do |arr2|
           n = arr2.length
           n.times do |i|
-            thick = _3caaabb9(_23505ef9, dir, arr2[i], arr2[(i + 1) % n], pen)
+            thick = ray_hit(_23505ef9, dir, arr2[i], arr2[(i + 1) % n], pen)
             num = thick if thick && thick < num
           end
         end
       else
-        len2d = _7edd7b75(half[:poly], arr[:poly], dir)
+        len2d = slide_by_proj(half[:poly], arr[:poly], dir)
         num = len2d if len2d < num
       end
       break if num <= 1e-9
@@ -414,7 +414,7 @@ module KSU::Corner
     _bd0102dd = [per_row, num].min
     _bd0102dd < 0.0 ? 0.0 : _bd0102dd
   end
-  def _bb9d9306(arr3, half, cache)
+  def nfp_rings(arr3, half, cache)
     key = [arr3[:ix], half[:ix]]
     return cache[key] if cache.key?(key)
     arr8 = cache[[half[:ix], arr3[:ix]]]
@@ -434,14 +434,14 @@ module KSU::Corner
           arr = members && members[0]
           next unless arr.is_a?(Array) && arr.length >= 3
           arr = arr.map { |arr2| [arr2[0].to_f, arr2[1].to_f] }
-          arr = arr.reverse if _5d9dd503(arr) < 0
+          arr = arr.reverse if signed_area(arr) < 0
           rings << arr
           holes = members[1]
           next unless holes.is_a?(Array)
           holes.each do |h|
             next unless h.is_a?(Array) && h.length >= 3
             arr4 = h.map { |arr2| [arr2[0].to_f, arr2[1].to_f] }
-            arr4 = arr4.reverse if _5d9dd503(arr4) > 0
+            arr4 = arr4.reverse if signed_area(arr4) > 0
             rings << arr4
           end
         end
@@ -452,7 +452,7 @@ module KSU::Corner
     end
     cache[key] = rings
   end
-  def _edec0f70(arr4, rings)
+  def in_rings?(arr4, rings)
     trai = arr4[0]
     duoi = arr4[1]
     cross = 0
@@ -499,7 +499,7 @@ module KSU::Corner
       poly
     end
   end
-  def _3caaabb9(arr3, dir, arr, b, pen)
+  def ray_hit(arr3, dir, arr, b, pen)
     rx = b[0] - arr[0]
     ry = b[1] - arr[1]
     _621a105c = dir[0] * ry - dir[1] * rx
@@ -513,7 +513,7 @@ module KSU::Corner
     return nil if s * len < -0.04 || (s - 1.0) * len > 0.04
     thick
   end
-  def _19df3e1d(items, gap2, deadline = nil)
+  def compact_simple(items, gap2, deadline = nil)
     arr2 = items.map do |h|
       arr4 = h[:poly].map { |arr| arr[0] }
       style = h[:poly].map { |arr| arr[1] }
@@ -527,20 +527,20 @@ module KSU::Corner
       arr2.each_with_index do |half, i|
         arr3 = []
         arr2.each_with_index { |_65570dfe, k| arr3 << _65570dfe unless k == i }
-        _c040f779 = _39ad1aa8(half, arr3, true, gap2)
-        if _c040f779 > 1e-6
-          half[:poly] = half[:poly].map { |arr| [arr[0] - _c040f779, arr[1]] }
-          half[:u0] -= _c040f779
-          half[:u1] -= _c040f779
-          half[:su] += _c040f779
+        du = _39ad1aa8(half, arr3, true, gap2)
+        if du > 1e-6
+          half[:poly] = half[:poly].map { |arr| [arr[0] - du, arr[1]] }
+          half[:u0] -= du
+          half[:u1] -= du
+          half[:su] += du
           bbox = true
         end
-        _9c1b6267 = _39ad1aa8(half, arr3, false, gap2)
-        if _9c1b6267 > 1e-6
-          half[:poly] = half[:poly].map { |arr| [arr[0], arr[1] - _9c1b6267] }
-          half[:v0] -= _9c1b6267
-          half[:v1] -= _9c1b6267
-          half[:sv] += _9c1b6267
+        dv = _39ad1aa8(half, arr3, false, gap2)
+        if dv > 1e-6
+          half[:poly] = half[:poly].map { |arr| [arr[0], arr[1] - dv] }
+          half[:v0] -= dv
+          half[:v1] -= dv
+          half[:sv] += dv
           bbox = true
         end
       end
@@ -548,13 +548,13 @@ module KSU::Corner
     end
     arr2.map { |half| half.merge(lx: half[:lx0] - half[:su], ly: half[:ly0] - half[:sv]) }
   end
-  def _39ad1aa8(half, arr2, _b00ea38a, gap2)
-    per_row = [(_b00ea38a ? half[:u0] : half[:v0]) + gap2 * 0.5, 0.0].max
+  def _39ad1aa8(half, arr2, horiz, gap2)
+    per_row = [(horiz ? half[:u0] : half[:v0]) + gap2 * 0.5, 0.0].max
     return 0.0 if per_row <= 1e-9
-    dir = _b00ea38a ? [-1.0, 0.0] : [0.0, -1.0]
+    dir = horiz ? [-1.0, 0.0] : [0.0, -1.0]
     num = 1.0 / 0.0
     arr2.each do |arr|
-      if _b00ea38a
+      if horiz
         next if arr[:v1] < half[:v0] - 1e-9 || arr[:v0] > half[:v1] + 1e-9
         next if arr[:u0] > half[:u1] + 1e-9
       else
@@ -562,11 +562,11 @@ module KSU::Corner
         next if arr[:v0] > half[:v1] + 1e-9
       end
       if half[:rect] && arr[:rect]
-        len2d = _b00ea38a ? half[:u0] - arr[:u1] : half[:v0] - arr[:v1]
-        len2d = _7edd7b75(half[:poly], arr[:poly], dir) if len2d < -1e-9
+        len2d = horiz ? half[:u0] - arr[:u1] : half[:v0] - arr[:v1]
+        len2d = slide_by_proj(half[:poly], arr[:poly], dir) if len2d < -1e-9
         len2d = 0.0 if len2d < 0.0
       else
-        len2d = _7edd7b75(half[:poly], arr[:poly], dir)
+        len2d = slide_by_proj(half[:poly], arr[:poly], dir)
       end
       if len2d < num
         num = len2d
@@ -576,7 +576,7 @@ module KSU::Corner
     _bd0102dd = [per_row, num].min
     [_bd0102dd, 0.0].max
   end
-  def _7edd7b75(arr, panel, dir)
+  def slide_by_proj(arr, panel, dir)
     _a1abb318 = [-dir[0], -dir[1]]
     best = 1.0 / 0.0
     num3 = panel.length

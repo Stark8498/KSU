@@ -36,7 +36,7 @@ module KSU::Thongke
       str2 = JSON.parse(id.to_s) rescue nil
       KSU::Thongke::Xuat.export_file(model_title, str2) if str2
     when "copy_image"
-      KSU::Thongke::Xuat._beb63a90(id.to_s)
+      KSU::Thongke::Xuat.copy_image(id.to_s)
       KSU::Settings.send_to_dialog(dlg, "thong_ke", "tkSnapDone", "null")
     when "select_parts"
       keys = JSON.parse(id.to_s) rescue []

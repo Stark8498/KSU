@@ -79,7 +79,7 @@ module KSU::Intem
     arr3 = arr2.map do |svg|
       { svg: svg, w: w, h: h, pw: pw, ph: ph, rot: rot }
     end
-    placements = KSU::Pdf.build_pdf(arr3, font, font_bold)
+    placements = KSU::Pdf.build_doc(arr3, font, font_bold)
     File.open(path, "wb") { |f| f.write(placements) }
   rescue StandardError => ent
     UI.messagebox("Lỗi ghi PDF: #{ent.message}")
@@ -105,7 +105,7 @@ module KSU::Intem
     UI.messagebox("Lỗi ghi ảnh: #{ent.message}")
   end
   def self.load_data(dlg)
-    data = _9e1d7ab3
+    data = scan
     data[:mat_order] = Array(KSU::Settings.get("thu_tu_vat_lieu", [], "in_tem")).map(&:to_s)
     data[:settings] = {
       "tu_dong_xoay" => !!KSU::Settings.get("tu_dong_xoay", true, "in_tem"),

@@ -920,7 +920,7 @@
   },
   {
    "ns": "KSU::Pdf",
-   "m": "build_pdf",
+   "m": "build_doc",
    "f": "ksu_vn/method/intem.rb",
    "l": 82
   },
@@ -1580,7 +1580,7 @@
   },
   {
    "ns": "KSU::Thongke::Xuat",
-   "m": "_beb63a90",
+   "m": "copy_image",
    "f": "ksu_vn/method/thongke.rb",
    "l": 39
   },
@@ -2294,7 +2294,7 @@
   },
   {
    "ns": "KSU::Nesting",
-   "m": "_5d9dd503",
+   "m": "signed_area",
    "f": "ksu_vn/method/xuatdxf/entry.rb",
    "l": 140
   },

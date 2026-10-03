@@ -1,7 +1,7 @@
 module KSU::Pdf
   module_function
   S = 72.0 / 25.4
-  def build_pdf(arr4, font, font_bold)
+  def build_doc(arr4, font, font_bold)
     used = {}
     used_bold = {}
     arr5 = arr4.map do |group_rgb|

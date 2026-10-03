@@ -1,5 +1,5 @@
 module KSU::Intem
-  def self._9e1d7ab3
+  def self.scan
     model = Sketchup.active_model
     nesting = KSU::Nesting._d7b62fb6
     src = nesting ? nesting.entities : model.entities
@@ -13,7 +13,7 @@ module KSU::Intem
     descent = KSU::Settings.get("sap_xep", "tang_dan", "in_tem").to_s == "giam_dan"
     h3 = {}
     h2 = {}
-    _e12462c7(model.entities, h3, {}, 0, h2)
+    index_boards(model.entities, h3, {}, 0, h2)
     h19 = {}
     src.grep(Sketchup::Group).each do |sheet|
       next unless sheet.get_attribute("ABF", "sheet-id")
@@ -33,15 +33,15 @@ module KSU::Intem
       sheet_type = sheet.get_attribute("ABF", "sheet-type").to_s
       mat = sheet.get_attribute("KSU", "sheet-material").to_s
       mat = sheet_type if mat.empty?
-      w, h = _acf1b201(sheet)
+      w, h = sheet_dims(sheet)
       parts = []
       sheet.entities.grep(Sketchup::Group).each do |grp|
-        rec = _cbfbfd78(grp, sheet_id, mat, h3, h19, h2)
+        rec = part_record(grp, sheet_id, mat, h3, h19, h2)
         next unless rec
         parts2 << rec
         parts << parts2.length - 1
       end
-      _9ec31362(sheet, sheet_id, mat).each do |rec|
+      last_cut_parts(sheet, sheet_id, mat).each do |rec|
         parts2 << rec
         parts << parts2.length - 1
       end
@@ -53,7 +53,7 @@ module KSU::Intem
         px = seed.include?("phai") ? w : 0.0
         py = seed.include?("tren") ? h : 0.0
         parts.sort_by! do |i|
-          pt = _f0de9fe3(parts2[i][:poly], px, py)
+          pt = nearest_pt(parts2[i][:poly], px, py)
           [parts2[i][:lk] ? 1 : 0, (pt[1] - py).abs.round, (pt[0] - px).abs, parts2[i][:id].to_i]
         end
       end
@@ -78,11 +78,11 @@ module KSU::Intem
     end
     { materials: materials.map { |k| materials2[k] }, sheets: sheets, parts: parts2 }
   end
-  def self._f0de9fe3(poly, px, py)
+  def self.nearest_pt(poly, px, py)
     pts = poly[0] || []
     pts.min_by { |arr| (arr[0] - px)**2 + (arr[1] - py)**2 } || [px, py]
   end
-  def self._acf1b201(sheet)
+  def self.sheet_dims(sheet)
     ent2 = sheet.get_attribute("ABF", "sheet-dimension")
     if ent2.is_a?(Array) && ent2[0].to_f > 0 && ent2[1].to_f > 0
       return [ent2[0].to_f, ent2[1].to_f]
@@ -92,7 +92,7 @@ module KSU::Intem
     bbox = ents.bounds
     [(bbox.width * 25.4).round(2), (bbox.height * 25.4).round(2)]
   end
-  def self._9ec31362(sheet, sheet_id, mat)
+  def self.last_cut_parts(sheet, sheet_id, mat)
     id_str = sheet.get_attribute("ABF", "sheet-last-cut", nil)
     return [] unless id_str
     data = begin
@@ -101,7 +101,7 @@ module KSU::Intem
       nil
     end
     return [] unless data.is_a?(Hash) && data["polys"].is_a?(Array)
-    _3e7613f3, _9ba1a361 = _6aba4c5e(sheet)
+    _3e7613f3, _9ba1a361 = sheet_origin(sheet)
     loops = data["polys"].select { |arr| arr.is_a?(Array) && arr.length >= 3 }
     out = []
     loops.each_with_index do |arr, ix|
@@ -130,13 +130,13 @@ module KSU::Intem
     end
     out
   end
-  def self._6aba4c5e(sheet)
+  def self.sheet_origin(sheet)
     arr = KSU::Sheet.edit_offset(sheet) || [0.0, 0.0]
     ents = sheet.entities.grep(Sketchup::Group).find { |ent| KSU::Sheet._27ecfdd1(ent) }
     lo = ents && ents.bounds.valid? ? ents.bounds.min : nil
     [(lo ? lo.x.to_f : 0.0) + arr[0], (lo ? lo.y.to_f : 0.0) + arr[1]]
   end
-  def self._e12462c7(ents, arr4, seen, depth, arr)
+  def self.index_boards(ents, arr4, seen, depth, arr)
     return if depth > 8
     ents.each do |ent|
       next unless KSU.container?(ent)
@@ -157,10 +157,10 @@ module KSU::Intem
         next
       end
       kids = KSU.entities_in(ent)
-      _e12462c7(kids, arr4, seen, depth + 1, arr) if kids
+      index_boards(kids, arr4, seen, depth + 1, arr) if kids
     end
   end
-  def self._cbfbfd78(grp, sheet_id, mat, arr, arr4, arr3)
+  def self.part_record(grp, sheet_id, mat, arr, arr4, arr3)
     pid = grp.get_attribute("ABF", "board-index")
     return nil unless pid
     return nil if KSU::Sheet._27ecfdd1(grp)

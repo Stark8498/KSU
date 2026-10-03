@@ -20,16 +20,16 @@ module KSU::Thongke::Xuat
     return false unless path
     path += ".xlsx" unless path.downcase.end_with?(".xlsx")
     sheets = [
-      _a105a0f4(arr["chi_phi"] || {}),
-      _31eafa5f(arr["cau_kien"] || {}),
+      cost_sheet(arr["chi_phi"] || {}),
+      parts_sheet(arr["cau_kien"] || {}),
     ]
-    File.open(path, "wb") { |f| f.write(build_pdf(sheets)) }
+    File.open(path, "wb") { |f| f.write(build_doc(sheets)) }
     true
   rescue StandardError => ent
     UI.messagebox("Không xuất được file: " + ent.message)
     false
   end
-  def self._beb63a90(str2)
+  def self.copy_image(str2)
     path = File.join(ENV["TEMP"], "ksu_thong_ke.png")
     File.open(path, "wb") { |f| f.write(str2.unpack("m")[0]) }
     str = "Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing; " \
@@ -42,13 +42,13 @@ module KSU::Thongke::Xuat
   def self.num(v)
     v.is_a?(Numeric) ? v : v.to_s
   end
-  def self.build_cells(title, total, _c41450bb = nil)
+  def self.build_cells(title, total, formula = nil)
     cells = [["", ST_HEAD], [title.to_s, ST_SEC_TEXT]]
     5.times { cells << ["", ST_SEC_TEXT] }
-    cells << [num(total), ST_SEC_NUM, _c41450bb]
+    cells << [num(total), ST_SEC_NUM, formula]
     cells
   end
-  def self._a105a0f4(cls2)
+  def self.cost_sheet(cls2)
     rows = [{ cells: CHI_PHI_HEAD.map { |h| [h, ST_HEAD] } }]
     arr2 = []
     (cls2["sections"] || []).each do |arr3|
@@ -56,8 +56,8 @@ module KSU::Thongke::Xuat
       arr2 << "H#{num11}"
       items = arr3["items"] || []
       _a925e834 = num11 + 1
-      num2 = items.empty? ? nil : "SUM(H#{_a925e834}:H#{num11 + items.size})"
-      rows << { cells: build_cells(arr3["title"], arr3["tong"], num2) }
+      formula = items.empty? ? nil : "SUM(H#{_a925e834}:H#{num11 + items.size})"
+      rows << { cells: build_cells(arr3["title"], arr3["tong"], formula) }
       items.each_with_index do |arr, i|
         half = _a925e834 + i
         lines = arr["mota"].to_s
@@ -75,21 +75,21 @@ module KSU::Thongke::Xuat
     rows << { cells: build_cells("Tổng chi phí", cls2["tong"], total) }
     { name: "Chi phí", cols: CHI_PHI_COLS, rows: rows }
   end
-  def self._31eafa5f(arr)
+  def self.parts_sheet(arr)
     cells = arr["headers"] || []
-    _5ffa637f = cells.index("Tên")
+    name_col = cells.index("Tên")
     rows = [{ cells: cells.map { |h| [h.to_s, ST_HEAD] } }]
     (arr["rows"] || []).each do |arr2|
       rows << {
-        cells: arr2.each_with_index.map { |v, color| [num(v), color == _5ffa637f ? ST_TEXT : ST_CENTER] },
+        cells: arr2.each_with_index.map { |v, color| [num(v), color == name_col ? ST_TEXT : ST_CENTER] },
       }
     end
     { name: "Cấu kiện", cols: CAU_KIEN_COLS, rows: rows }
   end
-  def self._c9faf4c6(text)
+  def self.xml_escape(text)
     text.to_s.gsub("&", "&amp;").gsub("<", "&lt;").gsub(">", "&gt;").gsub(/[\x00-\x08\x0B\x0C\x0E-\x1F]/, "")
   end
-  def self._20ca4ec8(idx)
+  def self.col_name(idx)
     name = ""
     i = idx
     loop do
@@ -99,15 +99,15 @@ module KSU::Thongke::Xuat
     end
     name
   end
-  def self._ec5d6377(pt, value, _e7b2b17b, _c41450bb = nil)
-    if _c41450bb
+  def self.cell_xml(pt, value, style_ix, formula = nil)
+    if formula
       partner = value.is_a?(Numeric) ? value : 0
-      return "<c r=\"#{pt}\" s=\"#{_e7b2b17b}\"><f>#{_c9faf4c6(_c41450bb)}</f><v>#{partner}</v></c>"
+      return "<c r=\"#{pt}\" s=\"#{style_ix}\"><f>#{xml_escape(formula)}</f><v>#{partner}</v></c>"
     end
-    return "<c r=\"#{pt}\" s=\"#{_e7b2b17b}\"><v>#{value}</v></c>" if value.is_a?(Numeric)
+    return "<c r=\"#{pt}\" s=\"#{style_ix}\"><v>#{value}</v></c>" if value.is_a?(Numeric)
     text = value.to_s
-    return "<c r=\"#{pt}\" s=\"#{_e7b2b17b}\"/>" if text.empty?
-    "<c r=\"#{pt}\" s=\"#{_e7b2b17b}\" t=\"inlineStr\"><is><t xml:space=\"preserve\">#{_c9faf4c6(text)}</t></is></c>"
+    return "<c r=\"#{pt}\" s=\"#{style_ix}\"/>" if text.empty?
+    "<c r=\"#{pt}\" s=\"#{style_ix}\" t=\"inlineStr\"><is><t xml:space=\"preserve\">#{xml_escape(text)}</t></is></c>"
   end
   def self._278dd154(arr)
     out = arr.each_with_index.map { |w, i|
@@ -124,8 +124,8 @@ module KSU::Thongke::Xuat
       count_by_length = arr[:lines] || 1
       attr = count_by_length > 1 ? " ht=\"#{count_by_length * 15}\" customHeight=\"1\"" : ""
       _bd6ab6e1 += "<row r=\"#{half + 1}\"#{attr}>"
-      arr[:cells].each_with_index do |(value, _e7b2b17b, _c41450bb), color|
-        _bd6ab6e1 += _ec5d6377(_20ca4ec8(color) + (half + 1).to_s, value, _e7b2b17b, _c41450bb)
+      arr[:cells].each_with_index do |(value, style_ix, formula), color|
+        _bd6ab6e1 += cell_xml(col_name(color) + (half + 1).to_s, value, style_ix, formula)
       end
       _bd6ab6e1 += "</row>"
     end
@@ -133,7 +133,7 @@ module KSU::Thongke::Xuat
   end
   def self._46b90971(sheets)
     out = sheets.each_with_index.map { |sheet, i|
-      "<sheet name=\"#{_c9faf4c6(sheet[:name])}\" sheetId=\"#{i + 1}\" r:id=\"rId#{i + 1}\"/>"
+      "<sheet name=\"#{xml_escape(sheet[:name])}\" sheetId=\"#{i + 1}\" r:id=\"rId#{i + 1}\"/>"
     }.join
     XML_HEAD + "<workbook xmlns=\"#{NS_MAIN}\" xmlns:r=\"#{NS_REL}\"><sheets>#{out}</sheets><calcPr fullCalcOnLoad=\"1\"/></workbook>"
   end
@@ -193,7 +193,7 @@ module KSU::Thongke::Xuat
     "<Relationships xmlns=\"#{NS_PKG}\">" \
     "<Relationship Id=\"rId1\" Type=\"#{NS_REL}/officeDocument\" Target=\"xl/workbook.xml\"/></Relationships>"
   end
-  def self.build_pdf(sheets)
+  def self.build_doc(sheets)
     arr = []
     arr << ["[Content_Types].xml", _7fb3dc0f(sheets)]
     arr << ["_rels/.rels", _8e83909c]

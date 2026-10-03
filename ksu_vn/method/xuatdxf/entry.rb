@@ -137,7 +137,7 @@ module KSU::Xuatdxf
   def _bb0c6429(pts)
     n = pts.size
     return pts if n < 3
-    return pts if KSU::Nesting._5d9dd503(pts) >= 0
+    return pts if KSU::Nesting.signed_area(pts) >= 0
     (0...n).map do |k|
       ix = (n - 1 - k) % n
       src = pts[ix]

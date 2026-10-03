@@ -631,7 +631,8 @@ ten:
   _d2988734: import           # Addon: nap cac *_kx/main.rb; Ttf: doc mot file font
 
   # utils/pdf/build.rb -- bo sinh file PDF
-  _b3b2dea9: build_pdf
+  _b3b2dea9: build_doc       # MOT hex cho ca hai: utils/pdf/build.rb dung PDF,
+                            # thongke/xuat.rb dung XLSX. Ten phai dung ca hai cho.
   _da06e417: font
   _a8f05922: font_bold
   _70d6149d: page_stream      # dong lenh ve cua mot trang
@@ -2078,6 +2079,46 @@ ten:
   _5f86612c: total_area          # @
   _d3fa94d5: collect_timer       # @
 
+  # ===== ME 54: method/intem/scan.rb -- quet du lieu de in tem =====
+  # Gom moi van con hien, moi tam tren van, roi sap xep theo thu tu se in:
+  # hoac theo so tam, hoac theo khoang cach toi goc bat dau nguoi dung chon.
+  _9e1d7ab3: scan
+  _e12462c7: index_boards        # duyet ca mo hinh toi 8 tang de lay ma code_n*
+  _cbfbfd78: part_record
+  _9ec31362: last_cut_parts      # doc JSON trong thuoc tinh "sheet-last-cut"
+  _acf1b201: sheet_dims          # uu tien "sheet-dimension", khong co thi do hop bao
+  _6aba4c5e: sheet_origin        # goc van, da cong edit_offset
+  _f0de9fe3: nearest_pt          # dinh gan goc bat dau nhat, de sap thu tu in
+
+  # ===== ME 55: utils/nesting/corner.rb -- don tam ve mot goc =====
+  # Khi phep xep thuong khong du, dung phep DON TRONG LUC: lap di lap lai, moi
+  # tam truot het co ve phia u roi phia v, cho den khi khong tam nao nhuc nhich
+  # nua hoac het gio. Truot bao xa thi hoi NFP, khong co NFP thi chieu hop bao.
+  _812a997b: compact
+  _d59e252b: compact_nfp
+  _19df3e1d: compact_simple
+  _bca72a10: slide_dist
+  _b00ea38a: horiz               # true = truot theo u, false = theo v
+  _bb9d9306: nfp_rings
+  _edec0f70: in_rings?
+  _3caaabb9: ray_hit
+  _7edd7b75: slide_by_proj
+  _5d9dd503: signed_area
+  _c040f779: du
+  _9c1b6267: dv
+  _a81aa358: local_polys
+
+  # ===== ME 56: method/thongke/xuat.rb -- xuat thong ke ra XLSX =====
+  _beb63a90: copy_image          # ghi PNG ra TEMP roi nho PowerShell day vao clipboard
+  _a105a0f4: cost_sheet          # sheet "Chi phi", co cong thuc SUM cho tung muc
+  _31eafa5f: parts_sheet         # sheet "Cau kien"
+  _c9faf4c6: xml_escape
+  _20ca4ec8: col_name            # 0 -> A, 26 -> AA
+  _ec5d6377: cell_xml
+  _c41450bb: formula             # co cong thuc thi ghi <f> kem <v> da tinh san
+  _e7b2b17b: style_ix
+  _5ffa637f: name_col
+
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,
@@ -2089,7 +2130,6 @@ bo:
   - _727b63c7
   - _7c10a028
   - _884dee16
-  - _9e1d7ab3
   - _d8a5a5cb
   # Ban sinh doi ZSU goi hex nay la `arr`. Ben nay no la thu khac va doc theo
   # ngu canh thi ro hon. (_6e6c93db va _9535dc0b da co ten that: xem tren.)
