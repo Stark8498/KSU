@@ -225,13 +225,13 @@ module KSU::Mirror
     end
   end
   def draw_rect2d(view)
-    return unless @_3a930069 && @_86277c8a
-    KSU::View.draw_rect2d(view, @_3a930069, @_0b246bc2, @_86277c8a, @_e76905aa)
+    return unless @down_x && @drag_x
+    KSU::View.draw_rect2d(view, @down_x, @down_y, @drag_x, @drag_y)
     _9b91a3d7(view)
   end
   def _9b91a3d7(view)
     return unless @nesting && @nesting.valid?
-    arr = _101ef2e3(view, @_3a930069, @_0b246bc2, @_86277c8a, @_e76905aa)
+    arr = _101ef2e3(view, @down_x, @down_y, @drag_x, @drag_y)
     return if arr.empty?
     _33c34f08 = KSU::View.face_color
     edge_color4 = KSU::View.edge_color
@@ -242,15 +242,15 @@ module KSU::Mirror
       draw_panel_fill(panel, sheet, _33c34f08, edge_color4)
     end
   end
-  def _37011ad2(x, y, view)
+  def update_hover_sheets(x, y, view)
     return unless @nesting && @nesting.valid?
-    prev = [@panel, @sheet, @hover_side, @flag12, @flag39, @flag51, @vec3]
+    prev = [@panel, @sheet, @hover_side, @flag12, @hover_corner, @hover_edge, @vec3]
     @vec3 = panel_at(view, x, y)
     @hover_side = !@vec3 && hit_side_button(view, x, y)
     @flag12 = !@vec3 && !@hover_side && hit_delete_button(view, x, y)
-    @flag39 = (!@vec3 && !@hover_side && !@flag12) ? corner_handle_at(view, x, y) : nil
-    @flag51 = (!@vec3 && !@hover_side && !@flag12 && !@flag39) ? edge_handle_at(view, x, y) : nil
-    if @vec3 || @hover_side || @flag12 || @flag39 || @flag51
+    @hover_corner = (!@vec3 && !@hover_side && !@flag12) ? corner_handle_at(view, x, y) : nil
+    @hover_edge = (!@vec3 && !@hover_side && !@flag12 && !@hover_corner) ? edge_handle_at(view, x, y) : nil
+    if @vec3 || @hover_side || @flag12 || @hover_corner || @hover_edge
       @panel = @sheet3 = @sheet = nil
       @arr41 = []
     else
@@ -266,7 +266,7 @@ module KSU::Mirror
         @sheet = sheet_at2(view, x, y)
       end
     end
-    _13d621f9 = [@panel, @sheet, @hover_side, @flag12, @flag39, @flag51, @vec3]
+    _13d621f9 = [@panel, @sheet, @hover_side, @flag12, @hover_corner, @hover_edge, @vec3]
     view.invalidate if _13d621f9 != prev
   end
   def _b01ddcaf(view, x, y)

@@ -1,102 +1,102 @@
 module KSU::Collect
-  def _33959628(cfg, _3ef84888, flag = nil)
+  def start_collect(cfg, ask, flag = nil)
     model = Sketchup.active_model
     flag = nil if flag && flag.empty?
     arr = []
-    _17ee8011(flag || model.entities, arr, {})
-    return _9be3af68(:empty, cfg, _3ef84888, flag) if arr.empty?
-    @flag6 = true
-    @_20ca63d7 = cfg
-    @_aac687ed = _3ef84888
-    @_a14b1f13 = flag
-    @arr30 = arr
-    @arr50 = []
-    @h28 = {}
-    @arr59 = []
-    @num9 = 0
-    @num7 = 0.0
+    gather_boards(flag || model.entities, arr, {})
+    return collect_failed(:empty, cfg, ask, flag) if arr.empty?
+    @collecting = true
+    @collect_cfg = cfg
+    @collect_ask = ask
+    @collect_scope = flag
+    @boards = arr
+    @collected = []
+    @seen_ids = {}
+    @failed_names = []
+    @done_n = 0
+    @total_area = 0.0
     @progress = 0
     @str = "Đang chuẩn bị"
     KSU.select_tool(KSU::Nest::Progress) unless model.tools.active_tool.instance_of?(KSU::Nest::Progress)
     model.active_view.invalidate
-    @_d3fa94d5 = UI.start_timer(0, true) { _41789749 }
+    @collect_timer = UI.start_timer(0, true) { collect_tick }
   end
-  def _41789749
-    total = @arr30.length
-    return _b3aa40f8 if @num9 >= total
+  def collect_tick
+    total = @boards.length
+    return collect_done if @done_n >= total
     _b32f69ac = Time.now
-    while @num9 < total && Time.now - _b32f69ac < 0.05
-      g = @arr30[@num9]
-      @num9 += 1
+    while @done_n < total && Time.now - _b32f69ac < 0.05
+      g = @boards[@done_n]
+      @done_n += 1
       next unless g && g.valid?
       id = g.get_attribute("ABF", "board-index")
-      if id && @h28[id]
-        cfg = @_20ca63d7
-        _3ef84888 = @_aac687ed
-        _4effcb0e = @_a14b1f13
-        _90d58cd9
-        return _9be3af68(:dup_ids, cfg, _3ef84888, _4effcb0e)
+      if id && @seen_ids[id]
+        cfg = @collect_cfg
+        ask = @collect_ask
+        _4effcb0e = @collect_scope
+        clear_collect
+        return collect_failed(:dup_ids, cfg, ask, _4effcb0e)
       end
-      @h28[id] = true if id
-      grp, @num7 = _dd36ed49(g, @_20ca63d7, @num7)
+      @seen_ids[id] = true if id
+      grp, @total_area = part_of(g, @collect_cfg, @total_area)
       next if grp == :skip
       if grp
-        @arr50 << grp
+        @collected << grp
       else
-        @arr59 << g.name.to_s
+        @failed_names << g.name.to_s
       end
     end
-    @progress = (@num9 * 100.0 / total).round
+    @progress = (@done_n * 100.0 / total).round
     KSU::View.view.invalidate
   rescue StandardError => ent
-    _a762c251
+    abort_collect
     UI.messagebox("Lỗi nesting: #{ent.message}")
   end
-  def _b3aa40f8
-    cfg = @_20ca63d7
-    _3ef84888 = @_aac687ed
-    _4effcb0e = @_a14b1f13
-    parts = @arr50
-    arr = @arr59
-    _90d58cd9
+  def collect_done
+    cfg = @collect_cfg
+    ask = @collect_ask
+    _4effcb0e = @collect_scope
+    parts = @collected
+    arr = @failed_names
+    clear_collect
     unless arr.empty?
       UI.messagebox("Cảnh báo! Có lỗi xảy ra khi tạo đường cắt của tấm.")
     end
-    return _9be3af68(:empty, cfg, _3ef84888, _4effcb0e) if parts.empty?
-    start3(cfg, _b0282735(parts, cfg))
+    return collect_failed(:empty, cfg, ask, _4effcb0e) if parts.empty?
+    start3(cfg, jobs_of(parts, cfg))
   rescue StandardError => ent
-    _a762c251
+    abort_collect
     UI.messagebox("Lỗi nesting: #{ent.message}")
   end
-  def _9be3af68(err, cfg, _3ef84888, _4effcb0e = nil)
+  def collect_failed(err, cfg, ask, _4effcb0e = nil)
     clear_progress
-    unless _3ef84888
+    unless ask
       UI.messagebox("Có lỗi xảy ra khi nesting!")
       return
     end
     run2(cfg, _4effcb0e) if ask_relabel(err)
   end
-  def _90d58cd9
-    UI.stop_timer(@_d3fa94d5) if @_d3fa94d5
-    @_d3fa94d5 = nil
-    @flag6 = false
-    @_20ca63d7 = nil
-    @_aac687ed = nil
-    @_a14b1f13 = nil
-    @arr30 = nil
-    @arr50 = nil
-    @h28 = nil
-    @arr59 = nil
-    @num9 = nil
-    @num7 = nil
+  def clear_collect
+    UI.stop_timer(@collect_timer) if @collect_timer
+    @collect_timer = nil
+    @collecting = false
+    @collect_cfg = nil
+    @collect_ask = nil
+    @collect_scope = nil
+    @boards = nil
+    @collected = nil
+    @seen_ids = nil
+    @failed_names = nil
+    @done_n = nil
+    @total_area = nil
   end
   def _2d469ec2
-    return unless @flag6
-    _90d58cd9
+    return unless @collecting
+    clear_collect
     @progress = nil
     @str = nil
   end
-  def _17ee8011(ents, out, seen)
+  def gather_boards(ents, out, seen)
     ents.each do |ent|
       next unless KSU.container?(ent) && ent.valid?
       next if _2409a439(ent)
@@ -109,7 +109,7 @@ module KSU::Collect
         out << ent
       else
         kids = KSU.entities_in(ent)
-        _17ee8011(kids, out, seen) if kids
+        gather_boards(kids, out, seen) if kids
       end
     end
   end
@@ -131,7 +131,7 @@ module KSU::Collect
     return true if ent.get_attribute("ABF", "is-board") || ent.get_attribute("ABF", "board-index")
     !!KSU::Cutting.kids_with_attr(ent, "is-label")
   end
-  def _dd36ed49(g, cfg, _c348cdef)
+  def part_of(g, cfg, _c348cdef)
     tf = KSU::Cutting.tf_of(g)
     b2 = KSU::Cutting.board_faces(g, tf)
     return [nil, _c348cdef] unless b2
@@ -230,7 +230,7 @@ module KSU::Collect
     vec = b2[0].normal.transform(tf)
     KSU::Cutting.d(bb.distance_to_plane([bb2, vec]))
   end
-  def _b0282735(parts, cfg = nil)
+  def jobs_of(parts, cfg = nil)
     h = {}
     materials = []
     parts.each do |arr|

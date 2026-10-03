@@ -46,8 +46,8 @@ module KSU::Drag
     return unless @nesting && @nesting.valid?
     return unless sheet && sheet.valid?
     return if @progress
-    @flag10 = false
-    @flag46 = false
+    @pressing = false
+    @banding = false
     load_optimize_settings
     reload_sheets
     groups = { KSU::Sheet._7b0a38ee(sheet) => [sheet] }

@@ -2006,6 +2006,78 @@ ten:
   _5ac34e7b: bbox_mid            # tam HOP BAO; mot hex khac da giu `center_of`
   _19030d1a: escape_hole         # vector keo tam ra khoi lo no dang mac
 
+  # ----- ME 51b: con lai o chongbay/shape.rb: hai hop chu nhat va mot vung -----
+  # forced_dir so HOP BAO VAN (s*) voi HOP KEO CHUOT (r*), lay canh van bi vung
+  # keo phu nhieu nhat lam chieu quet.
+  _78088f46: sx1
+  _fb746155: sx2
+  _24cbb6f3: sy1
+  _8e929fea: sy2
+  _d059d485: rx1
+  _99115cc0: rx2
+  _364ea681: ry1
+  _cdb8e631: ry2
+  _6fb93270: ox                  # do phu theo truc x
+  _93bc4084: group
+  _1b630104: band_key
+  _9b7885a4: parts_between
+
+  # ===== ME 52: method/toiuuvan.rb -- cong cu toi uu van =====
+  # Chon van roi bam tay cam o goc / canh de don tam ve phia do. Keo chuot qua
+  # 3 pixel thi chuyen tu "bam" sang "quet khung".
+  _3e453efd: mx                  # @: toa do chuot lan cuoi, de tinh lai hover khi doi phim
+  _096c8c23: my                  # @
+  _3a930069: down_x              # @
+  _0b246bc2: down_y              # @
+  _86277c8a: drag_x              # @
+  _e76905aa: drag_y              # @
+  _236d145c: pressing            # @
+  _b9d0be9c: banding             # @: da qua nguong 3 pixel -> dang quet khung
+  _911dab46: band_add            # @: giu Ctrl/Shift luc bat dau quet
+  _6ce51da7: shift               # @
+  _a665d212: hover_corner        # @
+  _c60adb84: hover_edge          # @
+  _396b8871: pressed             # @
+  _e14ef301: hover_del           # @
+
+  _37011ad2: update_hover_sheets # giu Shift thi to ca nhom van cung loai
+  _f27128bc: update_hover_delete
+  _0fe26c5f: sheet_under
+  _8c688891: handle_at           # :corner hoac :edge
+  _c211b5aa: pack_handle
+  _4ada6475: handle_color
+  _256cdef5: drop_sheet          # mot hex khac da giu `delete_sheet`
+  _ce5c626c: sheets_in_rect
+  _fb7c57bd: select_group        # ca nhom van cung kich thuoc + vat lieu
+  _164a615b: select_sheet
+  _d0431df5: step_selection      # mui ten trai/phai: :prev :next :first :last
+
+  # ===== ME 53: method/nesting/collect.rb -- gom tam truoc khi nesting =====
+  # Duyet mo hinh theo nhip 0.05s de khong treo giao dien, vua di vua dung
+  # duong cat cho tung tam. Gap hai tam trung board-index thi dung han va hoi
+  # nguoi dung co danh so lai khong.
+  _33959628: start_collect
+  _41789749: collect_tick
+  _b3aa40f8: collect_done
+  _9be3af68: collect_failed      # :empty hoac :dup_ids
+  _90d58cd9: clear_collect
+  _a762c251: abort_collect
+  _17ee8011: gather_boards
+  _dd36ed49: part_of             # tra [chi tiet, tong dien tich moi] hoac :skip
+  _b0282735: jobs_of
+  _3ef84888: ask                 # co duoc hoi lai nguoi dung khong
+  _1184c55e: collecting          # @
+  _20ca63d7: collect_cfg         # @
+  _aac687ed: collect_ask         # @
+  _a14b1f13: collect_scope       # @
+  _8291eb29: boards              # @: hang doi con phai duyet
+  _cb8fe7be: collected           # @
+  _e1f38b43: failed_names        # @: tam dung duong cat hong, bao mot the o cuoi
+  _fa20dd85: seen_ids            # @
+  _78849128: done_n              # @
+  _5f86612c: total_area          # @
+  _d3fa94d5: collect_timer       # @
+
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,

@@ -120,11 +120,11 @@ module KSU::Shape
     materials = {}
     (@track_ids || []).each_with_index { |id, i| materials[id] = i }
     parts = parts.reject { |arr| arr[:rank] } unless @cho_phep_ghi_de
-    parts.group_by { |arr| arr[:sheet] }.flat_map do |sheet, arr2|
-      number_parts(arr2.sort_by { |arr|
+    parts.group_by { |arr| arr[:sheet] }.flat_map do |sheet, group|
+      number_parts(group.sort_by { |arr|
         i = materials[arr[:part].entityID]
         i ? [0, i, 0.0] : [1, order.call(arr), flag.call(arr)]
-      }, side, start_rank(sheet, side, arr2))
+      }, side, start_rank(sheet, side, group))
     end
   end
   def start_rank(sheet, side, arr2)
@@ -164,11 +164,11 @@ module KSU::Shape
     tol = 1.mm.to_f
     parts = parts.reject { |arr| arr[:rank] } unless @cho_phep_ghi_de
     return number_by_sheet(parts, side) unless @danh_so_thu_tu
-    parts.group_by { |arr| arr[:sheet] }.flat_map do |sheet, arr3|
-      layers = start_rank(sheet, side, arr3) - 1
+    parts.group_by { |arr| arr[:sheet] }.flat_map do |sheet, group|
+      layers = start_rank(sheet, side, group) - 1
       prev = nil
       answer = []
-      arr3.sort_by(&order2).each do |arr|
+      group.sort_by(&order2).each do |arr|
         k = order2.call(arr)
         if prev.nil? || (k - prev).abs > tol
           layers += 1
@@ -186,7 +186,7 @@ module KSU::Shape
   end
   def rank_drag(parts)
     if @layer_theo_vung
-      arr = parts.sort_by { |_23505ef9| _1b630104(@rank_a, @rank_b, _23505ef9) }
+      arr = parts.sort_by { |_23505ef9| band_key(@rank_a, @rank_b, _23505ef9) }
       rank_band(arr)
     else
       sweep = dir_of(@rank_a, @rank_b)
@@ -205,8 +205,8 @@ module KSU::Shape
     answer
   end
   def number_by_sheet(parts, side)
-    parts.group_by { |arr| arr[:sheet] }.flat_map do |sheet, _93bc4084|
-      number_parts(_93bc4084, side, start_rank(sheet, side, _93bc4084))
+    parts.group_by { |arr| arr[:sheet] }.flat_map do |sheet, group|
+      number_parts(group, side, start_rank(sheet, side, group))
     end
   end
   def rank_band(parts)
@@ -256,10 +256,10 @@ module KSU::Shape
     return nil if (x2 - x1) < 1.mm.to_f && (y2 - y1) < 1.mm.to_f
     arr = []
     @sheets.each do |rec|
-      _78088f46, _fb746155, _24cbb6f3, _8e929fea = rect_of(rec)
-      edge_overlaps(_78088f46, _fb746155, _24cbb6f3, _8e929fea, x1, x2, y1, y2).each do |edge, len|
+      sx1, sx2, sy1, sy2 = rect_of(rec)
+      edge_overlaps(sx1, sx2, sy1, sy2, x1, x2, y1, y2).each do |edge, len|
         next if len <= 0
-        arr << { edge: edge, len: len, dist: dist(_78088f46, _fb746155, _24cbb6f3, _8e929fea, edge) }
+        arr << { edge: edge, len: len, dist: dist(sx1, sx2, sy1, sy2, edge) }
       end
     end
     return nil if arr.empty?
@@ -277,25 +277,25 @@ module KSU::Shape
     arr3 = pts.map { |pt| pt.y.to_f }
     [*arr2.minmax, *arr3.minmax]
   end
-  def edge_overlaps(_78088f46, _fb746155, _24cbb6f3, _8e929fea, _d059d485, _99115cc0, _364ea681, _cdb8e631)
-    _6fb93270 = [[_fb746155, _99115cc0].min - [_78088f46, _d059d485].max, 0].max
-    _aeb18298   = [[_8e929fea, _cdb8e631].min - [_24cbb6f3, _364ea681].max, 0].max
+  def edge_overlaps(sx1, sx2, sy1, sy2, rx1, rx2, ry1, ry2)
+    ox = [[sx2, rx2].min - [sx1, rx1].max, 0].max
+    _aeb18298   = [[sy2, ry2].min - [sy1, ry1].max, 0].max
     {
-      top:    (_8e929fea.between?(_364ea681, _cdb8e631) ? _6fb93270 : 0),
-      bottom: (_24cbb6f3.between?(_364ea681, _cdb8e631) ? _6fb93270 : 0),
-      left:   (_78088f46.between?(_d059d485, _99115cc0) ? _aeb18298   : 0),
-      right:  (_fb746155.between?(_d059d485, _99115cc0) ? _aeb18298   : 0)
+      top:    (sy2.between?(ry1, ry2) ? ox : 0),
+      bottom: (sy1.between?(ry1, ry2) ? ox : 0),
+      left:   (sx1.between?(rx1, rx2) ? _aeb18298   : 0),
+      right:  (sx2.between?(rx1, rx2) ? _aeb18298   : 0)
     }
   end
-  def dist(_78088f46, _fb746155, _24cbb6f3, _8e929fea, edge)
+  def dist(sx1, sx2, sy1, sy2, edge)
     return Float::INFINITY unless @sweep_a
     start_x = @sweep_a.x.to_f
     ly0 = @sweep_a.y.to_f
     case edge
-    when :top    then (ly0 - _8e929fea).abs
-    when :bottom then (ly0 - _24cbb6f3).abs
-    when :left   then (start_x - _78088f46).abs
-    when :right  then (start_x - _fb746155).abs
+    when :top    then (ly0 - sy2).abs
+    when :bottom then (ly0 - sy1).abs
+    when :left   then (start_x - sx1).abs
+    when :right  then (start_x - sx2).abs
     end
   end
   def side_of(sweep)
@@ -329,7 +329,7 @@ module KSU::Shape
   end
   def finish_drag_rank
     return unless @rank_a && @rank_b
-    parts = _9b7885a4(@rank_a, @rank_b)
+    parts = parts_between(@rank_a, @rank_b)
     apply_ranks(rank_drag(parts)) unless parts.empty?
     @rank_a = nil
     @rank_b = nil
@@ -365,7 +365,7 @@ module KSU::Shape
     (pts2.length - 1).times do |i|
       _9710d820 = pts2[i]
       b = pts2[i + 1]
-      pts = _9b7885a4(_9710d820, b).sort_by { |_23505ef9| _1b630104(_9710d820, b, _23505ef9) }
+      pts = parts_between(_9710d820, b).sort_by { |_23505ef9| band_key(_9710d820, b, _23505ef9) }
       pts.each { |_23505ef9| arr << _23505ef9 unless arr.include?(_23505ef9) }
     end
     arr
@@ -377,7 +377,7 @@ module KSU::Shape
     return 0.0 if len2 < 1e-9
     ((pt6.x.to_f - pt.x.to_f) * dx + (pt6.y.to_f - pt.y.to_f) * dy) / len2
   end
-  def _9b7885a4(p1, p2)
+  def parts_between(p1, p2)
     eligible(@parts.select { |_23505ef9| _f9c10539(p1, p2, _23505ef9) })
   end
   def _f9c10539(p1, p2, arr)
@@ -420,7 +420,7 @@ module KSU::Shape
   def segs_cross?(x28, _60000b16, x2, y2, _abaa0311, _d84dfb87, _820de0a4, _77e79d7d)
     !_e817297d(x28, _60000b16, x2, y2, _abaa0311, _d84dfb87, _820de0a4, _77e79d7d).nil?
   end
-  def _1b630104(p1, p2, arr)
+  def band_key(p1, p2, arr)
     return 0.0 if point_in_part?(p1.x.to_f, p1.y.to_f, arr)
     best = _5410b01c(p1, p2, arr[:polygon])
     (arr[:holes] || []).each do |h|

@@ -16,17 +16,17 @@ class KSU::Toiuuvan
     @sheets = []
     @sel = []
     @btn_plan = []
-    @_3e453efd = nil
-    @_096c8c23 = nil
-    @_e14ef301 = nil
-    @flag39 = nil
-    @flag13 = false
-    @flag23 = false
-    @flag51 = nil
-    @_3a930069 = @_0b246bc2 = @_86277c8a = @_e76905aa = nil
-    @flag10 = false
-    @flag46 = false
-    @flag34 = false
+    @mx = nil
+    @my = nil
+    @hover_del = nil
+    @hover_corner = nil
+    @pressed = false
+    @shift = false
+    @hover_edge = nil
+    @down_x = @down_y = @drag_x = @drag_y = nil
+    @pressing = false
+    @banding = false
+    @band_add = false
     @tu_dong_hau_ky = !!KSU::Settings.get("tu_dong_hau_ky", true, "toi_uu_van")
     @goc_don_van = KSU::Settings.get("goc_don_van", "trai_duoi", "toi_uu_van").to_s
     @thu_tu_don = KSU::Settings.get("thu_tu_don", "mac_dinh", "toi_uu_van").to_s
@@ -121,8 +121,8 @@ class KSU::Toiuuvan
   def onKeyDown(key, rep, rot, view)
     case key
     when CONSTRAIN_MODIFIER_KEY
-      @flag23 = true
-      _37011ad2(true, view)
+      @shift = true
+      update_hover_sheets(true, view)
       _92d864e9(view, true)
     when VK_LEFT, VK_RIGHT
       return if @sel.empty?
@@ -132,7 +132,7 @@ class KSU::Toiuuvan
         else
           _b5af8dbf ? :last : :next
         end
-      _d0431df5(dir)
+      step_selection(dir)
       view&.invalidate
     when 192 then KSU::Settings.open_settings("toi_uu_van")
     when 27, 32
@@ -142,44 +142,44 @@ class KSU::Toiuuvan
   end
   def onKeyUp(key, rep, kflags, view)
     return unless key == CONSTRAIN_MODIFIER_KEY
-    @flag23 = false
-    _37011ad2(false, view)
+    @shift = false
+    update_hover_sheets(false, view)
     _92d864e9(view, false)
   end
   def onReturn(view)
     return if @sel.empty?
-    start_optimize(@flag23)
+    start_optimize(@shift)
     view&.invalidate
   end
   def onMouseMove(rot, x, y, view)
-    @_3e453efd = x
-    @_096c8c23 = y
-    @flag23 = (rot & MK_SHIFT) != 0
-    if @flag46
-      @_86277c8a, @_e76905aa = x, y
+    @mx = x
+    @my = y
+    @shift = (rot & MK_SHIFT) != 0
+    if @banding
+      @drag_x, @drag_y = x, y
       view.invalidate
       return
     end
-    if @flag10
-      if (x - @_3a930069).abs > 3 || (y - @_0b246bc2).abs > 3
-        @flag46 = true
-        @_86277c8a, @_e76905aa = x, y
+    if @pressing
+      if (x - @down_x).abs > 3 || (y - @down_y).abs > 3
+        @banding = true
+        @drag_x, @drag_y = x, y
         @btn_plan = []
-        @_e14ef301 = nil
+        @hover_del = nil
         view.invalidate
       end
       return
     end
     hover_preset(x, y, view)
     return if hover_field(x, y, view)
-    _37011ad2((rot & MK_SHIFT) != 0, view)
-    _f27128bc(view, x, y)
+    update_hover_sheets((rot & MK_SHIFT) != 0, view)
+    update_hover_delete(view, x, y)
     _92d864e9(view, (rot & MK_SHIFT) != 0)
   end
-  def _37011ad2(ctrl, view)
-    return unless @_3e453efd && @_096c8c23
+  def update_hover_sheets(ctrl, view)
+    return unless @mx && @my
     prev_key = @btn_plan
-    sheet = _0fe26c5f(view, @_3e453efd, @_096c8c23)
+    sheet = sheet_under(view, @mx, @my)
     @btn_plan = if sheet && ctrl
                       key = KSU::Sheet._7b0a38ee(sheet)
                       @sheets
@@ -190,70 +190,70 @@ class KSU::Toiuuvan
                     end
     view.invalidate if prev_key != @btn_plan
   end
-  def _f27128bc(view, x, y)
-    prev_key = @_e14ef301
-    @_e14ef301 = hit_delete_button(view, x, y)
-    view.invalidate if prev_key != @_e14ef301
+  def update_hover_delete(view, x, y)
+    prev_key = @hover_del
+    @hover_del = hit_delete_button(view, x, y)
+    view.invalidate if prev_key != @hover_del
   end
   def onLButtonDown(rot, x, y, view)
     return if click_field(x, y, view)
     return if click_outside(x, y, view)
-    arr = _8c688891(view, x, y, :corner)
+    arr = handle_at(view, x, y, :corner)
     if arr
-      _c211b5aa(arr[:sheet], arr[:idx], (rot & MK_SHIFT) != 0, :corner)
+      pack_handle(arr[:sheet], arr[:idx], (rot & MK_SHIFT) != 0, :corner)
       view.invalidate
       return
     end
-    edge = _8c688891(view, x, y, :edge)
+    edge = handle_at(view, x, y, :edge)
     if edge
-      _c211b5aa(edge[:sheet], edge[:idx], (rot & MK_SHIFT) != 0, :edge)
+      pack_handle(edge[:sheet], edge[:idx], (rot & MK_SHIFT) != 0, :edge)
       view.invalidate
       return
     end
     target = hit_delete_button(view, x, y)
     if target
-      _256cdef5(target)
+      drop_sheet(target)
       view.invalidate
       return
     end
-    @_3a930069, @_0b246bc2 = x, y
-    @_86277c8a, @_e76905aa = x, y
-    @flag10 = true
-    @flag46 = false
-    @flag34 = (rot & MK_CONTROL) != 0 || (rot & MK_SHIFT) != 0
+    @down_x, @down_y = x, y
+    @drag_x, @drag_y = x, y
+    @pressing = true
+    @banding = false
+    @band_add = (rot & MK_CONTROL) != 0 || (rot & MK_SHIFT) != 0
     view.invalidate
   end
   def onLButtonUp(rot, x, y, view)
-    if @flag46
-      sheets = _ce5c626c(view, @_3a930069, @_0b246bc2, x, y)
-      @sel = @flag34 ? (@sel + sheets).uniq : sheets
-    elsif @flag10
+    if @banding
+      sheets = sheets_in_rect(view, @down_x, @down_y, x, y)
+      @sel = @band_add ? (@sel + sheets).uniq : sheets
+    elsif @pressing
       additive = (rot & MK_CONTROL) != 0
       ctrl = (rot & MK_SHIFT) != 0
-      sheet = _0fe26c5f(view, x, y)
+      sheet = sheet_under(view, x, y)
       if sheet
         if ctrl
-          _fb7c57bd(sheet, additive: additive)
+          select_group(sheet, additive: additive)
         else
-          _164a615b(sheet, additive)
+          select_sheet(sheet, additive)
         end
       elsif !additive && !ctrl
         @sel = []
       end
     end
-    @flag10 = false
-    @flag46 = false
-    @_3a930069 = @_0b246bc2 = @_86277c8a = @_e76905aa = nil
+    @pressing = false
+    @banding = false
+    @down_x = @down_y = @drag_x = @drag_y = nil
     view.invalidate
   end
   def onLButtonDoubleClick(rot, x, y, view)
     additive = (rot & MK_CONTROL) != 0
-    sheet = _0fe26c5f(view, x, y)
+    sheet = sheet_under(view, x, y)
     return unless sheet
-    _fb7c57bd(sheet, additive: additive)
+    select_group(sheet, additive: additive)
     view.invalidate
   end
-  def _fb7c57bd(sheet, additive:)
+  def select_group(sheet, additive:)
     key = KSU::Sheet._7b0a38ee(sheet)
     node = @sheets
       .select { |rec| KSU::Sheet._7b0a38ee(rec[:instance]) == key }
@@ -276,10 +276,10 @@ class KSU::Toiuuvan
     @sel.each do |sheet|
       rec = @sheets.find { |s| s[:instance] == sheet }
       next unless rec
-      KSU::View.draw_brackets(view, rec[:top_corners]) { |i| _4ada6475(sheet, i, @flag39, @flag13) }
-      KSU::View._2873a79b(view, rec[:top_corners]) { |i| _4ada6475(sheet, i, @flag51, @flag13) }
+      KSU::View.draw_brackets(view, rec[:top_corners]) { |i| handle_color(sheet, i, @hover_corner, @pressed) }
+      KSU::View._2873a79b(view, rec[:top_corners]) { |i| handle_color(sheet, i, @hover_edge, @pressed) }
     end
-    draw_rect2d(view) if @flag46
+    draw_rect2d(view) if @banding
     _a42dd0f4(view)
     draw_presets(view)
     draw_fields(view)
@@ -305,11 +305,11 @@ class KSU::Toiuuvan
   def reload_sheets
     sheet_list
   end
-  def _0fe26c5f(view, x, y)
+  def sheet_under(view, x, y)
     partner = @sheets.find { |rec| KSU::View._919af578(view, x, y, rec) }
     partner && partner[:instance]
   end
-  def _164a615b(sheet, additive)
+  def select_sheet(sheet, additive)
     if additive
       @sel.include?(sheet) ? @sel.delete(sheet) : @sel << sheet
     else
@@ -326,20 +326,20 @@ class KSU::Toiuuvan
   def _a42dd0f4(view)
     @sheets.each do |rec|
       next unless KSU::Sheet.empty?(rec[:instance])
-      KSU::View.draw_warn_button(view, KSU::View.center_of(rec[:top_corners]), hover: @_e14ef301 == rec[:instance])
+      KSU::View.draw_warn_button(view, KSU::View.center_of(rec[:top_corners]), hover: @hover_del == rec[:instance])
     end
   end
   def _92d864e9(view, ctrl)
-    return unless @_3e453efd && @_096c8c23
-    _8734f930 = @flag39
-    _c3288067 = @flag13
-    _522da39c = @flag51
-    @flag39 = _8c688891(view, @_3e453efd, @_096c8c23, :corner)
-    @flag51 = @flag39 ? nil : _8c688891(view, @_3e453efd, @_096c8c23, :edge)
-    @flag13 = ctrl
-    view.invalidate if @flag39 != _8734f930 || @flag13 != _c3288067 || @flag51 != _522da39c
+    return unless @mx && @my
+    _8734f930 = @hover_corner
+    _c3288067 = @pressed
+    _522da39c = @hover_edge
+    @hover_corner = handle_at(view, @mx, @my, :corner)
+    @hover_edge = @hover_corner ? nil : handle_at(view, @mx, @my, :edge)
+    @pressed = ctrl
+    view.invalidate if @hover_corner != _8734f930 || @pressed != _c3288067 || @hover_edge != _522da39c
   end
-  def _8c688891(view, x, y, joint)
+  def handle_at(view, x, y, joint)
     @sel.each do |sheet|
       rec = @sheets.find { |s| s[:instance] == sheet }
       next unless rec
@@ -352,7 +352,7 @@ class KSU::Toiuuvan
     end
     nil
   end
-  def _4ada6475(sheet, i, hover, ctrl)
+  def handle_color(sheet, i, hover, ctrl)
     return false unless hover
     if ctrl
       hover[:idx] == i && @sel.include?(sheet)
@@ -360,7 +360,7 @@ class KSU::Toiuuvan
       hover[:sheet] == sheet && hover[:idx] == i
     end
   end
-  def _c211b5aa(sheet, ix, ctrl, mode)
+  def pack_handle(sheet, ix, ctrl, mode)
     arr = (ctrl ? @sel.dup : [sheet]).select { |s| s && s.valid? }
     return if arr.empty?
     KSU.start
@@ -379,7 +379,7 @@ class KSU::Toiuuvan
   rescue StandardError
     KSU.abort_op
   end
-  def _d0431df5(dir)
+  def step_selection(dir)
     _9535dc0b = @sel.select { |s| s && s.valid? }
     return if _9535dc0b.empty?
     arr3 = []
@@ -461,15 +461,15 @@ class KSU::Toiuuvan
       bot.set_attribute("ABF", "sheet-id", str) if str
     end
   end
-  def _256cdef5(sheet)
+  def drop_sheet(sheet)
     return unless KSU::Sheet.remove_sheet(sheet, @nesting, @sheets)
     @sel.delete(sheet)
     @btn_plan.delete(sheet)
-    @_e14ef301 = nil
+    @hover_del = nil
     sheet_list
     KSU::View.clear_cache
   end
-  def _ce5c626c(view, x218, _60000b16, x2, y2)
+  def sheets_in_rect(view, x218, _60000b16, x2, y2)
     rect = KSU::Quet.rect([x218, _60000b16], [x2, y2])
     strict = x2 >= x218
     @sheets.each_with_object([]) do |rec, out|
@@ -481,9 +481,9 @@ class KSU::Toiuuvan
     end
   end
   def draw_rect2d(view)
-    return unless @_3a930069 && @_86277c8a
-    KSU::View.draw_rect2d(view, @_3a930069, @_0b246bc2, @_86277c8a, @_e76905aa)
-    _ce5c626c(view, @_3a930069, @_0b246bc2, @_86277c8a, @_e76905aa).each do |sheet|
+    return unless @down_x && @drag_x
+    KSU::View.draw_rect2d(view, @down_x, @down_y, @drag_x, @drag_y)
+    sheets_in_rect(view, @down_x, @down_y, @drag_x, @drag_y).each do |sheet|
       rec = @sheets.find { |s| s[:instance] == sheet }
       KSU::View.draw_outline(rec[:top_corners], KSU::View.face_color) if rec
     end

@@ -49,7 +49,7 @@ module KSU::Launch
   def _d1ef9374(arr)
     src = arr && !arr.empty? ? arr : Sketchup.active_model.entities
     arr2 = []
-    _17ee8011(src, arr2, {})
+    gather_boards(src, arr2, {})
     h = {}
     materials = []
     arr2.each do |g|
@@ -106,7 +106,7 @@ module KSU::Launch
       end
     end
     arr3 = []
-    _17ee8011(Sketchup.active_model.entities, arr3, {})
+    gather_boards(Sketchup.active_model.entities, arr3, {})
     arr5 = arr3.select do |g|
       if !keys.empty? && keys[g.get_attribute("ABF", "board-index").to_s]
         true
@@ -148,7 +148,7 @@ module KSU::Launch
     arr.select { |half| half.is_a?(Hash) && !half["key"].to_s.empty? }
   end
   def _f75e3e4f(rows, _4effcb0e)
-    return if @arr47 || @progress || @labelling || @flag6
+    return if @arr47 || @progress || @labelling || @collecting
     KSU.select_only([])
     cfg = job_settings
     unless rows.empty?
@@ -175,9 +175,9 @@ module KSU::Launch
     end
     close_contexts
     erase_nesting
-    _33959628(cfg, true, _4effcb0e)
+    start_collect(cfg, true, _4effcb0e)
   rescue StandardError => ent
-    _a762c251
+    abort_collect
     UI.messagebox("Lỗi nesting: #{ent.message}")
   end
 end

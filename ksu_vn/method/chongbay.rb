@@ -732,7 +732,7 @@ class KSU::Chongbay
   end
   def line_plan
     return [] unless @kieu_chon_tam == 1 && @rank_a && @rank_b
-    parts = _9b7885a4(@rank_a, @rank_b)
+    parts = parts_between(@rank_a, @rank_b)
     return [] if parts.empty?
     rank_drag(parts)
   end

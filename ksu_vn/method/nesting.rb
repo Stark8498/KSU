@@ -124,12 +124,12 @@ module KSU::Nest
     if @arr47
       tool = Sketchup.active_model.tools.active_tool
       return if tool.is_a?(Progress)
-      _a762c251
+      abort_collect
     end
     return if @progress || @labelling
     KSU::Settings.open_window("nesting")
   rescue StandardError => ent
-    _a762c251
+    abort_collect
     UI.messagebox("Lỗi nesting: #{ent.message}")
   end
   def start3(cfg, rows)
@@ -153,7 +153,7 @@ module KSU::Nest
       end
     end
     if @arr47.empty?
-      _a762c251
+      abort_collect
       UI.messagebox("Có lỗi xảy ra khi nesting!")
       return
     end
@@ -161,7 +161,7 @@ module KSU::Nest
     @arr47.each do |job|
       members = build_parts(job)
       unless members
-        _a762c251
+        abort_collect
         UI.messagebox("Có lỗi xảy ra khi nesting!")
         return
       end
@@ -171,7 +171,7 @@ module KSU::Nest
     hide_all
     _47d154e7(jobs)
   rescue StandardError => ent
-    _a762c251
+    abort_collect
     UI.messagebox("Lỗi nesting: #{ent.message}")
   end
   def split_two?(job)
@@ -300,7 +300,7 @@ module KSU::Nest
       model.active_view.invalidate
     end
   rescue StandardError => ent
-    _a762c251
+    abort_collect
     UI.messagebox("Lỗi nesting: #{ent.message}")
   ensure
     @flag58 = false
@@ -353,9 +353,9 @@ module KSU::Nest
     @progress = nil
     @str = nil
   end
-  def _a762c251
+  def abort_collect
     stop_engine
-    _90d58cd9
+    clear_collect
     _0b686c6e
     restore_view
     clear_progress
@@ -530,7 +530,7 @@ module KSU::Nest
   def run2(cfg, arr = nil)
     flag = arr && !arr.empty?
     arr2 = []
-    _17ee8011(arr, arr2, {}) if flag
+    gather_boards(arr, arr2, {}) if flag
     if flag && arr2.empty?
       UI.messagebox("Có lỗi xảy ra khi nesting!")
       return
@@ -582,9 +582,9 @@ module KSU::Nest
     KSU.commit
     KSU::View.view.invalidate
     cfg.delete(:materials) if cfg.is_a?(Hash)
-    _33959628(cfg, false, _4effcb0e)
+    start_collect(cfg, false, _4effcb0e)
   rescue StandardError => ent
-    _a762c251
+    abort_collect
     UI.messagebox("Lỗi nesting: #{ent.message}")
   end
   def _a3c31f39(msg2)

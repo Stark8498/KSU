@@ -42,9 +42,9 @@ class KSU::Xeptam
     @sel_sheets = []
     @flag56 = false
     @flag45 = false
-    @flag10 = false
-    @flag46 = false
-    @_3a930069 = @_0b246bc2 = @_86277c8a = @_e76905aa = nil
+    @pressing = false
+    @banding = false
+    @down_x = @down_y = @drag_x = @drag_y = nil
     @nesting = nil
     @arr23 = []
     @h14 = {}
@@ -71,8 +71,8 @@ class KSU::Xeptam
     @sheet = nil
     @hover_side = nil
     @flag12 = false
-    @flag39 = nil
-    @flag51 = nil
+    @hover_corner = nil
+    @hover_edge = nil
     @vec3 = nil
     @flag38 = false
     @flag30 = false
@@ -258,7 +258,7 @@ class KSU::Xeptam
     if key == COPY_MODIFIER_KEY
       unless @flag30
         @flag30 = true
-        @flag52 = @flag56 || @flag10 || @flag46
+        @flag52 = @flag56 || @pressing || @banding
       end
     else
       @flag52 = true
@@ -320,7 +320,7 @@ class KSU::Xeptam
     if key == COPY_MODIFIER_KEY
       _f0301936 = @flag30 && !@flag52
       @flag30 = false
-      if _f0301936 && !@progress && !@flag56 && !@flag10 && !@flag46
+      if _f0301936 && !@progress && !@flag56 && !@pressing && !@banding
         toggle_group
         view.invalidate
       end
@@ -357,7 +357,7 @@ class KSU::Xeptam
     _7a82534c = panel_at(view, x, y)
     if _7a82534c
       flip_panel(_7a82534c)
-      _37011ad2(x, y, view)
+      update_hover_sheets(x, y, view)
       onSetCursor
       @flag38 = true
       view.invalidate
@@ -396,22 +396,22 @@ class KSU::Xeptam
         return
       end
     end
-    @_3a930069, @_0b246bc2 = x, y
-    @flag10 = true
-    @flag46 = false
+    @down_x, @down_y = x, y
+    @pressing = true
+    @banding = false
     @flag5 = (rot & COPY_MODIFIER_MASK) != 0 || (rot & CONSTRAIN_MODIFIER_MASK) != 0
     @nesting ||= KSU::Nesting.find_nesting
     view.invalidate
   end
   def onLButtonUp(rot, x, y, view)
-    @flag10 = false
+    @pressing = false
     if @flag38
       @flag38 = false
       view.invalidate
       return
     end
-    if @flag46
-      arr = _101ef2e3(view, @_3a930069, @_0b246bc2, x, y)
+    if @banding
+      arr = _101ef2e3(view, @down_x, @down_y, x, y)
       if arr.any?
         select_many(arr)
         @flag37 = nil
@@ -420,7 +420,7 @@ class KSU::Xeptam
         @sel_sheets = []
         @flag37 = nil
       end
-      @flag46 = false
+      @banding = false
     elsif @flag56
       drag_end
     else
@@ -445,28 +445,28 @@ class KSU::Xeptam
     view.invalidate
   end
   def onMouseMove(rot, x, y, view)
-    if @flag46
-      @_86277c8a, @_e76905aa = x, y
+    if @banding
+      @drag_x, @drag_y = x, y
       view.invalidate
       return
     end
     hover_preset(x, y, view)
-    return if hover_field(x, y, view) && !@flag10 && !@flag56
-    _37011ad2(x, y, view) unless @flag10 || @flag56
-    if @flag10 && !@flag56
-      dx = (x - @_3a930069).abs
-      dy = (y - @_0b246bc2).abs
+    return if hover_field(x, y, view) && !@pressing && !@flag56
+    update_hover_sheets(x, y, view) unless @pressing || @flag56
+    if @pressing && !@flag56
+      dx = (x - @down_x).abs
+      dy = (y - @down_y).abs
       if dx > 3 || dy > 3
-        answer = _b01ddcaf(view, @_3a930069, @_0b246bc2)
+        answer = _b01ddcaf(view, @down_x, @down_y)
         if @sel.any? && answer && @sel.include?(answer[:panel])
-          drag_begin(view, @_3a930069, @_0b246bc2)
+          drag_begin(view, @down_x, @down_y)
         elsif answer
           @sel = [answer[:panel]]
           @sel_sheets = [answer[:sheet]]
           expand_selection
-          drag_begin(view, @_3a930069, @_0b246bc2)
+          drag_begin(view, @down_x, @down_y)
         else
-          @flag46 = true
+          @banding = true
           @panel = @sheet4 = @sheet = nil
         end
       end
@@ -599,7 +599,7 @@ class KSU::Xeptam
       KSU::View.draw_polys(@arr18, color: KSU::View.warn_color, line: false) if @arr18.any?
     end
     KSU::Sheet.draw_borders(view, @nesting)
-    draw_rect2d(view) if @flag46
+    draw_rect2d(view) if @banding
     edge_color2 = KSU::View.edge_color
     mat = KSU::View.face_color
     warn = KSU::View.warning_color
@@ -643,11 +643,11 @@ class KSU::Xeptam
       if arr
         if KSU::Sheet.hidden?(@flag37)
           draw_thick_outline(arr, mat4)
-          KSU::View.draw_brackets(view, arr[:top_corners], color: warn, active: KSU::Sheet.corner_index(@flag37, @nesting)) { |i| @flag39 == i }
+          KSU::View.draw_brackets(view, arr[:top_corners], color: warn, active: KSU::Sheet.corner_index(@flag37, @nesting)) { |i| @hover_corner == i }
         else
           draw_thick_outline(arr, mat3)
-          KSU::View.draw_brackets(view, arr[:top_corners]) { |i| @flag39 == i }
-          KSU::View._2873a79b(view, arr[:top_corners]) { |i| @flag51 == i }
+          KSU::View.draw_brackets(view, arr[:top_corners]) { |i| @hover_corner == i }
+          KSU::View._2873a79b(view, arr[:top_corners]) { |i| @hover_edge == i }
           draw_side_buttons(view, arr)
           KSU::View.draw_warn_button(view, KSU::View.center_of(arr[:top_corners]), hover: @flag12) if KSU::Sheet.empty?(@flag37)
         end
