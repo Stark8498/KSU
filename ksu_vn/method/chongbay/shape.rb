@@ -129,14 +129,14 @@ module KSU::Shape
   end
   def start_rank(sheet, side, arr2)
     return 1 unless @danh_so_thu_tu
-    _e2b5ea25 = layer_prefix(side)
+    prefix = layer_prefix(side)
     ref_p1 = {}
     arr2.each { |arr| ref_p1[arr[:part].entityID] = true }
     hi = @so_layer_tu - 1
     @parts.each do |arr|
       next unless arr[:rank] && arr[:sheet] == sheet
       next if ref_p1[arr[:part].entityID]
-      next unless arr[:prefix].to_s == _e2b5ea25
+      next unless arr[:prefix].to_s == prefix
       hi = arr[:rank] if arr[:rank] > hi
     end
     hi + 1
@@ -336,7 +336,7 @@ module KSU::Shape
   end
   def rank_lasso
     return if @lasso_pts.length < 2
-    parts = _d01131b1(@lasso_pts)
+    parts = parts_along(@lasso_pts)
     apply_ranks(rank_free(parts)) unless parts.empty?
     @lasso_pts = []
     @rank_b = nil
@@ -355,12 +355,12 @@ module KSU::Shape
     end
     commit_changes(arr2)
   end
-  def _e7ce91ab
+  def lasso_path
     pts = @lasso_pts.dup
     pts << @rank_b if @rank_b && pts.any? && pts.last != @rank_b
     pts
   end
-  def _d01131b1(pts2)
+  def parts_along(pts2)
     arr = []
     (pts2.length - 1).times do |i|
       _9710d820 = pts2[i]
@@ -370,7 +370,7 @@ module KSU::Shape
     end
     arr
   end
-  def _9707d4ab(pt, b, pt6)
+  def proj_t(pt, b, pt6)
     dx = b.x.to_f - pt.x.to_f
     dy = b.y.to_f - pt.y.to_f
     len2 = dx * dx + dy * dy
@@ -378,15 +378,15 @@ module KSU::Shape
     ((pt6.x.to_f - pt.x.to_f) * dx + (pt6.y.to_f - pt.y.to_f) * dy) / len2
   end
   def parts_between(p1, p2)
-    eligible(@parts.select { |_23505ef9| _f9c10539(p1, p2, _23505ef9) })
+    eligible(@parts.select { |_23505ef9| seg_hits_part?(p1, p2, _23505ef9) })
   end
-  def _f9c10539(p1, p2, arr)
-    return false unless _9608e031(p1, p2, arr[:bbox])
+  def seg_hits_part?(p1, p2, arr)
+    return false unless seg_hits_bbox?(p1, p2, arr[:bbox])
     @che_do_chon == 1 ?
-      _79405863(p1, p2, arr[:polygon]) :
-      _9aaf7055(p1, p2, arr)
+      seg_cuts_poly?(p1, p2, arr[:polygon]) :
+      seg_touches_part?(p1, p2, arr)
   end
-  def _9608e031(p1, p2, bbox)
+  def seg_hits_bbox?(p1, p2, bbox)
     x26, num4 = p1.x.to_f, p1.y.to_f
     x2, y2 = p2.x.to_f, p2.y.to_f
     x1, x25 = bbox.min.x.to_f, bbox.max.x.to_f
@@ -395,18 +395,18 @@ module KSU::Shape
     return true if x2.between?(x1, x25) && y2.between?(y1, y23)
     seg_hits_rect?(x26, num4, x2, y2, x1, y1, x25, y23)
   end
-  def _9aaf7055(p1, p2, arr)
+  def seg_touches_part?(p1, p2, arr)
     return true if point_in_part?(p1.x.to_f, p1.y.to_f, arr)
     return true if point_in_part?(p2.x.to_f, p2.y.to_f, arr)
-    return true if _37ca7a0d(p1, p2, arr[:polygon])
-    (arr[:holes] || []).any? { |h| _37ca7a0d(p1, p2, h) }
+    return true if seg_crosses_poly?(p1, p2, arr[:polygon])
+    (arr[:holes] || []).any? { |h| seg_crosses_poly?(p1, p2, h) }
   end
-  def _79405863(p1, p2, poly)
+  def seg_cuts_poly?(p1, p2, poly)
     return false if KSU::View.in_poly?(p1.x.to_f, p1.y.to_f, poly)
     return false if KSU::View.in_poly?(p2.x.to_f, p2.y.to_f, poly)
-    _37ca7a0d(p1, p2, poly)
+    seg_crosses_poly?(p1, p2, poly)
   end
-  def _37ca7a0d(p1, p2, poly)
+  def seg_crosses_poly?(p1, p2, poly)
     x27, num2 = p1.x.to_f, p1.y.to_f
     x2, y2 = p2.x.to_f, p2.y.to_f
     n = poly.length
@@ -417,19 +417,19 @@ module KSU::Shape
     end
     false
   end
-  def segs_cross?(x28, _60000b16, x2, y2, _abaa0311, _d84dfb87, _820de0a4, _77e79d7d)
-    !_e817297d(x28, _60000b16, x2, y2, _abaa0311, _d84dfb87, _820de0a4, _77e79d7d).nil?
+  def segs_cross?(x28, _60000b16, x2, y2, bx1, by1, bx2, by2)
+    !seg_cross_t(x28, _60000b16, x2, y2, bx1, by1, bx2, by2).nil?
   end
   def band_key(p1, p2, arr)
     return 0.0 if point_in_part?(p1.x.to_f, p1.y.to_f, arr)
-    best = _5410b01c(p1, p2, arr[:polygon])
+    best = first_cross_t(p1, p2, arr[:polygon])
     (arr[:holes] || []).each do |h|
-      thick = _5410b01c(p1, p2, h)
+      thick = first_cross_t(p1, p2, h)
       best = thick if thick && (best.nil? || thick < best)
     end
-    best || _9707d4ab(p1, p2, arr[:center])
+    best || proj_t(p1, p2, arr[:center])
   end
-  def _5410b01c(p1, p2, poly)
+  def first_cross_t(p1, p2, poly)
     x29, num3 = p1.x.to_f, p1.y.to_f
     x2, y2 = p2.x.to_f, p2.y.to_f
     best = nil
@@ -437,20 +437,20 @@ module KSU::Shape
     n.times do |i|
       pt2 = poly[i]
       b = poly[(i + 1) % n]
-      thick = _e817297d(x29, num3, x2, y2, pt2.x.to_f, pt2.y.to_f, b.x.to_f, b.y.to_f)
+      thick = seg_cross_t(x29, num3, x2, y2, pt2.x.to_f, pt2.y.to_f, b.x.to_f, b.y.to_f)
       best = thick if thick && (best.nil? || thick < best)
     end
     best
   end
-  def _e817297d(x210, _60000b16, x2, y2, _abaa0311, _d84dfb87, _820de0a4, _77e79d7d)
-    num = (x210 - x2) * (_d84dfb87 - _77e79d7d) - (_60000b16 - y2) * (_abaa0311 - _820de0a4)
+  def seg_cross_t(x210, _60000b16, x2, y2, bx1, by1, bx2, by2)
+    num = (x210 - x2) * (by1 - by2) - (_60000b16 - y2) * (bx1 - bx2)
     return nil if num.abs < 1e-9
-    thick = ((x210 - _abaa0311) * (_d84dfb87 - _77e79d7d) - (_60000b16 - _d84dfb87) * (_abaa0311 - _820de0a4)) / num
-    _6facb951 = -((x210 - x2) * (_60000b16 - _d84dfb87) - (_60000b16 - y2) * (x210 - _abaa0311)) / num
+    thick = ((x210 - bx1) * (by1 - by2) - (_60000b16 - by1) * (bx1 - bx2)) / num
+    _6facb951 = -((x210 - x2) * (_60000b16 - by1) - (_60000b16 - y2) * (x210 - bx1)) / num
     return nil unless thick.between?(0.0, 1.0) && _6facb951.between?(0.0, 1.0)
     thick
   end
-  def _12d6c6da(view)
+  def draw_ranked(view)
     arr2 = @h2
     arr3 = @h16
     h = {}
@@ -465,14 +465,14 @@ module KSU::Shape
     end
     h.each_value { |color, polys| KSU::View.draw_polys(polys, color: color, line: false) }
   end
-  def _23d9faee(view)
+  def draw_pick(view)
     case pick_mode
-    when 0 then _3c222d84(view)
-    when 1 then _b066035d(view)
-    when 2 then _990148f1(view)
+    when 0 then draw_sweep_rect(view)
+    when 1 then draw_rank_line(view)
+    when 2 then draw_lasso(view)
     end
   end
-  def _3c222d84(view)
+  def draw_sweep_rect(view)
     return unless @sweeping && @sweep_a && @sweep_b
     x211, x2 = @sweep_a.x.to_f, @sweep_b.x.to_f
     _60000b16, y2 = @sweep_a.y.to_f, @sweep_b.y.to_f
@@ -483,9 +483,9 @@ module KSU::Shape
       Geom::Point3d.new([x211, x2].min, [_60000b16, y2].max, @plane_z)
     ]
     KSU::View.draw_polygon2d(view, KSU::View.to_screen(pts))
-    _d1cfc672(view)
+    draw_sweep_arrow(view)
   end
-  def _d1cfc672(view)
+  def draw_sweep_arrow(view)
     return if @clearing
     sweep = sweep_dir
     return unless sweep
@@ -513,13 +513,13 @@ module KSU::Shape
       KSU::View._0b8e9c29(view, px, _827bd392 - 10, px, _0bcae196 + 12, :up)
     end
   end
-  def _b066035d(view)
+  def draw_rank_line(view)
     return unless @rank_a && @rank_b
     KSU::View.draw_lines([@rank_a, @rank_b], guide: false, width: 1)
   end
-  def _990148f1(view)
+  def draw_lasso(view)
     return if @lasso_pts.empty?
-    pts = _e7ce91ab
+    pts = lasso_path
     return if pts.length < 2
     arr = []
     (pts.length - 1).times { |i| arr << pts[i] << pts[i + 1] }

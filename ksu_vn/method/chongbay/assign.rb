@@ -33,12 +33,12 @@ module KSU::Assign
     return nil unless cutting && cutting.respond_to?(:layer)
     _2cb52d46 = cutting.layer
     return nil unless _2cb52d46
-    layers, str = _2840517f(_2cb52d46)
+    layers, prefix = _2840517f(_2cb52d46)
     return nil unless layers
-    side, theo_vung, _81966999 = _79743880(str)
+    side, theo_vung, _81966999 = _79743880(prefix)
     return nil if side.nil? && theo_vung.nil?
     color = _81966999 && _2cb52d46.respond_to?(:color) ? _2cb52d46.color : nil
-    { rank: layers, side: side, theo_vung: theo_vung, prefix: str.to_s.strip, base_color: color }
+    { rank: layers, side: side, theo_vung: theo_vung, prefix: prefix.to_s.strip, base_color: color }
   end
   def _2840517f(grp)
     if grp.respond_to?(:get_attribute)
@@ -50,8 +50,8 @@ module KSU::Assign
     meta = grp.name.to_s.match(/\A(.*?)\s*(\d+)\z/)
     meta ? [meta[2].to_i, meta[1]] : [nil, nil]
   end
-  def _79743880(str2)
-    str = str2.to_s.strip
+  def _79743880(prefix)
+    str = prefix.to_s.strip
     return [nil, nil, false] if str.empty?
     return [:tren, true, true] if str == @ten_tren
     return [:duoi, true, true] if str == @ten_duoi

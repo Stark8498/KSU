@@ -201,16 +201,16 @@ module KSU::Reorder
       arr2 = h[sheet_type]
       num2 = [num2, arr2.size].max
       flag = false
-      _feddf318 = num15
+      oy = num15
       arr2.each_with_index do |id, fill|
-        _8af8d41e = fill * (sheet_w + KSU::Const::SHEET_H_PADDING)
-        arr[id].transformation = Geom::Transformation.translation([_8af8d41e, _feddf318, 0])
-        box[id] = [_8af8d41e, _feddf318]
+        ox = fill * (sheet_w + KSU::Const::SHEET_H_PADDING)
+        arr[id].transformation = Geom::Transformation.translation([ox, oy, 0])
+        box[id] = [ox, oy]
         flag = true if bot[id]
       end
       num15 += _dcd13e53
       if flag
-        by2 = _feddf318 + _dcd13e53 + _3a4c25ca
+        by2 = oy + _dcd13e53 + _3a4c25ca
         arr2.each do |id|
           next unless bot[id]
           bx2 = box[id][0]
@@ -267,10 +267,10 @@ module KSU::Reorder
     _ba804f88(ent2, text || "sheet-#{id}")
     ent2.set_attribute("KSU", "sheet-label", true)
   end
-  def _edd17adf(ents, sheet_type, _feddf318, _dcd13e53)
+  def _edd17adf(ents, sheet_type, oy, _dcd13e53)
     ent2 = ents.add_dimension_linear(
-      [-KSU::Const::SHEET_H_PADDING - 0.1.mm, _feddf318 + _dcd13e53 / 2.0, 0],
-      [-KSU::Const::SHEET_H_PADDING, _feddf318 + _dcd13e53 / 2.0, 0], [0, 0.1.mm, 0]
+      [-KSU::Const::SHEET_H_PADDING - 0.1.mm, oy + _dcd13e53 / 2.0, 0],
+      [-KSU::Const::SHEET_H_PADDING, oy + _dcd13e53 / 2.0, 0], [0, 0.1.mm, 0]
     )
     ent2.text = sheet_type.to_s
     ent2.has_aligned_text = true
@@ -328,9 +328,9 @@ module KSU::Reorder
     ent2.arrow_type = Sketchup::Dimension::ARROW_NONE
     ent2.text_position = Sketchup::DimensionLinear::TEXT_OUTSIDE_END
   end
-  def label(num, str2, suffix)
+  def label(num, prefix, suffix)
     lbl = num.to_s
-    lbl = "#{str2}#{lbl}" unless str2.to_s.empty?
+    lbl = "#{prefix}#{lbl}" unless prefix.to_s.empty?
     lbl = "#{lbl}#{suffix}" unless suffix.to_s.empty?
     lbl
   end
@@ -338,7 +338,7 @@ module KSU::Reorder
     return id.to_s unless pad_x
     id.to_s.rjust(str.to_s.length, "0")
   end
-  def number_plan(nesting, str = "", suffix = "", pad_x = false, _2ad1250d = false)
+  def number_plan(nesting, prefix = "", suffix = "", pad_x = false, _2ad1250d = false)
     return nil unless nesting && nesting.valid?
     h, bot = sheet_maps(nesting)
     return nil if h.empty?
@@ -369,21 +369,21 @@ module KSU::Reorder
         bottom: bot[ent[:id]],
         type: ent[:gr].get_attribute("ABF", "sheet-type"),
         new_id: new_id,
-        label: label(num, str, suffix),
+        label: label(num, prefix, suffix),
         point: Geom::Point3d.new(ent[:x] + sheet_w / 2.0, ent[:y], 0).transform(transform),
       }
     end
     { sheet_w: sheet_w, type_set: type_set, plan: plan }
   end
-  def apply_numbers(nesting, str2 = "", suffix = "", pad_x = false, _2ad1250d = false)
+  def apply_numbers(nesting, prefix = "", suffix = "", pad_x = false, _2ad1250d = false)
     sync_ids(nesting)
-    data = number_plan(nesting, str2, suffix, pad_x, _2ad1250d)
+    data = number_plan(nesting, prefix, suffix, pad_x, _2ad1250d)
     return 0 unless data
     plan = data[:plan]
     sheet_w = data[:sheet_w]
     type_set = data[:type_set]
     ents = nesting.definition.entities
-    nesting.set_attribute("KSU", "sheet-id-prefix", str2)
+    nesting.set_attribute("KSU", "sheet-id-prefix", prefix)
     nesting.set_attribute("KSU", "sheet-id-suffix", suffix)
     nesting.set_attribute("KSU", "sheet-id-pad", pad_x)
     arr2 = ents.grep(Sketchup::DimensionLinear).select do |len2d|

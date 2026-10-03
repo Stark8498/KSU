@@ -92,8 +92,8 @@ module KSU::Xuatdxf
         name = KSU::Label.label_text(entity).to_s
         name = pid.to_s if name.empty?
         pt = entity.bounds.center
-        layers, _e2b5ea25 = _530b02a3(entity)
-        parts << { id: pid, name: name, cb: layers, cp: _e2b5ea25,
+        layers, prefix = _530b02a3(entity)
+        parts << { id: pid, name: name, cb: layers, cp: prefix,
                       c: [(pt.x.to_f * 25.4).round(1), (pt.y.to_f * 25.4).round(1)] }
         _7c10a028(entity, entity.transformation, ents, pid)
       else
@@ -111,12 +111,12 @@ module KSU::Xuatdxf
     if num2.nil?
       meta = grp.name.to_s.match(/\A(.*?)\s*(\d+)\z/)
       layers = meta ? meta[2].to_i : 0
-      str2 = meta ? meta[1] : ""
+      prefix = meta ? meta[1] : ""
     else
       layers = num2.to_i
-      str2 = grp.get_attribute("ABF", "cutting-layer-original-name").to_s
+      prefix = grp.get_attribute("ABF", "cutting-layer-original-name").to_s
     end
-    layers > 0 ? [layers, str2.strip] : [nil, nil]
+    layers > 0 ? [layers, prefix.strip] : [nil, nil]
   end
   def dxf_layer(entity, normal)
     name = entity ? entity.layer.name.to_s : ""

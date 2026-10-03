@@ -23,28 +23,28 @@ module KSU::Draw
     model = Sketchup.active_model
     KSU.start
     begin
-      _a2d1d319(model)
-      _fc5affbb = model.layers["Layer0"]
-      model.active_layer = _fc5affbb if _fc5affbb && model.active_layer != _fc5affbb
+      ensure_layers(model)
+      layer0 = model.layers["Layer0"]
+      model.active_layer = layer0 if layer0 && model.active_layer != layer0
       ensure_root(model)
-      _ba93b302 = -(@num + job[:slots]) * (@h + KSU::Const::SHEET_V_PADDING)
-      KSU::Sheet._edd17adf(@root.entities, job[:type][:name], _ba93b302, @h)
+      strip_y = -(@num + job[:slots]) * (@h + KSU::Const::SHEET_V_PADDING)
+      KSU::Sheet._edd17adf(@root.entities, job[:type][:name], strip_y, @h)
       @drawn_panels = []
       @drawn_sheets = []
       arr2 = []
       flag = false
       sheets.each_with_index do |items, fill|
         @sheet_ix += 1
-        _8af8d41e = fill * (@w + KSU::Const::SHEET_H_PADDING)
-        gr, _8486f8b2 = draw_sheet(@root, job[:type], items, @sheet_ix, _8af8d41e, _ba93b302, @cfg)
-        gr.set_attribute("KSU", "two-sided-sheet", true) if gr && gr.valid? && _8486f8b2
+        ox = fill * (@w + KSU::Const::SHEET_H_PADDING)
+        gr, has_bottom = draw_sheet(@root, job[:type], items, @sheet_ix, ox, strip_y, @cfg)
+        gr.set_attribute("KSU", "two-sided-sheet", true) if gr && gr.valid? && has_bottom
         arr2 << gr
-        flag = true if _8486f8b2
+        flag = true if has_bottom
       end
       @num += job[:slots]
       @num += 1 if flag && job[:slots] == 1
-      _c91f065e
-      _ce93a4c7(@drawn_sheets)
+      flip_drawn_panels
+      merge_cut_lines(@drawn_sheets)
       place_root
       KSU.commit
       model.active_view.zoom_extents
@@ -83,12 +83,12 @@ module KSU::Draw
     unless @errors.empty?
       UI.messagebox("Lỗi nesting! Xảy ra ở một trong các chi tiết: #{@errors.uniq.join(', ')}")
     end
-    _42f184ce(root)
+    tidy_borders(root)
   rescue StandardError
     KSU.abort_op
     @root = nil
   end
-  def draw_sheet(root, sheet_type, arr3, sheet_ix, _8af8d41e, _feddf318, cfg)
+  def draw_sheet(root, sheet_type, arr3, sheet_ix, ox, oy, cfg)
     name = "#{sheet_type[:name]}-sheet-#{sheet_ix}"
     grp = root.entities.add_group
     grp.name = "__" + name
@@ -97,9 +97,9 @@ module KSU::Draw
     grp.set_attribute("KSU", "sheet-material", sheet_type[:material].to_s)
     grp.set_attribute("ABF", "sheet-thickness", sheet_type[:thickness_mm])
     grp.set_attribute("ABF", "sheet-dimension", [cfg[:sheet_w], cfg[:sheet_h]])
-    _842b28a8(grp)
-    grp.transformation = grp.transformation * Geom::Transformation.translation([_8af8d41e, _feddf318, 0])
-    KSU::Sheet._babc606e(root.entities, grp, sheet_ix, @w, _ec3291d0(sheet_ix))
+    add_border(grp)
+    grp.transformation = grp.transformation * Geom::Transformation.translation([ox, oy, 0])
+    KSU::Sheet._babc606e(root.entities, grp, sheet_ix, @w, sheet_label(sheet_ix))
     @drawn_sheets << grp
     arr2 = []
     h = {}
@@ -114,14 +114,14 @@ module KSU::Draw
       next unless cfg[:nhom_cap] && gr && fld[4].to_i >= 0
       (h[fld[4].to_i] ||= []) << gr
     end
-    _2354b03d(h)
+    group_pairs(h)
     return [grp, false] if arr2.empty?
-    bottom = _49fac9a3(root, sheet_type, arr2, name, sheet_ix, _8af8d41e, _feddf318, cfg)
+    bottom = draw_bottom_sheet(root, sheet_type, arr2, name, sheet_ix, ox, oy, cfg)
     @drawn_sheets << bottom
-    KSU::Sheet._babc606e(root.entities, bottom, sheet_ix, @w, _ec3291d0(sheet_ix))
+    KSU::Sheet._babc606e(root.entities, bottom, sheet_ix, @w, sheet_label(sheet_ix))
     [grp, true]
   end
-  def _2354b03d(arr)
+  def group_pairs(arr)
     return if arr.nil? || arr.empty?
     arr.each_value do |arr3|
       arr2 = arr3.select { |g| g && g.valid? }
@@ -176,7 +176,7 @@ module KSU::Draw
     end
     [gr, board_index]
   end
-  def _49fac9a3(root, sheet_type, arr3, name, sheet_ix, _8af8d41e, _feddf318, cfg)
+  def draw_bottom_sheet(root, sheet_type, arr3, name, sheet_ix, ox, oy, cfg)
     bottom = root.entities.add_group
     bottom.name = "__#{name}-bottom"
     bottom.set_attribute("ABF", "sheet-id", sheet_ix)
@@ -186,7 +186,7 @@ module KSU::Draw
     bottom.set_attribute("ABF", "sheet-thickness", sheet_type[:thickness_mm])
     bottom.set_attribute("ABF", "sheet-dimension", [cfg[:sheet_w], cfg[:sheet_h]])
     bottom.transformation = bottom.transformation *
-                            Geom::Transformation.translation([_8af8d41e, _feddf318 + @h + KSU::Const::SHEET_V_PADDING / 2, 0])
+                            Geom::Transformation.translation([ox, oy + @h + KSU::Const::SHEET_V_PADDING / 2, 0])
     arr3.each do |arr|
       panel = bottom.entities.add_group
       panel.name = arr[:name]
@@ -212,7 +212,7 @@ module KSU::Draw
     tr2 = Geom::Transformation.rotation(ORIGIN, Y_AXIS, 180.degrees) *
              Geom::Transformation.translation([-(@w - @m_left), @m_bottom, 0])
     bottom.entities.transform_entities(tr2, bottom.entities.to_a)
-    _842b28a8(bottom)
+    add_border(bottom)
     _7da9d41e(bottom, true)
     bottom
   end
@@ -230,14 +230,14 @@ module KSU::Draw
       end
     end
   end
-  def _c91f065e
+  def flip_drawn_panels
     @drawn_panels.each do |gr|
       next unless gr && gr.valid?
       tf = KSU::Cutting.tf_of(gr)
       gr.transformation = gr.transformation * Geom::Transformation.rotation(ORIGIN, Y_AXIS.transform(tf), 180.degrees)
     end
   end
-  def _a2d1d319(model)
+  def ensure_layers(model)
     unless model.layers["ABF_cuttingLines"]
       _2cb52d46 = model.layers.add("ABF_cuttingLines")
       _2cb52d46.color = Sketchup::Color.new(255, 255, 255)
@@ -246,7 +246,7 @@ module KSU::Draw
     KSU::Cutting.layer("ABF_sheetBorder")
     KSU::Cutting.layer("ABF_partBorder")
   end
-  def _842b28a8(defn)
+  def add_border(defn)
     gr = defn.entities.add_group
     gr.set_attribute("ABF", "is-sheet-border", true)
     gr.name = "__ABF_sheetBorder"
@@ -265,10 +265,10 @@ module KSU::Draw
     end
     KSU::Cutting.set_layer(gr, KSU::Cutting.layer(name))
   end
-  def _ec3291d0(id)
+  def sheet_label(id)
     id.to_s.rjust(2, "0")
   end
-  def _ce93a4c7(arr)
+  def merge_cut_lines(arr)
     return unless defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:union)
     arr.each do |sheet|
       next unless sheet && sheet.valid?
@@ -367,7 +367,7 @@ module KSU::Draw
     end
     defn.entities.erase_entities(arr3.map { |i| i[:gr] }) if ok
   end
-  def _42f184ce(root)
+  def tidy_borders(root)
     return unless root && root.valid?
     root.entities.grep(Sketchup::Group).each do |sheet|
       next unless sheet.get_attribute("ABF", "sheet-id")

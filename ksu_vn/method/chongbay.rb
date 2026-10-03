@@ -370,12 +370,12 @@ class KSU::Chongbay
     @h16 = @arr54.each_with_object({}) { |arr2, h| h[arr2[:part]] = true }
     _de1ac9fc if @phu_mau_tam || @phu_mau_tam_hai_mat
     draw_overlay(view, @nesting)
-    _12d6c6da(view)
+    draw_ranked(view)
     draw_assigned(view)
     if @che_do == 1
       _82f140a1(view)
     else
-      _23d9faee(view)
+      draw_pick(view)
     end
     view.line_stipple = ""
     draw_sheet_buttons(view)
@@ -738,9 +738,9 @@ class KSU::Chongbay
   end
   def lasso_plan
     return [] unless @kieu_chon_tam == 2 && @lasso_pts.any?
-    pts = _e7ce91ab
+    pts = lasso_path
     return [] if pts.length < 2
-    parts = _d01131b1(pts)
+    parts = parts_along(pts)
     return [] if parts.empty?
     rank_free(parts)
   end

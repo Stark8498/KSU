@@ -2119,6 +2119,47 @@ ten:
   _e7b2b17b: style_ix
   _5ffa637f: name_col
 
+  # ----- ME 56b: chongbay/shape.rb -- hinh hoc chon tam va ve xem truoc -----
+  # Hai che do chon khac han: "Cham" lay tam nao duong di qua hoac nam trong;
+  # "Cat" chi lay tam ma duong THUC SU cat qua vien, bo qua tam bao tron doan.
+  _e7ce91ab: lasso_path
+  _d01131b1: parts_along
+  _f9c10539: seg_hits_part?
+  _9608e031: seg_hits_bbox?      # loc nhanh truoc khi thu tung canh
+  _9aaf7055: seg_touches_part?   # che do "Cham"
+  _79405863: seg_cuts_poly?      # che do "Cat"
+  _37ca7a0d: seg_crosses_poly?
+  _5410b01c: first_cross_t       # t nho nhat trong cac giao diem
+  _e817297d: seg_cross_t         # t tren doan thu nhat, hoac nil neu khong cat
+  _9707d4ab: proj_t
+  _abaa0311: bx1
+  _d84dfb87: by1
+  _820de0a4: bx2
+  _77e79d7d: by2
+  _e2b5ea25: prefix              # gia tri set_attribute("KSU","sheet-id-prefix")
+
+  _12d6c6da: draw_ranked         # gom theo mau roi ve mot lan moi mau
+  _23d9faee: draw_pick
+  _3c222d84: draw_sweep_rect
+  _d1cfc672: draw_sweep_arrow    # chi ve khi khung du dai 24 pixel
+  _b066035d: draw_rank_line
+  _990148f1: draw_lasso
+
+  # ----- ME 56c: con lai o method/nesting/draw.rb -----
+  _a2d1d319: ensure_layers       # ABF_cuttingLines / edgeBanding / sheetBorder
+  _842b28a8: add_border          # duong vien "__ABF_sheetBorder" quanh van
+  _ec3291d0: sheet_label         # 7 -> "07"
+  _c91f065e: flip_drawn_panels   # xoay 180 do quanh truc Y cuc bo cua tung tam
+  _ce93a4c7: merge_cut_lines     # hop duong cat trung nhau, can KSU::Clipper
+  _42f184ce: tidy_borders
+  _2354b03d: group_pairs
+  _49fac9a3: draw_bottom_sheet
+  _fc5affbb: layer0
+  _8af8d41e: ox
+  _feddf318: oy
+  _ba93b302: strip_y             # moi job mot dai, dai sau nam duoi dai truoc
+  _8486f8b2: has_bottom
+
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,
