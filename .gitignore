@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+
+# Rebuilt by tools/codegraph.py on demand and holds this machine's absolute
+# paths, so it differs per checkout and is never worth a merge.
+tools/graph.json
