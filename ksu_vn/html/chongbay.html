@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Chống bay</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/preload.js"></script>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="container">
+    <div class="col2">
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Giới hạn kích thước</span>
+                <input type="checkbox" v-model="settings.gioi_han_kich_thuoc"
+                       @change="saveSetting('gioi_han_kich_thuoc')" id="gioi_han_kich_thuoc">
+                <label class="switch-label" for="gioi_han_kich_thuoc"></label>
+            </div>
+            <div class="switch" v-if="settings.gioi_han_kich_thuoc">
+                <span>Chiều rộng tối đa</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('chieu_rong_toi_da', 10, 0)"
+                            :disabled="settings.chieu_rong_toi_da <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.chieu_rong_toi_da"
+                           @change="saveSetting('chieu_rong_toi_da')"
+                           @blur="validateKc('chieu_rong_toi_da')"
+                           @keyup.enter="validateKc('chieu_rong_toi_da')"
+                           min="0" max="3000" step="10">
+                    <button class="spinner-btn"
+                            @click="incrementValue('chieu_rong_toi_da', 10)"
+                            :disabled="settings.chieu_rong_toi_da >= 3000">+
+                    </button>
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Chỉ xử lý chống bay với các tấm có chiều rộng nhỏ hơn kích thước giới hạn trên.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Kiểu chọn tấm</span>
+                <div class="select-group">
+                    <select v-model.number="settings.kieu_chon_tam" @change="saveSetting('kieu_chon_tam')">
+                        <option :value="0">Vùng</option>
+                        <option :value="1">Nét</option>
+                        <option :value="2">Tự do</option>
+                    </select>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Chế độ chọn</span>
+                <div class="select-group">
+                    <select v-model.number="settings.che_do_chon" @change="saveSetting('che_do_chon')">
+                        <option :value="0">Chạm</option>
+                        <option :value="1">Cắt</option>
+                    </select>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Cho phép ghi đè</span>
+                <input type="checkbox" v-model="settings.cho_phep_ghi_de"
+                       @change="saveSetting('cho_phep_ghi_de')" id="cho_phep_ghi_de">
+                <label class="switch-label" for="cho_phep_ghi_de"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Phương pháp chọn tấm để đánh dấu.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Đánh số thứ tự</span>
+                <input type="checkbox" v-model="settings.danh_so_thu_tu"
+                       @change="saveSetting('danh_so_thu_tu')" id="danh_so_thu_tu">
+                <label class="switch-label" for="danh_so_thu_tu"></label>
+            </div>
+            <template v-if="settings.danh_so_thu_tu">
+            <div class="switch">
+                <span>Layer bắt đầu</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementInt('so_layer_tu')"
+                            :disabled="settings.so_layer_tu <= 1">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.so_layer_tu"
+                           @change="saveSetting('so_layer_tu')"
+                           @blur="validateInt('so_layer_tu', 1, 99)"
+                           @keyup.enter="validateInt('so_layer_tu', 1, 99)"
+                           min="1" max="99" step="1">
+                    <button class="spinner-btn"
+                            @click="incrementInt('so_layer_tu', 99)"
+                            :disabled="settings.so_layer_tu >= 99">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Layer kết thúc</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementInt('so_layer_den')"
+                            :disabled="settings.so_layer_den <= 1">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.so_layer_den"
+                           @change="saveSetting('so_layer_den')"
+                           @blur="validateInt('so_layer_den', 1)"
+                           @keyup.enter="validateInt('so_layer_den', 1)"
+                           min="1" step="1">
+                    <button class="spinner-btn"
+                            @click="incrementInt('so_layer_den')">+
+                    </button>
+                </div>
+            </div>
+            </template>
+        </div>
+        <p class="switch-stacked-hint">Số thứ tự của layer khi gán vào tấm. Tắt thì tên layer chỉ còn tên vùng, không có số.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Layer theo vùng</span>
+                <input type="checkbox" v-model="settings.layer_theo_vung"
+                       @change="saveSetting('layer_theo_vung')" id="layer_theo_vung">
+                <label class="switch-label" for="layer_theo_vung"></label>
+            </div>
+            <template v-if="settings.layer_theo_vung">
+            <div class="switch">
+                <span>Layer trên</span>
+                <div class="color-text-pill">
+                    <div class="color-cap">
+                        <input type="color" v-model="mau_tren_hex" @input="saveColor('mau_tren')">
+                    </div>
+                    <input type="text" v-model="settings.ten_tren"
+                           @change="saveSetting('ten_tren')"
+                           spellcheck="false" autocomplete="off">
+                    <div class="color-cap">
+                        <input type="color" v-model="mau_tren_hex" @input="saveColor('mau_tren')">
+                    </div>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Layer dưới</span>
+                <div class="color-text-pill">
+                    <div class="color-cap">
+                        <input type="color" v-model="mau_duoi_hex" @input="saveColor('mau_duoi')">
+                    </div>
+                    <input type="text" v-model="settings.ten_duoi"
+                           @change="saveSetting('ten_duoi')"
+                           spellcheck="false" autocomplete="off">
+                    <div class="color-cap">
+                        <input type="color" v-model="mau_duoi_hex" @input="saveColor('mau_duoi')">
+                    </div>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Layer trái</span>
+                <div class="color-text-pill">
+                    <div class="color-cap">
+                        <input type="color" v-model="mau_trai_hex" @input="saveColor('mau_trai')">
+                    </div>
+                    <input type="text" v-model="settings.ten_trai"
+                           @change="saveSetting('ten_trai')"
+                           spellcheck="false" autocomplete="off">
+                    <div class="color-cap">
+                        <input type="color" v-model="mau_trai_hex" @input="saveColor('mau_trai')">
+                    </div>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Layer phải</span>
+                <div class="color-text-pill">
+                    <div class="color-cap">
+                        <input type="color" v-model="mau_phai_hex" @input="saveColor('mau_phai')">
+                    </div>
+                    <input type="text" v-model="settings.ten_phai"
+                           @change="saveSetting('ten_phai')"
+                           spellcheck="false" autocomplete="off">
+                    <div class="color-cap">
+                        <input type="color" v-model="mau_phai_hex" @input="saveColor('mau_phai')">
+                    </div>
+                </div>
+            </div>
+            </template>
+            <div class="switch" v-else>
+                <span>Layer chung</span>
+                <div class="color-text-pill">
+                    <div class="color-cap">
+                        <input type="color" v-model="mau_chung_hex" @input="saveColor('mau_chung')">
+                    </div>
+                    <input type="text" v-model="settings.ten_chung"
+                           @change="saveSetting('ten_chung')"
+                           spellcheck="false" autocomplete="off">
+                    <div class="color-cap">
+                        <input type="color" v-model="mau_chung_hex" @input="saveColor('mau_chung')">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Tùy chỉnh layer cho các vùng chống bay.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Khoảng cách trên</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('kc_tren', 10, 0)"
+                            :disabled="settings.kc_tren <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.kc_tren"
+                           @change="saveSetting('kc_tren')"
+                           @blur="validateKc('kc_tren')"
+                           @keyup.enter="validateKc('kc_tren')"
+                           min="0" max="3000" step="10">
+                    <button class="spinner-btn"
+                            @click="incrementValue('kc_tren', 10)"
+                            :disabled="settings.kc_tren >= 3000">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Khoảng cách dưới</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('kc_duoi', 10, 0)"
+                            :disabled="settings.kc_duoi <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.kc_duoi"
+                           @change="saveSetting('kc_duoi')"
+                           @blur="validateKc('kc_duoi')"
+                           @keyup.enter="validateKc('kc_duoi')"
+                           min="0" max="3000" step="10">
+                    <button class="spinner-btn"
+                            @click="incrementValue('kc_duoi', 10)"
+                            :disabled="settings.kc_duoi >= 3000">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Khoảng cách trái</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('kc_trai', 10, 0)"
+                            :disabled="settings.kc_trai <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.kc_trai"
+                           @change="saveSetting('kc_trai')"
+                           @blur="validateKc('kc_trai')"
+                           @keyup.enter="validateKc('kc_trai')"
+                           min="0" max="3000" step="10">
+                    <button class="spinner-btn"
+                            @click="incrementValue('kc_trai', 10)"
+                            :disabled="settings.kc_trai >= 3000">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Khoảng cách phải</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('kc_phai', 10, 0)"
+                            :disabled="settings.kc_phai <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.kc_phai"
+                           @change="saveSetting('kc_phai')"
+                           @blur="validateKc('kc_phai')"
+                           @keyup.enter="validateKc('kc_phai')"
+                           min="0" max="3000" step="10">
+                    <button class="spinner-btn"
+                            @click="incrementValue('kc_phai', 10)"
+                            :disabled="settings.kc_phai >= 3000">+
+                    </button>
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Khoảng cách tối đa cho chống bay tự động.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Tự động dọn layer thừa</span>
+                <input type="checkbox" v-model="settings.tu_dong_don_layer"
+                       @change="saveSetting('tu_dong_don_layer')" id="tu_dong_don_layer">
+                <label class="switch-label" for="tu_dong_don_layer"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Tự động loại bỏ các layer rỗng sau khi đánh dấu.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Hiển thị bảng màu</span>
+                <input type="checkbox" v-model="settings.hien_bang_mau"
+                       @change="saveSetting('hien_bang_mau')" id="hien_bang_mau">
+                <label class="switch-label" for="hien_bang_mau"></label>
+            </div>
+            <div class="switch" v-if="settings.danh_so_thu_tu">
+                <span>Hiển thị số thứ tự</span>
+                <input type="checkbox" v-model="settings.hien_so_thu_tu"
+                       @change="saveSetting('hien_so_thu_tu')" id="hien_so_thu_tu">
+                <label class="switch-label" for="hien_so_thu_tu"></label>
+            </div>
+            <div class="switch" v-if="settings.hien_bang_mau">
+                <span>Cỡ bảng màu</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementInt('co_bang_mau')"
+                            :disabled="settings.co_bang_mau <= 8">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.co_bang_mau"
+                           @change="saveSetting('co_bang_mau')"
+                           @blur="validateInt('co_bang_mau', 8, 100)"
+                           @keyup.enter="validateInt('co_bang_mau', 8, 100)"
+                           min="8" max="100" step="1">
+                    <button class="spinner-btn"
+                            @click="incrementInt('co_bang_mau', 100)"
+                            :disabled="settings.co_bang_mau >= 100">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch" v-if="settings.danh_so_thu_tu && settings.hien_so_thu_tu">
+                <span>Cỡ số thứ tự</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementInt('co_so_thu_tu')"
+                            :disabled="settings.co_so_thu_tu <= 4">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.co_so_thu_tu"
+                           @change="saveSetting('co_so_thu_tu')"
+                           @blur="validateInt('co_so_thu_tu', 4, 40)"
+                           @keyup.enter="validateInt('co_so_thu_tu', 4, 40)"
+                           min="4" max="40" step="1">
+                    <button class="spinner-btn"
+                            @click="incrementInt('co_so_thu_tu', 40)"
+                            :disabled="settings.co_so_thu_tu >= 40">+
+                    </button>
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Tùy chỉnh về hiển thị.</p>
+    </div>
+
+    <div id="preset-panel"></div>
+</div>
+
+<script>
+    Vue.config.productionTip = false;
+    Vue.config.devtools = false;
+    document.body.spellcheck = false;
+
+    new Vue({
+        el: '#app',
+        mixins: [SettingsMixin('chong_bay')],
+        data: {
+            settings: {
+                gioi_han_kich_thuoc: false,
+                chieu_rong_toi_da: 200,
+                kieu_chon_tam: 0,
+                che_do_chon: 0,
+                cho_phep_ghi_de: true,
+                danh_so_thu_tu: true,
+                so_layer_tu: 1,
+                so_layer_den: 30,
+                kc_tren: 600,
+                kc_duoi: 600,
+                kc_trai: 600,
+                kc_phai: 600,
+                layer_theo_vung: true,
+                ten_tren: 'TREN',
+                ten_duoi: 'DUOI',
+                ten_trai: 'TRAI',
+                ten_phai: 'PHAI',
+                ten_chung: 'LAYER',
+                mau_tren: [212, 133, 94],
+                mau_duoi: [212, 94, 94],
+                mau_trai: [94, 212, 94],
+                mau_phai: [94, 153, 212],
+                mau_chung: [94, 153, 212],
+                tu_dong_don_layer: true,
+                hien_bang_mau: true,
+                co_bang_mau: 16,
+                hien_so_thu_tu: true,
+                co_so_thu_tu: 8
+            }
+        },
+        computed: {
+            mau_tren_hex: colorComputed('mau_tren'),
+            mau_duoi_hex: colorComputed('mau_duoi'),
+            mau_trai_hex: colorComputed('mau_trai'),
+            mau_phai_hex: colorComputed('mau_phai'),
+            mau_chung_hex: colorComputed('mau_chung')
+        },
+        methods: {
+            validateKc(key) {
+                let n = parseFloat(this.settings[key]);
+                if (isNaN(n) || n < 0) n = 0;
+                if (n > 3000) n = 3000;
+                this.settings[key] = parseFloat(n.toFixed(2));
+                this.saveSetting(key);
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

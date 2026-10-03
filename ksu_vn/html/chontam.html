@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Chọn tấm</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/preload.js"></script>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="container">
+    <div class="col2">
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Cô lập đối tượng</span>
+                <input type="checkbox" v-model="settings.co_lap_doi_tuong"
+                       @change="saveSetting('co_lap_doi_tuong')" id="co_lap_doi_tuong">
+                <label class="switch-label" for="co_lap_doi_tuong"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Cô lập các đối tượng được chọn khi thoát lệnh.</p>
+    </div>
+
+    <div id="preset-panel"></div>
+</div>
+
+<script>
+    Vue.config.productionTip = false;
+    Vue.config.devtools = false;
+    document.body.spellcheck = false;
+
+    new Vue({
+        el: '#app',
+        mixins: [SettingsMixin('chon_tam')],
+        data: {
+            settings: {
+                co_lap_doi_tuong: false
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

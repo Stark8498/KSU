@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Xếp tấm</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/preload.js"></script>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="container">
+    <div class="col2">
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Xếp tấm tự do</span>
+                <input type="checkbox" v-model="settings.xep_tam_tu_do"
+                       @change="saveSetting('xep_tam_tu_do')" id="xep_tam_tu_do">
+                <label class="switch-label" for="xep_tam_tu_do"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Kích hoạt để bỏ qua va chạm và lề.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Ghi đè khoảng cách</span>
+                <input type="checkbox" v-model="settings.ghi_de_khoang_cach"
+                       @change="saveSetting('ghi_de_khoang_cach')" id="ghi_de_khoang_cach">
+                <label class="switch-label" for="ghi_de_khoang_cach"></label>
+            </div>
+            <div class="switch" v-show="settings.ghi_de_khoang_cach">
+                <span>Tấm cách nhau</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('tam_cach_nhau_rieng', 0.5, 0)"
+                            :disabled="settings.tam_cach_nhau_rieng <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.tam_cach_nhau_rieng"
+                           @change="saveSetting('tam_cach_nhau_rieng')"
+                           @blur="validateGap('tam_cach_nhau_rieng')"
+                           @keyup.enter="validateGap('tam_cach_nhau_rieng')"
+                           min="0" max="100" step="0.5">
+                    <button class="spinner-btn"
+                            @click="incrementValue('tam_cach_nhau_rieng', 0.5)"
+                            :disabled="settings.tam_cach_nhau_rieng >= 100">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch" v-show="settings.ghi_de_khoang_cach">
+                <span class="gap-lock-label">
+                    Tấm cách lề
+                    <gap-lock :open="settings.tach_cach_le_rieng" @toggle="toggleGapLock"></gap-lock>
+                </span>
+                <div class="number-input-group" :class="{ disabled: settings.tach_cach_le_rieng }">
+                    <button class="spinner-btn"
+                            @click="decrementValue('tam_cach_le_rieng', 0.5, 0)"
+                            :disabled="settings.tam_cach_le_rieng <= 0 || settings.tach_cach_le_rieng">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.tam_cach_le_rieng"
+                           @change="saveSetting('tam_cach_le_rieng')"
+                           @blur="validateGap('tam_cach_le_rieng')"
+                           @keyup.enter="validateGap('tam_cach_le_rieng')"
+                           :disabled="settings.tach_cach_le_rieng"
+                           min="0" max="100" step="0.5">
+                    <button class="spinner-btn"
+                            @click="incrementValue('tam_cach_le_rieng', 0.5)"
+                            :disabled="settings.tam_cach_le_rieng >= 100 || settings.tach_cach_le_rieng">+
+                    </button>
+                </div>
+            </div>
+            <template v-if="settings.tach_cach_le_rieng">
+                <div class="switch" v-for="s in gapSides" :key="s.key"
+                     v-show="settings.ghi_de_khoang_cach">
+                    <span class="gap-sub">{{ s.name }}</span>
+                    <div class="number-input-group">
+                        <button class="spinner-btn"
+                                @click="decrementValue(s.key, 0.5, 0)"
+                                :disabled="settings[s.key] <= 0">−
+                        </button>
+                        <input type="number"
+                               v-model.number="settings[s.key]"
+                               @change="saveSetting(s.key)"
+                               @blur="validateGap(s.key)"
+                               @keyup.enter="validateGap(s.key)"
+                               min="0" max="100" step="0.5">
+                        <button class="spinner-btn"
+                                @click="incrementValue(s.key, 0.5)"
+                                :disabled="settings[s.key] >= 100">+
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <p class="switch-stacked-hint">Dùng cài đặt khoảng hở riêng thay cho cài đặt chung.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Góc xoay ván</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementInt('goc_xoay_van', -360)">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.goc_xoay_van"
+                           @change="saveSetting('goc_xoay_van')"
+                           @blur="validateInt('goc_xoay_van', -360, 360)"
+                           @keyup.enter="validateInt('goc_xoay_van', -360, 360)"
+                           min="-360" max="360" step="1">
+                    <button class="spinner-btn"
+                            @click="incrementInt('goc_xoay_van', 360)">+
+                    </button>
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Cài đặt góc xoay khi sử dụng tính năng xoay tấm.</p>
+
+    </div>
+
+    <div id="preset-panel"></div>
+</div>
+
+<script>
+    Vue.config.productionTip = false;
+    Vue.config.devtools = false;
+    document.body.spellcheck = false;
+
+    new Vue({
+        el: '#app',
+        mixins: [SettingsMixin('xep_tam')],
+        data: {
+            gapSides: [
+                {key: 'tam_cach_le_trai_rieng', name: 'Lề trái'},
+                {key: 'tam_cach_le_phai_rieng', name: 'Lề phải'},
+                {key: 'tam_cach_le_tren_rieng', name: 'Lề trên'},
+                {key: 'tam_cach_le_duoi_rieng', name: 'Lề dưới'}
+            ],
+            settings: {
+                xep_tam_tu_do: false,
+                ghi_de_khoang_cach: false,
+                tam_cach_nhau_rieng: 6.5,
+                tam_cach_le_rieng: 3.5,
+                tach_cach_le_rieng: false,
+                tam_cach_le_trai_rieng: 3.5,
+                tam_cach_le_phai_rieng: 3.5,
+                tam_cach_le_tren_rieng: 3.5,
+                tam_cach_le_duoi_rieng: 3.5,
+                goc_xoay_van: 90
+            }
+        },
+        methods: {
+            validateGap(key) {
+                let n = parseFloat(this.settings[key]);
+                if (isNaN(n) || n < 0) n = 0;
+                if (n > 100) n = 100;
+                this.settings[key] = parseFloat(n.toFixed(2));
+                this.saveSetting(key);
+            },
+
+            toggleGapLock() {
+                this.settings.tach_cach_le_rieng = !this.settings.tach_cach_le_rieng;
+                this.saveSetting('tach_cach_le_rieng');
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

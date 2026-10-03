@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Nesting</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/nest.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/preload.js"></script>
+    <style>
+        .nest-right-scroll {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .nest-right-scroll::-webkit-scrollbar {
+            display: none;
+            width: 0;
+        }
+        .nest-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-bottom: 0.5px solid #e0e0e0;
+        }
+        .nest-row-lead {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            padding: 10px 0 10px 14px;
+            margin: -10px 0 -10px -14px;
+            cursor: grab;
+        }
+        .nest-row-lead:active {
+            cursor: grabbing;
+        }
+        .nest-row-lead .tool-drag-handle {
+            margin-right: 0;
+        }
+        .nest-row.drag-src {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+        }
+        .nest-row.drag-before {
+            margin-top: 32px;
+        }
+        .nest-row.drag-end {
+            margin-bottom: 32px;
+        }
+        .nest-row .switch {
+            display: inline-flex;
+            padding: 0;
+            border-top: none;
+            max-height: none;
+            flex-shrink: 0;
+        }
+        .nest-row .switch-label {
+            margin-left: 0;
+        }
+        .nest-row-text {
+            min-width: 0;
+        }
+        .nest-row-title {
+            font-size: 12px;
+            color: #1c1c1c;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .nest-row-count {
+            flex-shrink: 0;
+            margin-left: auto;
+            font-size: 11px;
+            color: #8e8e8e;
+            cursor: pointer;
+        }
+        .nest-row-count:hover {
+            color: #1c1c1c;
+        }
+        .nest-row-del {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.07);
+            color: #6e6e6e;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            outline: none;
+        }
+        .nest-row-del svg {
+            width: 11px;
+            height: 11px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.4;
+            stroke-linecap: round;
+        }
+        .nest-row-del:hover {
+            background: rgba(220, 53, 69, 0.14);
+            color: #dc3545;
+        }
+        .nest-rot {
+            position: relative;
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: #e7e7e7;
+            color: #8e8e8e;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            outline: none;
+        }
+        .nest-rot::before {
+            content: "";
+            position: absolute;
+            left: -6px;
+            top: -6px;
+            width: 32px;
+            height: 32px;
+        }
+        .nest-rot svg {
+            width: 12px;
+            height: 12px;
+            display: block;
+            fill: currentColor;
+        }
+        .nest-rot:hover {
+            background: #dcdcdc;
+            color: #1c1c1c;
+        }
+        .nest-rot.kw {
+            background: #b0b0b0;
+            color: #ffffff;
+        }
+        .nest-rot.on {
+            background: #1c1c1c;
+            color: #ffffff;
+        }
+        .nest-row.off .nest-rot {
+            opacity: 0.55;
+        }
+        .nest-row.off {
+            background: #f5f5f5;
+        }
+        .nest-row.off .nest-row-title {
+            color: #8e8e8e;
+        }
+        .nest-row.off .nest-row-lead:hover .nest-row-title {
+            color: #1c1c1c;
+        }
+        .nest-empty {
+            padding: 16px 14px;
+            text-align: center;
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+        html[data-theme="dark"] .nest-row {
+            border-bottom-color: #3a3a3a;
+        }
+        html[data-theme="dark"] .nest-row .switch-label::before {
+            background: #383838;
+        }
+        html[data-theme="dark"] .nest-row-title {
+            color: #e5e5e5;
+        }
+        html[data-theme="dark"] .nest-row.off {
+            background: #181818;
+        }
+        html[data-theme="dark"] .nest-row.off .nest-row-title {
+            color: #8e8e8e;
+        }
+        html[data-theme="dark"] .nest-row.off .nest-row-lead:hover .nest-row-title {
+            color: #e5e5e5;
+        }
+        html[data-theme="dark"] .nest-row-del {
+            background: rgba(255, 255, 255, 0.12);
+            color: #b0b0b0;
+        }
+        html[data-theme="dark"] .nest-row-del:hover {
+            background: rgba(255, 69, 58, 0.22);
+            color: #ff453a;
+        }
+        html[data-theme="dark"] .nest-row-count:hover {
+            color: #e5e5e5;
+        }
+        html[data-theme="dark"] .nest-rot {
+            background: #383838;
+            color: #8e8e8e;
+        }
+        html[data-theme="dark"] .nest-rot:hover {
+            background: #444444;
+            color: #e5e5e5;
+        }
+        html[data-theme="dark"] .nest-rot.kw {
+            background: #6a6a6a;
+            color: #e5e5e5;
+        }
+        html[data-theme="dark"] .nest-rot.on {
+            background: #e5e5e5;
+            color: #1c1c1c;
+        }
+    </style>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="nest-root">
+    <div class="nest-left" :class="{ collapsed: col2Hidden }">
+        <div class="nest-left-head">
+            <div class="nest-seg">
+                <button class="nest-seg-btn" :class="{ active: leftTab === 'set' }" @click="setTab('set')">Cài đặt</button>
+                <button class="nest-seg-btn" :class="{ active: leftTab === 'list' }" @click="setTab('list')">Danh sách</button>
+            </div>
+        </div>
+        <div class="nest-left-scroll" ref="leftScroll">
+
+            <div class="nest-left-pane" v-show="leftTab === 'list'">
+                <div class="switch-stacked" v-show="materials.length > 1">
+                    <div class="switch">
+                        <span>Sắp xếp</span>
+                        <div class="select-group">
+                            <select v-model="settings.sap_xep_danh_sach" @change="applySort()">
+                                <option value="tuy_chinh" v-if="settings.sap_xep_danh_sach === 'tuy_chinh'">...</option>
+                                <option value="mac_dinh">Tự động</option>
+                                <option value="vat_lieu">Vật liệu</option>
+                                <option value="do_day">Độ dày</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint" v-show="materials.length > 1">Thứ tự hiển thị danh sách vật liệu.</p>
+                <div class="it-empty" v-if="!materials.length">Không tìm thấy chi tiết nào.</div>
+                <div class="it-tree" v-if="materials.length">
+                    <div class="it-mat" :class="{ off: !m.on }" v-for="m in materials" :key="m.key"
+                         @click="toggleMat(m)">
+                        <span class="it-name">{{ matLabel(m) }}</span>
+                        <span class="it-switch" :class="{ on: m.on }" @click.stop="toggleMat(m)"></span>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint" v-if="materials.length">Danh sách vật liệu nesting.</p>
+            </div>
+
+            <div class="nest-left-pane" v-show="leftTab === 'set'">
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Chiều rộng ván</span>
+                        <div class="number-input-group">
+                            <button class="spinner-btn"
+                                    @click="decrementValue('chieu_rong_van', 10, 100)"
+                                    :disabled="settings.chieu_rong_van <= 100">−
+                            </button>
+                            <input type="number"
+                                   v-model.number="settings.chieu_rong_van"
+                                   @change="saveSetting('chieu_rong_van')"
+                                   @blur="validateSize('chieu_rong_van')"
+                                   @keyup.enter="validateSize('chieu_rong_van')"
+                                   min="100" max="10000" step="any">
+                            <button class="spinner-btn"
+                                    @click="incrementValue('chieu_rong_van', 10)"
+                                    :disabled="settings.chieu_rong_van >= 10000">+
+                            </button>
+                        </div>
+                    </div>
+                    <div class="switch">
+                        <span>Chiều dài ván</span>
+                        <div class="number-input-group">
+                            <button class="spinner-btn"
+                                    @click="decrementValue('chieu_dai_van', 10, 100)"
+                                    :disabled="settings.chieu_dai_van <= 100">−
+                            </button>
+                            <input type="number"
+                                   v-model.number="settings.chieu_dai_van"
+                                   @change="saveSetting('chieu_dai_van')"
+                                   @blur="validateSize('chieu_dai_van')"
+                                   @keyup.enter="validateSize('chieu_dai_van')"
+                                   min="100" max="10000" step="any">
+                            <button class="spinner-btn"
+                                    @click="incrementValue('chieu_dai_van', 10)"
+                                    :disabled="settings.chieu_dai_van >= 10000">+
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Cài đặt khổ ván.</p>
+
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Tự động hậu kỳ</span>
+                        <input type="checkbox" v-model="settings.tu_dong_hau_ky"
+                               @change="saveSetting('tu_dong_hau_ky')" id="tu_dong_hau_ky">
+                        <label class="switch-label" for="tu_dong_hau_ky"></label>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Tự động dồn ván hậu kỳ sau khi nesting.</p>
+
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Góc dồn ván</span>
+                        <div class="select-group">
+                            <select v-model="settings.goc_don_van" @change="saveSetting('goc_don_van')">
+                                <option value="trai_duoi">Trái dưới</option>
+                                <option value="trai_tren">Trái trên</option>
+                                <option value="phai_duoi">Phải dưới</option>
+                                <option value="phai_tren">Phải trên</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="switch">
+                        <span>Thứ tự dồn</span>
+                        <div class="select-group">
+                            <select v-model="settings.thu_tu_don" @change="saveSetting('thu_tu_don')">
+                                <option value="mac_dinh">Mặc định</option>
+                                <option value="theo_ten">Theo tên</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Tùy chỉnh xếp tấm trên ván khi nesting.</p>
+
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Tách nhóm hai mặt</span>
+                        <input type="checkbox" v-model="settings.tach_nhom_2_mat"
+                               @change="saveSetting('tach_nhom_2_mat')" id="tach_nhom_2_mat">
+                        <label class="switch-label" for="tach_nhom_2_mat"></label>
+                    </div>
+                    <div class="switch" v-if="settings.tach_nhom_2_mat">
+                        <span>Dồn về đầu hàng</span>
+                        <input type="checkbox" v-model="settings.don_ve_dau_hang"
+                               @change="saveSetting('don_ve_dau_hang')" id="don_ve_dau_hang">
+                        <label class="switch-label" for="don_ve_dau_hang"></label>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Ưu tiên dồn tấm hai mặt.</p>
+
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Ghép cặp tối ưu</span>
+                        <input type="checkbox" v-model="settings.ghep_cap_toi_uu"
+                               @change="saveSetting('ghep_cap_toi_uu')" id="ghep_cap_toi_uu">
+                        <label class="switch-label" for="ghep_cap_toi_uu"></label>
+                    </div>
+                    <div class="switch" v-if="settings.ghep_cap_toi_uu">
+                        <span>Tự động nhóm</span>
+                        <input type="checkbox" v-model="settings.nhom_cap_am_duong"
+                               @change="saveSetting('nhom_cap_am_duong')" id="nhom_cap_am_duong">
+                        <label class="switch-label" for="nhom_cap_am_duong"></label>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Ghép các cặp răng lược, âm dương.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="nest-right">
+        <div class="nest-right-head">
+            <button class="nest-col2-btn"
+                    @click="col2Hidden = !col2Hidden">
+                <svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><line x1="9.5" y1="4.5" x2="9.5" y2="19.5"/></svg>
+            </button>
+            <div class="nest-search">
+                <input type="text" v-model="searchText" @keyup.enter="doSearch"
+                       placeholder="Tìm kiếm..." spellcheck="false" autocomplete="off">
+                <button class="nest-search-clear" v-show="searchText" @click="searchText = ''"
+                        tabindex="-1">×</button>
+            </div>
+            <span class="nest-right-stat" @click="selectAllParts">{{ totalParts }} chi tiết</span>
+            <button class="col3-btn secondary" @click="reloadData">Cập nhật</button>
+        </div>
+        <div class="nest-right-scroll" @dragover.prevent="dragOverList" @drop.prevent="dropRow">
+            <div class="nest-empty" v-if="!materials.length">Không tìm thấy chi tiết nào.</div>
+            <div class="nest-empty" v-else-if="!activeMaterials.length">Chưa chọn vật liệu nào.</div>
+            <div class="nest-row" v-for="(m, i) in activeMaterials" :key="m.key"
+                 :class="{ 'drag-src': dragIdx === i, 'drag-before': overIdx === i, 'drag-end': overIdx === activeMaterials.length && i === dragEndIdx }">
+                <div class="nest-row-lead" draggable="true"
+                     @dragstart="dragStart(i, $event)" @dragend="dragEnd">
+                    <i class="tool-drag-handle">
+                        <svg width="6" height="10" viewBox="0 0 6 10">
+                            <circle cx="1" cy="1" r="1"></circle>
+                            <circle cx="5" cy="1" r="1"></circle>
+                            <circle cx="1" cy="5" r="1"></circle>
+                            <circle cx="5" cy="5" r="1"></circle>
+                            <circle cx="1" cy="9" r="1"></circle>
+                            <circle cx="5" cy="9" r="1"></circle>
+                        </svg>
+                    </i>
+                    <button class="nest-rot" :class="{ on: m.rot, kw: !m.rot && m.kw }"
+                            @click="toggleRot(m)"
+                            @contextmenu.prevent.stop="openKw(m, i, $event)">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                        </svg>
+                    </button>
+                    <div class="nest-row-text">
+                        <div class="nest-row-title">{{ m.name }}</div>
+                    </div>
+                </div>
+                <span class="nest-row-count" @click="selectParts(m)">{{ m.eids.length }} chi tiết</span>
+                <button class="nest-row-del" @click="dropMat(m)">
+                    <svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="nest-right-footer">
+            <button class="action-button-full" :disabled="runDisabled" @click="runNest">Bắt đầu nesting</button>
+            <p class="switch-stacked-hint">Tính năng đang trong giai đoạn thử nghiệm và phát triển, luôn phải kiểm tra lại kết quả trước khi đưa vào sản xuất.</p>
+        </div>
+    </div>
+
+    <div class="text-popup" v-if="kwPop" :style="{ left: kwPop.x + 'px', top: kwPop.y + 'px' }"
+         @mousedown.stop @contextmenu.prevent.stop>
+        <textarea class="text-popup-area" v-model="kwPop.text" ref="kwInput" spellcheck="false"></textarea>
+    </div>
+</div>
+
+<script>
+    Vue.config.productionTip = false;
+    Vue.config.devtools = false;
+    document.body.spellcheck = false;
+
+    function skp(fn, arg) {
+        if (window.parent === window) return;
+        window.parent.postMessage({ action: 'tool_call', tabId: 'nesting', fn: fn, arg: arg }, '*');
+    }
+
+    var app = new Vue({
+        el: '#app',
+        mixins: [SettingsMixin('nesting')],
+        data: {
+            col2Hidden: false,
+            materials: [],
+            leftTab: 'set',
+            searchText: '',
+            dragIdx: null,
+            overIdx: null,
+            kwPop: null,
+            settings: {
+                tu_dong_hau_ky: true,
+                chieu_rong_van: 1220,
+                chieu_dai_van: 2440,
+                goc_don_van: 'trai_duoi',
+                thu_tu_don: 'mac_dinh',
+                tach_nhom_2_mat: true,
+                don_ve_dau_hang: true,
+                ghep_cap_toi_uu: true,
+                nhom_cap_am_duong: false,
+                sap_xep_danh_sach: 'mac_dinh'
+            }
+        },
+        computed: {
+            activeMaterials: function () {
+                return this.materials.filter(function (m) { return m.on; });
+            },
+            totalParts: function () {
+                var n = 0;
+                var list = this.activeMaterials;
+                for (var i = 0; i < list.length; i++) {
+                    n += list[i].eids.length;
+                }
+                return n;
+            },
+            dragEndIdx: function () {
+                var n = this.activeMaterials.length;
+                return this.dragIdx === n - 1 ? n - 2 : n - 1;
+            },
+            runDisabled: function () {
+                if (!this.materials.length) return true;
+                for (var i = 0; i < this.materials.length; i++) {
+                    if (this.materials[i].on) return false;
+                }
+                return true;
+            }
+        },
+        methods: {
+            saveSetting: function (key) {
+                var v = this.settings[key];
+                skp('save_setting', key + '@' + v);
+            },
+            validateSize: function (key) {
+                var n = parseFloat(this.settings[key]);
+                if (isNaN(n) || n < 100) n = 100;
+                if (n > 10000) n = 10000;
+                this.settings[key] = parseFloat(n.toFixed(2));
+                this.saveSetting(key);
+            },
+            selectParts: function (m) {
+                if (!m.eids.length) return;
+                skp('select_parts', JSON.stringify(m.eids));
+            },
+            selectAllParts: function () {
+                var eids = [];
+                var list = this.activeMaterials;
+                for (var i = 0; i < list.length; i++) {
+                    eids = eids.concat(list[i].eids);
+                }
+                if (!eids.length) return;
+                skp('select_parts', JSON.stringify(eids));
+            },
+            reloadData: function () {
+                skp('reload_data', '');
+            },
+            doSearch: function () {
+                var q = String(this.searchText || '').trim();
+                if (!q) return;
+                skp('search_parts', q);
+            },
+            saveRows: function () {
+                var cfg = {};
+                for (var i = 0; i < this.materials.length; i++) {
+                    var m = this.materials[i];
+                    cfg[m.key] = [m.on, i, m.rot, m.kw];
+                }
+                skp('save_rows', JSON.stringify(cfg));
+            },
+            sortKeyList: function (list) {
+                var by = this.settings.sap_xep_danh_sach;
+                var out = list.slice();
+                if (by === 'tuy_chinh') {
+                    return out;
+                }
+                if (by === 'vat_lieu') {
+                    out.sort(function (a, b) {
+                        return String(a.name || '').localeCompare(String(b.name || ''), 'vi');
+                    });
+                } else if (by === 'do_day') {
+                    out.sort(function (a, b) {
+                        var ta = Number(a.th) || 0;
+                        var tb = Number(b.th) || 0;
+                        if (ta !== tb) return ta - tb;
+                        return String(a.name || '').localeCompare(String(b.name || ''), 'vi');
+                    });
+                } else {
+                    var ord = this._origOrder || {};
+                    out.sort(function (a, b) {
+                        var oa = ord[a.key], ob = ord[b.key];
+                        if (oa === undefined) oa = 9999;
+                        if (ob === undefined) ob = 9999;
+                        return oa - ob;
+                    });
+                }
+                return out;
+            },
+            rememberOrder: function () {
+                var ord = {};
+                this.materials.forEach(function (m, i) { ord[m.key] = i; });
+                this._origOrder = ord;
+            },
+            applySort: function () {
+                this.saveSetting('sap_xep_danh_sach');
+                this.materials = this.sortKeyList(this.materials);
+                this.saveRows();
+            },
+            setTab: function (t) {
+                if (this.leftTab === t) return;
+                this.leftTab = t;
+                var self = this;
+                this.$nextTick(function () {
+                    var el = self.$refs.leftScroll;
+                    if (el) el.scrollTop = 0;
+                });
+            },
+            matLabel: function (m) {
+                var n = String(m.name || '');
+                var base = n.replace(/\s*[-–]?\s*\d+(?:[.,]\d+)?\s*mm\s*$/i, '').trim() || n;
+                var t = Number(m.th) || 0;
+                if (!t) return n;
+                var r = Math.round(t * 10) / 10;
+                return base + ' - ' + (r % 1 === 0 ? Math.round(r) : r) + 'mm';
+            },
+            dropMat: function (m) {
+                if (!m.on) return;
+                m.on = false;
+                this.saveRows();
+            },
+            toggleMat: function (m) {
+                m.on = !m.on;
+                this.saveRows();
+            },
+            toggleRot: function (m) {
+                m.rot = !m.rot;
+                this.saveRows();
+            },
+            openKw: function (m, i, e) {
+                this.closeKwPop(true);
+                var r = e.currentTarget.getBoundingClientRect();
+                this.kwPop = { mat: m, text: m.kw, x: 0, y: 0 };
+                var self = this;
+                this.$nextTick(function () {
+                    var t = self.$refs.kwInput;
+                    if (!t || !self.kwPop) return;
+                    var pop = t.parentNode;
+                    var w = pop.offsetWidth;
+                    var h = pop.offsetHeight;
+                    var x = r.left + r.width / 2 - w / 2;
+                    var mx = document.documentElement.clientWidth - w - 6;
+                    if (x < 6) x = 6;
+                    if (x > mx) x = mx;
+                    var y = r.bottom + 4;
+                    if (y + h > document.documentElement.clientHeight - 6) y = r.top - 4 - h;
+                    if (y < 6) y = 6;
+                    self.kwPop.x = Math.round(x);
+                    self.kwPop.y = Math.round(y);
+                    t.focus();
+                    t.setSelectionRange(t.value.length, t.value.length);
+                });
+            },
+            closeKwPop: function (save) {
+                var p = this.kwPop;
+                if (!p) return;
+                this.kwPop = null;
+                if (!save) return;
+                var m = p.mat;
+                if (!m) return;
+                var t = String(p.text || '').trim();
+                if (m.kw === t) return;
+                m.kw = t;
+                this.saveRows();
+            },
+            dragStart: function (i, e) {
+                if (e.target && e.target.closest && e.target.closest('.nest-rot')) {
+                    e.preventDefault();
+                    return;
+                }
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', '');
+                var row = e.target.closest('.nest-row');
+                if (row && e.dataTransfer.setDragImage) {
+                    var rr = row.getBoundingClientRect();
+                    e.dataTransfer.setDragImage(row, e.clientX - rr.left, e.clientY - rr.top);
+                }
+                this._dragging = true;
+                var self = this;
+                setTimeout(function () {
+                    if (!self._dragging) return;
+                    self.dragIdx = i;
+                    self.overIdx = null;
+                    self.$nextTick(function () {
+                        if (!self._dragging) return;
+                        var rows = self.$el.querySelectorAll('.nest-row:not(.drag-src)');
+                        var mids = [];
+                        for (var k = 0; k < rows.length; k++) {
+                            var r = rows[k].getBoundingClientRect();
+                            mids.push(r.top + r.height / 2);
+                        }
+                        self._mids = mids;
+                    });
+                }, 0);
+            },
+            dragOverList: function (e) {
+                if (this.dragIdx === null || !this._mids) return;
+                e.dataTransfer.dropEffect = 'move';
+                var v = this._mids.length;
+                for (var i = 0; i < this._mids.length; i++) {
+                    if (e.clientY < this._mids[i]) { v = i; break; }
+                }
+                this.overIdx = v < this.dragIdx ? v : v + 1;
+            },
+            dropRow: function () {
+                if (this.dragIdx === null || this.overIdx === null) {
+                    this.dragEnd();
+                    return;
+                }
+                var list = this.activeMaterials;
+                var from = this.dragIdx;
+                var to = this.overIdx;
+                this.dragEnd();
+                var item = list[from];
+                if (!item) return;
+                var next = to < list.length ? list[to] : null;
+                if (next === item) return;
+                var mats = this.materials.slice();
+                mats.splice(mats.indexOf(item), 1);
+                var at = next ? mats.indexOf(next) : mats.length;
+                mats.splice(at, 0, item);
+                this.materials = mats;
+                if (this.settings.sap_xep_danh_sach !== 'tuy_chinh') {
+                    this.settings.sap_xep_danh_sach = 'tuy_chinh';
+                    this.saveSetting('sap_xep_danh_sach');
+                }
+                this.saveRows();
+            },
+            dragEnd: function () {
+                this._dragging = false;
+                this.dragIdx = null;
+                this.overIdx = null;
+                this._mids = null;
+            },
+            runNest: function () {
+                if (this.runDisabled) return;
+                var rows = [];
+                for (var i = 0; i < this.materials.length; i++) {
+                    var m = this.materials[i];
+                    rows.push({ key: m.key, name: m.name, on: m.on, rot: m.rot, kw: m.kw });
+                }
+                skp('nest_run', JSON.stringify(rows));
+            }
+        },
+        mounted: function () {
+            var self = this;
+            document.addEventListener('mousedown', function () {
+                self.closeKwPop(true);
+            });
+            window.nestingLoad = function (data) {
+                if (data.theme) document.documentElement.setAttribute('data-theme', data.theme);
+                self.loadSettings(data.settings || {});
+                var mats = [];
+                (data.materials || []).forEach(function (m) {
+                    mats.push({
+                        key: m.key, name: m.name, eids: m.eids || [],
+                        th: Number(m.thickness_mm) || 0,
+                        on: m.on !== false,
+                        rot: m.rot === true,
+                        kw: String(m.kw || '')
+                    });
+                });
+                self.materials = mats;
+                self.rememberOrder();
+                self.materials = self.sortKeyList(self.materials);
+            };
+            window.addEventListener('message', function (e) {
+                if (!e.data || e.data.action !== 'tab_shown') return;
+                if (self._loaded && !e.data.reload) return;
+                self._loaded = true;
+                skp('load_data', '');
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

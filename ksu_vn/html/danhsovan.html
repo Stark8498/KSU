@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Đánh số ván</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/preload.js"></script>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="container">
+    <div class="col2">
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Thêm tiền tố</span>
+                <div class="text-input-group">
+                    <input type="text" v-model="settings.tien_to"
+                           @change="saveSetting('tien_to')"
+                           spellcheck="false" autocomplete="off">
+                </div>
+            </div>
+            <div class="switch">
+                <span>Thêm hậu tố</span>
+                <div class="text-input-group">
+                    <input type="text" v-model="settings.hau_to"
+                           @change="saveSetting('hau_to')"
+                           spellcheck="false" autocomplete="off">
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Thêm tiền tố và hậu tố vào số thứ tự của ván.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Thêm số đệm</span>
+                <input type="checkbox" v-model="settings.them_so_dem"
+                       @change="saveSetting('them_so_dem')" id="them_so_dem">
+                <label class="switch-label" for="them_so_dem"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Thêm số đệm theo số ván lớn nhất.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Xếp từ dưới lên</span>
+                <input type="checkbox" v-model="settings.xep_tu_duoi_len"
+                       @change="saveSetting('xep_tu_duoi_len')" id="xep_tu_duoi_len">
+                <label class="switch-label" for="xep_tu_duoi_len"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Đánh số thứ tự từ dưới lên thay vì từ trên xuống.</p>
+    </div>
+
+    <div id="preset-panel"></div>
+</div>
+
+<script>
+    Vue.config.productionTip = false;
+    Vue.config.devtools = false;
+    document.body.spellcheck = false;
+
+    new Vue({
+        el: '#app',
+        mixins: [SettingsMixin('danh_so_van')],
+        data: {
+            settings: {
+                tien_to: '',
+                hau_to: '',
+                them_so_dem: true,
+                xep_tu_duoi_len: false
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

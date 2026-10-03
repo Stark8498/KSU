@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Thêm tấm</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/preload.js"></script>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="container">
+    <div class="col2">
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Thêm tấm tự do</span>
+                <input type="checkbox" v-model="settings.them_tam_tu_do"
+                       @change="saveSetting('them_tam_tu_do')" id="them_tam_tu_do">
+                <label class="switch-label" for="them_tam_tu_do"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Kích hoạt để không lọc độ dày và loại ván.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Ghi đè tấm cũ</span>
+                <input type="checkbox" v-model="settings.ghi_de_tam_cu"
+                       @change="saveSetting('ghi_de_tam_cu')" id="ghi_de_tam_cu">
+                <label class="switch-label" for="ghi_de_tam_cu"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Tấm trong ván được thêm trùng mã với tấm trong sơ đồ sẽ thay thế tấm cũ tại đúng vị trí, không tạo bản sao.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Thêm tem nhãn</span>
+                <input type="checkbox" v-model="settings.them_tem_nhan"
+                       @change="saveSetting('them_tem_nhan')" id="them_tem_nhan">
+                <label class="switch-label" for="them_tem_nhan"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Việc thêm tem nhãn cho tấm mới được thêm vào khi sao chép từ bản vẽ khác có thể gây nhầm lẫn về thống kê. Chỉ sử dụng khi thật sự cần thiết.</p>
+    </div>
+
+    <div id="preset-panel"></div>
+</div>
+
+<script>
+    Vue.config.productionTip = false;
+    Vue.config.devtools = false;
+    document.body.spellcheck = false;
+
+    new Vue({
+        el: '#app',
+        mixins: [SettingsMixin('them_tam')],
+        data: {
+            settings: {
+                them_tam_tu_do: true,
+                them_tem_nhan: false,
+                ghi_de_tam_cu: false
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Xuất DXF</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/nest.css">
+    <script src="js/vue.min.js"></script>
+    <style>
+        .xbv-canvas { position: relative; flex-shrink: 0; }
+        .xbv-plane { position: absolute; }
+        .xbv-card { position: absolute; display: flex; flex-direction: column; align-items: center; }
+        .xbv-row-label {
+            position: absolute; z-index: 1; font-size: 11px; font-weight: 600; color: #1c1c1c;
+            white-space: nowrap; line-height: 14px; pointer-events: none;
+        }
+        .xbv-paper {
+            width: 100%; background: #ffffff; border-radius: 4px; overflow: hidden;
+        }
+        .xbv-paper svg { width: 100%; height: auto; display: block; }
+        .xbv-card.bottom .xbv-paper { background: #ececec; }
+        .xbv-card.active .xbv-paper {
+            box-shadow: 0 0 0 4px rgba(0,0,0,0.5);
+        }
+        .xbv-cap { position: relative; z-index: 1; margin-top: 4px; font-size: 11px; line-height: 13px; color: #1c1c1c; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+        html[data-theme="dark"] .xbv-card.bottom .xbv-paper { background: #d8d8d8; }
+        html[data-theme="dark"] .xbv-card.active .xbv-paper {
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.55);
+        }
+        html[data-theme="dark"] .xbv-cap { color: #e5e5e5; }
+        html[data-theme="dark"] .xbv-row-label { color: #e5e5e5; }
+    </style>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="nest-root">
+    <div class="nest-left" :class="{ collapsed: col2Hidden }">
+        <div class="nest-left-head">
+            <div class="nest-seg">
+                <button class="nest-seg-btn" :class="{ active: leftTab === 'set' }" @click="setTab('set')">Cài đặt</button>
+                <button class="nest-seg-btn" :class="{ active: leftTab === 'list' }" @click="setTab('list')">Danh sách</button>
+            </div>
+        </div>
+        <div class="nest-left-scroll" ref="leftScroll">
+
+            <div class="nest-left-pane" v-show="leftTab === 'list'">
+                <div class="it-empty" v-if="!materials.length">Chưa có dữ liệu nesting.</div>
+                <div class="it-tree" v-if="materials.length">
+                    <div v-for="m in materials" :key="m.key">
+                        <div class="it-mat" :class="{ active: sel.mat === m.key, off: matState(m) === 'off' }" @click="clickMat(m)">
+                            <span class="it-name">{{ matLabel(m) }}</span>
+                            <span class="it-switch" :class="{ on: matState(m) === 'on', partial: matState(m) === 'indet' }"
+                                  @click.stop="toggleMat(m)"></span>
+                        </div>
+                        <div class="it-children" v-if="sel.mat === m.key">
+                            <template v-for="s in matSheets(m.key)">
+                                <div class="it-sheet" :class="{ active: sel.sheet === s.uid }"
+                                     :key="s.uid" :ref="'row_' + s.uid" @click="clickSheet(s)">
+                                    <span class="it-caret">{{ expandedSheets[s.uid] ? '▾' : '▸' }}</span>
+                                    <span class="it-check sm" :class="{ on: sheetState(s) === 'on', indet: sheetState(s) === 'indet' }"
+                                          @click.stop="toggleSheet(s)"><i class="it-check-mark"></i></span>
+                                    <span class="it-name">Sheet {{ s.id }}{{ s.bottom ? ' - mặt sau' : '' }}</span>
+                                    <span class="it-count">{{ s.parts.length }} chi tiết</span>
+                                </div>
+                                <template v-if="expandedSheets[s.uid]">
+                                    <div class="it-part" :class="{ active: selParts[s.uid + '_' + p.id] }"
+                                         v-for="p in s.parts" :key="s.uid + '_' + p.id" @click="clickPart(s, p, $event)">
+                                        <span class="it-check sm" :class="{ on: !off[s.uid + '_' + p.id] }"
+                                              @click.stop="togglePart(s, p)"><i class="it-check-mark"></i></span>
+                                        <span class="it-name">{{ p.id }}. {{ p.name }}</span>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint" v-if="materials.length">Danh sách vật liệu và bản vẽ.</p>
+            </div>
+
+            <div class="nest-left-pane" v-show="leftTab === 'set'">
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Hiển thị màu layer</span>
+                        <input type="checkbox" v-model="hienMauLayer" @change="toggleMauLayer" id="hien_mau_layer">
+                        <label class="switch-label" for="hien_mau_layer"></label>
+                    </div>
+                    <div class="switch">
+                        <span>Hiển thị tiết diện</span>
+                        <input type="checkbox" v-model="hienTietDien" @change="toggleTietDien" id="hien_tiet_dien">
+                        <label class="switch-label" for="hien_tiet_dien"></label>
+                    </div>
+                    <div class="switch">
+                        <span>Hiển thị mặt sau</span>
+                        <input type="checkbox" v-model="hienMatSau" @change="toggleMatSau" id="hien_mat_sau">
+                        <label class="switch-label" for="hien_mat_sau"></label>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Tùy chỉnh hình xem trước.</p>
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Tối ưu xuống dao</span>
+                        <input type="checkbox" v-model="toiUuXuongDao" @change="toggleXuongDao" id="toi_uu_xuong_dao">
+                        <label class="switch-label" for="toi_uu_xuong_dao"></label>
+                    </div>
+                    <div class="switch" v-show="toiUuXuongDao">
+                        <span>Khoảng cách</span>
+                        <div class="number-input-group">
+                            <button class="spinner-btn"
+                                    @click="stepKhoangCach(-10)"
+                                    :disabled="khoangCachGoc <= 1">−
+                            </button>
+                            <input type="number"
+                                   v-model.number="khoangCachGoc"
+                                   @change="validateKhoangCach"
+                                   @keyup.enter="validateKhoangCach"
+                                   min="1" max="1000" step="any">
+                            <button class="spinner-btn"
+                                    @click="stepKhoangCach(10)"
+                                    :disabled="khoangCachGoc >= 1000">+
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Tùy chỉnh điểm xuống dao cho đường cắt.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="nest-right">
+        <div class="nest-right-head">
+            <button class="nest-col2-btn"
+                    @click="col2Hidden = !col2Hidden">
+                <svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><line x1="9.5" y1="4.5" x2="9.5" y2="19.5"/></svg>
+            </button>
+            <div class="nest-search">
+                <input type="text" v-model="searchText" placeholder="Tìm kiếm..." spellcheck="false" autocomplete="off">
+                <button class="nest-search-clear" v-show="searchText" @click="searchText = ''" tabindex="-1">×</button>
+            </div>
+            <span class="nest-right-stat">{{ visibleSheets.length }} sheet</span>
+            <button class="col3-btn" @click="reloadData">Cập nhật</button>
+        </div>
+        <div class="nest-right-scroll plane" :class="{ filled: visibleSheets.length, panning: panning }" ref="scroll"
+             @mousedown="panStart" @click.capture="panClickGuard" @dblclick.capture="panClickGuard" @dblclick="dblClickBlank"
+             @wheel="onWheel">
+            <div class="it-empty" v-if="!visibleSheets.length">Chọn ít nhất một loại ván để xem trước.</div>
+            <div class="xbv-canvas" v-if="layout" :style="{ width: (layout.w + 2 * vpW) + 'px', height: (layout.h + 2 * vpH) + 'px' }">
+            <div class="xbv-plane" :style="{ left: vpW + 'px', top: vpH + 'px', width: layout.w + 'px', height: layout.h + 'px' }">
+                <div class="xbv-row-label" v-for="(l, i) in layout.labels" :key="'lb' + i" :style="l.style">{{ l.text }}</div>
+                <div class="xbv-card" :class="{ active: sel.sheet === s.uid, bottom: s.bottom }" :style="layout.cards[s.uid]"
+                     v-for="s in visibleSheets" :key="s.uid" :ref="'card_' + s.uid" v-lazysheet="s.uid"
+                     @click="clickCard(s)" @dblclick="dblClickCard(s)">
+                    <div class="xbv-paper" :style="layout.paper" v-html="(!lazyEnabled || shown[s.uid]) ? sheetSvg(s) : placeholderSvg(s)"></div>
+                    <div class="xbv-cap">{{ viewMode === 'list' ? s.name : s.id }}</div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="it-dock" v-if="visibleSheets.length">
+            <button class="it-dock-btn" @click="zoomStep(-1)">−</button>
+            <button class="it-dock-btn" @click="zoomStep(1)">+</button>
+            <button class="it-dock-btn" @click="rotCCW"><span class="it-rot-ico">↺</span></button>
+            <button class="it-dock-btn" @click="fitAll"><svg class="it-dock-ico" viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
+            <button class="it-dock-btn" @click="scrollByPct(-1)"><svg class="it-dock-ico thin" viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"/></svg></button>
+            <button class="it-dock-btn" @click="scrollByPct(1)"><svg class="it-dock-ico thin" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+        </div>
+        <div class="nest-right-footer">
+            <button class="action-button-full" :disabled="!visibleSheets.length" @click="doExport">Xuất DXF</button>
+            <p class="switch-stacked-hint">Tính năng đang trong giai đoạn thử nghiệm và phát triển, luôn phải kiểm tra lại kết quả trước khi đưa vào sản xuất.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    Vue.config.productionTip = false;
+    Vue.config.devtools = false;
+    document.body.spellcheck = false;
+
+    var XBV_EPS_LEN = 0.00254;
+    var XBV_EPS_ANG = 0.0001;
+    var XBV_R2D = 180 / Math.PI;
+
+    function xbvDist(a, b) {
+        var dx = b.x - a.x, dy = b.y - a.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function xbvSame(a, b) {
+        return Math.abs(a.x - b.x) <= 0.03 && Math.abs(a.y - b.y) <= 0.03;
+    }
+
+    function xbvCircum(p1, p2, p3) {
+        if (xbvSame(p1, p2) || xbvSame(p2, p3)) return null;
+        var d = 2 * (p1.x * (p2.y - p3.y) + p2.x * (p3.y - p1.y) + p3.x * (p1.y - p2.y));
+        if (Math.abs(d) < 1e-9) return null;
+        var s1 = p1.x * p1.x + p1.y * p1.y;
+        var s2 = p2.x * p2.x + p2.y * p2.y;
+        var s3 = p3.x * p3.x + p3.y * p3.y;
+        return {
+            x: (s1 * (p2.y - p3.y) + s2 * (p3.y - p1.y) + s3 * (p1.y - p2.y)) / d,
+            y: (s1 * (p3.x - p2.x) + s2 * (p1.x - p3.x) + s3 * (p2.x - p1.x)) / d
+        };
+    }
+
+    function xbvAng360(ax, ay, bx, by) {
+        var la = Math.sqrt(ax * ax + ay * ay), lb = Math.sqrt(bx * bx + by * by);
+        if (!la || !lb) return 0;
+        var d = (ax * bx + ay * by) / (la * lb);
+        if (d < -1) d = -1;
+        if (d > 1) d = 1;
+        var a = Math.acos(d);
+        if (ax * by - ay * bx < 0) a = 2 * Math.PI - a;
+        return Math.abs(a - 2 * Math.PI) < XBV_EPS_ANG ? 0 : a;
+    }
+
+    function xbvIsCircle(pos) {
+        var n = pos.length;
+        if (n < 12) return false;
+        var step0 = xbvDist(pos[0], pos[1]);
+        for (var i = 1; i < n - 1; i++) {
+            if (Math.abs(step0 - xbvDist(pos[i], pos[i + 1])) > XBV_EPS_LEN) return false;
+        }
+        var c = xbvCircum(pos[0], pos[Math.floor(n / 3)], pos[Math.floor(n * 2 / 3)]);
+        if (!c) return false;
+        var r = xbvDist(c, pos[0]);
+        for (i = 1; i < n; i++) {
+            if (Math.abs(r - xbvDist(c, pos[i])) > XBV_EPS_LEN) return false;
+        }
+        return true;
+    }
+
+    function xbvFindArc(pos, i) {
+        var num = pos.length;
+        var p1 = pos[i], p2 = pos[(i + 1) % num], p3 = pos[(i + 2) % num];
+        var sideLen = xbvDist(p1, p2);
+        if (Math.abs(xbvDist(p2, p3) - sideLen) > XBV_EPS_LEN) return null;
+        var ce = xbvCircum(p1, p2, p3);
+        if (!ce) return null;
+        var radius = xbvDist(ce, p1);
+        var sideNum = 2, si = i, ei = i + 2;
+        for (var j = i - 1; j >= i - num + 3; j--) {
+            var ji = j >= 0 ? j : j + num;
+            var ji1 = (j + 1) >= 0 ? (j + 1) : (j + 1 + num);
+            if (Math.abs(xbvDist(pos[ji], pos[ji1]) - sideLen) >= XBV_EPS_LEN ||
+                Math.abs(xbvDist(ce, pos[ji]) - radius) >= XBV_EPS_LEN) break;
+            si = ji;
+            sideNum++;
+        }
+        var pa = pos[si - 1 >= 0 ? si - 1 : si - 1 + num];
+        var pv = pos[si];
+        var pb = pos[(si + 1) % num];
+        var pc = pos[(si + 2) % num];
+        var a1 = xbvAng360(pc.x - pb.x, pc.y - pb.y, pv.x - pb.x, pv.y - pb.y);
+        var a2 = xbvAng360(pb.x - pv.x, pb.y - pv.y, pa.x - pv.x, pa.y - pv.y);
+        if (xbvDist(pv, pa) < sideLen && a1 * XBV_R2D < 72.001 && Math.abs(a1 - a2) < XBV_EPS_ANG) {
+            si -= 1;
+            sideNum++;
+        }
+        var ei0 = ei;
+        for (j = ei0 + 1; j <= ei0 + num - 3; j++) {
+            var ji2 = j % num;
+            var ji3 = (j - 1) % num;
+            if (Math.abs(xbvDist(pos[ji3], pos[ji2]) - sideLen) >= XBV_EPS_LEN ||
+                Math.abs(xbvDist(ce, pos[ji2]) - radius) >= XBV_EPS_LEN) break;
+            ei = ji2;
+            sideNum++;
+        }
+        pa = pos[(ei - 1 + num) % num];
+        pv = pos[ei];
+        pb = pos[(ei + 1) % num];
+        a1 = xbvAng360(pb.x - pv.x, pb.y - pv.y, pa.x - pv.x, pa.y - pv.y);
+        var pe2 = pos[(ei - 2 + num) % num];
+        a2 = xbvAng360(pv.x - pa.x, pv.y - pa.y, pe2.x - pa.x, pe2.y - pa.y);
+        if (ei < num - 1 && xbvDist(pv, pb) < sideLen && a1 * XBV_R2D < 72.001 && Math.abs(a1 - a2) < XBV_EPS_ANG) {
+            ei += 1;
+            sideNum++;
+        }
+        if (sideNum < 5) return null;
+        if (sideNum > num) return null;
+        var q1 = pos[si >= 0 ? si : si + num];
+        var q2 = pos[(si + 1 + num) % num];
+        var q3 = pos[(si + 2 + num) % num];
+        var vsx = ce.x - q1.x, vsy = ce.y - q1.y;
+        var v2x = ce.x - q2.x, v2y = ce.y - q2.y;
+        var qe = pos[ei];
+        var vex = ce.x - qe.x, vey = ce.y - qe.y;
+        var angle = vsx * v2y - vsy * v2x > 0 ? xbvAng360(vsx, vsy, vex, vey) : xbvAng360(vex, vey, vsx, vsy);
+        if (num === 6 && sideNum === 5 && angle * XBV_R2D > 299) return null;
+        if (sideNum === 6 && angle * XBV_R2D > 359) return null;
+        var bulge = Math.tan(angle / 4);
+        var sign = (q2.x - q1.x) * (q3.y - q1.y) - (q2.y - q1.y) * (q3.x - q1.x);
+        return { si: si, ei: ei, bulge: sign >= 0 ? bulge : -bulge };
+    }
+
+    function xbvGenBulge(pos, deadline) {
+        if (xbvSame(pos[0], pos[pos.length - 1])) {
+            if (pos.length < 12) return pos;
+        } else if (pos.length < 5) {
+            return pos;
+        }
+        var c0 = (pos[1].x - pos[0].x) * (pos[2].y - pos[1].y) - (pos[1].y - pos[0].y) * (pos[2].x - pos[1].x);
+        if (c0 < 0) pos.reverse();
+        for (;;) {
+            if (deadline && performance.now() > deadline) break;
+            var done = true;
+            for (var i = 0; i < pos.length; i++) {
+                var c = xbvFindArc(pos, i);
+                if (!c) continue;
+                var si = c.si, ei = c.ei;
+                var p = pos[si >= 0 ? si : si + pos.length];
+                if (si < ei) {
+                    pos.splice(si + 1, ei - si - 1);
+                } else {
+                    pos = pos.slice(ei, si + 1);
+                }
+                var idx = pos.indexOf(p);
+                if (idx >= 0) pos[idx].b = c.bulge;
+                done = false;
+                break;
+            }
+            if (done) break;
+        }
+        return pos;
+    }
+
+    function xbvEntryOnEdge(sel, tx, ty, gx, gy, d) {
+        var n = sel.length;
+        if (n < 2) return null;
+        var pick = null, bd = null;
+        for (var i = 0; i < n; i++) {
+            var a = sel[i], b = sel[(i + 1) % n];
+            var dx = b.x - a.x, dy = b.y - a.y;
+            var len = Math.sqrt(dx * dx + dy * dy);
+            if (len <= d * 2) continue;
+            if (Math.abs(a.b) > 1e-9) continue;
+            var t = ((tx - a.x) * dx + (ty - a.y) * dy) / (len * len);
+            if (t < 0) t = 0;
+            if (t > 1) t = 1;
+            var px = a.x + t * dx, py = a.y + t * dy;
+            var dd = (px - tx) * (px - tx) + (py - ty) * (py - ty);
+            if (bd === null || dd < bd) {
+                bd = dd;
+                pick = [a, b, dx, dy, len, t];
+            }
+        }
+        if (!pick) return null;
+        var pad = d / pick[4];
+        var t2 = pick[5];
+        if (t2 < pad) t2 = pad;
+        if (t2 > 1 - pad) t2 = 1 - pad;
+        var entry = [pick[0].x + t2 * pick[2], pick[0].y + t2 * pick[3]];
+        var da = (pick[0].x - gx) * (pick[0].x - gx) + (pick[0].y - gy) * (pick[0].y - gy);
+        var db = (pick[1].x - gx) * (pick[1].x - gx) + (pick[1].y - gy) * (pick[1].y - gy);
+        var an = da <= db ? pick[0] : pick[1];
+        return [entry, [an.x, an.y]];
+    }
+
+    function xbvBox(pts) {
+        var minx = pts[0][0], maxx = minx, miny = pts[0][1], maxy = miny;
+        for (var i = 1; i < pts.length; i++) {
+            if (pts[i][0] < minx) minx = pts[i][0];
+            if (pts[i][0] > maxx) maxx = pts[i][0];
+            if (pts[i][1] < miny) miny = pts[i][1];
+            if (pts[i][1] > maxy) maxy = pts[i][1];
+        }
+        return { minx: minx, miny: miny, maxx: maxx, maxy: maxy, w: maxx - minx, h: maxy - miny };
+    }
+
+    function xbvStrip(b) {
+        return b.w > 1.5 * b.h && b.h < 200;
+    }
+
+    function xbvCorner(b, shw, shh) {
+        if (xbvStrip(b)) return [1, (b.miny + b.maxy) / 2 > shh / 2 ? -1 : 1];
+        return (b.minx + b.maxx) / 2 >= shw / 2 ? [-1, -1] : [1, 1];
+    }
+
+    function skp(fn, arg) {
+        if (window.parent === window) return;
+        window.parent.postMessage({ action: 'tool_call', tabId: 'xuat_dxf', fn: fn, arg: arg }, '*');
+    }
+
+    var XBV_MAX_ZOOM = 2400;
+    var XBV_PAPER_MM = 40;
+    var XBV_PAD = 14;
+    var XBV_LGAP = 10;
+    var XBV_CAP_H = 22;
+    var XBV_LINE_H = 14;
+
+    function xbvMapPt(x, y, rot) {
+        if (rot === 1) return [y, x];
+        if (rot === 2) return [-x, y];
+        if (rot === 3) return [-y, -x];
+        return [x, -y];
+    }
+
+    function xbvRotRect(s, rot) {
+        var a = xbvMapPt(s.x, s.y, rot), b = xbvMapPt(s.x + s.w, s.y + s.h, rot);
+        return { x: Math.min(a[0], b[0]), y: Math.min(a[1], b[1]), w: Math.abs(b[0] - a[0]), h: Math.abs(b[1] - a[1]) };
+    }
+
+    function xbvRows(list) {
+        var arr = list.slice().sort(function (a, b) { return a.y - b.y; });
+        var sum = 0;
+        arr.forEach(function (s) { sum += s.h; });
+        var tol = 0.5 * (arr.length ? sum / arr.length : 100);
+        var rows = [], cur = null, ry = 0;
+        arr.forEach(function (s) {
+            if (cur && Math.abs(s.y - ry) <= tol) {
+                cur.push(s);
+            } else {
+                cur = [s];
+                rows.push(cur);
+                ry = s.y;
+            }
+        });
+        rows.forEach(function (r) { r.sort(function (a, b) { return a.x - b.x; }); });
+        return rows;
+    }
+
+    var xbvMeasureCtx = null;
+    function xbvTextWidth(text) {
+        if (!xbvMeasureCtx) {
+            xbvMeasureCtx = document.createElement('canvas').getContext('2d');
+            xbvMeasureCtx.font = '600 11px ' + (getComputedStyle(document.body).fontFamily || 'sans-serif');
+        }
+        return Math.ceil(xbvMeasureCtx.measureText(text).width);
+    }
+
+    var app = new Vue({
+        el: '#app',
+        directives: {
+            lazysheet: {
+                inserted: function (el, binding, vnode) {
+                    el.__uid = binding.value;
+                    var io = vnode.context._io;
+                    if (io) io.observe(el);
+                },
+                update: function (el, binding) {
+                    el.__uid = binding.value;
+                },
+                unbind: function (el, binding, vnode) {
+                    var io = vnode.context._io;
+                    if (io) io.unobserve(el);
+                }
+            }
+        },
+        data: {
+            col2Hidden: false,
+            materials: [],
+            sheets: [],
+            leftTab: 'set',
+            hienMatSau: false,
+            searchText: '',
+            cardScale: 220,
+            rot: 0,
+            hienTietDien: true,
+            hienMauLayer: true,
+            toiUuXuongDao: false,
+            khoangCachGoc: 50,
+            panning: false,
+            vpW: 0,
+            vpH: 0,
+            viewMode: 'diagram',
+            shown: {},
+            lazyEnabled: true,
+            off: {},
+            expandedSheets: {},
+            selParts: {},
+            sel: { mat: null, sheet: null }
+        },
+        computed: {
+            visibleSheets: function () {
+                var self = this;
+                var rank = {};
+                this.materials.forEach(function (m, i) { rank[m.key] = i; });
+                var list = this.sheets.filter(function (s) { return self.sheetState(s) !== 'off'; });
+                list = list.slice().sort(function (a, b) {
+                    var ra = rank[a.key], rb = rank[b.key];
+                    if (ra === undefined) ra = 9999;
+                    if (rb === undefined) rb = 9999;
+                    if (ra !== rb) return ra - rb;
+                    return self.sheets.indexOf(a) - self.sheets.indexOf(b);
+                });
+                var q = String(this.searchText || '').trim().toLowerCase();
+                if (!q) return list;
+                var terms = q.split(',');
+                return list.filter(function (s) {
+                    var mat = String(s.mat || '').toLowerCase();
+                    for (var t = 0; t < terms.length; t++) {
+                        var term = terms[t].trim();
+                        if (!term) continue;
+                        if (/^\d+$/.test(term)) {
+                            if (String(s.id) === term) return true;
+                        } else if (mat.indexOf(term) !== -1) {
+                            return true;
+                        } else {
+                            for (var p = 0; p < s.parts.length; p++) {
+                                if (String(s.parts[p].name || '').toLowerCase().indexOf(term) !== -1) return true;
+                            }
+                        }
+                    }
+                    return false;
+                });
+            },
+            refW: function () {
+                var m = 0;
+                this.sheets.forEach(function (s) { if (s.w > m) m = s.w; });
+                return m || 1220;
+            },
+            layout: function () {
+                var list = this.visibleSheets;
+                if (!list.length) return null;
+                var self = this;
+                var rot = this.rot;
+                var scale = this.cardScale / this.refW;
+                var pp = XBV_PAPER_MM * scale;
+                var paper = { padding: pp + "px", borderRadius: Math.min(4, 3 * pp) + "px" };
+                var cards = {};
+                if (this.viewMode === "list") {
+                    var colW = 0, maxH = 0;
+                    list.forEach(function (s) {
+                        var r = xbvRotRect(s, rot);
+                        if (r.w > colW) colW = r.w;
+                        if (r.h > maxH) maxH = r.h;
+                    });
+                    var stepPx = 2 * pp + XBV_CAP_H + XBV_PAD;
+                    var y = XBV_PAD;
+                    list.forEach(function (s) {
+                        var r = xbvRotRect(s, rot);
+                        cards[s.uid] = {
+                            left: (XBV_PAD + (colW - r.w) * scale / 2) + "px",
+                            top: y + "px",
+                            width: (r.w * scale + 2 * pp) + "px"
+                        };
+                        y += r.h * scale + stepPx;
+                    });
+                    return { w: Math.ceil(2 * XBV_PAD + colW * scale + 2 * pp), h: Math.ceil(y), scale: scale,
+                             padL: XBV_PAD + pp, padR: XBV_PAD + pp, padT: XBV_PAD + pp, padB: XBV_CAP_H + XBV_PAD + pp,
+                             ppx: pp, fitW: colW, fitH: maxH, cards: cards, paper: paper, labels: [] };
+                }
+                var rects = {};
+                var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+                list.forEach(function (s) {
+                    var r = xbvRotRect(s, rot);
+                    rects[s.uid] = r;
+                    if (r.x < minX) minX = r.x;
+                    if (r.y < minY) minY = r.y;
+                    if (r.x + r.w > maxX) maxX = r.x + r.w;
+                    if (r.y + r.h > maxY) maxY = r.y + r.h;
+                });
+                var byKey = {};
+                list.forEach(function (s) {
+                    if (s.bottom) return;
+                    (byKey[s.key] = byKey[s.key] || []).push(s);
+                });
+                var labels = [];
+                var maxLabelW = 0;
+                this.materials.forEach(function (m) {
+                    var arr = byKey[m.key];
+                    if (!arr) return;
+                    var text = self.matLabel(m);
+                    var lw = xbvTextWidth(text);
+                    if (lw > maxLabelW) maxLabelW = lw;
+                    xbvRows(arr).forEach(function (row) {
+                        var lead = row[0];
+                        var p = xbvMapPt(lead.x, lead.y + lead.h / 2, rot);
+                        labels.push({ text: text, ax: p[0], ay: p[1] });
+                    });
+                });
+                var padL = XBV_PAD + pp + (rot === 0 ? maxLabelW + XBV_LGAP : 0);
+                var padR = XBV_PAD + pp + (rot === 2 ? maxLabelW + XBV_LGAP : 0);
+                var padT = XBV_PAD + pp + (rot === 1 ? XBV_LINE_H + XBV_LGAP : 0);
+                var padB = XBV_PAD + pp + XBV_CAP_H + (rot === 3 ? XBV_LINE_H + XBV_LGAP : 0);
+                var W = Math.ceil(padL + (maxX - minX) * scale + padR);
+                var H = Math.ceil(padT + (maxY - minY) * scale + padB);
+                list.forEach(function (s) {
+                    var r = rects[s.uid];
+                    cards[s.uid] = {
+                        left: (padL + (r.x - minX) * scale - pp) + "px",
+                        top: (padT + (r.y - minY) * scale - pp) + "px",
+                        width: (r.w * scale + 2 * pp) + "px"
+                    };
+                });
+                var lab = labels.map(function (l) {
+                    var ax = padL + (l.ax - minX) * scale, ay = padT + (l.ay - minY) * scale;
+                    var st;
+                    if (rot === 0) st = { right: (W - ax + pp + XBV_LGAP) + "px", top: ay + "px", transform: "translateY(-50%)" };
+                    else if (rot === 2) st = { left: (ax + pp + XBV_LGAP) + "px", top: ay + "px", transform: "translateY(-50%)" };
+                    else if (rot === 1) st = { left: ax + "px", bottom: (H - ay + pp + XBV_LGAP) + "px", transform: "translateX(-50%)" };
+                    else st = { left: ax + "px", top: (ay + pp + XBV_LGAP + XBV_CAP_H) + "px", transform: "translateX(-50%)" };
+                    return { text: l.text, style: st };
+                });
+                return { w: W, h: H, padL: padL, padR: padR, padT: padT, padB: padB, scale: scale,
+                         ppx: pp, fitW: maxX - minX, fitH: maxY - minY, cards: cards, paper: paper, labels: lab };
+            }
+        },
+        watch: {
+            searchText: function (q) {
+                q = String(q || '').trim().toLowerCase();
+                if (!q) return;
+                var terms = q.split(',');
+                for (var i = 0; i < this.sheets.length; i++) {
+                    var s = this.sheets[i];
+                    for (var p = 0; p < s.parts.length; p++) {
+                        var name = String(s.parts[p].name || '').toLowerCase();
+                        for (var t = 0; t < terms.length; t++) {
+                            var term = terms[t].trim();
+                            if (!term || /^\d+$/.test(term)) continue;
+                            if (name.indexOf(term) !== -1) {
+                                this.sel.mat = s.key;
+                                Vue.set(this.expandedSheets, s.uid, true);
+                                this.clickPart(s, s.parts[p]);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        created: function () {
+            var all = null;
+            try {
+                if (window.parent !== window) all = window.parent.KSU_ALL_SETTINGS;
+            } catch (e) {
+                all = null;
+            }
+            if (all && all.xuat_dxf) this.applySettings(all.xuat_dxf);
+        },
+        methods: {
+            applySettings: function (st) {
+                st = st || {};
+                var z = parseInt(st.ty_le_zoom, 10);
+                if (!isNaN(z)) this.cardScale = Math.max(20, Math.min(XBV_MAX_ZOOM, z));
+                var r = parseInt(st.goc_xoay, 10);
+                if (!isNaN(r)) this.rot = ((r % 4) + 4) % 4;
+                this.hienTietDien = st.hien_tiet_dien !== false && String(st.hien_tiet_dien) !== 'false';
+                this.hienMauLayer = st.hien_mau_layer !== false && String(st.hien_mau_layer) !== 'false';
+                this.hienMatSau = st.hien_mat_sau === true || String(st.hien_mat_sau) === 'true';
+                this.toiUuXuongDao = st.toi_uu_xuong_dao === true || String(st.toi_uu_xuong_dao) === 'true';
+                var kc = parseFloat(st.khoang_cach_goc);
+                this.khoangCachGoc = isNaN(kc) ? 50 : kc;
+                this._lastKC = this.khoangCachGoc;
+                this.viewMode = st.che_do_xem === 'hang_doc' ? 'list' : 'diagram';
+            },
+            partKey: function (s, p) {
+                return s.uid + '_' + p.id;
+            },
+            matSheets: function (key) {
+                return this.sheets.filter(function (s) { return s.key === key; });
+            },
+            sheetState: function (s) {
+                if (!s.parts.length) return 'on';
+                var n = 0;
+                for (var i = 0; i < s.parts.length; i++) {
+                    if (this.off[this.partKey(s, s.parts[i])]) n++;
+                }
+                if (n === 0) return 'on';
+                if (n === s.parts.length) return 'off';
+                return 'indet';
+            },
+            matState: function (m) {
+                var list = this.matSheets(m.key);
+                var states = {};
+                for (var i = 0; i < list.length; i++) states[this.sheetState(list[i])] = true;
+                if (states.indet) return 'indet';
+                if (states.on && states.off) return 'indet';
+                if (states.off) return 'off';
+                return 'on';
+            },
+            setSheetOff: function (s, val) {
+                for (var i = 0; i < s.parts.length; i++) {
+                    Vue.set(this.off, this.partKey(s, s.parts[i]), val);
+                }
+            },
+            saveMaterials: function () {
+                var cfg = {};
+                for (var i = 0; i < this.materials.length; i++) {
+                    var m = this.materials[i];
+                    cfg[m.key] = this.matState(m) !== 'off';
+                }
+                skp('save_materials', JSON.stringify(cfg));
+            },
+            afterToggle: function () {
+                this._svgCache = {};
+                this.saveMaterials();
+            },
+            toggleMat: function (m) {
+                var val = this.matState(m) !== 'off';
+                var list = this.matSheets(m.key);
+                for (var i = 0; i < list.length; i++) this.setSheetOff(list[i], val);
+                this.afterToggle();
+            },
+            toggleSheet: function (s) {
+                this.setSheetOff(s, this.sheetState(s) !== 'off');
+                this.afterToggle();
+            },
+            togglePart: function (s, p) {
+                var key = this.partKey(s, p);
+                Vue.set(this.off, key, !this.off[key]);
+                this.afterToggle();
+            },
+            clickMat: function (m) {
+                var old = this.sel.mat;
+                this.sel.mat = old === m.key ? null : m.key;
+                if (!old || old === this.sel.mat) return;
+                var uids = {};
+                this.sheets.forEach(function (s) { if (s.key === old) uids[s.uid] = true; });
+                var kept = {}, changed = false;
+                for (var sk in this.selParts) {
+                    var hit = false;
+                    for (var u in uids) {
+                        if (sk.indexOf(u + '_') === 0) { hit = true; break; }
+                    }
+                    if (hit) changed = true;
+                    else kept[sk] = this.selParts[sk];
+                }
+                if (changed) {
+                    this.selParts = kept;
+                    if (this._anchor && uids[this._anchor.uid]) this._anchor = null;
+                }
+            },
+            clickSheet: function (s) {
+                Vue.set(this.expandedSheets, s.uid, !this.expandedSheets[s.uid]);
+            },
+            clickPart: function (s, p, e) {
+                var key = this.partKey(s, p);
+                if (e && e.shiftKey && this._anchor && this._anchor.uid === s.uid) {
+                    var ids = s.parts.map(function (q) { return q.id; });
+                    var a = ids.indexOf(this._anchor.pid);
+                    var b = ids.indexOf(p.id);
+                    if (a > -1 && b > -1) {
+                        var range = {};
+                        var lo = Math.min(a, b), hi = Math.max(a, b);
+                        for (var i = lo; i <= hi; i++) range[s.uid + '_' + ids[i]] = true;
+                        this.selParts = range;
+                    }
+                } else if (e && e.ctrlKey) {
+                    if (this.selParts[key]) Vue.delete(this.selParts, key);
+                    else Vue.set(this.selParts, key, true);
+                    this._anchor = { uid: s.uid, pid: p.id };
+                } else {
+                    var one = {};
+                    one[key] = true;
+                    this.selParts = one;
+                    this._anchor = { uid: s.uid, pid: p.id };
+                }
+                this.jumpToSheet(s);
+            },
+            matLabel: function (m) {
+                var n = String(m.name || '');
+                var t = Number(m.th) || 0;
+                if (!t) return n;
+                var base = n.replace(/\s*[-–]?\s*\d+(?:[.,]\d+)?\s*mm\s*$/i, '').trim() || n;
+                var r = Math.round(t * 10) / 10;
+                return base + ' - ' + (r % 1 === 0 ? Math.round(r) : r) + 'mm';
+            },
+            setTab: function (t) {
+                if (this.leftTab === t) return;
+                this.leftTab = t;
+                var self = this;
+                this.$nextTick(function () {
+                    var el = self.$refs.leftScroll;
+                    if (!el) return;
+                    if (t === 'list' && self.sel.sheet) {
+                        var row = self.$refs['row_' + self.sel.sheet];
+                        if (Array.isArray(row)) row = row[0];
+                        if (row && row.scrollIntoView) {
+                            row.scrollIntoView({ block: 'center' });
+                            return;
+                        }
+                    }
+                    el.scrollTop = 0;
+                });
+            },
+            clickCard: function (s) {
+                this.expandedSheets = {};
+                this.sel.sheet = s.uid;
+                this.sel.mat = s.key;
+                this.selParts = {};
+                this._anchor = null;
+                var self = this;
+                this.$nextTick(function () {
+                    var el = self.$refs['row_' + s.uid];
+                    el = el && el.length ? el[0] : el;
+                    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center' });
+                });
+            },
+            jumpToSheet: function (s) {
+                this.sel.sheet = s.uid;
+                var self = this;
+                this.$nextTick(function () {
+                    var el = self.$refs['card_' + s.uid];
+                    el = el && el.length ? el[0] : el;
+                    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center', inline: 'center' });
+                });
+            },
+            dblClickCard: function (s) {
+                var el = this.$refs.scroll;
+                if (!el) return;
+                var availW = el.clientWidth - 28;
+                var availH = el.clientHeight - 36 - 40;
+                if (availW <= 20 || availH <= 20) return;
+                var r = xbvRotRect(s, this.rot);
+                var sc = Math.min(availW / (r.w || 1), availH / (r.h || 1));
+                this.cardScale = Math.max(20, Math.min(XBV_MAX_ZOOM, Math.floor(sc * this.refW)));
+                this.saveSetting('ty_le_zoom', this.cardScale);
+                this.jumpToSheet(s);
+            },
+            dblClickBlank: function (e) {
+                var el = this.$refs.scroll;
+                var t = e.target;
+                if (t !== el && !(t.classList && (t.classList.contains('xbv-plane') || t.classList.contains('xbv-canvas')))) return;
+                if (t === el && (e.offsetX >= el.clientWidth || e.offsetY >= el.clientHeight)) return;
+                this.fitAll();
+            },
+            fitAll: function () {
+                var el = this.$refs.scroll;
+                var L = this.layout;
+                if (!el || !L) return;
+                var availW = el.clientWidth - L.padL - L.padR + 2 * L.ppx;
+                var availH = el.clientHeight - L.padT - L.padB + 2 * L.ppx;
+                if (availW <= 20 || availH <= 20) return;
+                var sc = Math.min(availW / ((L.fitW || 1) + 2 * XBV_PAPER_MM), availH / ((L.fitH || 1) + 2 * XBV_PAPER_MM));
+                this.cardScale = Math.max(20, Math.min(XBV_MAX_ZOOM, Math.floor(sc * this.refW)));
+                this.saveSetting('ty_le_zoom', this.cardScale);
+                this.syncViewport();
+                var self = this;
+                this.$nextTick(function () {
+                    var N = self.layout;
+                    if (!N) return;
+                    el.scrollLeft = self.vpW + (N.w - el.clientWidth) / 2;
+                    el.scrollTop = self.vpH + (N.h - el.clientHeight) / 2;
+                });
+            },
+            syncViewport: function () {
+                var el = this.$refs.scroll;
+                if (!el) return;
+                var w = el.clientWidth, h = el.clientHeight;
+                if (w === this.vpW && h === this.vpH) return;
+                var dx = w - this.vpW, dy = h - this.vpH;
+                this.vpW = w;
+                this.vpH = h;
+                this.$nextTick(function () {
+                    el.scrollLeft += dx;
+                    el.scrollTop += dy;
+                });
+            },
+            saveZoom: function (later) {
+                var self = this;
+                clearTimeout(this._zoomTimer);
+                if (!later) {
+                    this.saveSetting('ty_le_zoom', Math.round(this.cardScale));
+                    return;
+                }
+                this._zoomTimer = setTimeout(function () {
+                    self.saveSetting('ty_le_zoom', Math.round(self.cardScale));
+                }, 400);
+            },
+            setScale: function (v, ax, ay, later) {
+                var el = this.$refs.scroll;
+                var L = this.layout;
+                v = Math.max(20, Math.min(XBV_MAX_ZOOM, v));
+                if (v === this.cardScale) return;
+                if (!el || !L) {
+                    this.cardScale = v;
+                    this.saveZoom(later);
+                    return;
+                }
+                var plane = el.querySelector('.xbv-plane');
+                var cr = el.getBoundingClientRect();
+                var pr = plane ? plane.getBoundingClientRect() : cr;
+                if (ax == null) {
+                    ax = el.clientWidth / 2;
+                    ay = el.clientHeight / 2;
+                }
+                var mmX = (ax - (pr.left - cr.left) - L.padL) / L.scale;
+                var mmY = (ay - (pr.top - cr.top) - L.padT) / L.scale;
+                this.cardScale = v;
+                this.saveZoom(later);
+                var self = this;
+                this.$nextTick(function () {
+                    var N = self.layout;
+                    if (!N) return;
+                    el.scrollLeft = self.vpW + N.padL + mmX * N.scale - ax;
+                    el.scrollTop = self.vpH + N.padT + mmY * N.scale - ay;
+                });
+            },
+            onWheel: function (e) {
+                if (e.ctrlKey || e.metaKey) return;
+                if (this.viewMode === 'list') return;
+                if (!this.layout) return;
+                e.preventDefault();
+                var cr = this.$refs.scroll.getBoundingClientRect();
+                var f = e.deltaY < 0 ? 1.12 : 1 / 1.12;
+                this.setScale(this.cardScale * f, e.clientX - cr.left, e.clientY - cr.top, true);
+            },
+            panStart: function (e) {
+                if (e.button !== 0 && e.button !== 1) return;
+                var el = this.$refs.scroll;
+                if (e.target === el && (e.offsetX >= el.clientWidth || e.offsetY >= el.clientHeight)) return;
+                if (e.button === 1) e.preventDefault();
+                this._pan = { x: e.clientX, y: e.clientY, sl: el.scrollLeft, st: el.scrollTop, moved: false };
+                this._panMoved = false;
+            },
+            panClickGuard: function (e) {
+                if (!this._panMoved) return;
+                e.stopPropagation();
+                e.preventDefault();
+            },
+            saveSetting: function (key, v) {
+                skp('save_setting', key + '@' + v);
+            },
+            toggleTietDien: function () {
+                this._svgCache = {};
+                this.saveSetting('hien_tiet_dien', this.hienTietDien);
+            },
+            toggleMauLayer: function () {
+                this._svgCache = {};
+                this.saveSetting('hien_mau_layer', this.hienMauLayer);
+            },
+            toggleXuongDao: function () {
+                this.saveSetting('toi_uu_xuong_dao', this.toiUuXuongDao);
+            },
+            stepKhoangCach: function (d) {
+                var n = parseFloat(this.khoangCachGoc);
+                if (isNaN(n)) n = 50;
+                this.khoangCachGoc = Math.min(1000, Math.max(1, n + d));
+                this.commitKhoangCach();
+            },
+            validateKhoangCach: function () {
+                var n = parseFloat(this.khoangCachGoc);
+                if (isNaN(n) || n < 1) n = 1;
+                if (n > 1000) n = 1000;
+                this.khoangCachGoc = parseFloat(n.toFixed(2));
+                this.commitKhoangCach();
+            },
+            commitKhoangCach: function () {
+                if (this._lastKC === this.khoangCachGoc) return;
+                this._lastKC = this.khoangCachGoc;
+                this.saveSetting('khoang_cach_goc', this.khoangCachGoc);
+            },
+            zoomStep: function (d) {
+                this.setScale(this.cardScale + d * 40);
+            },
+            rotCCW: function () {
+                this.rot = (this.rot + 1) % 4;
+                this.saveSetting('goc_xoay', this.rot);
+            },
+            toggleViewMode: function () {
+                this.viewMode = this.viewMode === 'list' ? 'diagram' : 'list';
+                this.saveSetting('che_do_xem', this.viewMode === 'list' ? 'hang_doc' : 'so_do');
+                var self = this;
+                this.$nextTick(function () { self.fitAll(); });
+            },
+            scrollByPct: function (dir) {
+                var el = this.$refs.scroll;
+                if (!el) return;
+                var range = el.scrollHeight - el.clientHeight;
+                if (range <= 0) return;
+                el.scrollTop += dir * range * 0.1;
+            },
+            toggleMatSau: function () {
+                this.saveSetting('hien_mat_sau', this.hienMatSau);
+                this.reloadData();
+            },
+            reloadData: function () {
+                this._svgCache = {};
+                skp('reload_data', '');
+            },
+            doExport: function () {
+                if (!this.visibleSheets.length) return;
+                var sel = [];
+                for (var i = 0; i < this.sheets.length; i++) {
+                    var s = this.sheets[i];
+                    var offPids = [];
+                    for (var p = 0; p < s.parts.length; p++) {
+                        if (this.off[this.partKey(s, s.parts[p])]) offPids.push(s.parts[p].id);
+                    }
+                    sel.push({ id: s.id, bottom: !!s.bottom, on: this.sheetState(s) !== 'off', off: offPids });
+                }
+                skp('export_request', JSON.stringify(sel));
+            },
+            entrySel: function (ent) {
+                var pts = ent.pts;
+                var minx = pts[0][0], miny = pts[0][1];
+                for (var i = 1; i < pts.length; i++) {
+                    if (pts[i][0] < minx) minx = pts[i][0];
+                    if (pts[i][1] < miny) miny = pts[i][1];
+                }
+                var key = ent.b ? 'b' : 'p';
+                for (i = 0; i < pts.length; i++) {
+                    key += (pts[i][0] - minx).toFixed(2) + ',' + (pts[i][1] - miny).toFixed(2) + ';';
+                }
+                var c = this._selCache[key];
+                if (!c) {
+                    var pos = pts.map(function (q) { return { x: q[0], y: q[1], b: 0 }; });
+                    if (xbvIsCircle(pos)) {
+                        c = 'c';
+                    } else {
+                        var sel = ent.b ? xbvGenBulge(pos, performance.now() + 300) : pos;
+                        c = sel.map(function (q) { return [q.x - minx, q.y - miny, q.b]; });
+                    }
+                    this._selCache[key] = c;
+                }
+                if (c === 'c') return null;
+                return c.map(function (o) { return { x: o[0] + minx, y: o[1] + miny, b: o[2] }; });
+            },
+            entryFor: function (ent, shw, shh, corner) {
+                if (!ent.closed || !ent.v || ent.s) return null;
+                var pts = ent.pts;
+                if (!pts || pts.length < 3) return null;
+                var d = parseFloat(this.khoangCachGoc);
+                if (isNaN(d) || d < 1) d = 50;
+                var sel = this.entrySel(ent);
+                if (!sel) return null;
+                if (sel.length > 2 && xbvSame(sel[0], sel[sel.length - 1])) sel = sel.slice(0, -1);
+                if (sel.length < 2) return null;
+                var b = xbvBox(pts);
+                var c = corner || xbvCorner(b, shw, shh);
+                var hx = c[0], vy = c[1];
+                if (xbvStrip(b)) {
+                    var ey = vy > 0 ? b.maxy : b.miny;
+                    var ex = hx > 0 ? b.maxx - Math.min(d, b.w) : b.minx + Math.min(d, b.w);
+                    return xbvEntryOnEdge(sel, ex, ey, hx > 0 ? b.maxx : b.minx, ey, d);
+                }
+                var ex2 = hx > 0 ? b.maxx : b.minx;
+                var off = Math.min(d, b.h / 2);
+                return xbvEntryOnEdge(sel, ex2, vy > 0 ? b.maxy - off : b.miny + off, ex2, vy > 0 ? b.maxy : b.miny, d);
+            },
+            groupCorners: function (s, shw, shh) {
+                var out = {};
+                var parts = s.parts || [];
+                var ents = s.ents || [];
+                var outer = {};
+                for (var e = 0; e < ents.length; e++) {
+                    var en = ents[e];
+                    if (!en.closed || !en.v || en.s || en.p == null || !en.pts || en.pts.length < 3) continue;
+                    if (this.off[s.uid + '_' + en.p]) continue;
+                    var b = xbvBox(en.pts);
+                    var a = b.w * b.h;
+                    if (!outer[en.p] || a > outer[en.p].a) {
+                        b.a = a;
+                        outer[en.p] = b;
+                    }
+                }
+                var leader = {};
+                for (var i = 0; i < parts.length; i++) {
+                    var p = parts[i];
+                    if (p.cb == null || !outer[p.id]) continue;
+                    var k = String(p.cp || '');
+                    if (!leader[k] || p.cb < leader[k].cb) leader[k] = p;
+                }
+                var byPrefix = {};
+                for (k in leader) byPrefix[k] = xbvCorner(outer[leader[k].id], shw, shh);
+                for (i = 0; i < parts.length; i++) {
+                    if (parts[i].cb == null) continue;
+                    var c = byPrefix[String(parts[i].cp || '')];
+                    if (c) out[parts[i].id] = c;
+                }
+                return out;
+            },
+            placeholderSvg: function (s) {
+                var w = s.w || 1, h = s.h || 1;
+                var vw = this.rot % 2 ? h : w;
+                var vh = this.rot % 2 ? w : h;
+                return '<svg viewBox="0 0 ' + vw + ' ' + vh + '" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="' + vw + '" height="' + vh + '" fill="' + (s.bottom ? '#ececec' : '#ffffff') + '"/></svg>';
+            },
+            sheetSvg: function (s) {
+                var hlPids = {};
+                var sig = [];
+                var prefix = s.uid + '_';
+                for (var sk in this.selParts) {
+                    if (this.selParts[sk] && sk.indexOf(prefix) === 0) {
+                        var pid = sk.slice(prefix.length);
+                        hlPids[pid] = true;
+                        sig.push(pid);
+                    }
+                }
+                sig.sort();
+                var key = s.uid + '_r' + this.rot + (this.hienTietDien ? '' : '_ns') + (this.hienMauLayer ? '' : '_bw') + (this.toiUuXuongDao ? '_xd' + (parseFloat(this.khoangCachGoc) || 0) : '') + (sig.length ? '_s' + sig.join(',') : '');
+                if (this._svgCache[key]) return this._svgCache[key];
+                var w = s.w || 1, h = s.h || 1;
+                var rot = this.rot;
+                var vw = rot % 2 ? h : w;
+                var vh = rot % 2 ? w : h;
+                var wrap = '';
+                if (rot === 1) wrap = 'translate(' + h + ',0) rotate(90)';
+                if (rot === 2) wrap = 'translate(' + w + ',' + h + ') rotate(180)';
+                if (rot === 3) wrap = 'translate(0,' + w + ') rotate(270)';
+                var out = '<svg viewBox="0 0 ' + vw + ' ' + vh + '" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">';
+                if (wrap) out += '<g transform="' + wrap + '">';
+                out += '<g transform="translate(0,' + h + ') scale(1,-1)">';
+                out += '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="' + (s.bottom ? '#ececec' : '#ffffff') + '"/>';
+                var ents = s.ents || [];
+                var hlMap = {};
+                var lines = '';
+                var marks = '';
+                var pidCol = {};
+                var entryOn = this.toiUuXuongDao && !s.bottom;
+                var corners = entryOn ? this.groupCorners(s, w, h) : null;
+                var mr = 10;
+                for (var e = 0; e < ents.length; e++) {
+                    if (ents[e].p != null && this.off[s.uid + '_' + ents[e].p]) continue;
+                    if (!this.hienTietDien && ents[e].s) continue;
+                    var pts = ents[e].pts;
+                    if (!pts || !pts.length) continue;
+                    var d = '';
+                    for (var i = 0; i < pts.length; i++) d += (i ? 'L' : 'M') + pts[i][0] + ' ' + pts[i][1];
+                    if (ents[e].closed) d += 'Z';
+                    var col = this.hienMauLayer ? ents[e].c : '#000000';
+                    if (ents[e].closed && ents[e].v && !ents[e].s && ents[e].p != null && !pidCol[ents[e].p]) pidCol[ents[e].p] = col;
+                    if (ents[e].closed && ents[e].p != null && hlPids[String(ents[e].p)]) {
+                        var hk = String(ents[e].p);
+                        if (!hlMap[hk]) hlMap[hk] = { d: '', c: col };
+                        hlMap[hk].d += d;
+                    }
+                    var dash = (s.bottom && ents[e].bd) ? ' stroke-dasharray="' + (Math.max(w, h) / 170).toFixed(1) + ' ' + (Math.max(w, h) / 300).toFixed(1) + '"' : '';
+                    lines += '<path d="' + d + '" fill="none" stroke="' + col + '" stroke-width="1" vector-effect="non-scaling-stroke" stroke-linejoin="round"' + dash + '/>';
+                    var ei = entryOn ? this.entryFor(ents[e], w, h, corners[ents[e].p]) : null;
+                    if (ei) {
+                        var ep = ei[0], ea = ei[1];
+                        if (ea) {
+                            var adx = ea[0] - ep[0], ady = ea[1] - ep[1];
+                            var al = Math.sqrt(adx * adx + ady * ady);
+                            if (al > 2) {
+                                var ux = adx / al, uy = ady / al;
+                                var aw = Math.min(20, al * 0.5);
+                                var tx = ea[0] - ux * 5, ty = ea[1] - uy * 5;
+                                var bx = tx - ux * aw, by = ty - uy * aw;
+                                var pxn = -uy * aw * 0.5, pyn = ux * aw * 0.5;
+                                marks += '<path d="M' + ep[0] + ' ' + ep[1] + 'L' + bx.toFixed(2) + ' ' + by.toFixed(2)
+                                    + '" fill="none" stroke="#e53935" stroke-width="1.5" vector-effect="non-scaling-stroke"/>';
+                                marks += '<path d="M' + tx.toFixed(2) + ' ' + ty.toFixed(2)
+                                    + 'L' + (bx + pxn).toFixed(2) + ' ' + (by + pyn).toFixed(2)
+                                    + 'L' + (bx - pxn).toFixed(2) + ' ' + (by - pyn).toFixed(2)
+                                    + 'Z" fill="#e53935" stroke="#ffffff" stroke-width="1" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>';
+                            }
+                        }
+                        marks += '<circle cx="' + ep[0] + '" cy="' + ep[1] + '" r="' + mr + '" fill="#e53935" stroke="#ffffff" stroke-width="1" vector-effect="non-scaling-stroke"/>';
+                    }
+                }
+                if (entryOn) {
+                    var parts = s.parts || [];
+                    for (var q = 0; q < parts.length; q++) {
+                        var pt = parts[q];
+                        if (pt.cb == null || !pt.c) continue;
+                        if (this.off[s.uid + '_' + pt.id]) continue;
+                        marks += '<text transform="translate(' + pt.c[0] + ',' + pt.c[1] + ') scale(1,-1) rotate(' + (-90 * rot) + ')"'
+                            + ' font-size="40" font-weight="600" text-anchor="middle" dominant-baseline="central" fill="' + (pidCol[pt.id] || '#000000') + '">' + pt.cb + '</text>';
+                    }
+                }
+                for (var hp in hlMap) {
+                    out += '<path d="' + hlMap[hp].d + '" fill="' + hlMap[hp].c + '" fill-rule="evenodd" stroke="none"/>';
+                }
+                out += lines;
+                out += marks;
+                out += '</g>';
+                if (wrap) out += '</g>';
+                out += '</svg>';
+                this._svgCache[key] = out;
+                return out;
+            }
+        },
+        mounted: function () {
+            var self = this;
+            this._svgCache = {};
+            this._selCache = {};
+            if (window.IntersectionObserver && this.$refs.scroll) {
+                this._io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (en) {
+                        if (!en.isIntersecting) return;
+                        var uid = en.target.__uid;
+                        if (uid != null) self.$set(self.shown, uid, true);
+                        self._io.unobserve(en.target);
+                    });
+                }, { root: this.$refs.scroll, rootMargin: '400px 400px', threshold: 0 });
+            } else {
+                this.lazyEnabled = false;
+            }
+            window.xbvLoad = function (data) {
+                self.applySettings(data.settings);
+                self._svgCache = {};
+                self._selCache = {};
+                self.materials = (data.materials || []).map(function (m) {
+                    return { key: m.key, name: m.name, th: Number(m.th) || 0, on: m.on !== false };
+                });
+                self.sheets = (data.sheets || []).map(function (s) {
+                    return Object.freeze({
+                        uid: (s.bottom ? 'b' : 't') + s.id + '_' + s.key,
+                        id: s.id, key: s.key, mat: s.mat, name: s.name, w: s.w, h: s.h,
+                        x: Number(s.x) || 0, y: Number(s.y) || 0, bottom: s.bottom,
+                        ents: s.ents || [], parts: s.parts || []
+                    });
+                });
+                var off = {};
+                self.materials.forEach(function (m) {
+                    if (m.on) return;
+                    self.sheets.forEach(function (s) {
+                        if (s.key !== m.key) return;
+                        s.parts.forEach(function (p) { off[s.uid + '_' + p.id] = true; });
+                    });
+                });
+                self.off = off;
+                self.expandedSheets = {};
+                self.selParts = {};
+                self._anchor = null;
+                self.sel = { mat: null, sheet: null };
+                var sig = self.sheets.length + ':';
+                if (self.sheets.length) {
+                    var x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+                    self.sheets.forEach(function (s) {
+                        if (s.x < x0) x0 = s.x;
+                        if (s.y < y0) y0 = s.y;
+                        if (s.x + s.w > x1) x1 = s.x + s.w;
+                        if (s.y + s.h > y1) y1 = s.y + s.h;
+                    });
+                    sig += Math.round(x0) + ',' + Math.round(y0) + ',' + Math.round(x1) + ',' + Math.round(y1);
+                }
+                if (sig !== self._sig) {
+                    self._sig = sig;
+                    self.$nextTick(function () { self.fitAll(); });
+                }
+            };
+            window.addEventListener('mousemove', function (e) {
+                var p = self._pan;
+                if (!p) return;
+                var dx = e.clientX - p.x, dy = e.clientY - p.y;
+                if (!p.moved && Math.abs(dx) + Math.abs(dy) < 4) return;
+                p.moved = true;
+                self._panMoved = true;
+                self.panning = true;
+                var el = self.$refs.scroll;
+                if (el) {
+                    el.scrollLeft = p.sl - dx;
+                    el.scrollTop = p.st - dy;
+                }
+                e.preventDefault();
+            });
+            window.addEventListener('mouseup', function () {
+                if (!self._pan) return;
+                self._pan = null;
+                self.panning = false;
+            });
+            this.syncViewport();
+            if (window.ResizeObserver && this.$refs.scroll) {
+                new ResizeObserver(function () { self.syncViewport(); }).observe(this.$refs.scroll);
+            } else {
+                window.addEventListener('resize', function () { self.syncViewport(); });
+            }
+            window.addEventListener('keydown', function (e) {
+                if (e.ctrlKey || e.metaKey || e.altKey) return;
+                var t = e.target;
+                if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+                if (!self.visibleSheets.length) return;
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    self.toggleViewMode();
+                } else if (e.key === '+' || e.key === '=') {
+                    e.preventDefault();
+                    self.zoomStep(1);
+                } else if (e.key === '-' || e.key === '_') {
+                    e.preventDefault();
+                    self.zoomStep(-1);
+                }
+            });
+            window.addEventListener('message', function (e) {
+                if (!e.data || e.data.action !== 'tab_shown') return;
+                if (self._loaded && !e.data.reload) return;
+                self._loaded = true;
+                skp('load_data', '');
+            });
+            if (window.parent !== window) {
+                window.parent.postMessage({ action: 'iframe_ready', tabId: 'xuat_dxf' }, '*');
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

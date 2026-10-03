@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/nest.css">
+    <script src="js/vue.min.js"></script>
+    <style>
+        .tk-empty { padding: 20px 10px; text-align: center; font-size: 12px; color: #8e8e8e; }
+        .tk-table-wrap { overflow-x: auto; }
+        .tk-table-wrap::-webkit-scrollbar { width: 0; height: 14px; }
+        .tk-table-wrap::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.35); border-radius: 999px; border: 3px solid transparent;
+            background-clip: padding-box; min-width: 35px;
+        }
+        .tk-table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.5); background-clip: padding-box; }
+        .tk-table-wrap::-webkit-scrollbar-track, .tk-table-wrap::-webkit-scrollbar-corner { background: transparent; }
+        .tk-block { margin-bottom: 14px; }
+        .tk-block:last-child { margin-bottom: 0; }
+        .tk-table {
+            width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px; white-space: nowrap;
+        }
+        .tk-table th, .tk-table td {
+            height: 26px; padding: 3px 10px; text-align: right; vertical-align: middle; line-height: 1.35;
+            border-right: 0.5px solid #c8c8c8; border-bottom: 0.5px solid #c8c8c8;
+        }
+        .tk-table th:last-child, .tk-table td:last-child { border-right: none; }
+        .tk-table tbody:last-child tr:last-child > td { border-bottom: none; }
+        .tk-table th { background: #e0e0e0; font-weight: 600; color: #1a1a1a; }
+        .tk-table th.text, .tk-table td.text { text-align: left; }
+        .tk-table th.tk-stt, .tk-table td.tk-stt, .tk-table th.tk-center, .tk-table td.tk-center { text-align: center; }
+        .tk-table th.tk-id { width: 36px; }
+        .tk-spin {
+            display: inline-block; width: 12px; height: 12px; border: 2px solid #c8c8c8; border-top-color: #4a4a4a;
+            border-radius: 50%; vertical-align: middle; animation: tk-spin 0.8s linear infinite;
+        }
+        @keyframes tk-spin { to { transform: rotate(360deg); } }
+        .tk-table th.tk-sortable { cursor: pointer; user-select: none; }
+        .tk-parts .tk-row { user-select: none; cursor: default; }
+        .tk-parts .tk-row.tk-sel > td { background: #ebebeb; }
+        .tk-table th.tk-sortable:hover { background: #d4d4d4; }
+        .tk-sum th:not(.text), .tk-sum td:not(.text) { width: 1px; white-space: nowrap; }
+        .tk-sum th.text { width: 50%; }
+        .tk-sum td.text { white-space: normal; overflow-wrap: break-word; }
+        .tk-row:hover { background: #f5f5f5; }
+        .tk-sec > td { background: #e0e0e0; font-weight: 700; color: #1a1a1a; }
+        .tk-sec > td.tk-stt { padding-left: 0; padding-right: 0; font-size: 0; }
+        .tk-sec.tk-sec-empty > td { color: #bcbcbc; }
+        .tk-fold {
+            display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;
+            box-sizing: border-box; width: 16px; height: 16px; padding: 0;
+            border: none; border-radius: 0; background: transparent; color: #6e6e6e;
+            font-family: inherit; font-size: 13px; line-height: 1; cursor: pointer; outline: none;
+        }
+        .tk-fold:hover { color: #000000; }
+        .tk-fold:disabled, .tk-fold:disabled:hover { color: #c4c4c4; cursor: default; }
+        .tk-table td.tk-cell-in { padding: 0; position: relative; }
+        .tk-num {
+            position: absolute; top: 0; left: 0; box-sizing: border-box; width: 100%; height: 100%;
+            min-width: 0; min-height: 20px; padding: 3px 10px; margin: 0;
+            border: none; border-radius: 0; background: transparent; color: inherit;
+            font-family: inherit; font-size: inherit; text-align: right; outline: none;
+        }
+        .tk-num.tk-center { text-align: center; }
+        .tk-num:hover { box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2); }
+        .tk-num:focus { box-shadow: inset 0 0 0 1px rgba(0,0,0,0.45); }
+        .tk-len { display: block; }
+
+        html[data-theme="dark"] .tk-table-wrap::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.28); background-clip: padding-box; }
+        html[data-theme="dark"] .tk-table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.45); background-clip: padding-box; }
+        html[data-theme="dark"] .tk-table th, html[data-theme="dark"] .tk-table td { border-right-color: #969696; border-bottom-color: #969696; }
+        html[data-theme="dark"] .tk-table th { background: #707070; color: #ffffff; }
+        html[data-theme="dark"] .tk-table th.tk-sortable:hover { background: #7c7c7c; }
+        html[data-theme="dark"] .tk-parts .tk-row.tk-sel > td { background: #2e2e2e; }
+        html[data-theme="dark"] .tk-spin { border-color: #6e6e6e; border-top-color: #e5e5e5; }
+        html[data-theme="dark"] .tk-table td { color: #e5e5e5; }
+        html[data-theme="dark"] .tk-row:hover { background: #282828; }
+        html[data-theme="dark"] .tk-sec > td { background: #707070; color: #ffffff; }
+        html[data-theme="dark"] .tk-sec.tk-sec-empty > td { color: #909090; }
+        html[data-theme="dark"] .tk-fold { color: #b0b0b0; }
+        html[data-theme="dark"] .tk-fold:hover { color: #ffffff; }
+        html[data-theme="dark"] .tk-fold:disabled, html[data-theme="dark"] .tk-fold:disabled:hover { color: #8e8e8e; }
+        html[data-theme="dark"] .tk-num:hover { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25); }
+        html[data-theme="dark"] .tk-num:focus { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5); }
+    </style>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="nest-root">
+    <div class="nest-left" :class="{ collapsed: col2Hidden }">
+        <div class="nest-left-head">
+            <div class="nest-seg">
+                <button class="nest-seg-btn" :class="{ active: leftTab === 'chung' }" @click="leftTab = 'chung'">Chi phí</button>
+                <button class="nest-seg-btn" :class="{ active: leftTab === 'cau_kien' }" @click="leftTab = 'cau_kien'">Cấu kiện</button>
+            </div>
+        </div>
+        <div class="nest-left-scroll">
+
+            <div class="nest-left-pane" v-show="leftTab === 'chung'">
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Làm tròn kích thước</span>
+                        <input type="checkbox" v-model="settings.tu_dong_lam_tron" @change="saveSetting('tu_dong_lam_tron')" id="tu_dong_lam_tron">
+                        <label class="switch-label" for="tu_dong_lam_tron"></label>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Tự động làm tròn chiều dài và diện tích.</p>
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Ẩn tên dán cạnh</span>
+                        <input type="checkbox" v-model="settings.an_ten_dan_canh" @change="saveSetting('an_ten_dan_canh')" id="an_ten_dan_canh">
+                        <label class="switch-label" for="an_ten_dan_canh"></label>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Chỉ hiển thị chiều dày cạnh.</p>
+            </div>
+
+            <div class="nest-left-pane" v-show="leftTab === 'cau_kien'">
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Làm tròn kích thước</span>
+                        <input type="checkbox" v-model="settings.lam_tron_cau_kien" @change="saveSetting('lam_tron_cau_kien')" id="lam_tron_cau_kien">
+                        <label class="switch-label" for="lam_tron_cau_kien"></label>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Tự động làm tròn dài và rộng.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="nest-right">
+        <div class="nest-right-head">
+            <button class="nest-col2-btn"
+                    @click="col2Hidden = !col2Hidden">
+                <svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><line x1="9.5" y1="4.5" x2="9.5" y2="19.5"/></svg>
+            </button>
+            <div class="nest-search">
+                <input type="text" v-model="keyword" placeholder="Tìm kiếm..." spellcheck="false" autocomplete="off">
+                <button class="nest-search-clear" v-show="keyword" @click="keyword = ''" tabindex="-1">×</button>
+            </div>
+            <span class="nest-right-stat" @click="selectAllParts">{{ totalParts }} chi tiết</span>
+            <button class="col3-btn" @click="reload">Cập nhật</button>
+        </div>
+
+        <div class="nest-right-scroll tk-table-wrap">
+            <div class="tk-block" v-if="leftTab === 'chung'">
+                <table class="tk-table tk-sum" ref="sumTable">
+                    <thead>
+                    <tr>
+                        <th class="tk-stt"></th>
+                        <th class="text">Loại</th>
+                        <th class="text">Mô tả chi tiết</th>
+                        <th class="tk-center">Số lượng</th>
+                        <th class="tk-center">Đơn vị</th>
+                        <th class="tk-center">Hệ số</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                    </thead>
+                    <tbody v-for="sec in visibleSections" :key="sec.key">
+                    <tr class="tk-sec" :class="{ 'tk-sec-empty': !sec.items.length }">
+                        <td class="tk-stt"><button class="tk-fold" :disabled="!sec.items.length" @click="toggleFold(sec.key)">{{ folded[sec.key] ? '+' : '−' }}</button></td>
+                        <td class="text" colspan="6">{{ sec.title }}</td>
+                        <td>{{ fmtNum(sectionTotal(sec)) }}</td>
+                    </tr>
+                    <tr class="tk-row" v-show="!folded[sec.key]"
+                        v-for="(r, i) in sec.items" :key="sec.key + r.k">
+                        <td class="tk-stt">{{ i + 1 }}</td>
+                        <td class="text">{{ r.loai }}</td>
+                        <td class="text">
+                            <template v-if="r.lines">
+                                <span class="tk-len" v-for="(ln, li) in r.lines" :key="li">{{ lineText(ln) }}</span>
+                            </template>
+                            <template v-else>{{ r.mota }}</template>
+                        </td>
+                        <td class="tk-center">{{ r.sl }}</td>
+                        <td class="tk-center" :class="{ 'tk-cell-in': r.unitItem }">
+                            <input class="tk-num tk-center" type="text" v-if="r.unitItem"
+                                   :value="r.unitItem.unit || ''" spellcheck="false"
+                                   @change="changeUnit(r.unitItem, $event.target.value)">
+                            <template v-else>{{ r.dv }}</template>
+                        </td>
+                        <td class="tk-center tk-cell-in">
+                            <input class="tk-num tk-center" type="text" :value="coefOf(r.k)" spellcheck="false"
+                                   @change="setCoef(r.k, $event.target.value)">
+                        </td>
+                        <td class="tk-cell-in">
+                            <input class="tk-num" type="text" :value="priceOf(r.k)" spellcheck="false"
+                                   @change="setPrice(r.k, $event.target.value)">
+                        </td>
+                        <td>{{ fmtNum(amountOf(r)) }}</td>
+                    </tr>
+                    </tbody>
+                    <tbody>
+                    <tr class="tk-sec">
+                        <td class="tk-stt"></td>
+                        <td class="text" colspan="6">Tổng chi phí</td>
+                        <td>{{ fmtNum(totalCost) }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tk-block" v-if="leftTab === 'cau_kien' && headers.length">
+                <table class="tk-table tk-parts" ref="partTable">
+                    <thead>
+                    <tr>
+                        <th v-for="(head, i) in headers" :key="i" class="tk-sortable" :class="{ text: isTextColumn(i), 'tk-center': !isTextColumn(i), 'tk-id': i < 2 }" @click="sortBy(i)">{{ head }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="tk-row" v-for="(row, ri) in sortedRows" :key="'p' + ri"
+                        :class="{ 'tk-sel': isSel(row) }" @click="pickRow(ri, $event)">
+                        <td v-for="(cell, ci) in row" :key="ci" :class="{ text: isTextColumn(ci), 'tk-center': !isTextColumn(ci) }">{{ cellText(cell) }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="tk-empty" v-if="!filteredRows.length && !loading">Không có ván nào được đánh dấu.</div>
+            </div>
+
+            <div class="tk-empty" v-if="loading">Đang quét model...</div>
+        </div>
+
+        <div class="nest-right-footer">
+            <div class="footer-btns">
+                <button class="action-button-full" @click="snapshot" :disabled="loading || !hasData || snapping"><span class="tk-spin" v-if="snapping"></span><template v-else>Chụp màn hình</template></button>
+                <button class="action-button-full" @click="exportExcel" :disabled="loading || !hasData">Xuất thống kê</button>
+            </div>
+            <p class="switch-stacked-hint">Tính năng đang trong giai đoạn thử nghiệm và phát triển, luôn phải kiểm tra lại kết quả trước khi đưa vào sản xuất.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function skp(fn, arg) {
+        if (window.parent === window) return;
+        window.parent.postMessage({ action: 'tool_call', tabId: 'thong_ke', fn: fn, arg: arg }, '*');
+    }
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            col2Hidden: false,
+            leftTab: 'chung',
+            keyword: '',
+            sortCol: null,
+            sortDir: 1,
+            snapping: false,
+            selIds: [],
+            selAnchor: null,
+            loading: true,
+            headers: [],
+            partRows: [],
+            connectors: [],
+            intersects: [],
+            statisticals: [],
+            edgebands: [],
+            sheets: [],
+            prices: {},
+            folded: {
+                hien_phu_kien: false,
+                hien_tiet_dien: false,
+                hien_doi_tuong: false,
+                hien_dan_canh: false,
+                hien_tam: false
+            },
+            settings: {
+                tu_dong_lam_tron: true,
+                lam_tron_cau_kien: true,
+                an_ten_dan_canh: false
+            }
+        },
+        computed: {
+            rowsConnector: function () {
+                var self = this;
+                return this.connectors.map(function (it) {
+                    var hinge = it.type === 'hinge';
+                    return self.mkRow('c|' + it.name, hinge ? 'Bản lề' : 'Liên kết ngang', it.name || 'Không tên', it.quantity, hinge ? 'cái' : 'bộ');
+                });
+            },
+            rowsIntersect: function () {
+                var self = this;
+                return this.intersects.map(function (it) {
+                    return self.mkRow('i|' + it.name, it.name || 'Không tên', '', it.quantity, 'mét', { lines: self.detailLines(it) });
+                });
+            },
+            rowsStatistical: function () {
+                var self = this;
+                return this.statisticals.map(function (it) {
+                    var counter = it.subtype === 'counter';
+                    return self.mkRow('s|' + it.name, it.name || 'Không tên', '', it.quantity, 'mét', {
+                        lines: counter ? null : self.detailLines(it),
+                        unitItem: counter ? it : null
+                    });
+                });
+            },
+            rowsEdgeband: function () {
+                var self = this;
+                var kinds = {};
+                this.edgebands.forEach(function (it) {
+                    var mat = self.bandMaterial(it);
+                    kinds[mat] = kinds[mat] || {};
+                    kinds[mat][it.board_thickness] = true;
+                });
+                return this.edgebands.map(function (it) {
+                    var mat = self.bandMaterial(it);
+                    var many = Object.keys(kinds[mat]).length > 1;
+                    return self.mkRow('e|' + it.name + '|' + it.material + '|' + it.board_thickness, self.bandLabel(it),
+                        many ? mat + ' - ' + self.thickLabel(it.board_thickness) : mat, it.quantity, 'mét');
+                });
+            },
+            rowsSheet: function () {
+                var self = this;
+                return this.sheets.map(function (it) {
+                    return self.mkRow('h|' + it.name, self.thickLabel(it.thickness), self.stripThick(it.name, it.thickness), it.quantity, 'tấm');
+                });
+            },
+            allSections: function () {
+                return [
+                    { key: 'hien_phu_kien', title: 'Liên kết', items: this.rowsConnector },
+                    { key: 'hien_tiet_dien', title: 'Tiết diện', items: this.rowsIntersect },
+                    { key: 'hien_dan_canh', title: 'Dán cạnh', items: this.rowsEdgeband },
+                    { key: 'hien_doi_tuong', title: 'Khác', items: this.rowsStatistical },
+                    { key: 'hien_tam', title: 'Tấm', items: this.rowsSheet }
+                ];
+            },
+            visibleSections: function () {
+                var self = this;
+                return this.allSections.map(function (sec) {
+                    return { key: sec.key, title: sec.title, items: self.matchRows(sec.items) };
+                });
+            },
+            totalCost: function () {
+                var self = this;
+                return this.visibleSections.reduce(function (s, sec) { return s + self.sectionTotal(sec); }, 0);
+            },
+            hasData: function () {
+                return this.partRows.length > 0 || this.connectors.length > 0 || this.intersects.length > 0
+                    || this.statisticals.length > 0 || this.edgebands.length > 0 || this.sheets.length > 0;
+            },
+            totalParts: function () {
+                return this.partRows.length;
+            },
+            searchKey: function () {
+                return this.keyword.trim().toLowerCase();
+            },
+            filteredRows: function () {
+                var key = this.searchKey;
+                if (!key) return this.partRows;
+                var self = this;
+                return this.partRows.filter(function (row) {
+                    return row.some(function (cell) { return self.cellHas(cell, key); });
+                });
+            },
+            sortedRows: function () {
+                return this.sortRows(this.filteredRows);
+            }
+        },
+        methods: {
+            mkRow: function (k, loai, mota, sl, dv, opt) {
+                opt = opt || {};
+                return {
+                    k: k,
+                    loai: loai,
+                    mota: mota,
+                    lines: opt.lines || null,
+                    sl: sl,
+                    dv: dv,
+                    unitItem: opt.unitItem || null
+                };
+            },
+            sortRows: function (rows) {
+                var col = this.sortCol;
+                if (col === null) return rows;
+                var dir = this.sortDir;
+                var self = this;
+                return rows.slice().sort(function (r1, r2) {
+                    var a = r1[col], b = r2[col];
+                    var ea = self.cellText(a) === '';
+                    var eb = self.cellText(b) === '';
+                    if (ea && eb) return 0;
+                    if (ea) return 1;
+                    if (eb) return -1;
+                    return self.cmpCell(a, b) * dir;
+                });
+            },
+            isSel: function (row) {
+                return this.selIds.indexOf(row[0]) !== -1;
+            },
+            selectAllParts: function () {
+                var ids = this.partRows.map(function (r) { return r[0]; });
+                if (!ids.length) return;
+                this.selIds = ids;
+                this.selAnchor = null;
+                skp('select_parts', JSON.stringify(ids));
+            },
+            clearSel: function () {
+                if (!this.selIds.length) return;
+                this.selIds = [];
+                this.selAnchor = null;
+                skp('select_parts', '[]');
+            },
+            pickRow: function (ri, e) {
+                var rows = this.sortedRows;
+                var id = rows[ri][0];
+                var ids;
+                if (e.shiftKey && this.selAnchor !== null) {
+                    var a = Math.min(this.selAnchor, ri), b = Math.max(this.selAnchor, ri);
+                    ids = rows.slice(a, b + 1).map(function (r) { return r[0]; });
+                } else if (e.ctrlKey || e.metaKey) {
+                    ids = this.selIds.slice();
+                    var k = ids.indexOf(id);
+                    if (k === -1) ids.push(id); else ids.splice(k, 1);
+                    this.selAnchor = ri;
+                } else {
+                    ids = [id];
+                    this.selAnchor = ri;
+                }
+                this.selIds = ids;
+                skp('select_parts', JSON.stringify(ids));
+            },
+            sortBy: function (index) {
+                if (this.sortCol === index) {
+                    this.sortDir = -this.sortDir;
+                } else {
+                    this.sortCol = index;
+                    this.sortDir = 1;
+                }
+            },
+            cmpCell: function (a, b) {
+                var na = Number(a), nb = Number(b);
+                if (!isNaN(na) && !isNaN(nb)) return na - nb;
+                return String(a).localeCompare(String(b), 'vi', { numeric: true, sensitivity: 'base' });
+            },
+            isTextColumn: function (index) {
+                return index === 2;
+            },
+            cellText: function (cell) {
+                if (cell === null || cell === undefined) return '';
+                return cell;
+            },
+            thickLabel: function (value) {
+                var n = Number(value);
+                if (!value || isNaN(n)) return String(this.cellText(value));
+                return n + ' mm';
+            },
+            stripThick: function (name, thickness) {
+                var text = String(this.cellText(name)).trim();
+                var n = Number(thickness);
+                if (!n || isNaN(n)) return text;
+                var num = String(n).replace('.', '[.,]');
+                return text.replace(new RegExp('[ _-]*' + num + ' *(mm)?$', 'i'), '').trim();
+            },
+            bandLabel: function (it) {
+                var thick = this.thickLabel(it.thickness);
+                if (this.settings.an_ten_dan_canh || !it.name) return thick;
+                return thick + ' | ' + it.name;
+            },
+            bandMaterial: function (it) {
+                return this.stripThick(it.material ? it.material : it.name, it.board_thickness);
+            },
+            detailLines: function (item) {
+                var detail = item.count_by_length || {};
+                return Object.keys(detail).sort(function (a, b) {
+                    return Number(a) - Number(b);
+                }).map(function (key) {
+                    return { count: detail[key], length: key };
+                });
+            },
+            lineText: function (ln) {
+                return ln.count + ' x ' + ln.length + ' mm';
+            },
+            flatRow: function (r) {
+                return {
+                    loai: r.loai,
+                    lines: r.lines ? r.lines.map(this.lineText) : null,
+                    mota: r.mota,
+                    sl: r.sl,
+                    dv: r.unitItem ? (r.unitItem.unit || '') : r.dv,
+                    he_so: this.coefOf(r.k),
+                    gia: this.priceOf(r.k),
+                    tien: this.amountOf(r)
+                };
+            },
+            cellHas: function (cell, key) {
+                return String(this.cellText(cell)).toLowerCase().indexOf(key) !== -1;
+            },
+            matchRows: function (rows) {
+                var key = this.searchKey;
+                if (!key) return rows;
+                var self = this;
+                return rows.filter(function (r) {
+                    var f = self.flatRow(r);
+                    var cells = [r.loai, f.mota, f.sl, f.dv, f.he_so, f.gia, self.fmtNum(f.tien)].concat(f.lines || []);
+                    return cells.some(function (c) { return self.cellHas(c, key); });
+                });
+            },
+            toggleFold: function (key) {
+                this.$set(this.folded, key, !this.folded[key]);
+            },
+            priceOf: function (key) {
+                var p = this.prices[key];
+                return p ? p.gia : 0;
+            },
+            coefOf: function (key) {
+                var p = this.prices[key];
+                return p ? p.he_so : 1;
+            },
+            parseAmount: function (value, fallback) {
+                var n = parseFloat(String(value).replace(/[^\d.-]/g, ''));
+                return (isNaN(n) || n < 0) ? fallback : n;
+            },
+            setPrice: function (key, value) {
+                this.$set(this.prices, key, { gia: this.parseAmount(value, 0), he_so: this.coefOf(key) });
+            },
+            setCoef: function (key, value) {
+                this.$set(this.prices, key, { gia: this.priceOf(key), he_so: this.parseAmount(value, 1) });
+            },
+            amountOf: function (r) {
+                return (Number(r.sl) || 0) * this.priceOf(r.k) * this.coefOf(r.k);
+            },
+            sectionTotal: function (sec) {
+                var self = this;
+                return sec.items.reduce(function (sum, r) { return sum + self.amountOf(r); }, 0);
+            },
+            fmtNum: function (value) {
+                var v = Math.round((Number(value) || 0) * 100) / 100;
+                var parts = String(v).split('.');
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                return parts.join(',');
+            },
+            changeUnit: function (item, value) {
+                this.loading = true;
+                skp('change_unit', JSON.stringify({ name: item.name, unit: value }));
+            },
+            saveSetting: function (key) {
+                skp('save_setting', key + '@' + this.settings[key]);
+            },
+            reload: function () {
+                this.loading = true;
+                skp('reload_data', '');
+            },
+            snapshot: function () {
+                if (this.snapping) return;
+                var self = this;
+                this.snapping = true;
+                var done = function () { self.snapping = false; };
+                setTimeout(done, 15000);
+                setTimeout(function () {
+                    var spec = self.leftTab === 'cau_kien' ? self.partsImageSpec() : self.costImageSpec();
+                    var canvas = self.drawTable(spec.cols, spec.rows, spec.geo);
+                    var viaRuby = function () {
+                        skp('copy_image', canvas.toDataURL('image/png').split(',')[1]);
+                    };
+                    if (!navigator.clipboard || !window.ClipboardItem || !canvas.toBlob) return viaRuby();
+                    canvas.toBlob(function (blob) {
+                        if (!blob) return viaRuby();
+                        try {
+                            navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]).then(done, viaRuby);
+                        } catch (e) {
+                            viaRuby();
+                        }
+                    }, 'image/png');
+                }, 30);
+            },
+            costImageSpec: function () {
+                var self = this;
+                var cols = [
+                    { text: '', align: 'center' }, { text: 'Loại', align: 'left' }, { text: 'Mô tả chi tiết', align: 'left' },
+                    { text: 'Số lượng', align: 'center' }, { text: 'Đơn vị', align: 'center' }, { text: 'Hệ số', align: 'center' },
+                    { text: 'Đơn giá', align: 'right' }, { text: 'Thành tiền', align: 'right' }
+                ];
+                var rows = [];
+                this.visibleSections.forEach(function (sec) {
+                    rows.push({ kind: 'sec', cells: [
+                        { text: '' }, { text: sec.title, align: 'left', span: 6 }, { text: self.fmtNum(self.sectionTotal(sec)), align: 'right' }
+                    ] });
+                    if (self.folded[sec.key]) return;
+                    sec.items.forEach(function (r, i) {
+                        var f = self.flatRow(r);
+                        rows.push({ kind: 'row', cells: [
+                            { text: String(i + 1) },
+                            { text: f.loai },
+                            f.lines ? { lines: f.lines } : { text: f.mota },
+                            { text: String(f.sl) },
+                            { text: f.dv },
+                            { text: String(f.he_so) },
+                            { text: String(f.gia) },
+                            { text: self.fmtNum(f.tien) }
+                        ] });
+                    });
+                });
+                rows.push({ kind: 'sec', cells: [
+                    { text: '' }, { text: 'Tổng chi phí', align: 'left', span: 6 }, { text: self.fmtNum(self.totalCost), align: 'right' }
+                ] });
+                return { cols: cols, rows: rows, geo: this.measureTable(this.$refs.sumTable) };
+            },
+            partsImageSpec: function () {
+                var self = this;
+                var cols = this.headers.map(function (h, i) {
+                    return { text: h, align: self.isTextColumn(i) ? 'left' : 'center' };
+                });
+                var rows = this.sortedRows.map(function (row) {
+                    return { kind: 'row', cells: row.map(function (v) { return { text: String(self.cellText(v)) }; }) };
+                });
+                return { cols: cols, rows: rows, geo: this.measureTable(this.$refs.partTable) };
+            },
+            measureTable: function (table) {
+                if (!table || !table.tHead || !table.tHead.rows.length) return null;
+                var head = table.tHead.rows[0];
+                var widths = Array.prototype.map.call(head.cells, function (c) { return c.getBoundingClientRect().width; });
+                var heights = [];
+                Array.prototype.forEach.call(table.tBodies, function (tb) {
+                    Array.prototype.forEach.call(tb.rows, function (tr) {
+                        var h = tr.getBoundingClientRect().height;
+                        if (h > 0) heights.push(h);
+                    });
+                });
+                return { widths: widths, headH: head.getBoundingClientRect().height, heights: heights };
+            },
+            drawTable: function (cols, rows, geo) {
+                var family = getComputedStyle(document.body).fontFamily;
+                var font = '12px ' + family;
+                var bold = '600 12px ' + family;
+                var pad = 10, lineH = 16.2, minH = 32, scale = window.devicePixelRatio || 1;
+                var canvas = document.createElement('canvas');
+                var ctx = canvas.getContext('2d');
+                var widths = cols.map(function (col) {
+                    ctx.font = bold;
+                    return ctx.measureText(col.text).width + pad * 2;
+                });
+                rows.forEach(function (row) {
+                    ctx.font = row.kind === 'row' ? font : bold;
+                    var i = 0;
+                    row.cells.forEach(function (cell) {
+                        var span = cell.span || 1;
+                        if (span === 1) {
+                            (cell.lines || [cell.text]).forEach(function (ln) {
+                                widths[i] = Math.max(widths[i], ctx.measureText(String(ln)).width + pad * 2);
+                            });
+                        }
+                        i += span;
+                    });
+                });
+                var heights = rows.map(function (row) {
+                    var n = 1;
+                    row.cells.forEach(function (cell) { if (cell.lines) n = Math.max(n, cell.lines.length); });
+                    return Math.max(minH, n * lineH + 6);
+                });
+                var headH = minH;
+                if (geo && geo.widths.length === cols.length && geo.heights.length === rows.length) {
+                    widths = geo.widths;
+                    heights = geo.heights;
+                    headH = geo.headH;
+                }
+                var W = widths.reduce(function (s, w) { return s + w; }, 0);
+                var H = heights.reduce(function (s, h) { return s + h; }, headH);
+                canvas.width = Math.round(W * scale);
+                canvas.height = Math.round(H * scale);
+                ctx.scale(scale, scale);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, W, H);
+                ctx.textBaseline = 'middle';
+                ctx.lineWidth = 1;
+                var y = 0;
+                var drawRow = function (cells, h, bg, f, color) {
+                    if (bg) {
+                        ctx.fillStyle = bg;
+                        ctx.fillRect(0, y, W, h);
+                    }
+                    var x = 0, i = 0;
+                    cells.forEach(function (cell) {
+                        var span = cell.span || 1, w = 0;
+                        for (var k = 0; k < span; k++) w += widths[i + k];
+                        ctx.strokeStyle = '#c8c8c8';
+                        ctx.beginPath();
+                        ctx.moveTo(x + w - 0.5, y);
+                        ctx.lineTo(x + w - 0.5, y + h);
+                        ctx.moveTo(x, y + h - 0.5);
+                        ctx.lineTo(x + w, y + h - 0.5);
+                        ctx.stroke();
+                        var align = cell.align || cols[i].align || 'left';
+                        var lines = cell.lines || [cell.text];
+                        ctx.font = f;
+                        ctx.fillStyle = color;
+                        ctx.textAlign = align;
+                        var tx = align === 'left' ? x + pad : (align === 'right' ? x + w - pad : x + w / 2);
+                        var ty = y + (h - lines.length * lineH) / 2 + lineH / 2;
+                        lines.forEach(function (ln, li) { ctx.fillText(String(ln), tx, ty + li * lineH); });
+                        x += w;
+                        i += span;
+                    });
+                    y += h;
+                };
+                drawRow(cols, headH, '#e0e0e0', bold, '#1a1a1a');
+                rows.forEach(function (row, ri) {
+                    var sec = row.kind === 'sec';
+                    drawRow(row.cells, heights[ri], sec ? '#e0e0e0' : null, sec ? bold : font, sec ? '#1a1a1a' : '#1c1c1c');
+                });
+                ctx.strokeStyle = '#c8c8c8';
+                ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
+                return canvas;
+            },
+            exportExcel: function () {
+                var self = this;
+                var sections = this.allSections.map(function (sec) {
+                    return {
+                        title: sec.title,
+                        tong: self.sectionTotal(sec),
+                        items: sec.items.map(function (r) {
+                            var f = self.flatRow(r);
+                            return {
+                                loai: f.loai,
+                                mota: f.lines ? f.lines.join('\n') : f.mota,
+                                sl: f.sl,
+                                dv: f.dv,
+                                he_so: f.he_so,
+                                gia: f.gia,
+                                tien: f.tien
+                            };
+                        })
+                    };
+                });
+                var tong = sections.reduce(function (s, sec) { return s + sec.tong; }, 0);
+                skp('export_request', JSON.stringify({
+                    chi_phi: { sections: sections, tong: tong },
+                    cau_kien: { headers: this.headers, rows: this.sortRows(this.partRows) }
+                }));
+            },
+            apply: function (data) {
+                var self = this;
+                this.loading = false;
+                this.selIds = [];
+                this.selAnchor = null;
+                this.headers = data.part_data.headers;
+                this.partRows = data.part_data.rows;
+                this.connectors = data.sum_data.list_connector;
+                this.intersects = data.sum_data.list_intersect;
+                this.statisticals = data.sum_data.list_statistical_object;
+                this.edgebands = data.sum_data.list_edgeband;
+                this.sheets = data.sum_data.list_sheet;
+                if (data.settings) {
+                    Object.keys(data.settings).forEach(function (key) {
+                        self.$set(self.settings, key, data.settings[key]);
+                    });
+                }
+            }
+        },
+        mounted: function () {
+            var self = this;
+            window.tkLoad = function (data) {
+                self.apply(typeof data === 'string' ? JSON.parse(data) : data);
+            };
+            window.tkSnapDone = function () {
+                self.snapping = false;
+            };
+            document.addEventListener('click', function (e) {
+                var t = e.target;
+                if (t && t.closest && t.closest('.tk-parts tbody tr, th, button, input, select, textarea, label')) return;
+                self.clearSel();
+            });
+            window.addEventListener('message', function (e) {
+                if (!e.data || e.data.action !== 'tab_shown') return;
+                if (self._loaded && !e.data.reload) return;
+                self._loaded = true;
+                self.loading = true;
+                skp('load_data', '');
+            });
+            if (window.parent !== window) {
+                window.parent.postMessage({ action: 'iframe_ready', tabId: 'thong_ke' }, '*');
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

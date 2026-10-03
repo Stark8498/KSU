@@ -1,0 +1,2590 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>In tem</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/nest.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/preload.js"></script>
+    <script src="js/qr.js"></script>
+    <style>
+        .it-tem {
+            flex-shrink: 0;
+            width: 220px;
+            background: #ffffff;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+        .it-tem.active {
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.5);
+            z-index: 1;
+        }
+        .it-mat {
+            min-height: 32px;
+        }
+        .it-mat .tool-drag-handle {
+            margin-right: 0;
+            width: 10px;
+            justify-content: flex-start;
+        }
+        .it-sheet .it-caret {
+            text-align: right;
+        }
+        .it-check.sm {
+            width: 13px;
+            height: 13px;
+            border-radius: 3px;
+            border-width: 1.5px;
+        }
+        .it-check.sm.on .it-check-mark {
+            width: 3px;
+            height: 6px;
+            margin-top: -1px;
+            border-width: 0 1.5px 1.5px 0;
+        }
+        .it-check.sm.indet .it-check-mark {
+            width: 5.5px;
+            border-top-width: 1.5px;
+        }
+        .it-drag-src {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+        }
+        .it-drag-before {
+            margin-top: 30px;
+        }
+        .it-drag-end {
+            margin-bottom: 30px;
+        }
+        .it-tem.a0 > svg, .it-tem.a180 > svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .it-tem.a180 > svg {
+            transform: rotate(180deg);
+        }
+        .it-tem.a90 > svg, .it-tem.a270 > svg {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: var(--svgw);
+            height: var(--svgh);
+        }
+        .it-tem.a90 > svg {
+            transform: translate(-50%, -50%) rotate(90deg);
+        }
+        .it-tem.a270 > svg {
+            transform: translate(-50%, -50%) rotate(270deg);
+        }
+        .switch .it-note-trigger {
+            min-width: 42px;
+            max-width: 42px;
+            flex: none;
+            margin-right: 0;
+        }
+        .switch .it-note-trigger::before,
+        .switch .it-note-trigger::after {
+            display: none;
+        }
+        .switch .it-note-trigger .text-popup-face {
+            padding: 0;
+        }
+        .it-note-row {
+            position: relative;
+        }
+        .it-note-row .text-popup-area {
+            padding-right: 26px;
+        }
+        .it-note-btn {
+            position: absolute;
+            right: 4px;
+            bottom: 4px;
+            width: 18px;
+            height: 18px;
+            padding: 0;
+            border: none;
+            border-radius: 3px;
+            background: rgba(0,0,0,0.07);
+            color: #3a3a3a;
+            font-size: 13px;
+            line-height: 18px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .it-note-btn:hover {
+            background: rgba(0,0,0,0.14);
+        }
+        .it-note-btn.off {
+            visibility: hidden;
+        }
+        .it-note-del {
+            flex: none;
+            width: 18px;
+            height: 18px;
+            padding: 0;
+            border: none;
+            border-radius: 3px;
+            background: rgba(0,0,0,0.07);
+            color: #3a3a3a;
+            font-size: 13px;
+            line-height: 18px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .it-note-del:hover {
+            background: rgba(220,53,69,0.14);
+            color: #dc3545;
+        }
+        .it-note-list {
+            margin-top: 5px;
+            padding-top: 5px;
+            border-top: 1px solid rgba(0,0,0,0.08);
+            max-height: 128px;
+            overflow-y: auto;
+        }
+        .it-note-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .it-note-item:hover {
+            background: rgba(0,0,0,0.06);
+        }
+        .it-note-text {
+            flex: 1;
+            min-width: 0;
+            padding-left: 2px;
+            font-size: 12px;
+            line-height: 18px;
+            color: #000;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        html[data-theme="dark"] .it-note-btn {
+            background: rgba(255,255,255,0.12);
+            color: #e5e5ea;
+        }
+        html[data-theme="dark"] .it-note-btn:hover {
+            background: rgba(255,255,255,0.22);
+        }
+        html[data-theme="dark"] .it-note-del {
+            background: rgba(255,255,255,0.12);
+            color: #e5e5ea;
+        }
+        html[data-theme="dark"] .it-note-del:hover {
+            background: rgba(255,69,58,0.22);
+            color: #ff453a;
+        }
+        html[data-theme="dark"] .it-note-list {
+            border-top-color: rgba(255,255,255,0.12);
+        }
+        html[data-theme="dark"] .it-note-item:hover {
+            background: rgba(255,255,255,0.09);
+        }
+        html[data-theme="dark"] .it-note-text {
+            color: #e5e5ea;
+        }
+        #it-print-area {
+            display: none;
+        }
+        @media print {
+            html, body {
+                width: auto;
+                height: auto;
+                overflow: visible;
+                background: #ffffff;
+            }
+            body > *:not(#it-print-area) {
+                display: none !important;
+            }
+            #it-print-area {
+                display: block !important;
+            }
+            #it-print-area > div {
+                break-inside: avoid;
+            }
+            #it-print-area > div:not(:last-child) {
+                page-break-after: always;
+            }
+            #it-print-area svg {
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
+        }
+    </style>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="nest-root">
+    <div class="nest-left" :class="{ collapsed: col2Hidden }">
+        <div class="nest-left-head">
+            <div class="nest-seg">
+                <button class="nest-seg-btn" :class="{ active: leftTab === 'set' }" @click="setTab('set')">Cài đặt</button>
+                <button class="nest-seg-btn" :class="{ active: leftTab === 'list' }" @click="setTab('list')">Danh sách</button>
+            </div>
+        </div>
+        <div class="nest-left-scroll" ref="leftScroll">
+
+            <div class="nest-left-pane" v-show="leftTab === 'list'">
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Thứ tự tem</span>
+                        <div class="select-group">
+                            <select v-model="settings.thu_tu_in" @change="changeOrder">
+                                <option value="vi_tri">Vị trí</option>
+                                <option value="so_tam">Số tấm</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="switch" v-show="settings.thu_tu_in === 'so_tam'">
+                        <span>Sắp xếp</span>
+                        <div class="select-group">
+                            <select v-model="settings.sap_xep" @change="changeSort">
+                                <option value="tang_dan">Tăng dần</option>
+                                <option value="giam_dan">Giảm dần</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="switch" v-show="settings.thu_tu_in !== 'so_tam'">
+                        <span>Góc bắt đầu</span>
+                        <div class="select-group">
+                            <select v-model="settings.goc_bat_dau" @change="changeCorner">
+                                <option value="trai_duoi">Trái dưới</option>
+                                <option value="trai_tren">Trái trên</option>
+                                <option value="phai_duoi">Phải dưới</option>
+                                <option value="phai_tren">Phải trên</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Thứ tự sắp xếp tem trong tấm.</p>
+                <div class="it-tree" v-if="materials.length" @dragover.prevent="dragOverList" @drop.prevent="dropRow">
+                    <div v-for="(m, i) in materials" :key="m.key"
+                         :class="{ 'it-drag-src': dragIdx === i, 'it-drag-before': overIdx === i, 'it-drag-end': overIdx === materials.length && i === materials.length - 1 }">
+                        <div class="it-mat" :class="{ active: sel.mat === m.key, off: matState(m) === 'off' }"
+                             draggable="true" @dragstart="dragStart(i, $event)" @dragend="dragEnd"
+                             @click="clickMat(m)">
+                            <i class="tool-drag-handle">
+                                <svg width="6" height="10" viewBox="0 0 6 10">
+                                    <circle cx="1" cy="1" r="1"></circle>
+                                    <circle cx="5" cy="1" r="1"></circle>
+                                    <circle cx="1" cy="5" r="1"></circle>
+                                    <circle cx="5" cy="5" r="1"></circle>
+                                    <circle cx="1" cy="9" r="1"></circle>
+                                    <circle cx="5" cy="9" r="1"></circle>
+                                </svg>
+                            </i>
+                            <span class="it-check sm" :class="{ on: matState(m) === 'on', indet: matState(m) === 'indet' }"
+                                  @click.stop="toggleMat(m)"><i class="it-check-mark"></i></span>
+                            <span class="it-name">{{ matLabel(m) }}</span>
+                            <span class="it-count">{{ matParts(m).length }} tem</span>
+                        </div>
+                        <div class="it-children" v-if="sel.mat === m.key">
+                            <template v-for="sid in m.sheets">
+                                <div class="it-sheet" :key="'s' + sid" @click="clickSheet(sid)">
+                                    <span class="it-caret">{{ expandedSheets[sid] ? '▾' : '▸' }}</span>
+                                    <span class="it-check sm" :class="{ on: sheetState(sid) === 'on', indet: sheetState(sid) === 'indet' }"
+                                          @click.stop="toggleSheet(sid)"><i class="it-check-mark"></i></span>
+                                    <span class="it-name">Sheet {{ sid }}</span>
+                                    <span class="it-count">{{ sheets[sid] ? sheets[sid].parts.length : 0 }} tem</span>
+                                </div>
+                                <template v-if="expandedSheets[sid]">
+                                    <div class="it-part" :class="{ active: !!selSet[pi] }"
+                                         v-for="pi in sheets[sid].parts" :key="'p' + pi" :ref="'prow' + pi" @click="clickPart(pi, $event)">
+                                        <span class="it-check sm" :class="{ on: !off[pi] }"
+                                              @click.stop="togglePart(pi)"><i class="it-check-mark"></i></span>
+                                        <span class="it-name">{{ parts[pi].lk ? parts[pi].name : parts[pi].id + '. ' + parts[pi].name }}</span>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint" v-if="materials.length">Danh sách vật liệu và tem.</p>
+                <p class="it-empty" v-if="!materials.length">Chưa có dữ liệu nesting.</p>
+            </div>
+
+            <div class="nest-left-pane" v-show="leftTab === 'set'">
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Mẫu tem</span>
+                        <div class="select-group">
+                            <select v-model="settings.kieu_tem" @change="saveSetting('kieu_tem')">
+                                <option value="tem01">01</option>
+                                <option value="tem02">02</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Chọn mẫu cho tem nhãn.</p>
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Tự động xoay</span>
+                        <input type="checkbox" v-model="settings.tu_dong_xoay"
+                               @change="saveSetting('tu_dong_xoay')" id="tu_dong_xoay">
+                        <label class="switch-label" for="tu_dong_xoay"></label>
+                    </div>
+                    <div class="switch">
+                        <span>Chiều rộng</span>
+                        <div class="number-input-group">
+                            <button class="spinner-btn"
+                                    @click="stepTem('kho_tem_rong', -5)"
+                                    :disabled="settings.kho_tem_rong <= 20">−
+                            </button>
+                            <input type="number"
+                                   v-model.number="settings.kho_tem_rong"
+                                   @change="saveSetting('kho_tem_rong')"
+                                   @blur="validateTem('kho_tem_rong')"
+                                   @keyup.enter="validateTem('kho_tem_rong')"
+                                   min="20" max="200" step="any">
+                            <button class="spinner-btn"
+                                    @click="stepTem('kho_tem_rong', 5)"
+                                    :disabled="settings.kho_tem_rong >= 200">+
+                            </button>
+                        </div>
+                    </div>
+                    <div class="switch">
+                        <span>Chiều cao</span>
+                        <div class="number-input-group">
+                            <button class="spinner-btn"
+                                    @click="stepTem('kho_tem_cao', -5)"
+                                    :disabled="settings.kho_tem_cao <= 20">−
+                            </button>
+                            <input type="number"
+                                   v-model.number="settings.kho_tem_cao"
+                                   @change="saveSetting('kho_tem_cao')"
+                                   @blur="validateTem('kho_tem_cao')"
+                                   @keyup.enter="validateTem('kho_tem_cao')"
+                                   min="20" max="200" step="any">
+                            <button class="spinner-btn"
+                                    @click="stepTem('kho_tem_cao', 5)"
+                                    :disabled="settings.kho_tem_cao >= 200">+
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Khổ tem khi in và hướng hình tấm.</p>
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Mốc khoan ngang</span>
+                        <input type="checkbox" v-model="settings.moc_khoan_ngang"
+                               @change="saveSetting('moc_khoan_ngang')" id="moc_khoan_ngang">
+                        <label class="switch-label" for="moc_khoan_ngang"></label>
+                    </div>
+                    <div class="switch">
+                        <span>Mã tem QR</span>
+                        <input type="checkbox" v-model="settings.them_ma_qr"
+                               @change="saveSetting('them_ma_qr')" id="them_ma_qr">
+                        <label class="switch-label" for="them_ma_qr"></label>
+                    </div>
+                    <div class="switch">
+                        <span>Kích thước</span>
+                        <input type="checkbox" v-model="settings.hien_kich_thuoc"
+                               @change="saveSetting('hien_kich_thuoc')" id="hien_kich_thuoc">
+                        <label class="switch-label" for="hien_kich_thuoc"></label>
+                    </div>
+                    <div class="switch">
+                        <span>Tên vật liệu</span>
+                        <input type="checkbox" v-model="settings.hien_vat_lieu"
+                               @change="saveSetting('hien_vat_lieu')" id="hien_vat_lieu">
+                        <label class="switch-label" for="hien_vat_lieu"></label>
+                    </div>
+                    <div class="switch">
+                        <span>Ghi chú 1</span>
+                        <div class="text-input-group select-group it-note-trigger"
+                             @mousedown.stop @click="openNotePop('ghi_chu_them', $event)">
+                            <input type="text" class="text-popup-face" value="..." readonly tabindex="-1">
+                        </div>
+                    </div>
+                    <div class="switch">
+                        <span>Ghi chú 2</span>
+                        <div class="text-input-group select-group it-note-trigger"
+                             @mousedown.stop @click="openNotePop('ghi_chu_them_2', $event)">
+                            <input type="text" class="text-popup-face" value="..." readonly tabindex="-1">
+                        </div>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Tùy chỉnh thông tin tem nhãn.</p>
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span class="gap-lock-label">
+                            Mã dán cạnh
+                            <gap-lock :open="settings.tach_ma_canh" @toggle="toggleEbLock"></gap-lock>
+                        </span>
+                        <input type="checkbox" v-model="settings.ma_dan_canh"
+                               @change="saveSetting('ma_dan_canh')" id="ma_dan_canh">
+                        <label class="switch-label" for="ma_dan_canh"></label>
+                    </div>
+                    <template v-if="settings.tach_ma_canh && settings.ma_dan_canh !== false">
+                        <div class="switch" v-for="f in ebParts" :key="f.key">
+                            <span class="gap-sub">{{ f.name }}</span>
+                            <input type="checkbox" v-model="settings[f.key]"
+                                   @change="saveSetting(f.key)" :id="f.key">
+                            <label class="switch-label" :for="f.key"></label>
+                        </div>
+                        <div class="switch">
+                            <span class="gap-sub">Ngăn cách</span>
+                            <input type="text" class="char-input" v-model="settings.ngan_cach"
+                                   @change="saveSep" @blur="saveSep"
+                                   spellcheck="false" autocomplete="off" maxlength="1">
+                        </div>
+                    </template>
+                    <div class="switch" v-show="settings.ma_dan_canh !== false">
+                        <span>Kiểu ký hiệu</span>
+                        <div class="select-group">
+                            <select v-model="settings.kieu_ma_canh" @change="saveSetting('kieu_ma_canh')">
+                                <option value="so">Số</option>
+                                <option value="hinh">Hình</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="switch">
+                        <span>Tô đậm chỉ</span>
+                        <div class="number-input-group">
+                            <button class="spinner-btn"
+                                    @click="stepBold(-1)"
+                                    :disabled="settings.do_dam_canh <= 1">−
+                            </button>
+                            <input type="number"
+                                   v-model.number="settings.do_dam_canh"
+                                   @change="saveSetting('do_dam_canh')"
+                                   @blur="validateInt('do_dam_canh', 1, 5)"
+                                   @keyup.enter="validateInt('do_dam_canh', 1, 5)"
+                                   min="1" max="5" step="1">
+                            <button class="spinner-btn"
+                                    @click="stepBold(1)"
+                                    :disabled="settings.do_dam_canh >= 5">+
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Cách thể hiện cạnh dán chỉ trên tem.</p>
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span class="gap-lock-label">
+                            Cỡ chữ
+                            <gap-lock :open="settings.tach_co_chu" @toggle="toggleFontLock"></gap-lock>
+                        </span>
+                        <div class="number-input-group" :class="{ disabled: settings.tach_co_chu }">
+                            <button class="spinner-btn"
+                                    @click="stepFontScale(-5)"
+                                    @contextmenu.prevent.stop="resetFontScale"
+                                    :disabled="settings.co_chu <= 50 || settings.tach_co_chu">−
+                            </button>
+                            <input type="number"
+                                   v-model.number="settings.co_chu"
+                                   @change="saveSetting('co_chu')"
+                                   @blur="validateFontScale"
+                                   @keyup.enter="validateFontScale"
+                                   :disabled="settings.tach_co_chu"
+                                   min="50" max="200" step="any">
+                            <button class="spinner-btn"
+                                    @click="stepFontScale(5)"
+                                    @contextmenu.prevent.stop="resetFontScale"
+                                    :disabled="settings.co_chu >= 200 || settings.tach_co_chu">+
+                            </button>
+                        </div>
+                    </div>
+                    <template v-if="settings.tach_co_chu">
+                        <div class="switch" v-for="f in fontParts" :key="f.key">
+                            <span class="gap-sub">{{ f.name }}</span>
+                            <div class="number-input-group">
+                                <button class="spinner-btn"
+                                        @click="stepFontPart(f.key, -0.1)"
+                                        @contextmenu.prevent.stop="resetFontPart(f)"
+                                        :disabled="settings[f.key] <= 1">−
+                                </button>
+                                <input type="number"
+                                       v-model.number="settings[f.key]"
+                                       @change="saveSetting(f.key)"
+                                       @blur="validateFontPart(f.key)"
+                                       @keyup.enter="validateFontPart(f.key)"
+                                       min="1" max="3" step="any">
+                                <button class="spinner-btn"
+                                        @click="stepFontPart(f.key, 0.1)"
+                                        @contextmenu.prevent.stop="resetFontPart(f)"
+                                        :disabled="settings[f.key] >= 3">+
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <p class="switch-stacked-hint">Tùy chỉnh hiển thị tem nhãn.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="nest-right">
+        <div class="nest-right-head">
+            <button class="nest-col2-btn"
+                    @click="col2Hidden = !col2Hidden">
+                <svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><line x1="9.5" y1="4.5" x2="9.5" y2="19.5"/></svg>
+            </button>
+            <div class="nest-search">
+                <input type="text" v-model="searchText"
+                       placeholder="Tìm kiếm..." spellcheck="false" autocomplete="off">
+                <button class="nest-search-clear" v-show="searchText" @click="searchText = ''"
+                        tabindex="-1">×</button>
+            </div>
+            <span class="nest-right-stat" @click="selectVisibleParts">{{ visible.length }} tem</span>
+            <button class="col3-btn secondary" @click="reloadData">Cập nhật</button>
+        </div>
+        <div class="nest-right-scroll cards" ref="scroll" :class="{ filled: visible.length > 0, 'one-col': settings.mot_cot }"
+             :style="scrollStyle" @click.self="clickBlank" @dblclick.self="dblClickBlank">
+            <div class="it-empty" v-if="!visible.length">Không có dữ liệu tem.</div>
+            <div class="it-tem" :class="['a' + dispAngle, { active: !!selSet[pi] }]"
+                 :style="temBoxStyle" :ref="'tem' + pi"
+                 v-for="pi in visible" :key="'t' + pi" v-lazytem="pi"
+                 @click="clickTem(pi, $event)" @dblclick="dblClickTem(pi)"
+                 v-html="(!lazyEnabled || shown[pi]) ? temSvg(pi) : ''"></div>
+        </div>
+        <div class="it-dock" v-if="visible.length">
+            <button class="it-dock-btn" @click="zoomStep(-1)">−</button>
+            <button class="it-dock-btn" @click="zoomStep(1)">+</button>
+            <button class="it-dock-btn" @click="rotCCW"><span class="it-rot-ico">↺</span></button>
+            <button class="it-dock-btn" @click="toggleMotCot">
+                <svg class="it-dock-ico" v-if="settings.mot_cot" viewBox="0 0 24 24"><rect x="4.5" y="5" width="6" height="14"/><rect x="13.5" y="5" width="6" height="14"/></svg>
+                <svg class="it-dock-ico" v-else viewBox="0 0 24 24"><path d="M5.5 5v5.5h13V5M5.5 19v-5.5h13V19"/></svg>
+            </button>
+            <button class="it-dock-btn" @click="scrollByPct(-1)"><svg class="it-dock-ico thin" viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"/></svg></button>
+            <button class="it-dock-btn" @click="scrollByPct(1)"><svg class="it-dock-ico thin" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+        </div>
+        <div class="nest-right-footer">
+            <div class="footer-btns">
+                <button class="action-button-full" :disabled="!visible.length || exporting" @click="printTems()">{{ selCount ? 'In ' + selCount + ' tem' : 'In tem' }}</button>
+                <button class="action-button-full" :disabled="!visible.length || exporting" @click="requestExport($event)">{{ exporting ? 'Đang xuất...' : (selCount ? 'Xuất ' + selCount + ' tem' : 'Xuất tem') }}</button>
+            </div>
+            <p class="switch-stacked-hint">Tính năng đang trong giai đoạn thử nghiệm và phát triển, luôn phải kiểm tra lại kết quả trước khi đưa vào sản xuất.</p>
+        </div>
+    </div>
+
+    <div class="text-popup" v-if="notePop" :style="{ left: notePop.x + 'px', top: notePop.y + 'px' }"
+         @mousedown.stop @contextmenu.prevent.stop>
+        <div class="it-note-row">
+            <textarea class="text-popup-area" v-model="notePop.text" ref="noteInput" spellcheck="false"></textarea>
+            <button class="it-note-btn" :class="{ off: !notePop.text.trim() }"
+                    @click="addNotePreset">+</button>
+        </div>
+        <div class="it-note-list" v-if="curPresets.length">
+            <div class="it-note-item" v-for="(t, i) in curPresets" :key="i" @click="useNotePreset(t)">
+                <span class="it-note-text">{{ t }}</span>
+                <button class="it-note-del" @click.stop="delNotePreset(i)">−</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="it-print-area"></div>
+
+<script>
+    Vue.config.productionTip = false;
+    Vue.config.devtools = false;
+    document.body.spellcheck = false;
+
+    function skp(fn, arg) {
+        if (window.parent === window) return;
+        window.parent.postMessage({ action: 'tool_call', tabId: 'in_tem', fn: fn, arg: arg }, '*');
+    }
+
+    var measureCtx = document.createElement('canvas').getContext('2d');
+    var _twCache = {};
+
+    function textW(str, sizeMm, bold) {
+        var s = String(str);
+        var key = (bold ? '1' : '0') + s;
+        var w = _twCache[key];
+        if (w === undefined) {
+            measureCtx.font = (bold ? 'bold ' : '') + '100px Arial, sans-serif';
+            w = measureCtx.measureText(s).width;
+            _twCache[key] = w;
+        }
+        return w * sizeMm / 100;
+    }
+
+    function esc(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function lineStr(x1, y1, x2, y2) {
+        return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="#000" stroke-width="0.15"/>';
+    }
+
+    function textStr(str, x, y, size, bold, anchor, color) {
+        return '<text x="' + x + '" y="' + y + '" font-size="' + size +
+            '"' + (bold ? ' font-weight="bold"' : '') +
+            (color ? ' fill="' + color + '"' : '') +
+            ' text-anchor="' + (anchor || 'middle') + '">' + esc(str) + '</text>';
+    }
+
+    function fmtMm(v) {
+        var r = Math.round(v * 10) / 10;
+        return String(r % 1 === 0 ? Math.round(r) : r);
+    }
+
+    function ebParse(nm) {
+        var s = String(nm == null ? '' : nm).trim();
+        var m = s.match(/^(.*?)(?:\s*[^\s\d]\s*)?(\d+(?:[.,]\d+)?)\s*mm$/i);
+        if (!m) return [s, Infinity];
+        return [m[1].trim(), parseFloat(m[2].replace(',', '.'))];
+    }
+
+    function ebCompare(a, b) {
+        var pa = ebParse(a), pb = ebParse(b);
+        var c = pa[0].localeCompare(pb[0], 'vi', { numeric: true, sensitivity: 'base' });
+        if (c) return c;
+        if (pa[1] !== pb[1]) return pa[1] - pb[1];
+        return String(a).localeCompare(String(b), 'vi');
+    }
+
+    function ebDash(e) {
+        if (e[5] === 'vat') return true;
+        var t = String(e[4] == null ? '' : e[4]).toLowerCase();
+        return t.indexOf('âm') >= 0 || t.indexOf('móc') >= 0 || t.indexOf('vát') >= 0;
+    }
+
+    function ebTri(cx, cy, sz, deg) {
+        var R = sz * 0.62;
+        var d0 = deg == null ? -90 : deg;
+        var tp = [];
+        for (var t = 0; t < 3; t++) {
+            var ang = (d0 + t * 120) * Math.PI / 180;
+            tp.push((cx + R * Math.cos(ang)).toFixed(2) + ',' + (cy + R * Math.sin(ang)).toFixed(2));
+        }
+        return '<polygon points="' + tp.join(' ') + '" fill="#000"/>';
+    }
+
+    var EB_MARKS = 6;
+
+    function ebMark(idx, cx, cy, sz) {
+        var i = Number(idx);
+        if (!(i >= 1)) return '';
+        var num = function (v) { return v.toFixed(2); };
+        if (i > EB_MARKS) {
+            var fs = sz / 0.72;
+            return '<text x="' + num(cx) + '" y="' + num(cy + fs * 0.36) + '" font-size="' + fs.toFixed(3) +
+                '" text-anchor="middle">' + i + '</text>';
+        }
+        var solid = i % 2 === 1;
+        var k = Math.ceil(i / 2);
+        var sw = Math.max(0.12, sz * 0.15);
+        var fa = solid ? ' fill="#000"' : ' fill="none" stroke="#000" stroke-width="' + sw.toFixed(2) + '"';
+        var d = solid ? 0 : sw / 2;
+        if (k === 1) {
+            return '<circle cx="' + num(cx) + '" cy="' + num(cy) + '" r="' + num(sz * 0.5 - d) + '"' + fa + '/>';
+        }
+        if (k === 2) {
+            var a = sz * 0.88 - 2 * d;
+            return '<rect x="' + num(cx - a / 2) + '" y="' + num(cy - a / 2) + '" width="' + num(a) +
+                '" height="' + num(a) + '"' + fa + '/>';
+        }
+        var pw = sz - 2 * d;
+        var ph = sz * 0.52 - 2 * d;
+        return '<rect x="' + num(cx - pw / 2) + '" y="' + num(cy - ph / 2) + '" width="' + num(pw) +
+            '" height="' + num(ph) + '" rx="' + num(ph / 2) + '"' + fa + '/>';
+    }
+
+    function rotPt(p, deg, cx, cy) {
+        var rad = deg * Math.PI / 180;
+        var c = Math.cos(rad), s = Math.sin(rad);
+        var dx = p[0] - cx, dy = p[1] - cy;
+        return [cx + dx * c - dy * s, cy + dx * s + dy * c];
+    }
+
+    function bboxOf(pts) {
+        var x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+        for (var i = 0; i < pts.length; i++) {
+            var p = pts[i];
+            if (p[0] < x0) x0 = p[0];
+            if (p[1] < y0) y0 = p[1];
+            if (p[0] > x1) x1 = p[0];
+            if (p[1] > y1) y1 = p[1];
+        }
+        return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+    }
+
+    function distToSeg(p, a, b) {
+        var vx = b[0] - a[0], vy = b[1] - a[1];
+        var wx = p[0] - a[0], wy = p[1] - a[1];
+        var len2 = vx * vx + vy * vy;
+        var t = len2 > 0 ? (wx * vx + wy * vy) / len2 : 0;
+        t = Math.max(0, Math.min(1, t));
+        var dx = a[0] + t * vx - p[0], dy = a[1] + t * vy - p[1];
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function pointInPoly(pt, poly) {
+        var inside = false;
+        for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+            var xi = poly[i][0], yi = poly[i][1], xj = poly[j][0], yj = poly[j][1];
+            if ((yi > pt[1]) !== (yj > pt[1]) && pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi) inside = !inside;
+        }
+        return inside;
+    }
+
+    function leaderTo(cb, b, lw2, lh2, obs, strict) {
+        var gap = 2, minLeg = 1.2;
+        obs = obs || [];
+        var cx = cb.x + cb.w / 2, cy = cb.y + cb.h / 2;
+        var clampX = function (v) { return Math.max(b.x0 + lw2, Math.min(b.x1 - lw2, v)); };
+        var clampY = function (v) { return Math.max(b.y0 + lh2, Math.min(b.y1 - lh2, v)); };
+        var clearance = function (x, y) {
+            var x0 = x - lw2, x1 = x + lw2, y0 = y - lh2, y1 = y + lh2;
+            if (x0 < b.x0 - 0.01 || x1 > b.x1 + 0.01 || y0 < b.y0 - 0.01 || y1 > b.y1 + 0.01) return -1;
+            var best = Math.min(x0 - b.x0, b.x1 - x1, y0 - b.y0, b.y1 - y1);
+            for (var i = 0; i < obs.length; i++) {
+                var o = obs[i];
+                var dx = Math.max(o[0] - x1, x0 - o[2], 0), dy = Math.max(o[1] - y1, y0 - o[3], 0);
+                var d = Math.sqrt(dx * dx + dy * dy);
+                if (d < 0.3) return -1;
+                if (d < best) best = d;
+            }
+            return best;
+        };
+        var sides = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+        var dists = [gap, gap + 2.5, gap + 5];
+        var slides = [0, -0.5, 0.5, -1, 1];
+        var pick = null, bestScore = -Infinity, first = null;
+        sides.forEach(function (sd, si) {
+            dists.forEach(function (g) {
+                slides.forEach(function (sl) {
+                    var c;
+                    if (sd[0]) {
+                        c = [sd[0] > 0 ? cb.x + cb.w + g + lw2 : cb.x - g - lw2, clampY(cy + sl * (cb.h / 2 + lh2)), sd[0] > 0 ? cb.x + cb.w : cb.x, cy, sd[0], 0];
+                    } else {
+                        c = [clampX(cx + sl * (cb.w / 2 + lw2)), sd[1] > 0 ? cb.y + cb.h + g + lh2 : cb.y - g - lh2, cx, sd[1] > 0 ? cb.y + cb.h : cb.y, 0, sd[1]];
+                    }
+                    if (!first) first = c;
+                    var cl = clearance(c[0], c[1]);
+                    if (cl < 0) return;
+                    var score = Math.min(cl, 2.5) * 10 - (g - gap) * 0.6 - Math.abs(sl) * 1.5 - si * 0.2;
+                    if (score > bestScore) { bestScore = score; pick = c; }
+                });
+            });
+        });
+        if (!pick) {
+            if (strict) return null;
+            pick = first;
+            pick[0] = clampX(pick[0]);
+            pick[1] = clampY(pick[1]);
+        }
+        var ux = pick[4], uy = pick[5];
+        var px0 = pick[2], py0 = pick[3];
+        if (ux) {
+            var dY = pick[1] - py0;
+            if (Math.abs(dY) > lh2 && Math.abs(dY) < lh2 + minLeg) pick[1] = clampY(py0 + (dY > 0 ? 1 : -1) * (lh2 + minLeg));
+        } else {
+            var dX = pick[0] - px0;
+            if (Math.abs(dX) > lw2 && Math.abs(dX) < lw2 + minLeg) pick[0] = clampX(px0 + (dX > 0 ? 1 : -1) * (lw2 + minLeg));
+        }
+        var pathD = 'M' + px0.toFixed(2) + ' ' + py0.toFixed(2);
+        if (ux) {
+            var offY = pick[1] - py0;
+            if (Math.abs(offY) <= lh2) {
+                pathD += 'L' + (pick[0] - ux * lw2).toFixed(2) + ' ' + py0.toFixed(2);
+            } else {
+                pathD += 'L' + pick[0].toFixed(2) + ' ' + py0.toFixed(2) + 'L' + pick[0].toFixed(2) + ' ' + (pick[1] - (offY > 0 ? lh2 : -lh2)).toFixed(2);
+            }
+        } else {
+            var offX = pick[0] - px0;
+            if (Math.abs(offX) <= lw2) {
+                pathD += 'L' + px0.toFixed(2) + ' ' + (pick[1] - uy * lh2).toFixed(2);
+            } else {
+                pathD += 'L' + px0.toFixed(2) + ' ' + pick[1].toFixed(2) + 'L' + (pick[0] - (offX > 0 ? lw2 : -lw2)).toFixed(2) + ' ' + pick[1].toFixed(2);
+            }
+        }
+        return {
+            x: pick[0], y: pick[1],
+            svg: '<path d="' + pathD + '" fill="none" stroke="#000" stroke-width="0.1" stroke-dasharray="0.5 0.35"/>'
+        };
+    }
+
+    function fitText(str, sizeMm, maxW, bold) {
+        var s = sizeMm;
+        while (s > 1 && textW(str, s, bold) > maxW) s -= 0.1;
+        return s;
+    }
+
+    function wrapText(str, sizeMm, maxW) {
+        var words = String(str).split(/\s+/).filter(function (w) { return w.length; });
+        var lines = [];
+        var cur = '';
+        for (var i = 0; i < words.length; i++) {
+            var t = cur ? cur + ' ' + words[i] : words[i];
+            if (textW(t, sizeMm, true) <= maxW || !cur) {
+                cur = t;
+            } else {
+                lines.push(cur);
+                cur = words[i];
+            }
+        }
+        if (cur) lines.push(cur);
+        return lines;
+    }
+
+    function fitTitle(title, tSize, availW, maxTitleH) {
+        var tLines = [title];
+        while (tSize > 0.8) {
+            tLines = wrapText(title, tSize, availW);
+            var mlw = 0;
+            for (var wi = 0; wi < tLines.length; wi++) {
+                var lw = textW(tLines[wi], tSize, true);
+                if (lw > mlw) mlw = lw;
+            }
+            if (mlw <= availW && tLines.length * tSize * 1.4 <= maxTitleH) break;
+            tSize -= 0.1;
+        }
+        return { lines: tLines, size: tSize };
+    }
+
+    var app = new Vue({
+        el: '#app',
+        mixins: [SettingsMixin('in_tem')],
+        directives: {
+            lazytem: {
+                inserted: function (el, binding, vnode) {
+                    el.__pi = binding.value;
+                    var ctx = vnode.context;
+                    if (!ctx._lazyEls) ctx._lazyEls = [];
+                    ctx._lazyEls.push(el);
+                    if (ctx._io) ctx._io.observe(el);
+                },
+                update: function (el, binding) {
+                    el.__pi = binding.value;
+                },
+                unbind: function (el, binding, vnode) {
+                    var ctx = vnode.context;
+                    if (ctx._io) ctx._io.unobserve(el);
+                    if (ctx._lazyEls) {
+                        var k = ctx._lazyEls.indexOf(el);
+                        if (k >= 0) ctx._lazyEls.splice(k, 1);
+                    }
+                }
+            }
+        },
+        data: {
+            col2Hidden: false,
+            materials: [],
+            dragIdx: null,
+            overIdx: null,
+            sheets: {},
+            parts: [],
+            searchText: '',
+            leftTab: 'set',
+            shown: {},
+            off: {},
+            expandedSheets: {},
+            lazyEnabled: true,
+            exporting: false,
+            temScale: 240,
+            sel: { mat: null, part: null },
+            selSet: {},
+            notePop: null,
+            notePresets: { ghi_chu_them: [], ghi_chu_them_2: [] },
+            ebParts: [
+                { key: 'ma_canh_ten', name: 'Tên thống kê' },
+                { key: 'ma_canh_do_day_canh', name: 'Độ dày cạnh' }
+            ],
+            fontParts: [
+                { key: 'co_chu_tieu_de', name: 'Tiêu đề', def: 2 },
+                { key: 'co_chu_thong_tin', name: 'Thông tin', def: 2 },
+                { key: 'co_chu_ky_hieu', name: 'Ký hiệu', def: 2 },
+                { key: 'co_chu_id', name: 'Số tấm', def: 2 },
+                { key: 'co_chu_ghi_chu', name: 'Ghi chú', def: 2 }
+            ],
+            settings: {
+                kieu_tem: 'tem01',
+                tu_dong_xoay: true,
+                kho_tem_rong: 60,
+                kho_tem_cao: 40,
+                do_dam_canh: 3,
+                ghi_chu_them: '',
+                ghi_chu_them_2: '',
+                co_chu: 100,
+                tach_co_chu: false,
+                co_chu_tieu_de: 2,
+                co_chu_thong_tin: 2,
+                co_chu_ky_hieu: 2,
+                co_chu_id: 2,
+                co_chu_ghi_chu: 2,
+                them_ma_qr: false,
+                hien_vat_lieu: false,
+                hien_kich_thuoc: false,
+                moc_khoan_ngang: false,
+                ma_dan_canh: true,
+                tach_ma_canh: false,
+                ma_canh_ten: true,
+                ma_canh_do_day_canh: true,
+                ngan_cach: '-',
+                kieu_ma_canh: 'so',
+                thu_tu_in: 'so_tam',
+                goc_bat_dau: 'trai_duoi',
+                sap_xep: 'tang_dan',
+                goc_xoay: 0,
+                ty_le_zoom: 240,
+                mot_cot: false
+            }
+        },
+        computed: {
+            ebIndex: function () {
+                var self = this;
+                var names = {};
+                this.parts.forEach(function (p) {
+                    (p.ebs || []).forEach(function (e) {
+                        if (ebDash(e)) return;
+                        var nm = self.ebName(e);
+                        if (nm) names[nm] = true;
+                    });
+                });
+                var list = Object.keys(names).sort(ebCompare);
+                var map = {};
+                list.forEach(function (nm, i) { map[nm] = i + 1; });
+                return map;
+            },
+            ebMarkOn: function () {
+                if (this.settings.ma_dan_canh === false) return false;
+                return String(this.settings.kieu_ma_canh || 'so') === 'hinh';
+            },
+            curPresets: function () {
+                if (!this.notePop) return [];
+                return this.notePresets[this.notePop.key] || [];
+            },
+            temW: function () {
+                return Math.min(this.settings.kho_tem_rong || 60, this.settings.kho_tem_cao || 40);
+            },
+            temH: function () {
+                return Math.max(this.settings.kho_tem_rong || 60, this.settings.kho_tem_cao || 40);
+            },
+            landscape: function () {
+                return (this.settings.kho_tem_rong || 60) > (this.settings.kho_tem_cao || 40);
+            },
+            dispAngle: function () {
+                var base = this.landscape ? 90 : 0;
+                return ((base - (this.settings.goc_xoay || 0) * 90) % 360 + 360) % 360;
+            },
+            scrollStyle: function () {
+                var g = this.temScale * 14 / 240;
+                return { gap: g + 'px ' + (g / 2) + 'px' };
+            },
+            temBoxStyle: function () {
+                var boxW = this.temScale;
+                var land = (this.dispAngle === 90 || this.dispAngle === 270);
+                if (land) {
+                    return {
+                        width: boxW + 'px',
+                        aspectRatio: this.temH + ' / ' + this.temW,
+                        '--svgw': (boxW * this.temW / this.temH) + 'px',
+                        '--svgh': boxW + 'px'
+                    };
+                }
+                return { width: boxW + 'px', aspectRatio: this.temW + ' / ' + this.temH };
+            },
+            selCount: function () {
+                var self = this;
+                return this.visible.filter(function (pi) { return self.selSet[pi]; }).length;
+            },
+            outParts: function () {
+                var self = this;
+                if (!this.selCount) return this.visible;
+                return this.visible.filter(function (pi) { return self.selSet[pi]; });
+            },
+            visible: function () {
+                var self = this;
+                var pis = [];
+                var mats = this.materials;
+                mats.forEach(function (m) {
+                    m.sheets.forEach(function (sid) {
+                        if (self.sheets[sid]) pis = pis.concat(self.sheets[sid].parts);
+                    });
+                });
+                pis = pis.filter(function (pi) { return !self.off[pi]; });
+                var q = String(this.searchText || '').trim().toLowerCase();
+                if (q) {
+                    var terms = q.split(/[,\n]/).map(function (t) { return t.trim(); })
+                        .filter(function (t) { return t.length; });
+                    if (terms.length) {
+                        pis = pis.filter(function (pi) {
+                            var txt = self.partText(pi);
+                            return terms.some(function (t) { return txt.indexOf(t) >= 0; });
+                        });
+                    }
+                }
+                return pis;
+            }
+        },
+        watch: (function () {
+            var w = {
+                temW: function () { this.invalidateSvg(); },
+                temH: function () { this.invalidateSvg(); }
+            };
+            ['kieu_tem', 'do_dam_canh', 'tu_dong_xoay', 'ghi_chu_them', 'ghi_chu_them_2', 'co_chu', 'tach_co_chu',
+                'co_chu_tieu_de', 'co_chu_thong_tin', 'co_chu_ky_hieu', 'co_chu_id', 'co_chu_ghi_chu', 'them_ma_qr',
+                'hien_vat_lieu', 'hien_kich_thuoc', 'moc_khoan_ngang', 'ma_dan_canh', 'tach_ma_canh', 'ma_canh_ten',
+                'ma_canh_do_day_canh', 'ngan_cach', 'kieu_ma_canh'].forEach(function (k) {
+                w['settings.' + k] = function () { this.invalidateSvg(); };
+            });
+            return w;
+        })(),
+        methods: {
+            saveSetting: function (key) {
+                var v = this.settings[key];
+                skp('save_setting', key + '@' + v);
+            },
+            openNotePop: function (key, e) {
+                if (this.notePop && this.notePop.key === key) {
+                    this.closeNotePop();
+                    return;
+                }
+                this.closeNotePop();
+                var r = e.currentTarget.getBoundingClientRect();
+                this.notePop = { key: key, text: String(this.settings[key] || ''), x: 0, y: 0 };
+                var self = this;
+                this.$nextTick(function () {
+                    var t = self.$refs.noteInput;
+                    if (!t || !self.notePop) return;
+                    var pop = t.closest('.text-popup');
+                    var w = pop.offsetWidth;
+                    var h = pop.offsetHeight;
+                    var x = r.left + r.width / 2 - w / 2;
+                    var mx = document.documentElement.clientWidth - w - 6;
+                    if (x < 6) x = 6;
+                    if (x > mx) x = mx;
+                    var y = r.bottom + 4;
+                    if (y + h > document.documentElement.clientHeight - 6) y = r.top - 4 - h;
+                    if (y < 6) y = 6;
+                    self.notePop.x = Math.round(x);
+                    self.notePop.y = Math.round(y);
+                    t.focus();
+                    t.setSelectionRange(t.value.length, t.value.length);
+                });
+            },
+            closeNotePop: function () {
+                var p = this.notePop;
+                if (!p) return;
+                this.notePop = null;
+                var t = String(p.text || '').trim();
+                if (String(this.settings[p.key] || '') === t) return;
+                this.settings[p.key] = t;
+                this.saveSetting(p.key);
+            },
+            addNotePreset: function () {
+                if (!this.notePop) return;
+                var t = String(this.notePop.text || '').trim();
+                if (!t) return;
+                var list = this.notePresets[this.notePop.key];
+                if (!list || list.indexOf(t) >= 0) return;
+                list.push(t);
+                this.saveNotePresets(this.notePop.key);
+            },
+            useNotePreset: function (t) {
+                if (!this.notePop) return;
+                this.notePop.text = t;
+                var self = this;
+                this.$nextTick(function () {
+                    var el = self.$refs.noteInput;
+                    if (!el) return;
+                    el.focus();
+                    el.setSelectionRange(el.value.length, el.value.length);
+                });
+            },
+            delNotePreset: function (i) {
+                if (!this.notePop) return;
+                var list = this.notePresets[this.notePop.key];
+                if (!list) return;
+                list.splice(i, 1);
+                this.saveNotePresets(this.notePop.key);
+            },
+            saveNotePresets: function (key) {
+                var sk = key === 'ghi_chu_them_2' ? 'ghi_chu_preset_2' : 'ghi_chu_preset';
+                skp('save_setting', sk + '@' + JSON.stringify(this.notePresets[key] || []));
+            },
+            changeOrder: function () {
+                this.saveSetting('thu_tu_in');
+                this.resortParts();
+            },
+            changeCorner: function () {
+                this.saveSetting('goc_bat_dau');
+                this.resortParts();
+            },
+            changeSort: function () {
+                this.saveSetting('sap_xep');
+                this.resortParts();
+            },
+            dragStart: function (i, e) {
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', '');
+                var row = e.target.closest('.it-mat');
+                if (row && e.dataTransfer.setDragImage) {
+                    var rr = row.getBoundingClientRect();
+                    e.dataTransfer.setDragImage(row, e.clientX - rr.left, e.clientY - rr.top);
+                }
+                this._dragging = true;
+                var self = this;
+                setTimeout(function () {
+                    if (!self._dragging) return;
+                    self.dragIdx = i;
+                    self.overIdx = null;
+                    self.$nextTick(function () {
+                        if (!self._dragging) return;
+                        var rows = self.$el.querySelectorAll('.it-tree > div:not(.it-drag-src)');
+                        var mids = [];
+                        for (var k = 0; k < rows.length; k++) {
+                            var r = rows[k].getBoundingClientRect();
+                            mids.push(r.top + r.height / 2);
+                        }
+                        self._mids = mids;
+                    });
+                }, 0);
+            },
+            dragOverList: function (e) {
+                if (this.dragIdx === null || !this._mids) return;
+                e.dataTransfer.dropEffect = 'move';
+                var v = this._mids.length;
+                for (var i = 0; i < this._mids.length; i++) {
+                    if (e.clientY < this._mids[i]) { v = i; break; }
+                }
+                this.overIdx = v < this.dragIdx ? v : v + 1;
+            },
+            dropRow: function () {
+                if (this.dragIdx === null || this.overIdx === null) {
+                    this.dragEnd();
+                    return;
+                }
+                var from = this.dragIdx;
+                var to = this.overIdx;
+                this.dragEnd();
+                var mats = this.materials.slice();
+                var item = mats[from];
+                if (!item) return;
+                var next = to < mats.length ? mats[to] : null;
+                if (next === item) return;
+                mats.splice(from, 1);
+                var at = next ? mats.indexOf(next) : mats.length;
+                mats.splice(at, 0, item);
+                this.materials = mats;
+                this.saveMatOrder();
+            },
+            dragEnd: function () {
+                this._dragging = false;
+                this.dragIdx = null;
+                this.overIdx = null;
+                this._mids = null;
+            },
+            saveMatOrder: function () {
+                var keys = this.materials.map(function (m) { return m.key; });
+                skp('save_setting', 'thu_tu_vat_lieu@' + JSON.stringify(keys));
+            },
+            applyMatOrder: function (order) {
+                if (!order || !order.length) return;
+                var pos = {};
+                order.forEach(function (k, i) { pos[String(k)] = i; });
+                var n = this.materials.length;
+                this.materials = this.materials.map(function (m, i) {
+                    var p = pos.hasOwnProperty(String(m.key)) ? pos[String(m.key)] : n + i;
+                    return { m: m, p: p };
+                }).sort(function (a, b) { return a.p - b.p; }).map(function (x) { return x.m; });
+            },
+            resortParts: function () {
+                var self = this;
+                if (String(this.settings.thu_tu_in || 'so_tam') === 'so_tam') {
+                    var dir = String(this.settings.sap_xep || 'tang_dan') === 'giam_dan' ? -1 : 1;
+                    Object.keys(this.sheets).forEach(function (sid) {
+                        var sh = self.sheets[sid];
+                        if (!sh || !sh.parts) return;
+                        sh.parts = sh.parts.slice().sort(function (a, b) {
+                            var pa = self.parts[a], pb = self.parts[b];
+                            var la = pa && pa.lk ? 1 : 0;
+                            var lb = pb && pb.lk ? 1 : 0;
+                            if (la !== lb) return la - lb;
+                            var na = pa ? (Number(pa.id) || 0) : 0;
+                            var nb = pb ? (Number(pb.id) || 0) : 0;
+                            return dir * (na - nb);
+                        });
+                    });
+                    return;
+                }
+                var corner = String(this.settings.goc_bat_dau || 'trai_duoi');
+                Object.keys(this.sheets).forEach(function (sid) {
+                    var sh = self.sheets[sid];
+                    if (!sh || !sh.parts) return;
+                    var cx = corner.indexOf('phai') >= 0 ? (sh.w || 0) : 0;
+                    var cy = corner.indexOf('tren') >= 0 ? (sh.h || 0) : 0;
+                    var keys = {};
+                    sh.parts.forEach(function (pi) {
+                        var p = self.parts[pi];
+                        var pts = (p && p.poly && p.poly[0]) || [];
+                        var best = null, bd = Infinity;
+                        for (var i = 0; i < pts.length; i++) {
+                            var dx = pts[i][0] - cx, dy = pts[i][1] - cy;
+                            var d = dx * dx + dy * dy;
+                            if (d < bd) { bd = d; best = pts[i]; }
+                        }
+                        if (!best) best = [cx, cy];
+                        keys[pi] = [p && p.lk ? 1 : 0, Math.round(Math.abs(best[1] - cy)), Math.abs(best[0] - cx), p ? (Number(p.id) || 0) : 0];
+                    });
+                    sh.parts = sh.parts.slice().sort(function (a, b) {
+                        var ka = keys[a], kb = keys[b];
+                        return (ka[0] - kb[0]) || (ka[1] - kb[1]) || (ka[2] - kb[2]) || (ka[3] - kb[3]);
+                    });
+                });
+            },
+            validateTem: function (key) { this.stepTem(key, 0); },
+            stepTem: function (key, step) {
+                var n = parseFloat(this.settings[key]);
+                if (isNaN(n)) n = 20;
+                n = Math.min(200, Math.max(20, n + step));
+                this.settings[key] = parseFloat(n.toFixed(1));
+                this.saveSetting(key);
+            },
+            stepBold: function (step) {
+                var n = parseInt(this.settings.do_dam_canh, 10);
+                if (isNaN(n)) n = 1;
+                this.settings.do_dam_canh = Math.min(5, Math.max(1, n + step));
+                this.saveSetting('do_dam_canh');
+            },
+            toggleEbLock: function () {
+                this.settings.tach_ma_canh = !this.settings.tach_ma_canh;
+                this.saveSetting('tach_ma_canh');
+            },
+            saveSep: function () {
+                var v = String(this.settings.ngan_cach == null ? '' : this.settings.ngan_cach).trim().slice(0, 1);
+                if (this.settings.ngan_cach !== v) this.settings.ngan_cach = v;
+                this.saveSetting('ngan_cach');
+            },
+            ebName: function (e) {
+                var raw = String(e[4] == null ? '' : e[4]);
+                if (e.length < 10) return ebDash(e) ? ebParse(raw)[0] : raw;
+                var s = this.settings;
+                var sep = !!s.tach_ma_canh;
+                var sepCh = String(s.ngan_cach == null ? '-' : s.ngan_cach).trim().slice(0, 1);
+                var glue = sepCh ? ' ' + sepCh + ' ' : ' ';
+                var out = (!sep || s.ma_canh_ten !== false) && e[6] ? String(e[6]) : '';
+                if (!ebDash(e) && (!sep || s.ma_canh_do_day_canh !== false) && e[9]) {
+                    out += (out ? glue : '') + e[9] + 'mm';
+                }
+                return out;
+            },
+            toggleFontLock: function () {
+                this.settings.tach_co_chu = !this.settings.tach_co_chu;
+                this.saveSetting('tach_co_chu');
+            },
+            stepFontScale: function (step) {
+                var n = parseFloat(this.settings.co_chu);
+                if (isNaN(n)) n = 100;
+                n = Math.min(200, Math.max(50, n + step));
+                this.settings.co_chu = Math.round(n);
+                this.saveSetting('co_chu');
+            },
+            validateFontScale: function () { this.stepFontScale(0); },
+            stepFontPart: function (key, step) {
+                var n = parseFloat(this.settings[key]);
+                if (isNaN(n)) n = 2;
+                n = Math.min(3, Math.max(1, n + step));
+                this.settings[key] = parseFloat(n.toFixed(1));
+                this.saveSetting(key);
+            },
+            validateFontPart: function (key) { this.stepFontPart(key, 0); },
+            resetFontScale: function () {
+                if (this.settings.tach_co_chu) return;
+                this.settings.co_chu = 100;
+                this.saveSetting('co_chu');
+            },
+            resetFontPart: function (f) {
+                this.settings[f.key] = f.def;
+                this.saveSetting(f.key);
+            },
+            fontMm: function (key, def) {
+                if (this.settings.tach_co_chu) {
+                    var v = parseFloat(this.settings[key]);
+                    if (isNaN(v) || v <= 0) v = def;
+                    return Math.min(3, Math.max(1, v));
+                }
+                var sc = parseFloat(this.settings.co_chu);
+                if (isNaN(sc) || sc <= 0) sc = 100;
+                return def * sc / 100;
+            },
+            reloadData: function () {
+                skp('reload_data', '');
+            },
+            zoomStep: function (d) {
+                this.setScale(this.temScale + d * 40);
+            },
+            setScale: function (v) {
+                this.temScale = Math.max(20, v);
+                this.settings.ty_le_zoom = this.temScale;
+                this.saveSetting('ty_le_zoom');
+            },
+            rotCCW: function () {
+                this.settings.goc_xoay = ((this.settings.goc_xoay || 0) + 1) % 4;
+                this.saveSetting('goc_xoay');
+            },
+            toggleMotCot: function () {
+                this.settings.mot_cot = !this.settings.mot_cot;
+                this.saveSetting('mot_cot');
+            },
+            scrollByPct: function (dir) {
+                var el = this.$refs.scroll;
+                if (!el) return;
+                var range = el.scrollHeight - el.clientHeight;
+                if (range <= 0) return;
+                el.scrollTop += dir * range * 0.1;
+            },
+            matParts: function (m) {
+                var self = this;
+                var pis = [];
+                m.sheets.forEach(function (sid) {
+                    if (self.sheets[sid]) pis = pis.concat(self.sheets[sid].parts);
+                });
+                return pis;
+            },
+            groupState: function (pis) {
+                if (!pis.length) return 'off';
+                var on = 0;
+                for (var i = 0; i < pis.length; i++) {
+                    if (!this.off[pis[i]]) on++;
+                }
+                if (on === 0) return 'off';
+                if (on === pis.length) return 'on';
+                return 'indet';
+            },
+            matState: function (m) {
+                return this.groupState(this.matParts(m));
+            },
+            sheetState: function (sid) {
+                return this.groupState(this.sheets[sid] ? this.sheets[sid].parts : []);
+            },
+            setGroupOff: function (pis, val) {
+                for (var i = 0; i < pis.length; i++) {
+                    this.$set(this.off, pis[i], val);
+                }
+            },
+            toggleMat: function (m) {
+                var pis = this.matParts(m);
+                this.setGroupOff(pis, this.groupState(pis) !== 'off');
+            },
+            toggleSheet: function (sid) {
+                var pis = this.sheets[sid] ? this.sheets[sid].parts : [];
+                this.setGroupOff(pis, this.groupState(pis) !== 'off');
+            },
+            togglePart: function (pi) {
+                this.$set(this.off, pi, !this.off[pi]);
+            },
+            partText: function (pi) {
+                if (!this._searchCache) this._searchCache = {};
+                if (this._searchCache[pi] !== undefined) return this._searchCache[pi];
+                var p = this.parts[pi];
+                var t = '';
+                if (p) {
+                    var bb = bboxOf(p.poly[0] || []);
+                    var szStr = fmtMm(Math.min(bb.w, bb.h)) + 'x' + fmtMm(Math.max(bb.w, bb.h));
+                    var ebNames = (p.ebs || []).map(function (e) {
+                        return e.length < 10 ? e[4] : [e[4]].concat(e.slice(6, 10)).join(' ');
+                    }).join(' ');
+                    t = [p.id, p.name, p.mat, szStr, ebNames].join(' ').toLowerCase();
+                }
+                this._searchCache[pi] = t;
+                return t;
+            },
+            selectVisibleParts: function () {
+                var self = this;
+                var eids = [];
+                this.visible.forEach(function (pi) {
+                    var p = self.parts[pi];
+                    if (p && p.eid != null) eids.push(p.eid);
+                });
+                if (eids.length) skp('select_parts', JSON.stringify(eids));
+            },
+            clickMat: function (m) {
+                this.expandedSheets = {};
+                this.selSet = {};
+                if (this.sel.mat === m.key) {
+                    this.sel = { mat: null, part: null };
+                } else {
+                    this.sel = { mat: m.key, part: null };
+                }
+            },
+            clickSheet: function (sid) {
+                this.$set(this.expandedSheets, sid, !this.expandedSheets[sid]);
+            },
+            treeOrder: function () {
+                var self = this;
+                var pis = [];
+                this.materials.forEach(function (m) {
+                    if (m.key !== self.sel.mat) return;
+                    m.sheets.forEach(function (sid) {
+                        if (self.expandedSheets[sid] && self.sheets[sid]) pis = pis.concat(self.sheets[sid].parts);
+                    });
+                });
+                return pis;
+            },
+            copySel: function () {
+                var m = {};
+                for (var k in this.selSet) {
+                    if (this.selSet[k]) m[k] = true;
+                }
+                return m;
+            },
+            applySelClick: function (pi, e, order) {
+                var add = !!(e && (e.ctrlKey || e.metaKey));
+                if (e && e.shiftKey && this.sel.part != null) {
+                    var a = order.indexOf(this.sel.part);
+                    var b = order.indexOf(pi);
+                    if (a >= 0 && b >= 0) {
+                        var lo = Math.min(a, b);
+                        var hi = Math.max(a, b);
+                        var mr = add ? this.copySel() : {};
+                        for (var i = lo; i <= hi; i++) mr[order[i]] = true;
+                        this.selSet = mr;
+                        return;
+                    }
+                }
+                if (add) {
+                    var mt = this.copySel();
+                    if (mt[pi]) delete mt[pi]; else mt[pi] = true;
+                    this.selSet = mt;
+                } else {
+                    var ms = {};
+                    ms[pi] = true;
+                    this.selSet = ms;
+                }
+                this.sel = { mat: this.sel.mat, part: pi };
+            },
+            clickPart: function (pi, e) {
+                this.applySelClick(pi, e, this.treeOrder());
+                this.$set(this.shown, pi, true);
+                this.scrollToRef('tem' + pi);
+            },
+            scrollToRef: function (name) {
+                var self = this;
+                this.$nextTick(function () {
+                    var el = self.$refs[name];
+                    if (Array.isArray(el)) el = el[0];
+                    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center' });
+                });
+            },
+            matLabel: function (m) {
+                var n = String(m.name || '');
+                var t = Number(m.th) || 0;
+                if (!t) return n;
+                var base = n.replace(/\s*[-–]?\s*\d+(?:[.,]\d+)?\s*mm\s*$/i, '').trim() || n;
+                return base + ' - ' + fmtMm(t) + 'mm';
+            },
+            setTab: function (t) {
+                if (this.leftTab === t) return;
+                this.leftTab = t;
+                var self = this;
+                this.$nextTick(function () {
+                    var el = self.$refs.leftScroll;
+                    if (!el) return;
+                    if (t === 'list' && self.sel.part != null) {
+                        var row = self.$refs['prow' + self.sel.part];
+                        if (Array.isArray(row)) row = row[0];
+                        if (row && row.scrollIntoView) {
+                            row.scrollIntoView({ block: 'center' });
+                            return;
+                        }
+                    }
+                    el.scrollTop = 0;
+                });
+            },
+            selectInTree: function (pi) {
+                var p = this.parts[pi];
+                if (!p) return;
+                var sid = p.sheet;
+                var mkey = null;
+                for (var i = 0; i < this.materials.length; i++) {
+                    if (this.materials[i].sheets.indexOf(sid) >= 0) { mkey = this.materials[i].key; break; }
+                }
+                this.expandedSheets = {};
+                var ms = {};
+                ms[pi] = true;
+                this.selSet = ms;
+                this.sel = { mat: mkey || this.sel.mat, part: pi };
+                this.$set(this.expandedSheets, sid, true);
+                this.scrollToRef('prow' + pi);
+            },
+            clickTem: function (pi, e) {
+                if (e && (e.ctrlKey || e.metaKey || e.shiftKey)) {
+                    this.applySelClick(pi, e, this.visible);
+                    return;
+                }
+                this.selectInTree(pi);
+            },
+            dblClickTem: function (pi) {
+                this.fitZoom();
+                this.scrollToRef('tem' + pi);
+            },
+            fitZoom: function () {
+                var el = this.$refs.scroll;
+                if (!el) return;
+                var availW = el.clientWidth - 36;
+                var availH = el.clientHeight - 36;
+                if (availW <= 20 || availH <= 20) return;
+                var land = (this.dispAngle === 90 || this.dispAngle === 270);
+                var ratio = land ? (this.temW / this.temH) : (this.temH / this.temW);
+                var s = Math.min(availW, availH / ratio);
+                this.setScale(Math.floor(s));
+            },
+            clickBlank: function (e) {
+                if (e.offsetX >= e.target.clientWidth) return;
+                this.selSet = {};
+                if (this.sel.part == null) return;
+                this.sel = { mat: this.sel.mat, part: null };
+            },
+            dblClickBlank: function (e) {
+                if (e.offsetX >= e.target.clientWidth) return;
+                this.fitAll();
+            },
+            fitAll: function () {
+                var el = this.$refs.scroll;
+                var n = this.visible.length;
+                if (!el || !n) return;
+                var availW = el.clientWidth - 28;
+                var availH = el.clientHeight - 28;
+                if (availW <= 20 || availH <= 20) return;
+                var land = (this.dispAngle === 90 || this.dispAngle === 270);
+                var ratio = land ? (this.temW / this.temH) : (this.temH / this.temW);
+                var maxC = this.settings.mot_cot ? 1 : n;
+                var best = 20;
+                for (var c = 1; c <= maxC; c++) {
+                    var r = Math.ceil(n / c);
+                    var sw = availW / (c + (c - 1) * 7 / 240);
+                    var sh = availH / (r * ratio + (r - 1) * 14 / 240);
+                    var s = Math.min(sw, sh);
+                    if (s > best) best = s;
+                }
+                this.setScale(Math.floor(best));
+                el.scrollTop = 0;
+            },
+            printTems: function () {
+                var pis = this.outParts;
+                if (!pis.length) return;
+                var self = this;
+                var pa = document.getElementById('it-print-area');
+                if (!pa) return;
+                var kr = this.settings.kho_tem_rong || 60;
+                var kc = this.settings.kho_tem_cao || 40;
+                var buf = [];
+                pis.forEach(function (pi) {
+                    var inner = self.temSvg(pi);
+                    if (kr > kc) {
+                        inner = '<div style="width:' + self.temW + 'mm;height:' + self.temH +
+                            'mm;transform:rotate(90deg) translateY(-100%);transform-origin:top left;">' + inner + '</div>';
+                    }
+                    inner = '<div style="position:absolute;left:0;top:0;width:' + kr + 'mm;height:' + kc + 'mm;overflow:hidden;">' + inner + '</div>';
+                    buf.push('<div style="position:relative;width:' + kr + 'mm;height:' + (kc - 0.5) + 'mm;overflow:hidden;">' + inner + '</div>');
+                });
+                pa.innerHTML = buf.join('');
+                this.updatePageStyle();
+                setTimeout(function () { window.print(); }, 60);
+            },
+            requestExport: function (e) {
+                if (!this.outParts.length || this.exporting) return;
+                skp('export_request', e && e.shiftKey ? 'jpg' : 'pdf');
+            },
+            exportImages: function (fmt) {
+                var self = this;
+                var pis = self.outParts.slice();
+                if (self.exporting || !pis.length) return;
+                self.exporting = true;
+                var kr = self.settings.kho_tem_rong || 60;
+                var kc = self.settings.kho_tem_cao || 40;
+                var rot = kr > kc;
+                var dpi = 300;
+                var outW = Math.round(kr / 25.4 * dpi);
+                var outH = Math.round(kc / 25.4 * dpi);
+                var pxW = Math.round(self.temW / 25.4 * dpi);
+                var pxH = Math.round(self.temH / 25.4 * dpi);
+                var mime = fmt === 'png' ? 'image/png' : 'image/jpeg';
+                skp('img_begin', '');
+                var i = 0;
+                var next = function () {
+                    if (i >= pis.length) {
+                        skp('img_save', '');
+                        self.exporting = false;
+                        return;
+                    }
+                    var pi = pis[i];
+                    var pp = self.parts[pi];
+                    var id = pp ? pp.id : (i + 1);
+                    if (pp && pp.lk) id = String(id) + '_' + pp.sheet;
+                    var svg = self.buildSvg(pi).replace('<svg ', '<svg width="' + pxW + '" height="' + pxH + '" ');
+                    var img = new Image();
+                    img.onload = function () {
+                        try {
+                            var canvas = document.createElement('canvas');
+                            canvas.width = outW; canvas.height = outH;
+                            var ctx = canvas.getContext('2d');
+                            ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, outW, outH);
+                            if (rot) { ctx.translate(outW, 0); ctx.rotate(Math.PI / 2); }
+                            ctx.drawImage(img, 0, 0, pxW, pxH);
+                            var url = canvas.toDataURL(mime, 0.95);
+                            var b64 = url.substring(url.indexOf(',') + 1);
+                            var CH = 500000;
+                            for (var k = 0; k < b64.length; k += CH) {
+                                skp('img_data', b64.substr(k, CH));
+                            }
+                            skp('img_page', String(id));
+                        } catch (err) {
+                            skp('pdf_error', String(err && err.message || err));
+                            self.exporting = false;
+                            return;
+                        }
+                        i++;
+                        next();
+                    };
+                    img.onerror = function () {
+                        skp('pdf_error', 'Không dựng được ảnh tem.');
+                        self.exporting = false;
+                    };
+                    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+                };
+                next();
+            },
+            exportPdf: function () {
+                var self = this;
+                var pis = self.outParts.slice();
+                if (self.exporting || !pis.length) return;
+                self.exporting = true;
+                var kr = self.settings.kho_tem_rong || 60;
+                var kc = self.settings.kho_tem_cao || 40;
+                setTimeout(function () {
+                    try {
+                        skp('pdf_begin', JSON.stringify({ w: self.temW, h: self.temH, kr: kr, kc: kc, rot: kr > kc }));
+                        for (var i = 0; i < pis.length; i++) {
+                            skp('pdf_svg', self.buildSvg(pis[i]));
+                        }
+                        skp('pdf_save', '');
+                    } catch (err) {
+                        skp('pdf_error', String(err && err.message || err));
+                    }
+                    self.exporting = false;
+                }, 30);
+            },
+            updatePageStyle: function () {
+                var st = document.getElementById('it-print');
+                if (!st) {
+                    st = document.createElement('style');
+                    st.id = 'it-print';
+                    document.head.appendChild(st);
+                }
+                var kr = this.settings.kho_tem_rong || 60;
+                var kc = this.settings.kho_tem_cao || 40;
+                st.textContent = '@page { size: ' + kr + 'mm ' + kc + 'mm; margin: 0; }';
+            },
+            normPoly: function (p, sheet) {
+                var sw = sheet.h > sheet.w;
+                var sW = sheet.w;
+                var mapPt = function (pt) { return sw ? [pt[1], sW - pt[0]] : [pt[0], pt[1]]; };
+                var outerM = (p.poly[0] || []).map(mapPt);
+                var bbM = bboxOf(outerM);
+                var vertical = (this.settings.tu_dong_xoay !== false) && (bbM.h > bbM.w + 1e-6);
+                var cx = bbM.x + bbM.w / 2, cy = bbM.y + bbM.h / 2;
+                var xf = function (pt) {
+                    var q = rotPt(mapPt(pt), 180, cx, cy);
+                    return vertical ? rotPt(q, -90, cx, cy) : q;
+                };
+                var loops = p.poly.map(function (lp) { return lp.map(xf); });
+                var drills = p.drills.map(function (d) {
+                    var row = [d[0], d[1]];
+                    for (var i = 2; i < d.length; i++) row.push(xf(d[i]));
+                    return row;
+                });
+                var ebs = p.ebs.map(function (e) {
+                    var a = xf([e[0], e[1]]);
+                    var b = xf([e[2], e[3]]);
+                    return [a[0], a[1], b[0], b[1], e[4]].concat(e.slice(5));
+                });
+                var cups = (p.cups || []).map(function (c) { return [c[0], xf(c[1]), (c[2] || []).map(xf)]; });
+                var grooves = (p.grooves || []).map(function (g) { return g.map(xf); });
+                return { loops: loops, drills: drills, ebs: ebs, cups: cups, grooves: grooves, bb: bboxOf(loops[0]), vertical: vertical };
+            },
+            invalidateSvg: function () {
+                this._svgCache = {};
+                this._mapCache = {};
+                if (!this.lazyEnabled || !this._io || !this.$refs.scroll) return;
+                var rb = this.$refs.scroll.getBoundingClientRect();
+                var top = rb.top - 400, bot = rb.bottom + 400;
+                var io = this._io;
+                var ns = {};
+                (this._lazyEls || []).forEach(function (el) {
+                    var r = el.getBoundingClientRect();
+                    if (r.bottom >= top && r.top <= bot) {
+                        if (el.__pi != null) ns[el.__pi] = true;
+                        io.unobserve(el);
+                    } else {
+                        io.observe(el);
+                    }
+                });
+                this.shown = ns;
+            },
+            temSvg: function (pi) {
+                if (!this._svgCache) this._svgCache = {};
+                if (this._svgCache[pi] !== undefined) return this._svgCache[pi];
+                var out = this.buildSvg(pi);
+                this._svgCache[pi] = out;
+                return out;
+            },
+            buildSvg: function (pi) {
+                return this.settings.kieu_tem === 'tem02' ? this.buildSvg02(pi) : this.buildSvg01(pi);
+            },
+            ebNamesOf: function (n) {
+                var meIdx = this.ebIndex;
+                var ebSeen = {}, ebNames = [], ebDashOf = {};
+                var self = this;
+                if (this.settings.ma_dan_canh !== false) {
+                    n.ebs.forEach(function (e) {
+                        var nm = self.ebName(e);
+                        if (!nm || ebSeen[nm]) return;
+                        ebSeen[nm] = true;
+                        if (ebDash(e)) ebDashOf[nm] = true;
+                        ebNames.push(nm);
+                    });
+                    ebNames.sort(function (a, b) { return (meIdx[a] || 0) - (meIdx[b] || 0); });
+                }
+                return { names: ebNames, dashOf: ebDashOf };
+            },
+            nowStr: function () {
+                if (!this._nowCache) {
+                    var d = new Date();
+                    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+                    this._nowCache = p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() +
+                        '   ' + p(d.getHours()) + ':' + p(d.getMinutes());
+                }
+                return this._nowCache;
+            },
+            buildSvg01: function (pi) {
+                var p = this.parts[pi];
+                if (!p) return '';
+                var sheet = this.sheets[p.sheet] || { w: 0, h: 0, parts: [] };
+                var W = this.temW, H = this.temH;
+                var extraNote2 = String(this.settings.ghi_chu_them_2 || '').trim();
+                var bx = 0.75;
+                var noteMm = this.fontMm('co_chu_ghi_chu', 1.8);
+                var rowH = Math.max(3.25, noteMm + 1.45);
+                var FR = bx + rowH * (extraNote2 ? 2 : 1);
+                var SQ = Math.min(W - 2 * bx, H - FR - 10);
+                var BR = H - FR - SQ;
+                var CELL = (BR - bx) / 2;
+                var LW = CELL + bx;
+                var n = this.normPoly(p, sheet);
+                var s = [];
+                var g2 = [];
+                s.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" xml:space="preserve" font-family="Arial, sans-serif" fill="#000">');
+                s.push('<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#fff"/>');
+                s.push('<rect x="' + bx + '" y="' + bx + '" width="' + (W - 2 * bx) + '" height="' + (H - 2 * bx) + '" fill="none" stroke="#000" stroke-width="0.15"/>');
+                var line = function (x1, y1, x2, y2) { s.push(lineStr(x1, y1, x2, y2)); };
+                line(bx, FR, W - bx, FR);
+                line(bx, FR + SQ, W - bx, FR + SQ);
+                line(LW, FR + SQ, LW, H - bx);
+                line(bx, FR + SQ + CELL, LW, FR + SQ + CELL);
+                var text = function (str, x, y, size, bold, anchor, color) { s.push(textStr(str, x, y, size, bold, anchor, color)); };
+                var matName = String(p.mat || '').toUpperCase();
+                var szStr = fmtMm(Math.min(n.bb.w, n.bb.h)) + 'x' + fmtMm(Math.max(n.bb.w, n.bb.h));
+                var rowCy = bx + rowH / 2;
+                var infoParts = [];
+                if (this.settings.hien_kich_thuoc !== false) infoParts.push(szStr);
+                if (this.settings.hien_vat_lieu !== false && matName) infoParts.push(matName);
+                var info = infoParts.join('  —  ');
+                var meIdx = this.ebIndex;
+                var ebInfo = this.ebNamesOf(n);
+                var ebNames = ebInfo.names, ebDashOf = ebInfo.dashOf;
+                var extraNote = String(this.settings.ghi_chu_them || '').trim();
+                if (!extraNote) extraNote = this.nowStr();
+                var noteParts = [];
+                if (p.hinge && String(p.hinge).trim()) noteParts.push(String(p.hinge).trim());
+                if (p.gname && String(p.gname).trim()) noteParts.push(String(p.gname).trim());
+                var hasHinge = noteParts.length > 0;
+                var rsz = fitText(extraNote, noteMm / 0.72, W - 4);
+                text(extraNote, W / 2, rowCy + rsz * 0.36, rsz, false);
+                if (extraNote2) {
+                    line(bx, bx + rowH, W - bx, bx + rowH);
+                    var rsz2 = fitText(extraNote2, noteMm / 0.72, W - 4);
+                    text(extraNote2, W / 2, bx + rowH * 1.5 + rsz2 * 0.36, rsz2, false);
+                }
+                var hgH = hasHinge ? 2.6 : 0;
+                var markOn = this.ebMarkOn;
+                var nSz = this.fontMm('co_chu_ky_hieu', 1.5) / 0.72;
+                var nGap = 2.5, nCG = 1, bPad = 0.7;
+                var availNote = SQ - 3;
+                var ebRows = [], ebLineH = 0, ebWide = 0;
+                var sideOf = function (nm) {
+                    if (ebDashOf[nm]) return nSz * 0.72 + bPad;
+                    if (markOn && Number(meIdx[nm]) <= EB_MARKS) return nSz * 0.72 + bPad;
+                    return Math.max(nSz * 0.72, textW(String(meIdx[nm] || ''), nSz)) + bPad;
+                };
+                var ebLayout = function () {
+                    var rows = [], cur = [], cw = 0;
+                    ebWide = 0;
+                    ebNames.forEach(function (nm) {
+                        var iw = sideOf(nm) + nCG + textW(nm, nSz);
+                        if (cur.length && cw + nGap + iw > availNote) { rows.push({ items: cur, w: cw }); cur = []; cw = 0; }
+                        cw += (cur.length ? nGap : 0) + iw;
+                        cur.push(nm);
+                    });
+                    if (cur.length) rows.push({ items: cur, w: cw });
+                    rows.forEach(function (r) { if (r.w > ebWide) ebWide = r.w; });
+                    ebLineH = nSz * 0.72 + bPad + (rows.length > 1 ? 0.55 : 1.2);
+                    return rows;
+                };
+                if (ebNames.length) {
+                    var ebMaxH = Math.max(0, (SQ - hgH) * 0.4);
+                    var ebGuard = 0;
+                    ebRows = ebLayout();
+                    while ((ebRows.length * ebLineH > ebMaxH || ebWide > availNote) && nSz > 0.45 && ebGuard++ < 80) {
+                        nSz *= 0.94; nGap *= 0.94; nCG *= 0.94; bPad *= 0.94;
+                        ebRows = ebLayout();
+                    }
+                }
+                var bnEb = ebRows.length ? ebRows.length * ebLineH + nSz * 0.4 : 0;
+                var qrOn = this.settings.them_ma_qr && window.KSUQR;
+                var THfix = (SQ - bnEb - hgH) * 0.4;
+                var THmax = qrOn ? THfix : (SQ - bnEb - hgH) * 0.55;
+                var infoMm = this.fontMm('co_chu_thong_tin', 1.5);
+                var topZone = info ? Math.min(infoMm + 1.1, THmax) : 0;
+                var titlePad = 1.2;
+                var title = String(p.name || '').toUpperCase();
+                var tRight = W / 2 + SQ / 2 - 2;
+                var qs = qrOn ? THfix : 0;
+                var tLeft = qs > 5 ? (W / 2 - SQ / 2) + qs + 1 : W / 2 - SQ / 2 + 2;
+                var availW = tRight - tLeft;
+                var maxTitleH = Math.max(0, THmax - topZone - titlePad);
+                var tFit = fitTitle(title, this.fontMm('co_chu_tieu_de', 3) / 0.72, availW, maxTitleH);
+                var tLines = tFit.lines, tSize = tFit.size;
+                var lh = tSize * 1.4;
+                var TH = qrOn ? THfix : Math.min(THmax, topZone + tLines.length * lh + titlePad);
+                var midY = FR + TH;
+                var pTop = FR + TH + hgH, pBot = FR + SQ - bnEb, notesTop = pBot;
+                if (n.vertical) {
+                    g2.push(lineStr(W / 2 - SQ / 2, midY, W / 2 + SQ / 2, midY));
+                } else {
+                    g2.push(lineStr(bx, midY, W - bx, midY));
+                }
+                if (qrOn && qs > 5) {
+                    var qrData = String(p.id) + '.' + String(p.name || '') + ',' + String(p.code1 || '') + ',' + String(p.code2 || '') + ',' + String(p.code3 || '');
+                    var qm = null;
+                    try { qm = KSUQR.matrix(qrData); } catch (e) { qm = null; }
+                    if (qm) {
+                        var qt = qm.length + 4;
+                        var qcell = qs / qt;
+                        var qx0 = W / 2 - SQ / 2;
+                        var qy0 = FR;
+                        g2.push('<g shape-rendering="crispEdges">');
+                        for (var qr = 0; qr < qm.length; qr++) {
+                            var qc = 0;
+                            while (qc < qm.length) {
+                                if (!qm[qr][qc]) { qc++; continue; }
+                                var q0 = qc;
+                                while (qc < qm.length && qm[qr][qc]) qc++;
+                                g2.push('<rect x="' + (qx0 + (q0 + 2) * qcell).toFixed(3) + '" y="' + (qy0 + (qr + 2) * qcell).toFixed(3) + '" width="' + ((qc - q0) * qcell).toFixed(3) + '" height="' + qcell.toFixed(3) + '" fill="#000"/>');
+                            }
+                        }
+                        g2.push('</g>');
+                    }
+                }
+                var tcx = (tLeft + tRight) / 2;
+                var titleTop = FR + topZone;
+                var blockH = (tLines.length - 1) * lh + tSize * 0.72;
+                var ty0 = titleTop + Math.max(0, (FR + TH) - titleTop - blockH) * 0.42 + tSize * 0.72;
+                for (var i = 0; i < tLines.length; i++) {
+                    g2.push(textStr(tLines[i], tcx, ty0 + i * lh, tSize, true));
+                }
+                if (info) {
+                    var isz2 = fitText(info, infoMm / 0.72, availW);
+                    g2.push(textStr(info, tcx, FR + topZone / 2 + isz2 * 0.36, isz2, false));
+                }
+                var nY = notesTop + ebLineH / 2;
+                ebRows.forEach(function (row) {
+                    var nx = W / 2 - availNote / 2;
+                    row.items.forEach(function (nm) {
+                        var side = sideOf(nm);
+                        if (side) {
+                            var cx = nx + side / 2;
+                            if (ebDashOf[nm]) {
+                                g2.push(ebTri(cx, nY, nSz * 0.72));
+                            } else if (markOn) {
+                                g2.push(ebMark(meIdx[nm], cx, nY, nSz * 0.72));
+                            } else {
+                                g2.push('<rect x="' + nx.toFixed(2) + '" y="' + (nY - side / 2).toFixed(2) + '" width="' + side.toFixed(2) + '" height="' + side.toFixed(2) + '" fill="none" stroke="#000" stroke-width="0.12"/>');
+                                g2.push(textStr(String(meIdx[nm] || ''), cx, nY + nSz * 0.36, nSz, false));
+                            }
+                        }
+                        var tx = nx + side + nCG;
+                        g2.push(textStr(nm, tx, nY + nSz * 0.36, nSz, false, 'start'));
+                        nx = tx + textW(nm, nSz) + nGap;
+                    });
+                    nY += ebLineH;
+                });
+                if (hasHinge) {
+                    var hStr = noteParts.join(' - ');
+                    var hSz = fitText(hStr, infoMm / 0.72, SQ - 2);
+                    var hgY = FR + TH + hgH / 2 + 0.3;
+                    g2.push(textStr(hStr, W / 2, hgY + hSz * 0.36, hSz, false));
+                }
+                g2.push(this.previewSvg(n, W, pTop, pBot, 1.5, false));
+                if (n.vertical) {
+                    s.push('<g transform="rotate(-90 ' + (W / 2) + ' ' + (FR + SQ / 2) + ')">' + g2.join('') + '</g>');
+                } else {
+                    s.push(g2.join(''));
+                }
+                s.push('<rect x="' + bx + '" y="' + (FR + SQ) + '" width="' + CELL + '" height="' + CELL + '" fill="#000"/>');
+                var idStr = String(p.id);
+                var idMm = this.fontMm('co_chu_id', 3) / 0.72;
+                var isz = fitText(idStr, idMm, LW - 1.5, true);
+                text(idStr, (bx + LW) / 2, FR + SQ + CELL / 2 + isz * 0.36, isz, true, 'middle', '#fff');
+                var shStr = String(p.sheet);
+                var shsz = fitText(shStr, idMm, LW - 1.5, true);
+                text(shStr, (bx + LW) / 2, FR + SQ + CELL * 1.5 + shsz * 0.36, shsz, true);
+                s.push(this.mapSvg01(sheet, pi, LW, W, FR, SQ, BR, bx));
+                s.push('</svg>');
+                return s.join('');
+            },
+            mapSvg01: function (sheet, pi, LW, W, FR, SQ, BR, bx) {
+                if (!sheet.w || !sheet.h) return '';
+                var pad = 1.4;
+                var ax = LW + pad;
+                var ay = FR + SQ + pad;
+                var aw = W - bx - LW - 2 * pad;
+                var ah = BR - bx - 2 * pad;
+                if (aw <= 0 || ah <= 0) return '';
+                var swap = sheet.h > sheet.w;
+                var mw = swap ? sheet.h : sheet.w;
+                var mh = swap ? sheet.w : sheet.h;
+                var sc = Math.min(aw / mw, ah / mh);
+                var ox = ax + (aw - mw * sc) / 2;
+                var oy = ay + (ah - mh * sc) / 2;
+                var pt = function (x, y) {
+                    var u = swap ? y : x;
+                    var v = swap ? sheet.w - x : y;
+                    return [(ox + (mw - u) * sc).toFixed(2), (oy + v * sc).toFixed(2)];
+                };
+                var s = [];
+                s.push('<rect x="' + ox.toFixed(2) + '" y="' + oy.toFixed(2) +
+                    '" width="' + (mw * sc).toFixed(2) + '" height="' + (mh * sc).toFixed(2) +
+                    '" fill="none" stroke="#000" stroke-width="0.12"/>');
+                for (var i = 0; i < sheet.parts.length; i++) {
+                    var q = this.parts[sheet.parts[i]];
+                    if (!q || !q.poly[0]) continue;
+                    var pts = q.poly[0];
+                    var d = '';
+                    for (var j = 0; j < pts.length; j++) {
+                        var xy = pt(pts[j][0], pts[j][1]);
+                        d += (j ? 'L' : 'M') + xy[0] + ' ' + xy[1];
+                    }
+                    d += 'Z';
+                    var cur = sheet.parts[i] === pi;
+                    s.push('<path d="' + d + '" fill="' + (cur ? '#000' : 'none') +
+                        '" stroke="#000" stroke-width="0.08"/>');
+                }
+                return s.join('');
+            },
+            buildSvg02: function (pi) {
+                var p = this.parts[pi];
+                if (!p) return '';
+                var sheet = this.sheets[p.sheet] || { w: 0, h: 0, parts: [] };
+                var W = this.temW, H = this.temH;
+                var extraNote2 = String(this.settings.ghi_chu_them_2 || '').trim();
+                var bx = 0.75;
+                var noteMm = this.fontMm('co_chu_ghi_chu', 2);
+                var rowH = Math.max(3.25, noteMm + 1.45);
+                var infoMm = this.fontMm('co_chu_thong_tin', 2);
+                var RW = W - 2 * bx;
+                var n = this.normPoly(p, sheet);
+                var mapW = Math.max(sheet.w, sheet.h), mapH = Math.min(sheet.w, sheet.h);
+                var MH = mapW > 0 ? Math.min((H - 2 * bx) * 0.4, RW * mapH / mapW) : 0;
+                var MT = H - bx - MH;
+                var UH = MT - bx;
+                var BW = n.vertical ? UH : RW;
+                var BH = n.vertical ? RW : UH;
+                var BL = W / 2 - BW / 2;
+                var BT = bx + UH / 2 - BH / 2;
+                var BC = BL + BW / 2;
+                var s = [];
+                var g2 = [];
+                s.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" xml:space="preserve" font-family="Arial, sans-serif" fill="#000">');
+                s.push('<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#fff"/>');
+                s.push('<rect x="' + bx + '" y="' + bx + '" width="' + (W - 2 * bx) + '" height="' + (H - 2 * bx) + '" fill="none" stroke="#000" stroke-width="0.15"/>');
+                var line = function (x1, y1, x2, y2) { g2.push(lineStr(x1, y1, x2, y2)); };
+                var text = function (str, x, y, size, bold, anchor, color) { g2.push(textStr(str, x, y, size, bold, anchor, color)); };
+                var meIdx = this.ebIndex;
+                var ebInfo = this.ebNamesOf(n);
+                var ebNames = ebInfo.names, ebDashOf = ebInfo.dashOf;
+                var matStr = String(p.mat || '').toUpperCase();
+                var thVal = Number(sheet.th) || 0;
+                if (thVal) matStr += ' - ' + fmtMm(thVal);
+                var matOn = this.settings.hien_vat_lieu !== false && matStr;
+                var matRow = matOn ? noteMm + 2 : 0;
+                var extraNote = String(this.settings.ghi_chu_them || '').trim();
+                var noteParts = [];
+                if (p.hinge && String(p.hinge).trim()) noteParts.push(String(p.hinge).trim());
+                if (p.gname && String(p.gname).trim()) noteParts.push(String(p.gname).trim());
+                var hasHinge = noteParts.length > 0;
+                var notes = [];
+                if (extraNote) notes.push([extraNote, noteMm]);
+                if (extraNote2) notes.push([extraNote2, noteMm]);
+                var FR = BT;
+                if (matOn) {
+                    var matSz = fitText(matStr, noteMm / 0.72, BW - 3);
+                    text(matStr, BC, BT + matRow / 2 + matSz * 0.36, matSz, false);
+                    FR += matRow;
+                    line(BL, FR, BL + BW, FR);
+                }
+                notes.forEach(function (nt) {
+                    var rsz = fitText(nt[0], nt[1] / 0.72, BW - 3);
+                    text(nt[0], BC, FR + rowH / 2 + rsz * 0.36, rsz, false);
+                    FR += rowH;
+                    line(BL, FR, BL + BW, FR);
+                });
+                var AV = BT + BH - FR;
+                var qrOn = this.settings.them_ma_qr && window.KSUQR;
+                var qs = qrOn ? Math.min(BW * 0.5, Math.max(12, Math.min(BW * 0.4, AV * 0.25))) : 0;
+                var titlePad = 1;
+                var title = String(p.name || '').toUpperCase();
+                var tRight = BL + BW - 2;
+                var tLeft = qs > 5 ? BL + qs + 1 : BL + 2;
+                var availW = tRight - tLeft;
+                var TZmax = AV * (qrOn ? 0.5 : 0.35);
+                var maxTitleH = Math.max(0, TZmax - 2 * titlePad);
+                var tFit = fitTitle(title, this.fontMm('co_chu_tieu_de', 2) / 0.72, availW, maxTitleH);
+                var tLines = tFit.lines, tSize = tFit.size;
+                var lh = tSize * 1.4;
+                var blockH = (tLines.length - 1) * lh + tSize * 0.72;
+                var TZ = Math.max(qs, Math.min(TZmax, blockH + 2 * titlePad));
+                if (qrOn && qs > 5) {
+                    var qrData = String(p.id) + '.' + String(p.name || '') + ',' + String(p.code1 || '') + ',' + String(p.code2 || '') + ',' + String(p.code3 || '');
+                    var qm = null;
+                    try { qm = KSUQR.matrix(qrData); } catch (e) { qm = null; }
+                    if (qm) {
+                        var qt = qm.length + 4;
+                        var qcell = qs / qt;
+                        var qd = '';
+                        for (var qr = 0; qr < qm.length; qr++) {
+                            var qc = 0;
+                            var qy0 = (FR + (qr + 2) * qcell).toFixed(3), qy1 = (FR + (qr + 3) * qcell).toFixed(3);
+                            while (qc < qm.length) {
+                                if (!qm[qr][qc]) { qc++; continue; }
+                                var q0 = qc;
+                                while (qc < qm.length && qm[qr][qc]) qc++;
+                                var qx0 = (BL + (q0 + 2) * qcell).toFixed(3), qx1 = (BL + (qc + 2) * qcell).toFixed(3);
+                                qd += 'M' + qx0 + ' ' + qy0 + 'L' + qx1 + ' ' + qy0 + 'L' + qx1 + ' ' + qy1 + 'L' + qx0 + ' ' + qy1 + 'Z';
+                            }
+                        }
+                        g2.push('<path d="' + qd + '" fill="#000" shape-rendering="crispEdges"/>');
+                    }
+                }
+                var ty0 = FR + Math.max(0, TZ - blockH) / 2 + tSize * 0.72;
+                var tAnchor = qs > 5 ? 'start' : 'middle';
+                var tX = qs > 5 ? tLeft : (tLeft + tRight) / 2;
+                for (var i = 0; i < tLines.length; i++) {
+                    text(tLines[i], tX, ty0 + i * lh, tSize, true, tAnchor);
+                }
+                var BY = FR + TZ;
+                line(BL, BY, BL + BW, BY);
+                var hgH = 0;
+                if (hasHinge) {
+                    var hStr = noteParts.join(' - ');
+                    var hSz = fitText(hStr, infoMm / 0.72, BW - 3);
+                    hgH = infoMm + 2;
+                    text(hStr, BC, BY + 1.2 + hSz * 0.72, hSz, false);
+                }
+                var PH = BT + BH - BY - hgH;
+                var markOn = this.ebMarkOn;
+                var nSz = this.fontMm('co_chu_ky_hieu', 2) / 0.72;
+                var nGap = 2.5, nCG = 1, bPad = 0.7;
+                var availNote = BW - 3;
+                var ebRows = [], ebLineH = 0, ebWide = 0;
+                var sideOf = function (nm) {
+                    if (ebDashOf[nm]) return nSz * 0.72 + bPad;
+                    if (markOn && Number(meIdx[nm]) <= EB_MARKS) return nSz * 0.72 + bPad;
+                    return textW(String(meIdx[nm] || '') + '.', nSz);
+                };
+                var ebLayout = function () {
+                    var rows = [], cur = [], cw = 0;
+                    ebWide = 0;
+                    ebNames.forEach(function (nm) {
+                        var iw = sideOf(nm) + nCG + textW(nm, nSz);
+                        if (cur.length && cw + nGap + iw > availNote) { rows.push({ items: cur, w: cw }); cur = []; cw = 0; }
+                        cw += (cur.length ? nGap : 0) + iw;
+                        cur.push(nm);
+                    });
+                    if (cur.length) rows.push({ items: cur, w: cw });
+                    rows.forEach(function (r) { if (r.w > ebWide) ebWide = r.w; });
+                    ebLineH = nSz * 0.72 + bPad + (rows.length > 1 ? 0.55 : 1.2);
+                    return rows;
+                };
+                if (ebNames.length) {
+                    var ebMaxH = Math.max(0, PH * 0.4);
+                    var ebGuard = 0;
+                    ebRows = ebLayout();
+                    while ((ebRows.length * ebLineH > ebMaxH || ebWide > availNote) && nSz > 0.45 && ebGuard++ < 80) {
+                        nSz *= 0.94; nGap *= 0.94; nCG *= 0.94; bPad *= 0.94;
+                        ebRows = ebLayout();
+                    }
+                }
+                var bnEb = ebRows.length ? ebRows.length * ebLineH + nSz * 0.4 : 0;
+                var pTop = BY + hgH, pBot = BT + BH - bnEb;
+                var nY = pBot + ebLineH / 2;
+                ebRows.forEach(function (row) {
+                    var nx = BC - row.w / 2;
+                    row.items.forEach(function (nm) {
+                        var side = sideOf(nm);
+                        if (side) {
+                            var cx = nx + side / 2;
+                            if (ebDashOf[nm]) {
+                                g2.push(ebTri(cx, nY, nSz * 0.72));
+                            } else if (markOn) {
+                                g2.push(ebMark(meIdx[nm], cx, nY, nSz * 0.72));
+                            } else {
+                                g2.push(textStr(String(meIdx[nm] || '') + '.', nx, nY + nSz * 0.36, nSz, false, 'start'));
+                            }
+                        }
+                        var tx = nx + side + nCG;
+                        g2.push(textStr(nm, tx, nY + nSz * 0.36, nSz, false, 'start'));
+                        nx = tx + textW(nm, nSz) + nGap;
+                    });
+                    nY += ebLineH;
+                });
+                g2.push('<g transform="translate(' + BL.toFixed(3) + ' 0)">' + this.previewSvg(n, BW, pTop, pBot, 2, true) + '</g>');
+                if (n.vertical) {
+                    s.push('<g transform="rotate(-90 ' + (W / 2) + ' ' + (bx + UH / 2) + ')">' + g2.join('') + '</g>');
+                } else {
+                    s.push(g2.join(''));
+                }
+                if (MH > 0) s.push(lineStr(bx, MT, W - bx, MT));
+                s.push(this.mapSvg(p, sheet, pi, bx, W, MT, 0, MH + bx, bx));
+                s.push('</svg>');
+                return s.join('');
+            },
+            previewSvg: function (n, W, pTop, pBot, defSz, sizeLabel) {
+                var padX = 2, padY = Math.min(3, (pBot - pTop) * 0.28);
+                var ax = padX;
+                var ay = pTop + padY;
+                var aw = W - 2 * padX;
+                var ah = (pBot - pTop) - 2 * padY;
+                if (aw <= 0 || ah <= 0 || !n.bb.w || !n.bb.h) return '';
+                var drillDraws = [];
+                var obs = [];
+                var faceHoles = [];
+                var edgeDrills = [[], [], [], []];
+                var showDrillDim = this.settings.moc_khoan_ngang !== false;
+                for (var di = 0; di < n.drills.length; di++) {
+                    var d = n.drills[di];
+                    if (d.length < 6 || d[1] <= 0) {
+                        if (d.length === 3 && d[0] > 0) faceHoles.push([d[2], d[0]]);
+                        continue;
+                    }
+                    var dp = d.slice(2);
+                    var mx = (dp[0][0] + dp[3][0]) / 2, my = (dp[0][1] + dp[3][1]) / 2;
+                    var qx = (dp[1][0] + dp[2][0]) / 2, qy = (dp[1][1] + dp[2][1]) / 2;
+                    drillDraws.push(dp);
+                    if (!showDrillDim) continue;
+                    var ovx = mx - qx, ovy = my - qy;
+                    var ex2;
+                    if (Math.abs(ovx) > Math.abs(ovy)) ex2 = ovx > 0 ? 3 : 1;
+                    else ex2 = ovy > 0 ? 2 : 0;
+                    var pv2;
+                    if (ex2 === 0) pv2 = n.bb.x + n.bb.w - mx;
+                    else if (ex2 === 1) pv2 = my - n.bb.y;
+                    else if (ex2 === 2) pv2 = mx - n.bb.x;
+                    else pv2 = n.bb.y + n.bb.h - my;
+                    edgeDrills[ex2].push(Math.round(pv2));
+                }
+                var dsz = this.fontMm('co_chu_ky_hieu', defSz) / 0.72;
+                var dlh = dsz * 1.3;
+                var edgeLines = [[], [], [], []];
+                for (var ew = 0; ew < 4; ew++) {
+                    if (!edgeDrills[ew].length) continue;
+                    edgeDrills[ew].sort(function (a, b) { return a - b; });
+                    var edMaxW = (ew === 0 || ew === 2 ? aw : ah) - 2;
+                    var curLn = '';
+                    for (var ti = 0; ti < edgeDrills[ew].length; ti++) {
+                        var cand = curLn ? curLn + '  ' + edgeDrills[ew][ti] : String(edgeDrills[ew][ti]);
+                        if (!curLn || textW(cand, dsz) <= edMaxW) curLn = cand;
+                        else { edgeLines[ew].push(curLn); curLn = String(edgeDrills[ew][ti]); }
+                    }
+                    if (curLn) edgeLines[ew].push(curLn);
+                }
+                var NM = (n.ebs.length || drillDraws.length) ? 2.8 : 0;
+                var exm = function (ei2) { return edgeLines[ei2].length > 1 ? (edgeLines[ei2].length - 1) * dlh : 0; };
+                var mBot = NM + exm(0), mLeft = NM + exm(1), mTop = NM + exm(2), mRight = NM + exm(3);
+                var aw2 = aw - mLeft - mRight, ah2 = ah - mTop - mBot;
+                if (aw2 <= 0 || ah2 <= 0) { mLeft = mRight = mTop = mBot = 0; aw2 = aw; ah2 = ah; }
+                var sc = Math.min(aw2 / n.bb.w, ah2 / n.bb.h);
+                var ox = ax + mLeft + (aw2 - n.bb.w * sc) / 2;
+                var oy = ay + mTop + (ah2 - n.bb.h * sc) / 2;
+                var px = function (v) { return ox + (v - n.bb.x) * sc; };
+                var py = function (v) { return oy + (n.bb.y + n.bb.h - v) * sc; };
+                var s = [];
+                var path = function (pts, fill, sw) {
+                    var d = '';
+                    for (var i = 0; i < pts.length; i++) {
+                        d += (i ? 'L' : 'M') + px(pts[i][0]).toFixed(2) + ' ' + py(pts[i][1]).toFixed(2);
+                    }
+                    d += 'Z';
+                    s.push('<path d="' + d + '" fill="' + fill + '" stroke="#000" stroke-width="' + sw + '"/>');
+                };
+                for (var li = 0; li < n.loops.length; li++) {
+                    path(n.loops[li], li ? '#fff' : 'none', 0.15);
+                }
+                for (var gi = 0; gi < (n.grooves || []).length; gi++) {
+                    if (n.grooves[gi].length > 1) path(n.grooves[gi], 'none', 0.1);
+                }
+                if (Number(this.settings.do_dam_canh) > 1) {
+                    var bw = Math.round(Number(this.settings.do_dam_canh) * 0.15 * 100) / 100;
+                    var TH = 55, LENR = 3;
+                    var dirOf = function (lp, i, sn) { var a = lp[i], b = lp[(i + 1) % sn]; return [b[0] - a[0], b[1] - a[1]]; };
+                    var lenOf = function (lp, i, sn) { var d = dirOf(lp, i, sn); return Math.sqrt(d[0] * d[0] + d[1] * d[1]); };
+                    var angOf = function (u, v) {
+                        var du = Math.sqrt(u[0] * u[0] + u[1] * u[1]) || 1;
+                        var dv = Math.sqrt(v[0] * v[0] + v[1] * v[1]) || 1;
+                        var c = (u[0] * v[0] + u[1] * v[1]) / (du * dv);
+                        return Math.acos(Math.max(-1, Math.min(1, c))) * 180 / Math.PI;
+                    };
+                    var marks = {};
+                    var markSet = function (li, si, dash) { var key = li + ':' + si; marks[key] = !!marks[key] || dash; };
+                    n.ebs.forEach(function (eb) {
+                        var ebc = [eb[0], eb[1]];
+                        var dash = ebDash(eb);
+                        var bl = -1, bs = -1, bD = Infinity;
+                        for (var li = 0; li < n.loops.length; li++) {
+                            var lp = n.loops[li], sn = lp.length - 1;
+                            if (sn < 1) continue;
+                            for (var k = 0; k < sn; k++) {
+                                var d2 = distToSeg(ebc, lp[k], lp[(k + 1) % sn]);
+                                if (d2 < bD) { bD = d2; bl = li; bs = k; }
+                            }
+                        }
+                        if (bl < 0) return;
+                        var lp = n.loops[bl], sn = lp.length - 1;
+                        markSet(bl, bs, dash);
+                        var len0 = lenOf(lp, bs, sn) || 0.001;
+                        var ci = bs;
+                        for (var st = 0; st < sn; st++) {
+                            var nx2 = (ci + 1) % sn;
+                            if (nx2 === bs || angOf(dirOf(lp, ci, sn), dirOf(lp, nx2, sn)) >= TH || lenOf(lp, nx2, sn) > LENR * len0) break;
+                            markSet(bl, nx2, dash); ci = nx2;
+                        }
+                        ci = bs;
+                        for (var st2 = 0; st2 < sn; st2++) {
+                            var pv = (ci - 1 + sn) % sn;
+                            if (pv === bs || angOf(dirOf(lp, pv, sn), dirOf(lp, ci, sn)) >= TH || lenOf(lp, pv, sn) > LENR * len0) break;
+                            markSet(bl, pv, dash); ci = pv;
+                        }
+                    });
+                    var dashArr = (bw * 2).toFixed(2) + ' ' + (bw * 1.5).toFixed(2);
+                    Object.keys(marks).forEach(function (key) {
+                        var pr = key.split(':'), li = +pr[0], si = +pr[1];
+                        var lp = n.loops[li], sn = lp.length - 1, a = lp[si], b = lp[(si + 1) % sn];
+                        s.push('<line x1="' + px(a[0]).toFixed(2) + '" y1="' + py(a[1]).toFixed(2) +
+                            '" x2="' + px(b[0]).toFixed(2) + '" y2="' + py(b[1]).toFixed(2) +
+                            '" stroke="#000" stroke-width="' + bw + '" stroke-linecap="' + (marks[key] ? 'butt' : 'square') + '"' +
+                            (marks[key] ? ' stroke-dasharray="' + dashArr + '"' : '') + '/>');
+                    });
+                }
+                var cups = [];
+                for (var di2 = 0; di2 < drillDraws.length; di2++) {
+                    path(drillDraws[di2], '#000', 0.1);
+                }
+                var atCup = function (pt) {
+                    for (var cq = 0; cq < n.cups.length; cq++) {
+                        if (n.cups[cq][0] < 15) continue;
+                        var cdx = n.cups[cq][1][0] - pt[0], cdy = n.cups[cq][1][1] - pt[1];
+                        if (cdx * cdx + cdy * cdy < 1) return true;
+                    }
+                    return false;
+                };
+                for (var fh = 0; fh < faceHoles.length; fh++) {
+                    var fp = faceHoles[fh][0];
+                    if (atCup(fp)) continue;
+                    s.push('<circle cx="' + px(fp[0]).toFixed(2) + '" cy="' + py(fp[1]).toFixed(2) +
+                        '" r="' + (faceHoles[fh][1] * 0.5 * sc).toFixed(2) + '" fill="#fff" stroke="#000" stroke-width="0.1"/>');
+                }
+                for (var ed = 0; ed < 4; ed++) {
+                    var lns = edgeLines[ed];
+                    for (var li2 = 0; li2 < lns.length; li2++) {
+                        var off2 = 2.0 + (ed === 0 ? li2 : lns.length - 1 - li2) * dlh;
+                        var tx2, ty2, rot2 = 0;
+                        if (ed === 0) { tx2 = px(n.bb.x + n.bb.w / 2); ty2 = py(n.bb.y) + off2; }
+                        else if (ed === 2) { tx2 = px(n.bb.x + n.bb.w / 2); ty2 = py(n.bb.y + n.bb.h) - off2; }
+                        else if (ed === 1) { tx2 = px(n.bb.x) - off2; ty2 = py(n.bb.y + n.bb.h / 2); rot2 = -90; }
+                        else { tx2 = px(n.bb.x + n.bb.w) + off2; ty2 = py(n.bb.y + n.bb.h / 2); rot2 = 90; }
+                        var dw2 = textW(lns[li2], dsz) / 2, dh2 = dsz * 0.4;
+                        obs.push(rot2 ? [tx2 - dh2, ty2 - dw2, tx2 + dh2, ty2 + dw2] : [tx2 - dw2, ty2 - dh2, tx2 + dw2, ty2 + dh2]);
+                        s.push('<text x="' + tx2.toFixed(2) + '" y="' + (ty2 + dsz * 0.36).toFixed(2) +
+                            '" font-size="' + dsz.toFixed(3) + '" text-anchor="middle"' +
+                            (rot2 ? ' transform="rotate(' + rot2 + ' ' + tx2.toFixed(2) + ' ' + ty2.toFixed(2) + ')"' : '') +
+                            '>' + esc(lns[li2]) + '</text>');
+                    }
+                }
+                for (var ci = 0; ci < n.cups.length; ci++) {
+                    var cu = n.cups[ci];
+                    if (cu[0] < 15) continue;
+                    cups.push(cu[1]);
+                    if (cu[2] && cu[2].length > 1) path(cu[2], 'none', 0.12);
+                }
+                if (cups.length) {
+                    var vOuter = n.loops[0] || [];
+                    var nearestVert = function (pt) {
+                        var best = pt, bd = Infinity;
+                        for (var vi = 0; vi < vOuter.length; vi++) {
+                            var dx = vOuter[vi][0] - pt[0], dy = vOuter[vi][1] - pt[1], dd = dx * dx + dy * dy;
+                            if (dd < bd) { bd = dd; best = vOuter[vi]; }
+                        }
+                        return best;
+                    };
+                    var bx0 = n.bb.x, by0 = n.bb.y, bx1 = n.bb.x + n.bb.w, by1 = n.bb.y + n.bb.h;
+                    var cax = 0, cay = 0;
+                    cups.forEach(function (c) { cax += c[0]; cay += c[1]; });
+                    cax /= cups.length; cay /= cups.length;
+                    var dL = cax - bx0, dR = bx1 - cax, dB = cay - by0, dT = by1 - cay;
+                    var mn = Math.min(dL, dR, dB, dT);
+                    var mxc = (bx0 + bx1) / 2, myc = (by0 + by1) / 2;
+                    var apex, cw1, cw2;
+                    if (mn === dL) { apex = [bx0, myc]; cw1 = [bx1, by0]; cw2 = [bx1, by1]; }
+                    else if (mn === dR) { apex = [bx1, myc]; cw1 = [bx0, by0]; cw2 = [bx0, by1]; }
+                    else if (mn === dB) { apex = [mxc, by0]; cw1 = [bx0, by1]; cw2 = [bx1, by1]; }
+                    else { apex = [mxc, by1]; cw1 = [bx0, by0]; cw2 = [bx1, by0]; }
+                    cw1 = nearestVert(cw1);
+                    cw2 = nearestVert(cw2);
+                    [[apex, cw1], [apex, cw2]].forEach(function (sg) {
+                        s.push('<line x1="' + px(sg[0][0]).toFixed(2) + '" y1="' + py(sg[0][1]).toFixed(2) +
+                            '" x2="' + px(sg[1][0]).toFixed(2) + '" y2="' + py(sg[1][1]).toFixed(2) +
+                            '" stroke="#000" stroke-width="0.1" stroke-dasharray="0.5 0.4"/>');
+                    });
+                }
+                var enSz = this.fontMm('co_chu_ky_hieu', defSz) / 0.72;
+                var enMark = this.ebMarkOn;
+                var ebN = this.settings.ma_dan_canh !== false ? n.ebs.length : 0;
+                for (var ei = 0; ei < ebN; ei++) {
+                    var e = n.ebs[ei];
+                    var vx = e[2] - e[0], vy = e[3] - e[1];
+                    var vl = Math.sqrt(vx * vx + vy * vy) || 1;
+                    var tx = px(e[0]) + (vx / vl) * 1.6;
+                    var ty = py(e[1]) - (vy / vl) * 1.6;
+                    obs.push([tx - enSz * 0.45, ty - enSz * 0.45, tx + enSz * 0.45, ty + enSz * 0.45]);
+                    var idx = this.ebIndex[this.ebName(e)] || '';
+                    if (ebDash(e)) {
+                        s.push(ebTri(tx, ty, enSz * 0.72, Math.atan2(vy, -vx) * 180 / Math.PI));
+                    } else if (enMark) {
+                        s.push(ebMark(idx, tx, ty, enSz * 0.72));
+                    } else {
+                        s.push('<text x="' + tx.toFixed(2) + '" y="' + (ty + enSz * 0.36).toFixed(2) +
+                            '" font-size="' + enSz.toFixed(3) + '" text-anchor="middle">' + esc(idx) + '</text>');
+                    }
+                }
+                if (!sizeLabel || this.settings.hien_kich_thuoc === false) return s.join('');
+                var szStr = fmtMm(Math.min(n.bb.w, n.bb.h)) + ' × ' + fmtMm(Math.max(n.bb.w, n.bb.h));
+                var szSz = this.fontMm('co_chu_thong_tin', 2) / 0.72;
+                var szW = textW(szStr, szSz), szH = szSz * 0.72;
+                var dcx = n.bb.x + n.bb.w / 2, dcy = n.bb.y + n.bb.h / 2;
+                var szIn = pointInPoly([dcx, dcy], n.loops[0]);
+                for (var hi = 1; hi < n.loops.length && szIn; hi++) {
+                    if (pointInPoly([dcx, dcy], n.loops[hi])) szIn = false;
+                }
+                var szText = function (x, y) {
+                    return '<text x="' + x.toFixed(2) + '" y="' + (y + szSz * 0.36).toFixed(2) + '" font-size="' + szSz.toFixed(3) + '" text-anchor="middle">' + esc(szStr) + '</text>';
+                };
+                if (szIn && szW + 1 <= n.bb.w * sc && szH + 1 <= n.bb.h * sc) {
+                    var scx = px(dcx), scy = py(dcy);
+                    s.push('<rect x="' + (scx - szW / 2 - 0.3).toFixed(2) + '" y="' + (scy - szH / 2 - 0.2).toFixed(2) + '" width="' + (szW + 0.6).toFixed(2) + '" height="' + (szH + 0.4).toFixed(2) + '" fill="#fff"/>');
+                    s.push(szText(scx, scy));
+                } else {
+                    var lw2 = szW / 2 + 0.5, lh2 = szH / 2 + 0.4;
+                    obs.push([px(n.bb.x), py(n.bb.y + n.bb.h), px(n.bb.x + n.bb.w), py(n.bb.y)]);
+                    var ld = leaderTo({ x: px(n.bb.x), y: py(n.bb.y + n.bb.h), w: n.bb.w * sc, h: n.bb.h * sc },
+                        { x0: padX, x1: W - padX, y0: pTop + 0.5, y1: pBot - 0.5 }, lw2, lh2, obs, true);
+                    if (ld) {
+                        s.push('<rect x="' + (ld.x - lw2).toFixed(2) + '" y="' + (ld.y - lh2).toFixed(2) + '" width="' + (lw2 * 2).toFixed(2) + '" height="' + (lh2 * 2).toFixed(2) + '" fill="#fff" stroke="#000" stroke-width="0.08"/>');
+                        s.push(szText(ld.x, ld.y));
+                    }
+                }
+                return s.join('');
+            },
+            mapSvg: function (p, sheet, pi, LW, W, FR, SQ, BR, bx) {
+                if (!sheet.w || !sheet.h) return '';
+                var pad = 0;
+                var ax = LW + pad;
+                var ay = FR + SQ + pad;
+                var aw = W - bx - LW - 2 * pad;
+                var ah = BR - bx - 2 * pad;
+                if (aw <= 0 || ah <= 0) return '';
+                var swap = sheet.h > sheet.w;
+                var mw = swap ? sheet.h : sheet.w;
+                var mh = swap ? sheet.w : sheet.h;
+                var sc = Math.min(aw / mw, ah / mh);
+                var ox = ax + (aw - mw * sc) / 2;
+                var oy = ay + (ah - mh * sc) / 2;
+                var pt = function (x, y) {
+                    var u = swap ? y : x;
+                    var v = swap ? sheet.w - x : y;
+                    return [(ox + (mw - u) * sc).toFixed(2), (oy + v * sc).toFixed(2)];
+                };
+                var s = [];
+                s.push('<rect x="' + ox.toFixed(2) + '" y="' + oy.toFixed(2) +
+                    '" width="' + (mw * sc).toFixed(2) + '" height="' + (mh * sc).toFixed(2) +
+                    '" fill="none" stroke="#000" stroke-width="0.12"/>');
+                var mkey = p.sheet + '|' + ox.toFixed(3) + '|' + oy.toFixed(3) + '|' + sc.toFixed(6) + '|' + (swap ? 1 : 0);
+                if (!this._mapCache) this._mapCache = {};
+                var mc = this._mapCache[mkey];
+                if (!mc) {
+                    mc = { d: {}, all: '' };
+                    for (var i = 0; i < sheet.parts.length; i++) {
+                        var q = this.parts[sheet.parts[i]];
+                        if (!q || !q.poly[0]) continue;
+                        var pts = q.poly[0];
+                        var d = '';
+                        for (var j = 0; j < pts.length; j++) {
+                            var xy = pt(pts[j][0], pts[j][1]);
+                            d += (j ? 'L' : 'M') + xy[0] + ' ' + xy[1];
+                        }
+                        d += 'Z';
+                        mc.d[sheet.parts[i]] = d;
+                        mc.all += d;
+                    }
+                    this._mapCache[mkey] = mc;
+                }
+                var curPts = null;
+                if (mc.all) s.push('<path d="' + mc.all + '" fill="none" stroke="#000" stroke-width="0.08"/>');
+                if (mc.d[pi]) {
+                    s.push('<path d="' + mc.d[pi] + '" fill="#000" stroke="#000" stroke-width="0.08"/>');
+                    curPts = [];
+                    mc.d[pi].replace(/[ML]([\d.\-]+) ([\d.\-]+)/g, function (a, x, y) { curPts.push([+x, +y]); });
+                }
+                var avoid = [];
+                var idX = ox + mw * sc;
+                if (curPts && curPts.length > 2) {
+                    var shStr = String(p.id);
+                    var shSz = this.fontMm('co_chu_id', 2) / 0.72;
+                    var tw = textW(shStr, shSz, true), th = shSz * 0.72;
+                    var cb = bboxOf(curPts);
+                    var cx = cb.x + cb.w / 2, cy = cb.y + cb.h / 2;
+                    var label = function (x, y, color) {
+                        return '<text x="' + x.toFixed(2) + '" y="' + (y + shSz * 0.36).toFixed(2) + '" font-size="' + shSz.toFixed(3) +
+                            '" font-weight="bold" fill="' + color + '" text-anchor="middle">' + esc(shStr) + '</text>';
+                    };
+                    avoid.push([cb.x, cb.y, cb.x + cb.w, cb.y + cb.h]);
+                    idX = cx;
+                    if (tw + 0.6 <= cb.w && th + 0.6 <= cb.h && pointInPoly([cx, cy], curPts)) {
+                        s.push(label(cx, cy, '#fff'));
+                    } else {
+                        var lw2 = tw / 2 + 0.8, lh2 = th / 2 + 0.6;
+                        var im = 1;
+                        var ld = leaderTo(cb, { x0: ox + im, x1: ox + mw * sc - im, y0: oy + im, y1: oy + mh * sc - im }, lw2, lh2);
+                        var pick = [ld.x, ld.y];
+                        s.push(ld.svg);
+                        s.push('<rect x="' + (pick[0] - lw2).toFixed(2) + '" y="' + (pick[1] - lh2).toFixed(2) + '" width="' + (lw2 * 2).toFixed(2) + '" height="' + (lh2 * 2).toFixed(2) + '" fill="#000"/>');
+                        s.push(label(pick[0], pick[1], '#fff'));
+                        avoid.push([pick[0] - lw2, pick[1] - lh2, pick[0] + lw2, pick[1] + lh2]);
+                        idX = pick[0];
+                    }
+                }
+                var sStr = 'S' + String(p.sheet);
+                var sSz = this.fontMm('co_chu_id', 2) / 0.72;
+                var sw = textW(sStr, sSz, true) + 1.6, sh = sSz * 0.72 + 1.2;
+                var sm = 0;
+                var sx0 = ox + sm, sx1 = ox + mw * sc - sm, sy0 = oy + sm, sy1 = oy + mh * sc - sm;
+                var idLeft = idX < ox + mw * sc / 2;
+                var corners = idLeft
+                    ? [[sx1 - sw, sy1 - sh], [sx0, sy1 - sh], [sx1 - sw, sy0], [sx0, sy0]]
+                    : [[sx0, sy1 - sh], [sx1 - sw, sy1 - sh], [sx0, sy0], [sx1 - sw, sy0]];
+                var hit = function (r) {
+                    for (var ai = 0; ai < avoid.length; ai++) {
+                        var a = avoid[ai];
+                        if (r[0] < a[2] + 0.3 && r[0] + sw > a[0] - 0.3 && r[1] < a[3] + 0.3 && r[1] + sh > a[1] - 0.3) return true;
+                    }
+                    return false;
+                };
+                var spot = corners[0];
+                for (var ki = 0; ki < corners.length; ki++) {
+                    if (!hit(corners[ki])) { spot = corners[ki]; break; }
+                }
+                s.push('<rect x="' + spot[0].toFixed(2) + '" y="' + spot[1].toFixed(2) + '" width="' + sw.toFixed(2) + '" height="' + sh.toFixed(2) + '" fill="#fff" stroke="#000" stroke-width="0.12"/>');
+                s.push('<text x="' + (spot[0] + sw / 2).toFixed(2) + '" y="' + (spot[1] + sh / 2 + sSz * 0.36).toFixed(2) + '" font-size="' + sSz.toFixed(3) + '" font-weight="bold" text-anchor="middle">' + esc(sStr) + '</text>');
+                return s.join('');
+            }
+        },
+        mounted: function () {
+            var self = this;
+            ZSU_LEGACY_COLOR = true;
+            document.addEventListener('mousedown', function () {
+                self.closeNotePop();
+            });
+            if (window.IntersectionObserver && this.$refs.scroll) {
+                this._io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (en) {
+                        if (!en.isIntersecting) return;
+                        var pi = en.target.__pi;
+                        if (pi != null) self.$set(self.shown, pi, true);
+                        self._io.unobserve(en.target);
+                    });
+                }, { root: this.$refs.scroll, rootMargin: '400px 0px', threshold: 0 });
+            } else {
+                this.lazyEnabled = false;
+            }
+            window.intemDoExport = function (fmt) { if (fmt === 'pdf') self.exportPdf(); else self.exportImages(fmt); };
+            window.intemLoad = function (data) {
+                self._svgCache = {};
+                self._mapCache = {};
+                self._nowCache = null;
+                self._searchCache = {};
+                var st = data.settings || {};
+                self.loadSettings(st);
+                self.notePop = null;
+                self.notePresets = {
+                    ghi_chu_them: (st.ghi_chu_preset || []).map(String),
+                    ghi_chu_them_2: (st.ghi_chu_preset_2 || []).map(String)
+                };
+                if (self.settings.ty_le_zoom) self.temScale = Number(self.settings.ty_le_zoom);
+                self.materials = data.materials || [];
+                self.applyMatOrder(data.mat_order);
+                self.sheets = data.sheets || {};
+                self.parts = data.parts || [];
+                var offMap = {};
+                self.parts.forEach(function (p, pi) { offMap[pi] = false; });
+                self.off = offMap;
+                self.sel = { mat: null, part: null };
+                self.selSet = {};
+                self.expandedSheets = {};
+            };
+            window.addEventListener('keydown', function (e) {
+                if (e.ctrlKey || e.metaKey || e.altKey) return;
+                var t = e.target;
+                if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT')) return;
+                if (!self.visible.length) return;
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    self.rotCCW();
+                } else if (e.key === '+' || e.key === '=') {
+                    e.preventDefault();
+                    self.zoomStep(1);
+                } else if (e.key === '-' || e.key === '_') {
+                    e.preventDefault();
+                    self.zoomStep(-1);
+                }
+            });
+            window.addEventListener('message', function (e) {
+                if (!e.data || e.data.action !== 'tab_shown') return;
+                if (self._loaded && !e.data.reload) return;
+                self._loaded = true;
+                skp('load_data', '');
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

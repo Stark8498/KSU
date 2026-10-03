@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Cài Đặt Chung</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/preload.js"></script>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="container">
+    <div class="col2">
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Tấm cách nhau</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('tam_cach_nhau', 0.5, 0)"
+                            :disabled="settings.tam_cach_nhau <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.tam_cach_nhau"
+                           @change="saveSetting('tam_cach_nhau')"
+                           @blur="validateGap('tam_cach_nhau')"
+                           @keyup.enter="validateGap('tam_cach_nhau')"
+                           min="0" step="0.5">
+                    <button class="spinner-btn"
+                            @click="incrementValue('tam_cach_nhau', 0.5)">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch">
+                <span class="gap-lock-label">
+                    Tấm cách lề
+                    <gap-lock :open="settings.tach_cach_le" @toggle="toggleGapLock"></gap-lock>
+                </span>
+                <div class="number-input-group" :class="{ disabled: settings.tach_cach_le }">
+                    <button class="spinner-btn"
+                            @click="decrementValue('tam_cach_le', 0.5, 0)"
+                            :disabled="settings.tam_cach_le <= 0 || settings.tach_cach_le">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.tam_cach_le"
+                           @change="saveSetting('tam_cach_le')"
+                           @blur="validateGap('tam_cach_le')"
+                           @keyup.enter="validateGap('tam_cach_le')"
+                           :disabled="settings.tach_cach_le"
+                           min="0" step="0.5">
+                    <button class="spinner-btn"
+                            @click="incrementValue('tam_cach_le', 0.5)"
+                            :disabled="settings.tach_cach_le">+
+                    </button>
+                </div>
+            </div>
+            <template v-if="settings.tach_cach_le">
+                <div class="switch" v-for="s in gapSides" :key="s.key">
+                    <span class="gap-sub">{{ s.name }}</span>
+                    <div class="number-input-group">
+                        <button class="spinner-btn"
+                                @click="decrementValue(s.key, 0.5, 0)"
+                                :disabled="settings[s.key] <= 0">−
+                        </button>
+                        <input type="number"
+                               v-model.number="settings[s.key]"
+                               @change="saveSetting(s.key)"
+                               @blur="validateGap(s.key)"
+                               @keyup.enter="validateGap(s.key)"
+                               min="0" step="0.5">
+                        <button class="spinner-btn"
+                                @click="incrementValue(s.key, 0.5)">+
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <p class="switch-stacked-hint">Khoảng hở giữa các tấm và từ tấm tới mép ván.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Phủ màu tấm thường</span>
+                <input type="checkbox" v-model="settings.phu_mau_tam"
+                       @change="saveSetting('phu_mau_tam')" id="phu_mau_tam">
+                <label class="switch-label" for="phu_mau_tam"></label>
+            </div>
+            <div class="switch">
+                <span>Phủ màu tấm hai mặt</span>
+                <input type="checkbox" v-model="settings.phu_mau_tam_hai_mat"
+                       @change="saveSetting('phu_mau_tam_hai_mat')" id="phu_mau_tam_hai_mat">
+                <label class="switch-label" for="phu_mau_tam_hai_mat"></label>
+            </div>
+            <div class="switch">
+                <span>Đánh dấu điểm bị lỗi</span>
+                <input type="checkbox" v-model="settings.danh_dau_loi"
+                       @change="saveSetting('danh_dau_loi')" id="danh_dau_loi">
+                <label class="switch-label" for="danh_dau_loi"></label>
+            </div>
+            <div class="switch">
+                <span>Đánh dấu tấm bị lấn</span>
+                <input type="checkbox" v-model="settings.danh_dau_tam_bi_lan"
+                       @change="saveSetting('danh_dau_tam_bi_lan')" id="danh_dau_tam_bi_lan">
+                <label class="switch-label" for="danh_dau_tam_bi_lan"></label>
+            </div>
+            <div class="switch">
+                <span>Ẩn nhãn và tiết diện</span>
+                <input type="checkbox" v-model="settings.an_nhan_tiet_dien"
+                       @change="saveSetting('an_nhan_tiet_dien')" id="an_nhan_tiet_dien">
+                <label class="switch-label" for="an_nhan_tiet_dien"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Cài đặt hiển thị tấm khi dùng các công cụ.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Màu tấm thường</span>
+                <div class="color-input-group">
+                    <input type="color"
+                           v-model="mau_tam_thuong_hex"
+                           @input="saveColor('mau_tam_thuong')">
+                </div>
+            </div>
+            <div class="switch">
+                <span>Màu tấm theo nhóm</span>
+                <div class="color-input-group">
+                    <input type="color"
+                           v-model="mau_nhom_tam_hex"
+                           @input="saveColor('mau_nhom_tam')">
+                </div>
+            </div>
+            <div class="switch">
+                <span>Màu tấm hai mặt</span>
+                <div class="color-input-group">
+                    <input type="color"
+                           v-model="mau_tam_hai_mat_hex"
+                           @input="saveColor('mau_tam_hai_mat')">
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Cài đặt màu hiển thị cho các tấm.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Hiển thị cài đặt mẫu</span>
+                <input type="checkbox" v-model="settings.hien_thi_cai_dat_mau"
+                       @change="saveSetting('hien_thi_cai_dat_mau')" id="hien_thi_cai_dat_mau">
+                <label class="switch-label" for="hien_thi_cai_dat_mau"></label>
+            </div>
+            <div class="switch">
+                <span>Hiển thị thông số</span>
+                <input type="checkbox" v-model="settings.hien_thi_thong_so"
+                       @change="saveSetting('hien_thi_thong_so')" id="hien_thi_thong_so">
+                <label class="switch-label" for="hien_thi_thong_so"></label>
+            </div>
+            <div class="switch">
+                <span>Hiển thị chế độ</span>
+                <input type="checkbox" v-model="settings.hien_thi_che_do"
+                       @change="saveSetting('hien_thi_che_do')" id="hien_thi_che_do">
+                <label class="switch-label" for="hien_thi_che_do"></label>
+            </div>
+            <div class="switch">
+                <span>Chữ đậm</span>
+                <input type="checkbox" v-model="settings.chu_dam" @change="saveSetting('chu_dam')"
+                       id="chu_dam">
+                <label class="switch-label" for="chu_dam"></label>
+            </div>
+            <div class="switch">
+                <span>Kiểu chữ</span>
+                <div class="select-group">
+                    <select v-model="settings.kieu_chu" @change="saveSetting('kieu_chu')">
+                        <option v-for="f in fontList" :value="f">{{ f }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Cỡ chữ</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementInt('co_chu_cai_dat_mau')"
+                            :disabled="settings.co_chu_cai_dat_mau <= 5">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.co_chu_cai_dat_mau"
+                           @change="saveSetting('co_chu_cai_dat_mau')"
+                           @blur="validateInt('co_chu_cai_dat_mau')"
+                           @keyup.enter="validateInt('co_chu_cai_dat_mau')"
+                           min="5" max="64" step="1">
+                    <button class="spinner-btn"
+                            @click="incrementInt('co_chu_cai_dat_mau')"
+                            :disabled="settings.co_chu_cai_dat_mau >= 64">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Độ đậm</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementInt(doDamKey)"
+                            @contextmenu.prevent="resetToDefault(doDamKey)"
+                            :disabled="settings[doDamKey] <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings[doDamKey]"
+                           @change="saveSetting(doDamKey)"
+                           @blur="validateInt(doDamKey, 0, 100)"
+                           @keyup.enter="validateInt(doDamKey, 0, 100)"
+                           min="0" max="100" step="1">
+                    <button class="spinner-btn"
+                            @click="incrementInt(doDamKey)"
+                            @contextmenu.prevent="resetToDefault(doDamKey)"
+                            :disabled="settings[doDamKey] >= 100">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Khoảng cách</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementInt('khoang_cach')"
+                            :disabled="settings.khoang_cach <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.khoang_cach"
+                           @change="saveSetting('khoang_cach')"
+                           @blur="validateInt('khoang_cach', 0, 20)"
+                           @keyup.enter="validateInt('khoang_cach', 0, 20)"
+                           min="0" max="20" step="1">
+                    <button class="spinner-btn"
+                            @click="incrementInt('khoang_cach')"
+                            :disabled="settings.khoang_cach >= 20">+
+                    </button>
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Tùy chỉnh hiển thị các nút cài đặt mẫu, chế độ và thông số trên màn hình làm việc của SketchUp.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Độ đậm nét</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementInt('do_dam_net_xem_truoc')"
+                            :disabled="settings.do_dam_net_xem_truoc <= 1">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.do_dam_net_xem_truoc"
+                           @change="saveSetting('do_dam_net_xem_truoc')"
+                           @blur="validateInt('do_dam_net_xem_truoc')"
+                           @keyup.enter="validateInt('do_dam_net_xem_truoc')"
+                           min="1" max="64" step="1">
+                    <button class="spinner-btn"
+                            @click="incrementInt('do_dam_net_xem_truoc')"
+                            :disabled="settings.do_dam_net_xem_truoc >= 64">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Độ đậm mặt</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementInt('do_dam_mat_xem_truoc')"
+                            :disabled="settings.do_dam_mat_xem_truoc <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.do_dam_mat_xem_truoc"
+                           @change="saveSetting('do_dam_mat_xem_truoc')"
+                           @blur="validateInt('do_dam_mat_xem_truoc', 0, 100)"
+                           @keyup.enter="validateInt('do_dam_mat_xem_truoc', 0, 100)"
+                           min="0" max="100" step="1">
+                    <button class="spinner-btn"
+                            @click="incrementInt('do_dam_mat_xem_truoc')"
+                            :disabled="settings.do_dam_mat_xem_truoc >= 100">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Cỡ chữ</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementInt('co_chu_ghi_chu')"
+                            :disabled="settings.co_chu_ghi_chu <= 5">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.co_chu_ghi_chu"
+                           @change="saveSetting('co_chu_ghi_chu')"
+                           @blur="validateInt('co_chu_ghi_chu')"
+                           @keyup.enter="validateInt('co_chu_ghi_chu')"
+                           min="5" max="36" step="1">
+                    <button class="spinner-btn"
+                            @click="incrementInt('co_chu_ghi_chu')"
+                            :disabled="settings.co_chu_ghi_chu >= 36">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Màu chữ</span>
+                <div class="color-input-group">
+                    <input type="color"
+                           v-model="mau_chu_ghi_chu_hex"
+                           @input="saveColor('mau_chu_ghi_chu')">
+                </div>
+            </div>
+            <div class="switch">
+                <span>Màu nét</span>
+                <div class="color-input-group">
+                    <input type="color"
+                           v-model="mau_net_xem_truoc_hex"
+                           @input="saveColor('mau_net_xem_truoc')">
+                </div>
+            </div>
+            <div class="switch">
+                <span>Màu mặt</span>
+                <div class="color-input-group">
+                    <input type="color"
+                           v-model="mau_mat_xem_truoc_hex"
+                           @input="saveColor('mau_mat_xem_truoc')">
+                </div>
+            </div>
+            <div class="switch">
+                <span>Màu cảnh báo</span>
+                <div class="color-input-group">
+                    <input type="color"
+                           v-model="mau_canh_bao_hex"
+                           @input="saveColor('mau_canh_bao')">
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Tùy chỉnh hình xem trước khi sử dụng lệnh.</p>
+
+        <div class="switch-stacked">
+            <div class="switch"
+                 v-for="(tool, idx) in toolItems"
+                 :key="tool.key"
+                 :class="{'tool-dragging': dragToolIndex === idx}"
+                 draggable="true"
+                 @dragstart="startToolDrag(idx, $event)"
+                 @dragover.prevent="overToolDrag(idx)"
+                 @drop.prevent="endToolDrag"
+                 @dragend="endToolDrag">
+                <i class="tool-drag-handle" @mousedown="dragArmed = true">
+                    <svg width="6" height="10" viewBox="0 0 6 10">
+                        <circle cx="1" cy="1" r="1"></circle>
+                        <circle cx="5" cy="1" r="1"></circle>
+                        <circle cx="1" cy="5" r="1"></circle>
+                        <circle cx="5" cy="5" r="1"></circle>
+                        <circle cx="1" cy="9" r="1"></circle>
+                        <circle cx="5" cy="9" r="1"></circle>
+                    </svg>
+                </i>
+                <span>{{ tool.label }}</span>
+                <input type="checkbox" v-model="settings[tool.key]"
+                       @change="saveSetting(tool.key)" :id="tool.key">
+                <label class="switch-label" :for="tool.key"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Kéo biểu tượng chấm để đổi thứ tự lệnh. Kích hoạt hoặc vô hiệu hóa các lệnh trên thanh công cụ. Thay đổi có hiệu lực sau khi khởi động lại SketchUp.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Giao diện cài đặt tối</span>
+                <input type="checkbox" v-model="settings.giao_dien_cai_dat_toi"
+                       @change="toggleDarkMode" id="giao_dien_cai_dat_toi">
+                <label class="switch-label" for="giao_dien_cai_dat_toi"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Giao diện tối cho trang cài đặt.</p>
+
+    </div>
+
+    <div class="col3">
+        <div class="col3-group">
+            <button class="col3-btn secondary full" @click="postAction('check_update_version')">
+                Kiểm tra cập nhật
+            </button>
+            <button class="col3-btn secondary full" @click="postAction('restore_from_backup')">
+                Phục hồi bản cũ
+            </button>
+        </div>
+
+        <div class="col3-group">
+            <button class="col3-btn secondary full" @click="postAction('export_settings')">
+                Sao lưu cài đặt
+            </button>
+            <button class="col3-btn secondary full" @click="postAction('import_settings')">
+                Phục hồi cài đặt
+            </button>
+            <button class="col3-btn secondary full" @click="postAction('export_online')">
+                Tải lên cài đặt
+            </button>
+            <button class="col3-btn secondary full" @click="postAction('import_online')">
+                Đồng bộ cài đặt
+            </button>
+            <button class="col3-btn danger full" @click="postAction('reset_settings')">
+                Đặt lại cài đặt gốc
+            </button>
+        </div>
+
+        <div class="col3-group">
+            <button class="col3-btn secondary full" @click="postAction('view_hardware_id')">
+                Mã phần cứng
+            </button>
+            <button class="col3-btn danger full" @click="postAction('remove_activation')">
+                Gỡ kích hoạt
+            </button>
+            <button class="col3-btn danger full" @click="postAction('uninstall')">
+                Gỡ phần mềm
+            </button>
+        </div>
+
+        <div style="flex:1"></div>
+
+        <div class="col3-links-footer">
+            <a href="https://xsu.vn/" target="_blank" class="col3-btn secondary full">Website</a>
+            <a href="https://www.facebook.com/profile.php?id=61590413551575" target="_blank" class="col3-btn secondary full">Facebook</a>
+            <a href="https://www.youtube.com/@xsu_vn" target="_blank" class="col3-btn secondary full">Youtube</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        mixins: [SettingsMixin('cai_dat')],
+        data: {
+            settings: {
+                hien_thi_cai_dat_mau: true,
+                hien_thi_thong_so: true,
+                hien_thi_che_do: true,
+                kieu_chu: 'Arial',
+                chu_dam: false,
+                co_chu_cai_dat_mau: 8,
+                do_dam: 25,
+                do_dam_toi: 85,
+                khoang_cach: 5,
+                do_dam_net_xem_truoc: 2,
+                do_dam_mat_xem_truoc: 10,
+                mau_mat_xem_truoc: [60, 175, 214],
+                mau_net_xem_truoc: [61, 61, 153],
+                co_chu_ghi_chu: 8,
+                mau_chu_ghi_chu: [61, 61, 153],
+                mau_canh_bao: [210, 117, 159],
+                mau_tam_thuong: [128, 128, 128],
+                mau_nhom_tam: [179, 179, 179],
+                mau_tam_hai_mat: [98, 195, 165],
+                phu_mau_tam: true,
+                phu_mau_tam_hai_mat: true,
+                danh_dau_loi: true,
+                danh_dau_tam_bi_lan: false,
+                an_nhan_tiet_dien: false,
+                tam_cach_nhau: 6.5,
+                tam_cach_le: 3.5,
+                tach_cach_le: false,
+                tam_cach_le_trai: 3.5,
+                tam_cach_le_phai: 3.5,
+                tam_cach_le_tren: 3.5,
+                tam_cach_le_duoi: 3.5,
+                tam_cach_le_hai_mat: 3.5,
+                xep_tam: true,
+                chon_tam: true,
+                them_tam: true,
+                xep_hang: true,
+                danh_so_van: true,
+                chong_bay: true,
+                gan_nhan: true,
+                net_cat_cuoi: true,
+                toi_uu_van: true,
+                nesting: true,
+                thong_ke: true,
+                in_tem: true,
+                xuat_dxf: true,
+                // ksu-addon-startup
+                cai_dat: true,
+                giao_dien_cai_dat_toi: false,
+                thu_tu_cong_cu: []
+            },
+            toolList: [
+                {key: 'xep_tam', label: 'Xếp tấm'},
+                {key: 'chon_tam', label: 'Chọn tấm'},
+                {key: 'them_tam', label: 'Thêm tấm'},
+                {key: 'xep_hang', label: 'Xếp hàng'},
+                {key: 'danh_so_van', label: 'Đánh số ván'},
+                {key: 'gan_nhan', label: 'Gắn nhãn'},
+                {key: 'chong_bay', label: 'Chống bay'},
+                {key: 'net_cat_cuoi', label: 'Nét cắt cuối'},
+                {key: 'toi_uu_van', label: 'Tối ưu ván'},
+                {key: 'nesting', label: 'Nesting'},
+                {key: 'thong_ke', label: 'Thống kê'},
+                {key: 'in_tem', label: 'In tem nhãn'},
+                {key: 'xuat_dxf', label: 'Xuất DXF'},
+                // ksu-addon-tools
+                {key: 'cai_dat', label: 'Cài đặt'}
+            ],
+            dragToolIndex: null,
+            dragArmed: false,
+            gapSides: [
+                {key: 'tam_cach_le_trai', name: 'Lề trái'},
+                {key: 'tam_cach_le_phai', name: 'Lề phải'},
+                {key: 'tam_cach_le_tren', name: 'Lề trên'},
+                {key: 'tam_cach_le_duoi', name: 'Lề dưới'},
+                {key: 'tam_cach_le_hai_mat', name: 'Lề hai mặt'}
+            ]
+        },
+        computed: {
+            fontList() {
+                return ['Arial', 'Calibri', 'Candara', 'Consolas', 'Corbel', 'Tahoma', 'Verdana'];
+            },
+            mau_mat_xem_truoc_hex: colorComputed('mau_mat_xem_truoc'),
+            mau_net_xem_truoc_hex: colorComputed('mau_net_xem_truoc'),
+            mau_chu_ghi_chu_hex: colorComputed('mau_chu_ghi_chu'),
+            mau_canh_bao_hex: colorComputed('mau_canh_bao'),
+            mau_tam_thuong_hex: colorComputed('mau_tam_thuong'),
+            mau_nhom_tam_hex: colorComputed('mau_nhom_tam'),
+            mau_tam_hai_mat_hex: colorComputed('mau_tam_hai_mat'),
+            doDamKey() {
+                return this.settings.giao_dien_cai_dat_toi ? 'do_dam_toi' : 'do_dam';
+            },
+            toolItems() {
+                var list = this.toolList;
+                var order = this.settings.thu_tu_cong_cu;
+                if (!Array.isArray(order) || order.length === 0) return list.slice();
+                var result = [];
+                order.forEach(function (key) {
+                    for (var i = 0; i < list.length; i++) {
+                        if (list[i].key === key && result.indexOf(list[i]) === -1) {
+                            result.push(list[i]);
+                            break;
+                        }
+                    }
+                });
+                list.forEach(function (tool) {
+                    if (result.indexOf(tool) === -1) result.push(tool);
+                });
+                return result;
+            }
+        },
+        methods: {
+            startToolDrag(idx, event) {
+                if (!this.dragArmed) {
+                    event.preventDefault();
+                    return;
+                }
+                this.dragToolIndex = idx;
+                this._dragStartOrder = this.toolItems.map(function (t) { return t.key; });
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/plain', '');
+            },
+
+            overToolDrag(idx) {
+                if (this.dragToolIndex === null || this.dragToolIndex === idx) return;
+                var order = this.toolItems.map(function (t) { return t.key; });
+                var moved = order.splice(this.dragToolIndex, 1)[0];
+                order.splice(idx, 0, moved);
+                this.$set(this.settings, 'thu_tu_cong_cu', order);
+                this.dragToolIndex = idx;
+            },
+
+            endToolDrag() {
+                if (this.dragToolIndex !== null && this._dragStartOrder) {
+                    var order = this.toolItems.map(function (t) { return t.key; });
+                    if (order.join() !== this._dragStartOrder.join()) {
+                        this.saveSetting('thu_tu_cong_cu');
+                    }
+                }
+                this.dragToolIndex = null;
+                this.dragArmed = false;
+                this._dragStartOrder = null;
+            },
+
+            toggleDarkMode() {
+                this.saveSetting('giao_dien_cai_dat_toi');
+                this.applyTheme();
+            },
+
+            applyTheme() {
+                var theme = this.settings.giao_dien_cai_dat_toi ? 'dark' : '';
+                document.documentElement.setAttribute('data-theme', theme);
+                if (window.parent !== window) {
+                    window.parent.postMessage({ action: 'set_theme', theme: theme }, '*');
+                }
+            },
+
+            postAction(action, data) {
+                if (window.parent !== window) {
+                    var msg = {action: action};
+                    if (data) Object.assign(msg, data);
+                    window.parent.postMessage(msg, '*');
+                }
+            },
+
+            validateGap(key) {
+                let n = parseFloat(this.settings[key]);
+                if (isNaN(n) || n < 0) n = 0;
+                this.settings[key] = parseFloat(n.toFixed(2));
+                this.saveSetting(key);
+            },
+
+            toggleGapLock() {
+                this.settings.tach_cach_le = !this.settings.tach_cach_le;
+                this.saveSetting('tach_cach_le');
+            },
+
+            loadSettings(settings) {
+                const self = this;
+                Object.keys(settings).forEach(function (key) {
+                    if (self.settings.hasOwnProperty(key)) {
+                        let value = settings[key];
+                        if (typeof value === 'string' && !isNaN(value) && value !== '') {
+                            value = parseFloat(value);
+                        }
+                        if (self.isColorKey(key) && typeof value === 'string') {
+                            value = value.split(',').map(v => parseInt(v.trim()));
+                        }
+                        self.settings[key] = value;
+                    }
+                });
+                this.applyTheme();
+            }
+        },
+        mounted() {
+            var self = this;
+            document.addEventListener('mouseup', function () {
+                self.dragArmed = false;
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

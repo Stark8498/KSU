@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Gắn nhãn</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/preload.js"></script>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="container">
+    <div class="col2">
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Tên mặc định</span>
+                <div class="text-input-group">
+                    <input type="text" v-model="settings.ten_mac_dinh"
+                           @change="saveSetting('ten_mac_dinh')"
+                           spellcheck="false" autocomplete="off">
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Tên đặt cho ván chưa có tên khi gắn nhãn.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Chuẩn hóa vật liệu</span>
+                <input type="checkbox" v-model="settings.chuan_hoa_vat_lieu"
+                       @change="saveSetting('chuan_hoa_vat_lieu')" id="chuan_hoa_vat_lieu">
+                <label class="switch-label" for="chuan_hoa_vat_lieu"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Chuẩn hóa chiều vân và cấp độ vật liệu theo nhãn.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Cập nhật nhãn đã có</span>
+                <input type="checkbox" v-model="settings.cap_nhat_nhan_da_co"
+                       @change="saveSetting('cap_nhat_nhan_da_co')" id="cap_nhat_nhan_da_co">
+                <label class="switch-label" for="cap_nhat_nhan_da_co"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Giữ nguyên mặt và góc xoay của nhãn đã có.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Nhãn đặt trong tấm</span>
+                <input type="checkbox" v-model="settings.nhan_dat_trong_tam"
+                       @change="saveSetting('nhan_dat_trong_tam')" id="nhan_dat_trong_tam">
+                <label class="switch-label" for="nhan_dat_trong_tam"></label>
+            </div>
+            <div class="switch">
+                <span>Kích thước nhãn</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('kich_thuoc_nhan', 5, 0)"
+                            :disabled="settings.kich_thuoc_nhan <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.kich_thuoc_nhan"
+                           @change="saveSetting('kich_thuoc_nhan')"
+                           @blur="validateScaleCommon"
+                           @keyup.enter="validateScaleCommon"
+                           min="0" max="10000" step="5">
+                    <button class="spinner-btn"
+                            @click="incrementValue('kich_thuoc_nhan', 5)"
+                            :disabled="settings.kich_thuoc_nhan >= 10000">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Chiều rộng chữ</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('chieu_rong_chu', 5, 10)"
+                            :disabled="settings.chieu_rong_chu <= 10">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.chieu_rong_chu"
+                           @change="saveSetting('chieu_rong_chu')"
+                           @blur="validateInt('chieu_rong_chu', 10, 200)"
+                           @keyup.enter="validateInt('chieu_rong_chu', 10, 200)"
+                           min="10" max="200" step="5">
+                    <button class="spinner-btn"
+                            @click="incrementValue('chieu_rong_chu', 5)"
+                            :disabled="settings.chieu_rong_chu >= 200">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Độ giãn chữ</span>
+                <div class="select-group">
+                    <select v-model.number="settings.do_gian_chu" @change="saveSetting('do_gian_chu')">
+                        <option :value="0.1">Thưa</option>
+                        <option :value="0">Vừa</option>
+                        <option :value="-0.1">Hẹp</option>
+                    </select>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Định dạng chữ</span>
+                <div class="select-group">
+                    <select v-model="settings.kieu_tieu_de" @change="saveSetting('kieu_tieu_de')">
+                        <option value="upper">AA</option>
+                        <option value="title">Aa</option>
+                        <option value="lower">aa</option>
+                        <option value="none">Không</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Tùy chỉnh chữ của nhãn.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Góc xoay nhãn</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('goc_xoay_nhan', 15, 1)"
+                            :disabled="settings.goc_xoay_nhan <= 1">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.goc_xoay_nhan"
+                           @change="saveSetting('goc_xoay_nhan')"
+                           @blur="validateInt('goc_xoay_nhan', 1, 359)"
+                           @keyup.enter="validateInt('goc_xoay_nhan', 1, 359)"
+                           min="1" max="359" step="15">
+                    <button class="spinner-btn"
+                            @click="incrementValue('goc_xoay_nhan', 15)"
+                            :disabled="settings.goc_xoay_nhan >= 359">+
+                    </button>
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Góc xoay mỗi lần nhấn Tab khi sửa nhãn.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Bỏ qua kích thước</span>
+                <input type="checkbox" v-model="settings.bo_qua_kich_thuoc"
+                       @change="saveSetting('bo_qua_kich_thuoc')" id="bo_qua_kich_thuoc">
+                <label class="switch-label" for="bo_qua_kich_thuoc"></label>
+            </div>
+            <div class="switch">
+                <span>Bỏ qua nét dựng</span>
+                <input type="checkbox" v-model="settings.bo_qua_net_dung"
+                       @change="saveSetting('bo_qua_net_dung')" id="bo_qua_net_dung">
+                <label class="switch-label" for="bo_qua_net_dung"></label>
+            </div>
+            <div class="switch">
+                <span>Bỏ qua chữ</span>
+                <input type="checkbox" v-model="settings.bo_qua_chu"
+                       @change="saveSetting('bo_qua_chu')" id="bo_qua_chu">
+                <label class="switch-label" for="bo_qua_chu"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Lọc đối tượng khi kiểm nhãn.</p>
+    </div>
+
+    <div id="preset-panel"></div>
+</div>
+
+<script>
+    Vue.config.productionTip = false;
+    Vue.config.devtools = false;
+    document.body.spellcheck = false;
+
+    new Vue({
+        el: '#app',
+        mixins: [SettingsMixin('gan_nhan')],
+        data: {
+            settings: {
+                ten_mac_dinh: "KSU",
+                chuan_hoa_vat_lieu: false,
+                cap_nhat_nhan_da_co: true,
+                nhan_dat_trong_tam: false,
+                kich_thuoc_nhan: 50,
+                chieu_rong_chu: 80,
+                do_gian_chu: -0.1,
+                kieu_tieu_de: "upper",
+                goc_xoay_nhan: 90,
+                bo_qua_kich_thuoc: false,
+                bo_qua_net_dung: false,
+                bo_qua_chu: false
+            }
+        },
+        methods: {
+            validateScaleCommon() {
+                let n = parseFloat(this.settings.kich_thuoc_nhan);
+                if (isNaN(n) || n < 0) n = 0;
+                if (n > 10000) n = 10000;
+                this.settings.kich_thuoc_nhan = parseFloat(n.toFixed(2));
+                this.saveSetting('kich_thuoc_nhan');
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

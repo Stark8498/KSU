@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Xếp hàng</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/preload.js"></script>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="container">
+    <div class="col2">
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Giới hạn độ dài hàng</span>
+                <input type="checkbox" v-model="settings.gioi_han_do_dai_hang"
+                       @change="saveSetting('gioi_han_do_dai_hang')" id="gioi_han_do_dai_hang">
+                <label class="switch-label" for="gioi_han_do_dai_hang"></label>
+            </div>
+            <div class="switch" v-show="settings.gioi_han_do_dai_hang">
+                <span>Số ván mỗi hàng</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementInt('so_van_moi_hang')"
+                            :disabled="settings.so_van_moi_hang <= 1">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.so_van_moi_hang"
+                           @change="saveSetting('so_van_moi_hang')"
+                           @blur="validateInt('so_van_moi_hang', 1, 100)"
+                           @keyup.enter="validateInt('so_van_moi_hang', 1, 100)"
+                           min="1" max="100" step="1">
+                    <button class="spinner-btn"
+                            @click="incrementInt('so_van_moi_hang', 100)"
+                            :disabled="settings.so_van_moi_hang >= 100">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch" v-show="settings.gioi_han_do_dai_hang">
+                <span>Tiền tố mỗi phần</span>
+                <div class="text-input-group">
+                    <input type="text" v-model="settings.hau_to_phan_manh"
+                           @change="saveSetting('hau_to_phan_manh')"
+                           spellcheck="false" autocomplete="off">
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Chia hàng dài thành nhiều hàng ngắn.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Tùy chỉnh khoảng cách</span>
+                <input type="checkbox" v-model="settings.tuy_chinh_khoang_cach"
+                       @change="saveSetting('tuy_chinh_khoang_cach')" id="tuy_chinh_khoang_cach">
+                <label class="switch-label" for="tuy_chinh_khoang_cach"></label>
+            </div>
+            <div class="switch" v-show="settings.tuy_chinh_khoang_cach">
+                <span>Giữa các hàng</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('giua_cac_hang', 10, 0)"
+                            :disabled="settings.giua_cac_hang <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.giua_cac_hang"
+                           @change="saveSetting('giua_cac_hang')"
+                           @blur="validateInt('giua_cac_hang', 0, 2000)"
+                           @keyup.enter="validateInt('giua_cac_hang', 0, 2000)"
+                           min="0" max="2000" step="10">
+                    <button class="spinner-btn"
+                            @click="incrementValue('giua_cac_hang', 10)"
+                            :disabled="settings.giua_cac_hang >= 2000">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch" v-show="settings.tuy_chinh_khoang_cach">
+                <span>Giữa các mặt</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('giua_cac_mat', 10, 0)"
+                            :disabled="settings.giua_cac_mat <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.giua_cac_mat"
+                           @change="saveSetting('giua_cac_mat')"
+                           @blur="validateInt('giua_cac_mat', 0, 2000)"
+                           @keyup.enter="validateInt('giua_cac_mat', 0, 2000)"
+                           min="0" max="2000" step="10">
+                    <button class="spinner-btn"
+                            @click="incrementValue('giua_cac_mat', 10)"
+                            :disabled="settings.giua_cac_mat >= 2000">+
+                    </button>
+                </div>
+            </div>
+            <div class="switch" v-show="settings.tuy_chinh_khoang_cach">
+                <span>Giữa các phần</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('giua_cac_phan', 10, 0)"
+                            :disabled="settings.giua_cac_phan <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.giua_cac_phan"
+                           @change="saveSetting('giua_cac_phan')"
+                           @blur="validateInt('giua_cac_phan', 0, 2000)"
+                           @keyup.enter="validateInt('giua_cac_phan', 0, 2000)"
+                           min="0" max="2000" step="10">
+                    <button class="spinner-btn"
+                            @click="incrementValue('giua_cac_phan', 10)"
+                            :disabled="settings.giua_cac_phan >= 2000">+
+                    </button>
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Khoảng hở dọc giữa các hàng, giữa hai mặt trước sau và giữa các phần của một hàng bị chia.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Xếp lại thứ tự hàng</span>
+                <input type="checkbox" v-model="settings.xep_lai_thu_tu_hang"
+                       @change="saveSetting('xep_lai_thu_tu_hang')" id="xep_lai_thu_tu_hang">
+                <label class="switch-label" for="xep_lai_thu_tu_hang"></label>
+            </div>
+            <div class="switch" v-show="settings.xep_lai_thu_tu_hang">
+                <span>Xếp từ dưới lên</span>
+                <input type="checkbox" v-model="settings.xep_tu_duoi_len"
+                       @change="saveSetting('xep_tu_duoi_len')" id="xep_tu_duoi_len">
+                <label class="switch-label" for="xep_tu_duoi_len"></label>
+            </div>
+            <div class="switch" v-show="settings.xep_lai_thu_tu_hang">
+                <span>Thứ tự theo</span>
+                <div class="select-group">
+                    <select v-model="settings.thu_tu_theo" @change="saveSetting('thu_tu_theo')">
+                        <option value="ten_van">Tên ván</option>
+                        <option value="do_day">Độ dày</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Sắp xếp lại thứ tự các hàng ván theo tên hoặc độ dày.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Hiển thị độ dày ván</span>
+                <input type="checkbox" v-model="settings.hien_do_day"
+                       @change="saveSetting('hien_do_day')" id="hien_do_day">
+                <label class="switch-label" for="hien_do_day"></label>
+            </div>
+            <div class="switch">
+                <span>Hiển thị số lượng ván</span>
+                <input type="checkbox" v-model="settings.hien_so_van"
+                       @change="saveSetting('hien_so_van')" id="hien_so_van">
+                <label class="switch-label" for="hien_so_van"></label>
+            </div>
+            <div class="switch" v-show="settings.hien_do_day || settings.hien_so_van">
+                <span>Cho phép xuống dòng</span>
+                <input type="checkbox" v-model="settings.cho_phep_xuong_dong"
+                       @change="saveSetting('cho_phep_xuong_dong')" id="cho_phep_xuong_dong">
+                <label class="switch-label" for="cho_phep_xuong_dong"></label>
+            </div>
+            <div class="switch">
+                <span>Xóa nhãn mặt sau</span>
+                <input type="checkbox" v-model="settings.xoa_nhan_mat_sau"
+                       @change="saveSetting('xoa_nhan_mat_sau')" id="xoa_nhan_mat_sau">
+                <label class="switch-label" for="xoa_nhan_mat_sau"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Tùy chỉnh tên nhãn của hàng.</p>
+    </div>
+
+    <div id="preset-panel"></div>
+</div>
+
+<script>
+    Vue.config.productionTip = false;
+    Vue.config.devtools = false;
+    document.body.spellcheck = false;
+
+    new Vue({
+        el: '#app',
+        mixins: [SettingsMixin('xep_hang')],
+        data: {
+            settings: {
+                gioi_han_do_dai_hang: false,
+                so_van_moi_hang: 10,
+                hau_to_phan_manh: 'P',
+                tuy_chinh_khoang_cach: true,
+                giua_cac_hang: 700,
+                giua_cac_mat: 350,
+                giua_cac_phan: 500,
+                xep_lai_thu_tu_hang: false,
+                xep_tu_duoi_len: false,
+                thu_tu_theo: 'ten_van',
+                hien_do_day: false,
+                hien_so_van: false,
+                cho_phep_xuong_dong: true,
+                xoa_nhan_mat_sau: true
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
