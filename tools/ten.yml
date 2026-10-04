@@ -289,9 +289,6 @@ ten:
   _7e6aad08: handler
 
   # Hex da nghia -- dat ten theo tung file, se bo sung dan khi doc cac file khac
-  _9535dc0b:
-    "ksu_vn/utils/isolate.rb": keep_list
-    ksu_vn/method/xuatdxf/entry.rb: ring
   _c31e3116:
     "ksu_vn/utils/isolate.rb": io
     "ksu_vn/system/update.rb": io
@@ -2294,9 +2291,6 @@ ten:
     ksu_vn/utils/cutting/detail.rb: factor
   _93bcf54e:
     ksu_vn/utils/cutting/detail.rb: flip
-  _b41d8800:
-    ksu_vn/utils/cutting/detail.rb: value
-    "ksu_vn/utils/label.rb#inner_rect": hole
 
   # ----- ME 61: method/xeptam/nfp.rb -- no-fit polygon va luoi bam -----
   # NFP cua mot cap hinh la tap vi tri ma hinh dong cham hinh dung; dat goc
@@ -2724,14 +2718,6 @@ ten:
     ksu_vn/utils/view.rb: dy
   _775466f2:
     ksu_vn/utils/view.rb: nlen
-  _c8573e56:
-    "ksu_vn/utils/view.rb#_c9d9f590": my
-  _3e7613f3:
-    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_x
-    "ksu_vn/utils/view.rb#_c9d9f590": ox
-  _9ba1a361:
-    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_y
-    "ksu_vn/utils/view.rb#_c9d9f590": oy
   _6facb951:
     ksu_vn/utils/view.rb: s
   _6a989d41:
@@ -2873,6 +2859,98 @@ ten:
     ksu_vn/method/xuatdxf/scan.rb: h
   _884dee16:
     ksu_vn/method/xuatdxf/scan.rb: flags
+
+  # ----- ME 73: method/xeptam/collide.rb -- NFP cua ca nhom dang keo -----
+  # Gop NFP cua nhom dang keo voi tung tam co dinh VA voi bon dai bao quanh
+  # vien van, roi union lai: vien hop nhat chinh la nhung cho dat duoc.
+  _5bb0f6d2: moving_span         # canh dai nhat cua nhom dang keo
+  _e1aa7d6a: ring
+
+  _24eac4c4:
+    ksu_vn/method/xeptam/collide.rb: obs
+  _80253039:
+    ksu_vn/method/xeptam/collide.rb: hole
+  _88817caf:
+    ksu_vn/method/xeptam/collide.rb: m_left
+  _5dc624bc:
+    ksu_vn/method/xeptam/collide.rb: m_right
+  _bee95155:
+    ksu_vn/method/xeptam/collide.rb: m_top
+  _08f8a9e0:
+    ksu_vn/method/xeptam/collide.rb: m_min
+  _ac6822d3:
+    ksu_vn/method/xeptam/collide.rb: edge_gap
+  _69887b79:
+    ksu_vn/method/xeptam/collide.rb: merged
+  _e8b69b47:
+    ksu_vn/method/xeptam/collide.rb: has_gap
+  _035baab0:
+    ksu_vn/method/xeptam/collide.rb: gap2sq
+  _77aba818:
+    ksu_vn/method/xeptam/collide.rb: worst
+  _0b24b753:
+    ksu_vn/method/xeptam/collide.rb: mag
+  _f8733e26:
+    ksu_vn/method/xeptam/collide.rb: moved_bb
+  _9535dc0b:
+    "ksu_vn/utils/isolate.rb": keep_list
+    ksu_vn/method/xuatdxf/entry.rb: ring
+    ksu_vn/method/xeptam/collide.rb: in_sel
+  _b41d8800:
+    ksu_vn/utils/cutting/detail.rb: value
+    "ksu_vn/utils/label.rb#inner_rect": hole
+    ksu_vn/method/xeptam/collide.rb: lo_x
+
+  # ----- ME 74: utils/cutting/loop.rb -- noi doan thang thanh vong kin -----
+  # Moi doan la mot canh giua hai nut; nut la toa do da lam tron. Di tu mot
+  # canh, den nga ba thi chon huong co cos goc lon nhat -- tuc re it nhat --
+  # nen vong di duoc luon la vong ngoai cung.
+  _be46bc4b: node_key
+  _3a1d2466: trace_loops
+  _e09fc2df: turn_score          # cos cua goc giua huong den va huong di
+  _e4213dae: len_in
+  _f26e0081: len_out
+  _7db17b8e: thin_face_corners   # bon goc cua mat mong nhat cua hop
+
+  _1bba05d9:
+    ksu_vn/utils/cutting/loop.rb: hull
+  _8c6c071c:
+    ksu_vn/utils/cutting/loop.rb: outer
+  _f22d37df:
+    ksu_vn/utils/cutting/loop.rb: sgn
+  _c0467335:
+    ksu_vn/utils/cutting/loop.rb: ka
+  _1544f6a8:
+    ksu_vn/utils/cutting/loop.rb: kb
+  _33affd20:
+    ksu_vn/utils/cutting/loop.rb: a
+  _721f7c5e:
+    ksu_vn/utils/cutting/loop.rb: b
+  _da2a7617:
+    ksu_vn/utils/cutting/loop.rb: cur
+  _b709b9f3:
+    ksu_vn/utils/cutting/loop.rb: came_from
+  _d41da264:
+    ksu_vn/utils/cutting/loop.rb: eix
+  _62179312:
+    ksu_vn/utils/cutting/loop.rb: nxt
+  _a923a024:
+    ksu_vn/utils/cutting/loop.rb: nix
+  _73618e8b:
+    ksu_vn/utils/cutting/loop.rb: cand
+  _e468bc35:
+    ksu_vn/utils/cutting/loop.rb: kx
+  _c8573e56:
+    "ksu_vn/utils/view.rb#_c9d9f590": my
+    ksu_vn/utils/cutting/loop.rb: dy_in
+  _3e7613f3:
+    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_x
+    "ksu_vn/utils/view.rb#_c9d9f590": ox
+    ksu_vn/utils/cutting/loop.rb: dx_out
+  _9ba1a361:
+    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_y
+    "ksu_vn/utils/view.rb#_c9d9f590": oy
+    ksu_vn/utils/cutting/loop.rb: dy_out
 
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.

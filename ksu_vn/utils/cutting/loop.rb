@@ -21,10 +21,10 @@ module KSU::Loop
       num = arr2.max_by { |arr| area(arr).abs }
       return num if num && num.length >= 3
     end
-    _1bba05d9 = hull_of(ents, tr)
-    return _1bba05d9 if _1bba05d9
+    hull = hull_of(ents, tr)
+    return hull if hull
     box = entity.definition.bounds
-    _7db17b8e(box).map { |i| box.corner(i).transform(transform) }
+    thin_face_corners(box).map { |i| box.corner(i).transform(transform) }
   rescue StandardError
     []
   end
@@ -58,12 +58,12 @@ module KSU::Loop
     return { outer: loops.first[:pts], holes: [] } if loops.length == 1
     arr3 = loops.select { |arr| arr[:outer] }
     flag = (arr3.empty? ? loops : arr3).max_by { |arr| arr[:area] }
-    _8c6c071c = flag[:pts]
-    _f22d37df = area(_8c6c071c)
+    outer = flag[:pts]
+    sgn = area(outer)
     holes = loops.reject { |arr| arr.equal?(flag) }.map do |arr|
-      area(arr[:pts]) * _f22d37df > 0 ? arr[:pts].reverse : arr[:pts]
+      area(arr[:pts]) * sgn > 0 ? arr[:pts].reverse : arr[:pts]
     end
-    { outer: _8c6c071c, holes: holes }
+    { outer: outer, holes: holes }
   rescue StandardError
     { outer: outer_pts(entity, transform), holes: [] }
   end
@@ -181,16 +181,16 @@ module KSU::Loop
     h2 = Hash.new { |h, k| h[k] = [] }
     h3 = {}
     segments.each_with_index do |poly, ix|
-      _c0467335 = _be46bc4b(poly[0])
-      _1544f6a8 = _be46bc4b(poly[1])
-      next if _c0467335 == _1544f6a8
-      h21[_c0467335] ||= poly[0]
-      h21[_1544f6a8] ||= poly[1]
-      h2[_c0467335] << [_1544f6a8, ix]
-      h2[_1544f6a8] << [_c0467335, ix]
-      h3[ix] = [_c0467335, _1544f6a8]
+      ka = node_key(poly[0])
+      kb = node_key(poly[1])
+      next if ka == kb
+      h21[ka] ||= poly[0]
+      h21[kb] ||= poly[1]
+      h2[ka] << [kb, ix]
+      h2[kb] << [ka, ix]
+      h3[ix] = [ka, kb]
     end
-    _3a1d2466(h21, h2, h3)
+    trace_loops(h21, h2, h3)
   end
   def collect_segments(container, gtr, segments)
     container.each do |entity|
@@ -206,52 +206,52 @@ module KSU::Loop
     end
     segments
   end
-  def _be46bc4b(pt)
+  def node_key(pt)
     "#{pt.x.round(4)},#{pt.y.round(4)},#{pt.z.round(4)}"
   end
-  def _3a1d2466(arr, arr7, arr8)
+  def trace_loops(arr, arr7, arr8)
     loops = []
     h = {}
-    arr8.each do |edge_ix, (_33affd20, _721f7c5e)|
+    arr8.each do |edge_ix, (a, b)|
       next if h[edge_ix]
-      arr2 = [_33affd20]
-      _da2a7617 = _33affd20
-      _b709b9f3 = nil
-      _d41da264 = edge_ix
+      arr2 = [a]
+      cur = a
+      came_from = nil
+      eix = edge_ix
       loop do
-        h[_d41da264] = true
-        arr2 << _721f7c5e
-        break if _721f7c5e == arr2.first
-        arr3 = arr7[_721f7c5e].reject { |_73618e8b, ix| h[ix] || _73618e8b == _b709b9f3 }
+        h[eix] = true
+        arr2 << b
+        break if b == arr2.first
+        arr3 = arr7[b].reject { |cand, ix| h[ix] || cand == came_from }
         break if arr3.empty?
         if arr3.length == 1
-          _62179312, _a923a024 = arr3.first
+          nxt, nix = arr3.first
         else
-          ix2 = arr[_721f7c5e].x - arr[_da2a7617].x
-          _c8573e56 = arr[_721f7c5e].y - arr[_da2a7617].y
-          _62179312, _a923a024 = arr3.max_by do |_e468bc35, _part|
-            _3e7613f3 = arr[_e468bc35].x - arr[_721f7c5e].x
-            _9ba1a361 = arr[_e468bc35].y - arr[_721f7c5e].y
-            _e09fc2df(ix2, _c8573e56, _3e7613f3, _9ba1a361)
+          ix2 = arr[b].x - arr[cur].x
+          dy_in = arr[b].y - arr[cur].y
+          nxt, nix = arr3.max_by do |kx, _part|
+            dx_out = arr[kx].x - arr[b].x
+            dy_out = arr[kx].y - arr[b].y
+            turn_score(ix2, dy_in, dx_out, dy_out)
           end
         end
-        _b709b9f3 = _da2a7617
-        _da2a7617 = _721f7c5e
-        _721f7c5e = _62179312
-        _d41da264 = _a923a024
+        came_from = cur
+        cur = b
+        b = nxt
+        eix = nix
       end
       next unless arr2.length >= 4
       next unless arr2.first == arr2.last
       arr4 = arr2[0..-2].map { |k| arr[k] }
       loops << arr4 if area(arr4).abs >= KSU::Const::LOOP_AREA_MIN
     end
-    loops.uniq { |arr6| arr6.map { |_23505ef9| _be46bc4b(_23505ef9) }.join("|") }
+    loops.uniq { |arr6| arr6.map { |_23505ef9| node_key(_23505ef9) }.join("|") }
   end
-  def _e09fc2df(ix, _c8573e56, _3e7613f3, _9ba1a361)
-    _e4213dae = Math.sqrt(ix * ix + _c8573e56 * _c8573e56)
-    _f26e0081 = Math.sqrt(_3e7613f3 * _3e7613f3 + _9ba1a361 * _9ba1a361)
-    return -Float::INFINITY if _e4213dae <= 1e-9 || _f26e0081 <= 1e-9
-    dot = (ix * _3e7613f3 + _c8573e56 * _9ba1a361) / (_e4213dae * _f26e0081)
+  def turn_score(ix, dy_in, dx_out, dy_out)
+    len_in = Math.sqrt(ix * ix + dy_in * dy_in)
+    len_out = Math.sqrt(dx_out * dx_out + dy_out * dy_out)
+    return -Float::INFINITY if len_in <= 1e-9 || len_out <= 1e-9
+    dot = (ix * dx_out + dy_in * dy_out) / (len_in * len_out)
     dot.nan? ? -Float::INFINITY : dot
   end
   def area(out)
@@ -264,7 +264,7 @@ module KSU::Loop
     end
     num * 0.5
   end
-  def _7db17b8e(box)
+  def thin_face_corners(box)
     dx = box.width.to_f
     dy = box.height.to_f
     dz = box.depth.to_f
