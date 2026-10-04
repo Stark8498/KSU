@@ -152,7 +152,7 @@ module KSU::Mirror
       _794181de = target_box(anchor, back_sheet, inst4, bb)
       next unless _794181de
       bb2, _1b6c344e = _794181de
-      tr = KSU::View._66e14707(partner, @nesting.transformation * back_sheet.transformation)
+      tr = KSU::View.panel_world_box(partner, @nesting.transformation * back_sheet.transformation)
       arr = panel_outline(partner, back_sheet)
       poly = arr ? arr[:outer] : outer_pts_of(partner, back_sheet)
       next if poly.length < 3

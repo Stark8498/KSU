@@ -3,7 +3,7 @@ module KSU::Postproc
   def start_optimize(flag = false)
     return if @progress
     stop_timer
-    groups = _e1ab909e
+    groups = sheets_by_stock
     if groups.empty?
       UI.messagebox("Không có sheet hợp lệ để tối ưu.")
       return
@@ -57,8 +57,8 @@ module KSU::Postproc
     sheet.definition.entities.grep(Sketchup::Group).any? { |g| KSU::Nesting.last_cut?(g) }
   end
   def run_sync(groups)
-    _d6f11a0e = run(groups)
-    @sel = (@sel + _d6f11a0e).select { |s| s && s.valid? }.uniq
+    moved = run(groups)
+    @sel = (@sel + moved).select { |s| s && s.valid? }.uniq
     KSU::View.clear_cache
     KSU::View.view&.invalidate
   rescue StandardError => ent
@@ -107,7 +107,7 @@ module KSU::Postproc
     @postpass_ended = false
     @sheet_cache = {}
     @h7 = {}
-    @_b933b59e = nil
+    @two_sided_ids = nil
     @in_tick = false
     id = nil
     id = UI.start_timer(0.15, true) { postpass_tick(id) }
@@ -126,12 +126,12 @@ module KSU::Postproc
     @postpass_ended = nil
     @sheet_cache = nil
     @h7 = nil
-    @_b933b59e = nil
+    @two_sided_ids = nil
   end
-  def postpass_tick(_ce79ae35 = nil)
-    if _ce79ae35 && @postpass_timer != _ce79ae35
+  def postpass_tick(timer = nil)
+    if timer && @postpass_timer != timer
       begin
-        UI.stop_timer(_ce79ae35)
+        UI.stop_timer(timer)
       rescue StandardError
       end
       return
@@ -202,7 +202,7 @@ module KSU::Postproc
   end
   def build_postpass_queue
     groups = []
-    _e1ab909e.each_value do |sheets|
+    sheets_by_stock.each_value do |sheets|
       arr = sheets.select { |s| s && s.valid? && !KSU::Sheet.hidden?(s) }
       groups << sort_by_x(arr) unless arr.empty?
     end
@@ -244,8 +244,8 @@ module KSU::Postproc
     deadline = Time.now + 0.5
     usable_w, usable_h = usable_size(target, gap_for)
     return :full unless usable_w && usable_h && usable_w > 0 && usable_h > 0
-    found = _aeea1f26(target, gap_for)
-    _6cab3dc0 = usable_w * usable_h * 25.4 * 25.4 - found.inject(0.0) { |s, ent| s + ent[:area] }
+    found = panels_on(target, gap_for)
+    free_area = usable_w * usable_h * 25.4 * 25.4 - found.inject(0.0) { |s, ent| s + ent[:area] }
     arr2 = movable_from_later(target, node, gap_for)
     @tried_keys ||= {}
     num = @try_resume_ix.to_i
@@ -257,10 +257,10 @@ module KSU::Postproc
       end
       arr = arr2[num]
       num += 1
-      next if _6cab3dc0 < arr[:area] - 1e-6
+      next if free_area < arr[:area] - 1e-6
       key = [arr[:p][:bw].round(4), arr[:p][:bh].round(4), !!arr[:p][:rotatable], arr[:kids].empty?]
       next if @tried_keys[key]
-      screen_box = _cc51eebc(found, arr[:p], usable_w, usable_h, arr[:kids].empty?)
+      screen_box = spot_for(found, arr[:p], usable_w, usable_h, arr[:kids].empty?)
       unless screen_box
         @tried_keys[key] = true
         next
@@ -277,12 +277,12 @@ module KSU::Postproc
     :full
   end
   def movable_from_later(target, node, gap_for)
-    _fb072f1a = node.index(target)
-    return [] unless _fb072f1a
+    ix = node.index(target)
+    return [] unless ix
     out = []
-    node[(_fb072f1a + 1)..].to_a.each do |src|
+    node[(ix + 1)..].to_a.each do |src|
       next unless src && src.valid?
-      parts = _aeea1f26(src, gap_for)
+      parts = panels_on(src, gap_for)
       cluster_parts(parts).each do |arr|
         next unless arr[:panels].all? { |normal_rgb| normal_rgb && normal_rgb.valid? }
         if arr[:entry]
@@ -298,9 +298,9 @@ module KSU::Postproc
     end
     out.sort_by { |color| -(color[:p][:bw] * color[:p][:bh]) }
   end
-  def do_move(_bd0102dd, gap_for)
+  def do_move(mv, gap_for)
     KSU.start
-    bbox = _086b9b67(_bd0102dd, gap_for)
+    bbox = place_move(mv, gap_for)
     KSU.commit
     !!bbox
   rescue StandardError
@@ -341,12 +341,12 @@ module KSU::Postproc
     return arr.first if arr.length == 1
     str2 = node ? movable_from_later(sheet, node, gap_for).first(12) : []
     best = arr.first
-    _488638cf = plan_score(sheet, gap_for, best, str2)
+    best_s = plan_score(sheet, gap_for, best, str2)
     arr[1..].each do |members|
       score = plan_score(sheet, gap_for, members, str2)
-      next unless score > _488638cf + 1e-6
+      next unless score > best_s + 1e-6
       best = members
-      _488638cf = score
+      best_s = score
     end
     best
   end
@@ -361,7 +361,7 @@ module KSU::Postproc
         ctrl[grp.entityID] = [arr3[:dx], arr3[:dy]]
       end
     end
-    arr4 = _aeea1f26(sheet, gap_for).map do |ent|
+    arr4 = panels_on(sheet, gap_for).map do |ent|
       len2d = ctrl[ent[:panel].entityID] || [0.0, 0.0]
       { lx: ent[:bx] + len2d[0], ly: ent[:by] + len2d[1], w: ent[:bw], h: ent[:bh] }
     end
@@ -403,7 +403,7 @@ module KSU::Postproc
         next
       end
       next if members.any? { |f| f[:two_sided] }
-      arr4 << _62eca5db(members)
+      arr4 << merge_group(members)
     end
     h = {}
     h2 = {}
@@ -417,17 +417,17 @@ module KSU::Postproc
         (h2[ent.object_id] ||= []) << f
       end
     end
-    _1614616b = nil
-    _1614616b = lambda do |_ddb19efd, _8b757da4|
-      (h2[_ddb19efd] || []).each do |f|
-        _8b757da4 << f
-        _1614616b.call(f.object_id, _8b757da4)
+    collect_kids = nil
+    collect_kids = lambda do |oid, acc|
+      (h2[oid] || []).each do |f|
+        acc << f
+        collect_kids.call(f.object_id, acc)
       end
-      _8b757da4
+      acc
     end
     solo.each do |ent|
       next if h[ent.object_id]
-      arr3 = _1614616b.call(ent.object_id, [])
+      arr3 = collect_kids.call(ent.object_id, [])
       next if ent[:two_sided] || arr3.any? { |f| f[:two_sided] }
       arr4 << {
         lead: ent[:panel],
@@ -438,7 +438,7 @@ module KSU::Postproc
     end
     arr4.sort_by { |arr5| -arr5[:area] }
   end
-  def _62eca5db(members)
+  def merge_group(members)
     bx2 = members.map { |f| f[:bx] }.min
     by2 = members.map { |f| f[:by] }.min
     bw2 = members.map { |f| f[:bx] + f[:bw] }.max - bx2
@@ -466,11 +466,11 @@ module KSU::Postproc
         f[:polygon].all? { |arr2| point_in_poly?([arr2[0] + dx, arr2[1] + dy], arr4) }
     end
   end
-  def _cc51eebc(found, arr, usable_w, usable_h, _c61e50a5)
+  def spot_for(found, arr, usable_w, usable_h, can_rotate)
     gap2 = @tam_cach_nhau.to_f
     arr4 = found.map { |ent| { lx: ent[:bx], ly: ent[:by], w: ent[:bw], h: ent[:bh] } }
     arr3 = [[arr[:bw], arr[:bh], 0]]
-    arr3 << [arr[:bh], arr[:bw], 90] if _c61e50a5 && @cho_phep_xoay && arr[:rotatable] && (arr[:bw] - arr[:bh]).abs > 1e-6
+    arr3 << [arr[:bh], arr[:bw], 90] if can_rotate && @cho_phep_xoay && arr[:rotatable] && (arr[:bw] - arr[:bh]).abs > 1e-6
     arr3.each do |w, h, rot|
       next if w > usable_w + 1e-6 || h > usable_h + 1e-6
       box = free_spot(arr4, w, h, usable_w, usable_h, gap2)
@@ -482,7 +482,7 @@ module KSU::Postproc
     return 0 unless @num5 && @num5 > 0
     [[(@done_count * 100 / @num5), 0].max, 100].min
   end
-  def _086b9b67(arr2, gap_for)
+  def place_move(arr2, gap_for)
     target = arr2[:target]
     screen_box = arr2[:box]
     rec = sheet_recs.find { |s| s[:instance] == target }
@@ -493,12 +493,12 @@ module KSU::Postproc
       flag = false
       (arr2[:kids] || []).each do |arr|
         next unless arr[:panel] && arr[:panel].valid?
-        _799e513f = {
+        spec = {
           panel: arr[:panel], source_sheet: arr2[:src], bbox: arr[:bbox],
           lx: screen_box[:lx] + (arr[:bx] - arr2[:refx]), ly: screen_box[:ly] + (arr[:by] - arr2[:refy]),
           w: arr[:bw], h: arr[:bh], rot: 0
         }
-        flag = true if place_panel(_799e513f, target, tr2, rec[:bbox], gap_for, root_tr)
+        flag = true if place_panel(spec, target, tr2, rec[:bbox], gap_for, root_tr)
       end
       return flag ? arr2[:panel] : nil
     end
@@ -510,68 +510,68 @@ module KSU::Postproc
     return nil unless bbox
     (arr2[:kids] || []).each do |arr|
       next unless arr[:panel] && arr[:panel].valid?
-      _799e513f = {
+      spec = {
         panel: arr[:panel], source_sheet: arr2[:src], bbox: arr[:bbox],
         lx: screen_box[:lx] + (arr[:bx] - arr2[:refx]), ly: screen_box[:ly] + (arr[:by] - arr2[:refy]),
         w: arr[:bw], h: arr[:bh], rot: 0
       }
-      place_panel(_799e513f, target, tr2, rec[:bbox], gap_for, root_tr)
+      place_panel(spec, target, tr2, rec[:bbox], gap_for, root_tr)
     end
     bbox
   end
-  def _aeea1f26(sheet, gap_for)
+  def panels_on(sheet, gap_for)
     key = sheet.entityID
     partner = @sheet_cache && @sheet_cache[key]
     return partner if partner
-    answer = _c5297436(sheet, gap_for)
+    answer = scan_panels(sheet, gap_for)
     @sheet_cache[key] = answer if @sheet_cache
     answer
   end
-  def _c5297436(sheet, gap_for)
+  def scan_panels(sheet, gap_for)
     rec = sheet_recs.find { |s| s[:instance] == sheet }
     return [] unless rec
     num = rec[:bbox].min.x.to_f
     num2 = rec[:bbox].min.y.to_f
     dx, dy = KSU::Sheet.edit_offset(sheet) || [0.0, 0.0]
-    _c9bc3f08 = num + [dx, 0.0].max
-    _1d9bcdf1 = num2 + [dy, 0.0].max
-    _5ae18fa7, _b4835d15 = KSU::Avail.gaps_for(sheet, gap_for)
-    _cce35269(sheet, rec).map do |pt|
-      loops = _0579a704(pt)
+    ox0 = num + [dx, 0.0].max
+    oy0 = num2 + [dy, 0.0].max
+    gx, gy = KSU::Avail.gaps_for(sheet, gap_for)
+    parts_of_sheet(sheet, rec).map do |pt|
+      loops = panel_loops(pt)
       holes = loops[1..] || []
       _5fb96e91 = poly_area(loops.first) - holes.inject(0.0) { |s, h| s + poly_area(h) }
-      _e66e2152, _c0711cd2 = _1998c7d5(pt)
+      pminx, pminy = panel_origin(pt)
       bbox = pt[:bbox]
       {
         panel: pt[:panel], sheet: pt[:sheet], bbox: bbox,
         two_sided: pt[:two_sided], rotatable: pt[:rotatable],
         polygon: loops.first, holes: holes, area: _5fb96e91,
-        x: (_e66e2152 - _c9bc3f08 - _5ae18fa7) * 25.4,
-        y: (_c0711cd2 - _1d9bcdf1 - _b4835d15) * 25.4,
-        bx: bbox.min.x.to_f - _c9bc3f08 - _5ae18fa7,
-        by: bbox.min.y.to_f - _1d9bcdf1 - _b4835d15,
+        x: (pminx - ox0 - gx) * 25.4,
+        y: (pminy - oy0 - gy) * 25.4,
+        bx: bbox.min.x.to_f - ox0 - gx,
+        by: bbox.min.y.to_f - oy0 - gy,
         bw: bbox.width.to_f, bh: bbox.height.to_f
       }
     end
   end
-  def _cce35269(sheet, rec)
+  def parts_of_sheet(sheet, rec)
     transform = rec[:transform]
     return collect_parts([sheet]) unless transform && @h7
-    @_b933b59e ||= KSU::Nesting.two_sided_set(@nesting)
+    @two_sided_ids ||= KSU::Nesting.two_sided_set(@nesting)
     out = []
     sheet.definition.entities.each do |panel|
       next unless _1a400713(panel)
       key = [sheet.entityID, panel.entityID, panel.transformation.to_a]
       slot = @h7[key]
       unless slot
-        slot = _3fe7c4d4(panel, sheet, transform, @_b933b59e)
+        slot = _3fe7c4d4(panel, sheet, transform, @two_sided_ids)
         @h7[key] = slot
       end
       out << slot
     end
     out
   end
-  def _0579a704(pt10)
+  def panel_loops(pt10)
     outer = pt10[:outer]
     unless outer && outer.length >= 3
       w = pt10[:w] * 25.4
@@ -589,7 +589,7 @@ module KSU::Postproc
     end
     loops
   end
-  def _1998c7d5(pt11)
+  def panel_origin(pt11)
     outer = pt11[:outer]
     if outer && outer.length >= 3
       [outer.map { |pt| pt.x.to_f }.min, outer.map { |pt| pt.y.to_f }.min]

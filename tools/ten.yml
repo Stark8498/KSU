@@ -2118,10 +2118,6 @@ ten:
   # goc van. Khong co nghia chung nao dat ten toan cuc duoc.
   _ca47420d:
     "ksu_vn/utils/sheet/bottom.rb#_f74b0a99": tr
-  _3e7613f3:
-    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_x
-  _9ba1a361:
-    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_y
   _ad02b761:
     "ksu_vn/utils/sheet/bottom.rb#_a9a86c81": slots
   _c99d52a7:
@@ -2229,8 +2225,6 @@ ten:
   _23505ef9:
     ksu_vn/method/chongbay.rb: rec
     "ksu_vn/utils/cutting.rb#_b344f39a": pt
-  _60000b16:
-    ksu_vn/method/chongbay.rb: y2
   _c723bcc4:
     ksu_vn/method/chongbay.rb: plan
   _d41bb15d:
@@ -2659,6 +2653,92 @@ ten:
     ksu_vn/utils/sheet/reorder.rb: lx
   _1dd94f2a:
     ksu_vn/utils/sheet/reorder.rb: ly
+
+  # ----- ME 67: method/toiuuvan/postproc.rb -- don not sau khi xep -----
+  # Thu chuyen tam tu van sau len van truoc: chi nhan neu dien tich con trong
+  # du cho, va cham diem truoc sau de xem co loi khong. Tam nam lot trong lo
+  # cua tam khac di theo tam me, de quy, nen moi chum chi dat mot lan.
+  _e1ab909e: sheets_by_stock
+  _aeea1f26: panels_on           # co dem theo entityID cua van
+  _c5297436: scan_panels
+  _cc51eebc: spot_for
+  _086b9b67: place_move
+  _62eca5db: merge_group
+  _0579a704: panel_loops
+  _1998c7d5: panel_origin
+  _cce35269: parts_of_sheet
+  _c61e50a5: can_rotate
+  _ce79ae35: timer
+  _ddb19efd: oid
+  _8b757da4: acc
+
+  _d6f11a0e:
+    ksu_vn/method/toiuuvan/postproc.rb: moved
+  _6cab3dc0:
+    ksu_vn/method/toiuuvan/postproc.rb: free_area
+  _fb072f1a:
+    ksu_vn/method/toiuuvan/postproc.rb: ix
+  _bd0102dd:
+    ksu_vn/method/toiuuvan/postproc.rb: mv
+  _799e513f:
+    ksu_vn/method/toiuuvan/postproc.rb: spec
+  _488638cf:
+    ksu_vn/method/toiuuvan/postproc.rb: best_s
+  _1614616b:
+    ksu_vn/method/toiuuvan/postproc.rb: collect_kids
+  _c9bc3f08:
+    ksu_vn/method/toiuuvan/postproc.rb: ox0
+  _1d9bcdf1:
+    ksu_vn/method/toiuuvan/postproc.rb: oy0
+  _5ae18fa7:
+    ksu_vn/method/toiuuvan/postproc.rb: gx
+  _b4835d15:
+    ksu_vn/method/toiuuvan/postproc.rb: gy
+  _e66e2152:
+    ksu_vn/method/toiuuvan/postproc.rb: pminx
+  _c0711cd2:
+    ksu_vn/method/toiuuvan/postproc.rb: pminy
+  _b933b59e:
+    ksu_vn/method/toiuuvan/postproc.rb: two_sided_ids
+
+  # ----- ME 68: utils/view.rb -- bon tay nam o canh van -----
+  # Moi canh mot hinh binh hanh ve bang GL_QUADS, dung tren toa do MAN HINH:
+  # bon goc van cho canh trong, bon goc da day ra cho canh ngoai, hieu hai
+  # cai cho ra phap tuyen huong ra ngoai de dat tay nam.
+  _49bdeaba: screen_pair         # [goc trong, goc da day ra], ca hai da ve man hinh
+  _c9d9f590: edge_frame          # [mx, my, dx, dy, nx, ny] cua canh i
+  _ff87db56: handle_quad
+  _66e14707: panel_world_box     # uu tien bao cua cutting group neu co
+
+  _fe2b89ec:
+    ksu_vn/utils/view.rb: half
+  _a1bf6a3a:
+    ksu_vn/utils/view.rb: depth2
+  _1d34ab11:
+    ksu_vn/utils/view.rb: inner
+  _82825d9e:
+    ksu_vn/utils/view.rb: dx
+  _1608dd7e:
+    ksu_vn/utils/view.rb: dy
+  _775466f2:
+    ksu_vn/utils/view.rb: nlen
+  _c8573e56:
+    "ksu_vn/utils/view.rb#_c9d9f590": my
+  _3e7613f3:
+    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_x
+    "ksu_vn/utils/view.rb#_c9d9f590": ox
+  _9ba1a361:
+    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_y
+    "ksu_vn/utils/view.rb#_c9d9f590": oy
+  _6facb951:
+    ksu_vn/utils/view.rb: s
+  _6a989d41:
+    ksu_vn/utils/view.rb: tf
+  _60000b16:
+    ksu_vn/method/chongbay.rb: y2
+    "ksu_vn/utils/view.rb#_23ea970c": y2
+    "ksu_vn/utils/view.rb#_b9fdc2d5": y2
+    "ksu_vn/utils/view.rb#_e519e18d": y2
 
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.

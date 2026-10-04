@@ -1,6 +1,6 @@
 module KSU::Back
   private
-  def _e1ab909e
+  def sheets_by_stock
     groups = Hash.new { |h, k| h[k] = [] }
     @sel.each do |sheet|
       next unless sheet && sheet.valid?
@@ -44,7 +44,7 @@ module KSU::Back
   end
   def _a7fa30d2(panel, sheet, _74c34b47)
     tr = @nesting.transformation * sheet.transformation
-    center = KSU::View._66e14707(panel, tr).center
+    center = KSU::View.panel_world_box(panel, tr).center
     rad = -_74c34b47 * Math::PI / 180.0
     tr2 = Geom::Transformation.rotation(center, Z_AXIS, rad)
     panel.transformation = tr.inverse * tr2 * tr * panel.transformation
@@ -121,9 +121,9 @@ module KSU::Back
     grp3.transformation = Geom::Transformation.translation(tr2) * grp3.transformation
   end
   def _cc53f14a(panel, _6a989d41)
-    return KSU::View._66e14707(panel, _6a989d41) unless @tach_nhom_2_mat && @tu_dong_sua_vi_tri
+    return KSU::View.panel_world_box(panel, _6a989d41) unless @tach_nhom_2_mat && @tu_dong_sua_vi_tri
     poly = KSU::Cutting.cut_outline(panel, _6a989d41 * panel.transformation)
-    return KSU::View._66e14707(panel, _6a989d41) unless poly && poly.length >= 3
+    return KSU::View.panel_world_box(panel, _6a989d41) unless poly && poly.length >= 3
     bbox = Geom::BoundingBox.new
     poly.each { |_23505ef9| bbox.add(_23505ef9) }
     bbox

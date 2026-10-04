@@ -16,25 +16,25 @@ module KSU::View
   end
   def self.compute_sig(nesting)
     return nil unless nesting && nesting.valid?
-    tr = [nesting.entityID, nesting.transformation.to_a.hash]
+    acc = [nesting.entityID, nesting.transformation.to_a.hash]
     nesting.definition.entities.each do |sheet|
       next unless KSU.container?(sheet)
       next unless sheet.name.to_s.downcase.include?("sheet")
-      tr << sheet.entityID
-      tr << sheet.transformation.to_a.hash
+      acc << sheet.entityID
+      acc << sheet.transformation.to_a.hash
       sheet.definition.entities.each do |panel|
         next unless KSU.container?(panel)
-        tr << panel.entityID
-        tr << panel.transformation.to_a.hash
+        acc << panel.entityID
+        acc << panel.transformation.to_a.hash
         grp2 = panel.respond_to?(:definition) ? panel.definition : nil
         next unless grp2
-        tr << grp2.entityID
-        tr << grp2.entities.size
-        tr << grp2.bounds.min.to_a.hash
-        tr << grp2.bounds.max.to_a.hash
+        acc << grp2.entityID
+        acc << grp2.entities.size
+        acc << grp2.bounds.min.to_a.hash
+        acc << grp2.bounds.max.to_a.hash
       end
     end
-    tr.hash
+    acc.hash
   end
   class TransactionObserver < Sketchup::ModelObserver
     def onTransactionUndo(model)
@@ -226,20 +226,20 @@ module KSU::View
     [arr.min, arr.max, arr2.min, arr2.max, scr.map(&:z).max]
   end
   def self.center_of(scr)
-    x1, x2, y1, _60000b16, z = extents(scr)
-    Geom::Point3d.new((x1 + x2) / 2.0, (y1 + _60000b16) / 2.0, z)
+    x1, x2, y1, y2, z = extents(scr)
+    Geom::Point3d.new((x1 + x2) / 2.0, (y1 + y2) / 2.0, z)
   end
   def self.draw_outline(scr, color)
     return unless scr
     draw_band(scr, thickness: 50.mm.to_f, position: :outside, color: color)
   end
-  def self.draw_rect2d(view, x1, y1, x2, _60000b16, stipple: "")
+  def self.draw_rect2d(view, x1, y1, x2, y2, stipple: "")
     return unless x1 && x2
     draw_polygon2d(view, [
       Geom::Point3d.new(x1, y1, 0),
       Geom::Point3d.new(x2, y1, 0),
-      Geom::Point3d.new(x2, _60000b16, 0),
-      Geom::Point3d.new(x1, _60000b16, 0),
+      Geom::Point3d.new(x2, y2, 0),
+      Geom::Point3d.new(x1, y2, 0),
     ], stipple: stipple)
   end
   def self.unit_to(a, b)
@@ -332,17 +332,17 @@ module KSU::View
       cd1, cd2 = corner_dirs(scr, i)
       px = c.x - (cd1[0] + cd2[0]) * inset
       py = c.y - (cd1[1] + cd2[1]) * inset
-      _6facb951 = (x - px) * cd1[0] + (y - py) * cd1[1]
+      s = (x - px) * cd1[0] + (y - py) * cd1[1]
       v = (x - px) * cd2[0] + (y - py) * cd2[1]
-      return i if _6facb951 >= -pad_x && v >= -pad_x && _6facb951 <= arm + pad_x && v <= arm + pad_x
+      return i if s >= -pad_x && v >= -pad_x && s <= arm + pad_x && v <= arm + pad_x
     end
     nil
   end
-  def self._c9d9f590(arr, outer, i)
+  def self.edge_frame(arr, outer, i)
     ix = (arr[i].x + arr[(i + 1) % 4].x) * 0.5
-    _c8573e56 = (arr[i].y + arr[(i + 1) % 4].y) * 0.5
-    _3e7613f3 = (outer[i].x + outer[(i + 1) % 4].x) * 0.5
-    _9ba1a361 = (outer[i].y + outer[(i + 1) % 4].y) * 0.5
+    my = (arr[i].y + arr[(i + 1) % 4].y) * 0.5
+    ox = (outer[i].x + outer[(i + 1) % 4].x) * 0.5
+    oy = (outer[i].y + outer[(i + 1) % 4].y) * 0.5
     rx = outer[(i + 1) % 4].x - outer[i].x
     ry = outer[(i + 1) % 4].y - outer[i].y
     len = Math.sqrt(rx * rx + ry * ry)
@@ -350,72 +350,72 @@ module KSU::View
     num2 = rx / len
     num = ry / len
     return nil if num2.abs > num.abs
-    nx = _3e7613f3 - ix
-    ny = _9ba1a361 - _c8573e56
-    _775466f2 = Math.sqrt(nx * nx + ny * ny)
-    if _775466f2 < 1e-6
+    nx = ox - ix
+    ny = oy - my
+    nlen = Math.sqrt(nx * nx + ny * ny)
+    if nlen < 1e-6
       nx = -num
       ny = num2
     else
-      nx /= _775466f2
-      ny /= _775466f2
+      nx /= nlen
+      ny /= nlen
     end
-    [_3e7613f3, _9ba1a361, num2, num, nx, ny]
+    [ox, oy, num2, num, nx, ny]
   end
-  def self._ff87db56(g, _fe2b89ec, _a1bf6a3a)
-    bx2, by2, _82825d9e, _1608dd7e, nx, ny = g
+  def self.handle_quad(g, half, depth2)
+    bx2, by2, dx, dy, nx, ny = g
     [
-      Geom::Point3d.new(bx2 - _82825d9e * _fe2b89ec + nx * _a1bf6a3a, by2 - _1608dd7e * _fe2b89ec + ny * _a1bf6a3a, 0),
-      Geom::Point3d.new(bx2 + _82825d9e * _fe2b89ec + nx * _a1bf6a3a, by2 + _1608dd7e * _fe2b89ec + ny * _a1bf6a3a, 0),
-      Geom::Point3d.new(bx2 + _82825d9e * _fe2b89ec, by2 + _1608dd7e * _fe2b89ec, 0),
-      Geom::Point3d.new(bx2 - _82825d9e * _fe2b89ec, by2 - _1608dd7e * _fe2b89ec, 0),
+      Geom::Point3d.new(bx2 - dx * half + nx * depth2, by2 - dy * half + ny * depth2, 0),
+      Geom::Point3d.new(bx2 + dx * half + nx * depth2, by2 + dy * half + ny * depth2, 0),
+      Geom::Point3d.new(bx2 + dx * half, by2 + dy * half, 0),
+      Geom::Point3d.new(bx2 - dx * half, by2 - dy * half, 0),
     ]
   end
-  def self._49bdeaba(view, corners)
+  def self.screen_pair(view, corners)
     pt = corners.map { |_23505ef9| view.screen_coords(_23505ef9) }
     outer = expand_corners(corners).map { |_23505ef9| view.screen_coords(_23505ef9) }
     [pt, outer]
   end
   def self.draw_corner_handles(view, corners, color: nil)
-    _1d34ab11, outer = _49bdeaba(view, corners)
+    inner, outer = screen_pair(view, corners)
     scale = screen_scale(view, corners[0])
-    _fe2b89ec = KSU::Const::EDGE_HALF_MM * scale
-    _a1bf6a3a = KSU::Const::EDGE_THICK_MM * scale
+    half = KSU::Const::EDGE_HALF_MM * scale
+    depth2 = KSU::Const::EDGE_THICK_MM * scale
     view.line_stipple = ""
     view.line_width = 1
     view.drawing_color = color || edge_color
     4.times do |i|
-      g = _c9d9f590(_1d34ab11, outer, i)
+      g = edge_frame(inner, outer, i)
       next unless g
-      _2ea74b89 = _ff87db56(g, _fe2b89ec, _a1bf6a3a)
+      _2ea74b89 = handle_quad(g, half, depth2)
       view.draw2d(GL_QUADS, _2ea74b89) if block_given? && yield(i)
       view.draw2d(GL_LINE_LOOP, _2ea74b89)
     end
   end
   def self.edge_hit(view, corners, x, y, pad: KSU::Const::EDGE_PAD_MM)
-    _1d34ab11, outer = _49bdeaba(view, corners)
+    inner, outer = screen_pair(view, corners)
     scale = screen_scale(view, corners[0])
-    _fe2b89ec = KSU::Const::EDGE_HALF_MM * scale
-    _a1bf6a3a = KSU::Const::EDGE_THICK_MM * scale
+    half = KSU::Const::EDGE_HALF_MM * scale
+    depth2 = KSU::Const::EDGE_THICK_MM * scale
     pad_x = pad * scale
     4.times do |i|
-      g = _c9d9f590(_1d34ab11, outer, i)
+      g = edge_frame(inner, outer, i)
       next unless g
-      bx2, by2, _82825d9e, _1608dd7e, nx, ny = g
-      thick = (x - bx2) * _82825d9e + (y - by2) * _1608dd7e
+      bx2, by2, dx, dy, nx, ny = g
+      thick = (x - bx2) * dx + (y - by2) * dy
       s = (x - bx2) * nx + (y - by2) * ny
-      return i if thick.abs <= _fe2b89ec + pad_x && s >= -pad_x && s <= _a1bf6a3a + pad_x
+      return i if thick.abs <= half + pad_x && s >= -pad_x && s <= depth2 + pad_x
     end
     nil
   end
-  def self._66e14707(panel, _6a989d41)
+  def self.panel_world_box(panel, tf)
     cutting = KSU::Cutting.cutting_group(panel)
     if cutting && cutting.valid?
       bb = cutting.bounds
-      world_tr = _6a989d41 * panel.transformation
+      world_tr = tf * panel.transformation
     else
       bb = panel.bounds
-      world_tr = _6a989d41
+      world_tr = tf
     end
     KSU::Geom.world_box(bb, world_tr)
   end
@@ -430,8 +430,8 @@ module KSU::View
     out
   end
   def self.button_center(rec)
-    x1, x2, y1, _60000b16, z = extents(rec[:top_corners])
-    Geom::Point3d.new((x1 + x2) / 2.0, _60000b16 + 200.mm, z)
+    x1, x2, y1, y2, z = extents(rec[:top_corners])
+    Geom::Point3d.new((x1 + x2) / 2.0, y2 + 200.mm, z)
   end
   def self.in_rect?(x, y, rect)
     x >= rect[:left] && x <= rect[:right] && y >= rect[:top] && y <= rect[:bottom]

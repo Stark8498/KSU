@@ -4,21 +4,21 @@ module KSU::Thongke::Tonghop
     "Mã 1", "Mã 2", "Mã 3",
   ].freeze
   def self.list_edgeband(arr3)
-    h = {}
+    acc = {}
     arr3.each do |rec|
       rec[:edgeband_lengths].each do |k, v|
         key = [k, rec[:material].to_s, rec[:thickness]]
-        h[key] ||= {
+        acc[key] ||= {
           thickness: rec[:edgeband_thickness].fetch(k, 0),
           name: rec[:edgeband_base][k].to_s,
           material: rec[:material].to_s,
           board_thickness: rec[:thickness],
           quantity: 0,
         }
-        h[key][:quantity] += v
+        acc[key][:quantity] += v
       end
     end
-    arr2 = h.values.each { |fld| fld[:quantity] = KSU::Thongke.round_len(fld[:quantity]) }
+    arr2 = acc.values.each { |fld| fld[:quantity] = KSU::Thongke.round_len(fld[:quantity]) }
     arr2.sort_by { |fld| [fld[:name].to_s, fld[:material].to_s, fld[:board_thickness].to_f] }
   end
   def self.list_sheet(scope)

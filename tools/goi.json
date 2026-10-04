@@ -1622,7 +1622,7 @@
   },
   {
    "ns": "KSU::View",
-   "m": "_66e14707",
+   "m": "panel_world_box",
    "f": "ksu_vn/method/toiuuvan/back.rb",
    "l": 47
   },

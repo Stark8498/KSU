@@ -194,7 +194,7 @@ module KSU::Optimize
     true
   end
   def _3fe7c4d4(panel, sheet, sheet_tr, two_sided_flags)
-    bbox = KSU::View._66e14707(panel, sheet_tr)
+    bbox = KSU::View.panel_world_box(panel, sheet_tr)
     fill = KSU::Cutting.outline(panel, sheet_tr * panel.transformation)
     holes = fill && fill[:holes] && !fill[:holes].empty? ? fill[:holes] : nil
     outer = fill && fill[:outer] && fill[:outer].length >= 3 ? fill[:outer] : nil
