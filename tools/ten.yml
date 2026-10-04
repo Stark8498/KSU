@@ -2552,6 +2552,114 @@ ten:
   _b4ae88a5:
     ksu_vn/method/xeptam.rb: mm
 
+  # ----- ME 65: method/xeptam/push.rb -- don tam ve mot phia -----
+  # Mui ten: dua moi nhom tam sat ve mot canh chung, roi dong khe ho con lai
+  # bang cach cho tung nhom truot den khi cham -- quet 48 buoc tim khoang
+  # chua cham, roi chia doi 24 lan trong khoang do.
+  _2bff4638: align_side
+  _e099da59: free_slide          # truot duoc bao xa truoc khi cham
+  _5dc6e713: inset_poly          # thu vao bang Clipper, de bu khe ho
+  _d1eefbfb: local_move          # vector the gioi -> phep tinh tien cuc bo cua van
+  _c7b0bc62: world_box           # hai ban: (bounds, tf) o geom.rb, (panel, sheet) o day
+  _af0cebe5: overlap?
+  _4237de17: escape_dir
+  # Khong phai partner: tra ve vien cua nhung tam DANG CO VAN DE tren van
+  # do -- sat le qua, hoac chong len tam khac -- de ve canh bao.
+  _726c65ba: clash_fills
+  _9a88c1a2:
+    ksu_vn/utils/geom.rb: tf
+
+  _13b5e235:
+    ksu_vn/method/xeptam/push.rb: free_at
+  _8a2a4def:
+    ksu_vn/method/xeptam/push.rb: d
+  _7f4cfb48:
+    ksu_vn/method/xeptam/push.rb: others
+  _9ba5a7e0:
+    ksu_vn/method/xeptam/push.rb: other
+  _32c9a9b9:
+    ksu_vn/method/xeptam/push.rb: horiz
+  _7ddb69ec:
+    ksu_vn/method/xeptam/push.rb: want
+  _9acecc6a:
+    ksu_vn/method/xeptam/push.rb: got
+  _9708309a:
+    ksu_vn/method/xeptam/push.rb: hi_u
+  _1c4e86f2:
+    ksu_vn/method/xeptam/push.rb: gi
+  _2e113abe:
+    ksu_vn/method/xeptam/push.rb: small
+  _982c8eb9:
+    ksu_vn/method/xeptam/push.rb: small2
+  _33f52d3e:
+    ksu_vn/method/xeptam/push.rb: hole
+  _3e1d5f51:
+    ksu_vn/method/xeptam/push.rb: hole2
+  _f38e85e6:
+    ksu_vn/method/xeptam/push.rb: sel_bb
+  _6a5c7d09:
+    ksu_vn/method/xeptam/push.rb: hull
+  _b1981961:
+    ksu_vn/method/xeptam/push.rb: partners
+
+  # ----- ME 66: utils/sheet/reorder.rb -- xep van thanh hang va ghi nhan hang -----
+  # Cac nhan deu la DimensionLinear khong mui ten, phan biet nhau bang thuoc
+  # tinh KSU con sot: "sheet-label" duoi tung van, "row-label" dau moi hang.
+  _babc606e: add_sheet_label     # attr KSU "sheet-label"
+  _edd17adf: add_row_label       # attr KSU "row-label"
+  _45dac008: add_bottom_label
+  _06da7172: row_caption
+  _a7dc970c: thickness_text      # 12.0 -> "12mm"
+  _f4f71a73: material_text
+  _c989e8e4: part_no_of          # `part_of` da thuoc nesting/collect.rb
+  _bd935f02: strip_thickness     # bo duoi "-12mm" o cuoi ten
+  _ef09a8a7: pad_id
+  _1e94f865: show_th
+  _f35ddd0a: show_count
+  _91035266: wrap
+  _ad1ad2d8: th_txt
+
+  _dcd13e53:
+    ksu_vn/utils/sheet/reorder.rb: row_h
+  _c9b1448a:
+    ksu_vn/utils/sheet/reorder.rb: custom
+  _6baff1da:
+    ksu_vn/utils/sheet/reorder.rb: gap_row
+  _3a4c25ca:
+    ksu_vn/utils/sheet/reorder.rb: gap_face
+  _88097773:
+    ksu_vn/utils/sheet/reorder.rb: gap_part
+  _ab80cc5b:
+    ksu_vn/utils/sheet/reorder.rb: prev_type
+  _7bc2ff7d:
+    ksu_vn/utils/sheet/reorder.rb: total_h
+  _865b7251:
+    ksu_vn/utils/sheet/reorder.rb: th_on
+  _620ee4af:
+    ksu_vn/utils/sheet/reorder.rb: num_on
+  _8be1afcd:
+    ksu_vn/utils/sheet/reorder.rb: wrap_on
+  _c2afcd7c:
+    ksu_vn/utils/sheet/reorder.rb: drop_back
+  _5bf9a6dd:
+    ksu_vn/utils/sheet/reorder.rb: bot_id
+  _02493448:
+    ksu_vn/utils/sheet/reorder.rb: next_id
+  _c7528123:
+    ksu_vn/utils/sheet/reorder.rb: k
+  _14ea4fab:
+    ksu_vn/utils/sheet/reorder.rb: pi
+  _bdf6b67b:
+    ksu_vn/utils/sheet/reorder.rb: ix
+  _cea5e419:
+    ksu_vn/utils/sheet/reorder.rb: col
+  _463aada7:
+    ksu_vn/utils/sheet/reorder.rb: by
+  _d141766a:
+    ksu_vn/utils/sheet/reorder.rb: lx
+  _1dd94f2a:
+    ksu_vn/utils/sheet/reorder.rb: ly
+
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.
 # Moi dong duoi day la mot hex da thua mot tu cho hex khac dung nhieu
@@ -2711,7 +2819,6 @@ bo:
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,
   # hoac voi mot dinh danh chua bi lam roi. Gop lai la mat mot thu. Chung
   # cho dot dat ten THEO PHAM VI; tu gio den do cu de nguyen hex.
-  - _2bff4638
   - _727b63c7
   - _7c10a028
   - _884dee16

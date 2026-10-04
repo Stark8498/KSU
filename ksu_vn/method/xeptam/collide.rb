@@ -398,7 +398,7 @@ module KSU::Collide
       @outlines[panel.object_id] = pts
     end
   end
-  def _af0cebe5(poly_a, poly_b, gap2)
+  def overlap?(poly_a, poly_b, gap2)
     return KSU::Method.polygons_overlap?(poly_a, poly_b, gap2) if @flag15
     num = poly_a.size
     num2 = poly_b.size
@@ -432,7 +432,7 @@ module KSU::Collide
     end
     false
   end
-  def _4237de17(arr4, pt2)
+  def escape_dir(arr4, pt2)
     inst5 = arr4[:instance]
     arr3 = obstacles_of(inst5)
     return nil unless arr3
@@ -484,7 +484,7 @@ module KSU::Collide
           next
         end
         next unless KSU::Geom.boxes_overlap?(_f8733e26, fld[:bbox], @tam_cach_nhau)
-        next unless _af0cebe5(bbox, fld[:poly], @tam_cach_nhau)
+        next unless overlap?(bbox, fld[:poly], @tam_cach_nhau)
         pt = KSU::Geom.sat_mtv(bbox, fld[:poly], @tam_cach_nhau)
         next unless pt
         _0b24b753 = Math.sqrt(pt.x * pt.x + pt.y * pt.y)

@@ -308,10 +308,10 @@ class KSU::Xeptam
     end
     if @sel.length >= 2
       case key
-      when VK_LEFT then _2bff4638(:left)
-      when VK_RIGHT then _2bff4638(:right)
-      when VK_UP then _2bff4638(:top)
-      when VK_DOWN then _2bff4638(:bottom)
+      when VK_LEFT then align_side(:left)
+      when VK_RIGHT then align_side(:right)
+      when VK_UP then align_side(:top)
+      when VK_DOWN then align_side(:bottom)
       else return
       end
     end

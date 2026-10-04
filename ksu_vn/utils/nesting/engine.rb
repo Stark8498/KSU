@@ -163,13 +163,13 @@ module KSU::Nesting
     def load_html
       str2 = File.expand_path("../../html", __dir__)
       normal = "file:///" + str2.gsub("\\", "/") + "/"
-      str = Time.now.to_i.to_s
+      th_txt = Time.now.to_i.to_s
       build_html = "<!DOCTYPE html><html><head>" \
                 "<meta charset=\"utf-8\">" \
                 "<meta http-equiv=\"Cache-Control\" content=\"no-cache, no-store, must-revalidate\">" \
                 "<base href=\"#{normal}\">" \
-                "<script src=\"js/clip.js?v=#{str}\"></script>" \
-                "<script src=\"js/geo.js?v=#{str}\"></script>" \
+                "<script src=\"js/clip.js?v=#{th_txt}\"></script>" \
+                "<script src=\"js/geo.js?v=#{th_txt}\"></script>" \
                 "<script>#{ENGINE_JS}</script>" \
                 "</head><body></body></html>"
       @flag20 = false

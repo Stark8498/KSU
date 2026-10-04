@@ -842,7 +842,7 @@ class KSU::Chongbay
         next unless KSU::Sheet.panel?(panel)
         next if skip_panel?(panel)
         panel_tr = transform * panel.transformation
-        bbox = KSU::Geom._c7b0bc62(panel.definition.bounds, panel_tr)
+        bbox = KSU::Geom.world_box(panel.definition.bounds, panel_tr)
         fill = KSU::Cutting.outline(panel, panel_tr)
         polygon = fill[:outer]
         holes = fill[:holes] || []

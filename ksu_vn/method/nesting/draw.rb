@@ -28,7 +28,7 @@ module KSU::Draw
       model.active_layer = layer0 if layer0 && model.active_layer != layer0
       ensure_root(model)
       strip_y = -(@_3cc0311c + job[:slots]) * (@h + KSU::Const::SHEET_V_PADDING)
-      KSU::Sheet._edd17adf(@root.entities, job[:type][:name], strip_y, @h)
+      KSU::Sheet.add_row_label(@root.entities, job[:type][:name], strip_y, @h)
       @drawn_panels = []
       @drawn_sheets = []
       arr2 = []
@@ -99,7 +99,7 @@ module KSU::Draw
     grp.set_attribute("ABF", "sheet-dimension", [cfg[:sheet_w], cfg[:sheet_h]])
     add_border(grp)
     grp.transformation = grp.transformation * Geom::Transformation.translation([ox, oy, 0])
-    KSU::Sheet._babc606e(root.entities, grp, sheet_ix, @w, sheet_label(sheet_ix))
+    KSU::Sheet.add_sheet_label(root.entities, grp, sheet_ix, @w, sheet_label(sheet_ix))
     @drawn_sheets << grp
     arr2 = []
     h = {}
@@ -118,7 +118,7 @@ module KSU::Draw
     return [grp, false] if arr2.empty?
     bottom = draw_bottom_sheet(root, sheet_type, arr2, name, sheet_ix, ox, oy, cfg)
     @drawn_sheets << bottom
-    KSU::Sheet._babc606e(root.entities, bottom, sheet_ix, @w, sheet_label(sheet_ix))
+    KSU::Sheet.add_sheet_label(root.entities, bottom, sheet_ix, @w, sheet_label(sheet_ix))
     [grp, true]
   end
   def group_pairs(arr)

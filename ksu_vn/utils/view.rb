@@ -417,11 +417,11 @@ module KSU::View
       bb = panel.bounds
       world_tr = _6a989d41
     end
-    KSU::Geom._c7b0bc62(bb, world_tr)
+    KSU::Geom.world_box(bb, world_tr)
   end
   def self.panel_bbox(panel)
     return Geom::BoundingBox.new unless panel && panel.valid?
-    KSU::Geom._c7b0bc62(panel.definition.bounds, panel.transformation)
+    KSU::Geom.world_box(panel.definition.bounds, panel.transformation)
   end
   def self.offset_bbox(bbox, vec)
     out = Geom::BoundingBox.new
