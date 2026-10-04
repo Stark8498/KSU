@@ -18,7 +18,7 @@ chỉ nói phần KSU, và nói rõ chỗ nào **khác** ZSU.
 
 ---
 
-## 1. Hiện trạng — giải mã đã xong, đặt tên mới bắt đầu
+## 1. Hiện trạng — giải mã xong, đặt tên xong
 
 Commit `c45104c` đã làm xong bước giải mã: 88 file `.rbx` → `.rb`, 3.012 chuỗi
 mã hoá đã mở. Nên **không có bước giải mã nào phải chạy lại**, và trong repo này
@@ -34,6 +34,10 @@ Ngoài ra, mỗi file giải mã mở đầu bằng một hằng `XSU_NOTICE`. *
 file** — để lại thì Ruby cảnh báo khởi tạo lại hằng một lần cho mỗi file khi cây
 bắt đầu được nạp thật. `tools/kiemchuoi.py` và `tools/verify_structure.py` đều
 bỏ dòng này ở cả hai vế khi đối chiếu, nên việc gỡ không làm hai phép kiểm lệch.
+
+Đặt tên đã xong: **0 hex còn lại trong 88 file**, 3.768/3.768 định danh. Tài
+liệu này giữ lại vì cách làm và các cạm bẫy vẫn đúng cho bất kỳ cây nào khác
+cùng trình bảo vệ — và vì §8 ghi rõ cái đã *khôi phục* khác cái đã *suy ra*.
 
 ---
 
@@ -345,79 +349,66 @@ thật — chưa làm.
 
 ---
 
-## 7. Hiện trạng — đo hôm nay 03/10/2026
+## 7. Hiện trạng — đo 04/10/2026: **xong**
 
 | Phép | Lệnh | Kết quả |
 |---|---|---|
-| Tên định danh | `python tools/progress.py` | **2.535/3.768 = 67,3 %** |
-| — tên method | nt | 805/1.475 = 54,6 % |
-| — biến thực thể `@` | nt | 284/320 = 88,8 % |
-| — biến cục bộ / tham số | nt | 1.405/1.821 = 77,2 % |
-| Lượt xuất hiện | nt | **40.172/45.108 = 89,1 %** |
-| File đã sạch hex | | **16/88** |
-| Tên toàn cục trùng hex | `python tools/trahex.py --soat` | **100** — còn nợ, đều là biến cục bộ |
+| Tên định danh | `python tools/progress.py` | **3.768/3.768 = 100 %** |
+| — tên method | nt | 1.475/1.475 = 100 % |
+| — biến thực thể `@` | nt | 320/320 = 100 % |
+| — biến cục bộ / tham số | nt | 1.821/1.821 = 100 % |
+| Lượt xuất hiện | nt | **45.108/45.108 = 100 %** |
+| File còn hex | | **0/88** |
+| Tên toàn cục trùng hex | `python tools/trahex.py --soat` | **0** trên 2.500 tên |
+| Danh sách `bo:` | | **0** — mọi mục từng phải bỏ đều đã giải |
 | Cú pháp | `ruby -c` từng file | **88/88 OK** |
 | Chuỗi/chú thích | `python tools/kiemchuoi.py` | **0/89 file bị đổi** |
 | Chỉ đổi tên | `python tools/verify_structure.py` | **0/89 file khác mốc `c45104c`** |
 | Lời gọi treo | `codegraph.py` rồi `verify_graph.py` | **0** |
 | Nạp cả cây | `ruby tools/napthu.rb .` | **NAP OK** — 62/62 module, 73 hằng `KSU::*` |
+| Nạp trong SketchUp | `tools/thu_su.rb` | 73/73 module, **464/464 lời gọi phân giải được** |
+| Đối sánh hành vi | `tools/doisanh.rb` | **30/30 trùng khớp** bản đang chạy |
 
-Nguồn của 2.478 tên:
+Nguồn của 3.768 tên:
 
-| Từ điển | Số tên | Nguồn |
-|---|---:|---|
-| `ten.yml` | 1.337 | đọc tay + chuỗi còn sót (§3.1–3.2, §3.4) |
-| `tenauto.yml` | 1.091 | suy theo kiểu dữ liệu, theo thân hàm (§3.5) |
-| `sinhdoi.yml` | 207 | bản sinh đôi ZSU, đã lọc tên chung (§3.3) |
-| `tenpv.yml` | 50 hex | mục theo phạm vi, do `goxungdot.py` sinh |
+| Từ điển | Toàn cục | Theo phạm vi | Nguồn |
+|---|---:|---:|---|
+| `ten.yml` → `ten:` | 2.221 | 551 | đọc tay + chuỗi còn sót (§3.1–3.2, §3.4) |
+| `ten.yml` → `vai:` | — | 128 | tên theo VAI, không phải từ tác giả gõ |
+| `tenauto.yml` | 200 | 3.056 | suy theo kiểu dữ liệu, theo thân hàm (§3.5) |
+| `sinhdoi.yml` | 254 | — | bản sinh đôi ZSU, đã lọc (§3.3) |
+| `tenpv.yml` | — | 66 | gỡ đụng độ trong cùng thân hàm, do `goxungdot.py` sinh |
 
 Chạy mọi lệnh Python với `PYTHONIOENCODING=utf-8`: console cp1252 của Windows
 ném `UnicodeEncodeError` ngay khi gặp chữ Việt.
 
 ---
 
-## 8. Còn nợ
+## 8. Còn nợ — và cái không còn là nợ
 
-**1.290 định danh**, trong đó **718 là tên method** — phần phải đọc. Biến cục bộ
-còn 419 và `@ivar` còn 42; phần lớn chúng sẽ có tên theo sau khi method quanh
-chúng được đọc, vì `dexuat.py` chỉ đặt tên khi có bằng chứng trong chính thân hàm.
+Không còn hex nào trong cây, và không còn tên toàn cục nào ứng với hai hex.
 
-12 file còn nhiều hex nhất:
+Cái còn lại không phải là "thiếu tên" mà là **mức khẳng định**. `ten.yml` tách
+làm hai phần:
 
-| File | Hex còn |
-|---|---:|
-| `ksu_vn/method/xeptam.rb` | 85 |
-| `ksu_vn/method/themtam.rb` | 70 |
-| `ksu_vn/method/xeptam/drag.rb` | 69 |
-| `ksu_vn/method/toiuuvan/postproc.rb` | 69 |
-| `ksu_vn/method/chongbay/shape.rb` | 69 |
-| `ksu_vn/method/chontam/pick.rb` | 61 |
-| `ksu_vn/method/netcatcuoi/resize.rb` | 57 |
-| `ksu_vn/method/xeptam/push.rb` | 55 |
-| `ksu_vn/method/xeptam/collide.rb` | 55 |
-| `ksu_vn/method/xeptam/mirror.rb` | 54 |
-| `ksu_vn/method/netcatcuoi.rb` | 52 |
-| `ksu_vn/method/chongbay.rb` | 52 |
+- `ten:` nói **tác giả gõ từ này**. Phép soát một-tên-một-hex chỉ xét phần này,
+  vì obfuscator ánh xạ tên → hex một lần cho cả cây.
+- `vai:` chỉ nói **biến giữ cái gì**. Một toạ độ đọc ra `x` từ phép toán là lời
+  về nội dung, không phải về từ; hai hex đều có thể giữ một toạ độ.
 
-Cách làm đã thành nếp, cứ thế lặp cho từng file:
+Giới hạn thật sự: **thay hết hex ≠ đúng hết**. Chỉ tên có bằng chứng sống —
+chuỗi tác giả viết, khoá hash, tên thuộc tính `ABF`/`KSU`, cây sinh đôi ZSU —
+mới là *khôi phục*; phần còn lại là suy luận. `--soat` bắt được **mâu thuẫn**,
+không bắt được **sai**. Một tên sai mà không trùng ai thì không lớp nào thấy.
 
-1. `python tools/doc.py <file>` — nó chỉ in những method còn hex, kèm thân hàm.
-2. Đọc, viết tên vào `tools/ten.yml` (có chú thích *vì sao*).
-3. `python tools/datten.py --check` — rào an toàn báo chỗ đụng.
-4. `python tools/goxungdot.py --apply` — đánh số những chỗ đụng phạm vi.
-5. `python tools/datten.py --lam-lai` — dựng lại từ mốc rồi áp cả từ điển.
-6. Vòng kiểm §5, ít nhất mỗi vài file một lần.
+Việc còn làm được, nếu muốn chắc hơn:
 
-Việc khác còn nợ:
-
-| Việc | Ghi chú |
-|---|---|
-| Thử trong SketchUp thật | Chưa làm. `napthu.rb` chỉ chứng minh nạp được |
-| `tools/graph.json` phải dựng lại | Bị `.gitignore`. Đồ thị cũ nguy hiểm theo **hai** chiều: báo treo giả, và tệ hơn là **báo xanh giả** khi tên def cũ còn trong ảnh chụp. `verify_graph` nay từ chối chạy khi ảnh cũ hơn mã nguồn |
-| 100 tên toàn cục còn trùng hex | `trahex.py --soat`. Đều là biến cục bộ tên ngắn (`a`, `x`, `y1`, `pt`, `bbox`…). Phần tên method và `@ivar` đã dọn xong |
-| Soát lại `tenauto.yml` bằng mắt | Tên ở đó đúng về **kiểu**, nhưng một cái tên nói được nhiều hơn kiểu thì vẫn nên thay ở `ten.yml` |
-
----
+1. Mở rộng `tools/doisanh.rb` quá 30 trường hợp — mỗi hàm thuần thêm vào là một
+   mệnh đề nữa được kiểm thật, thay vì chỉ được lập luận.
+2. Soát lại bằng mắt các mục `tenauto.yml` (3.056 mục theo phạm vi): chúng chỉ
+   khẳng định kiểu dữ liệu, nhưng kiểu đoán sai thì tên cũng sai.
+3. Chạy plugin trong SketchUp với mô hình thật và so kết quả xuất (DXF, XLSX,
+   PDF) với bản gốc — lớp duy nhất chưa dựng.
 
 ## 9. Bắt đầu từ đâu
 
