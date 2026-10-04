@@ -31,9 +31,9 @@ module KSU::Xuatdxf
     len2d = vec2.dot(b)
     len2d = -1.0 if len2d < -1
     len2d = 1.0 if len2d > 1
-    num = Math.acos(len2d)
-    num = 2 * Math::PI - num if vec2.cross(b).dot(Z_AXIS) < 0
-    (num - (2 * Math::PI)).abs < EPS_ARC ? 0.0 : num
+    deg4 = Math.acos(len2d)
+    deg4 = 2 * Math::PI - deg4 if vec2.cross(b).dot(Z_AXIS) < 0
+    (deg4 - (2 * Math::PI)).abs < EPS_ARC ? 0.0 : deg4
   end
   def circle?(box)
     return nil if box.size < 12
@@ -107,10 +107,10 @@ module KSU::Xuatdxf
     vec5 = p2.vector_to(center)
     vec4 = box[end_i].vector_to(center)
     _0f0ce717 = vec2.cross(vec5).z > 0
-    flag = _0f0ce717 ? vec_angle(vec2, vec4) : vec_angle(vec4, vec2)
-    return nil if num == 6 && num15 == 5 && flag.radians > 299
-    return nil if num15 == 6 && flag.radians > 359
-    bulge = Math.tan(flag / 4)
+    deg4 = _0f0ce717 ? vec_angle(vec2, vec4) : vec_angle(vec4, vec2)
+    return nil if num == 6 && num15 == 5 && deg4.radians > 299
+    return nil if num15 == 6 && deg4.radians > 359
+    bulge = Math.tan(deg4 / 4)
     vec6 = p1.vector_to(p2).cross(p1.vector_to(p3)).z
     bulge *= (vec6 >= 0 ? 1 : -1)
     { start_i: start_i, end_i: end_i, bulge: bulge }

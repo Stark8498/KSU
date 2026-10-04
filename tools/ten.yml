@@ -619,9 +619,6 @@ ten:
   _5ef5cc45: hhea_off
   _7bb04226: read_short
   _facbe376: tag
-  _4bcb6213:
-    "*": off
-    ksu_vn/method/xuatdxf/entry.rb: inset2
 
   # `_7dddad48` la METHOD o svg.rb: no doc the <path> cua SVG. Cung mot ten goc
   # voi duong dan file .skp o other.rb va duong dan font o ttf.rb -- deu la "path".
@@ -2407,10 +2404,6 @@ ten:
     ksu_vn/utils/label.rb: y
   _fbc30e40:
     ksu_vn/utils/label.rb: xq
-  _e8649a72:
-    ksu_vn/utils/label.rb: lo
-  _e25dbacd:
-    ksu_vn/utils/label.rb: hi
   _972803c5:
     ksu_vn/utils/label.rb: vals
   _89bad203:
@@ -2445,8 +2438,6 @@ ten:
     ksu_vn/utils/label.rb: cv
   _32998202:
     ksu_vn/utils/label.rb: axes
-  _298717ec:
-    ksu_vn/utils/label.rb: prev_dir
   _c8bde48c:
     ksu_vn/utils/label.rb: ang
   _d38e1814:
@@ -2455,8 +2446,6 @@ ten:
     ksu_vn/utils/label.rb: gx2
   _42782d97:
     ksu_vn/utils/label.rb: lbl
-  _5fb96e91:
-    "ksu_vn/utils/label.rb#inner_rect": area
 
   # ----- ME 64: method/xeptam.rb va ho xeptam/* -- keo tam tren van -----
   # Keo mot nhom tam: moi lan chuot di, tim van dich, thu xem co vua khong,
@@ -3112,21 +3101,12 @@ ten:
   _3e1d5f51:
     ksu_vn/method/xeptam/push.rb: hole2
     ksu_vn/utils/nesting/bilan.rb: hole2
-  _60000b16:
-    "ksu_vn/utils/view.rb#_23ea970c": y2
-    "ksu_vn/utils/view.rb#_b9fdc2d5": y2
-    "ksu_vn/utils/view.rb#_e519e18d": y2
-    ksu_vn/method/chongbay.rb: y2
-    ksu_vn/utils/nesting/corner.rb: y2
   _bd21b165:
     "ksu_vn/method/netcatcuoi.rb#_1bba59fa": off_x
     ksu_vn/method/netcatcuoi/lastcut.rb: off_x
   _e55fd46f:
     "ksu_vn/method/netcatcuoi.rb#_1bba59fa": off_y
     ksu_vn/method/netcatcuoi/lastcut.rb: off_y
-  _7e53f420:
-    "ksu_vn/utils/cutting/detail.rb#_5edc6938": lbl_scale
-    ksu_vn/method/netcatcuoi/lastcut.rb: run2
   _9710d820:
     ksu_vn/method/xeptam/nfp.rb: area
     ksu_vn/utils/preset/field.rb: ang
@@ -3228,9 +3208,87 @@ ten:
   _27161c40:
     ksu_vn/method/xuatdxf/scan.rb: h
     ksu_vn/method/chongbay/assign.rb: h
+
+  # ----- ME 82: cac file con lai cua netcatcuoi / chongbay / nesting / flip -----
+  _cae3470a: edgeband_part?      # attr ABF "is-edge-banding-notation", hoac ten
+  _4863ef50: cut_center          # tam cua vien CAT, khong phai cua hop bao
+  _fc78e970: mark_user_objs      # nhom ten "ABF_*" -> attr is-user-nesting-obj
+  _7da9d41e: add_mark_curve
+  _95f7dd2a: full
+  _3cc0311c: strip_no
+  _33aa68d7: deg4
+  _9fda117b: rect4
+  _a0976be2: min_side
+  _aeb18298: oy4
+
+  _e8649a72:
+    ksu_vn/utils/label.rb: lo
+    ksu_vn/method/netcatcuoi/resize.rb: ylo
+  _e25dbacd:
+    ksu_vn/utils/label.rb: hi
+    ksu_vn/method/netcatcuoi/resize.rb: yhi
+  _5fb96e91:
+    "ksu_vn/utils/label.rb#inner_rect": area
+    ksu_vn/method/netcatcuoi/resize.rb: area
+  _60000b16:
+    "ksu_vn/utils/view.rb#_23ea970c": y2
+    "ksu_vn/utils/view.rb#_b9fdc2d5": y2
+    "ksu_vn/utils/view.rb#_e519e18d": y2
+    ksu_vn/method/chongbay.rb: y2
+    ksu_vn/utils/nesting/corner.rb: y2
+    ksu_vn/method/chongbay/shape.rb: ay1
+  _eef8786a:
+    ksu_vn/utils/flip.rb: etf
+  _b5060b46:
+    ksu_vn/utils/flip.rb: itf
+  _3beb117f:
+    ksu_vn/utils/flip.rb: c_from
+  _263973eb:
+    ksu_vn/utils/flip.rb: c_to
   _2cb52d46:
     ksu_vn/utils/label.rb: layer
     ksu_vn/method/chongbay/assign.rb: layer
+    "ksu_vn/method/nesting/draw.rb#_a2d1d319": tag2
+    ksu_vn/method/nesting/draw.rb: layer
+    ksu_vn/utils/flip.rb: layer_name2
+
+  # ----- ME 83: utils/nesting/edit.rb -- diem goc nhon tren duong cong -----
+  # Hai canh lien tiep cua mot curve gap nhau o mot dinh; goc o do nho hon
+  # nguong thi dinh ay la mot goc that, khong phai mot buoc chia cung tron.
+  _108666c3: walk_curves
+  _7276832b: sharp_pts
+  _f84d71f4: corner_deg
+  _59205066: shared_vertex
+  _97a0777d: a0v
+  _1ef55664: a1v
+  _66bc2bf1: b0v
+  _7ed768a8: b1v
+
+  # ----- ME 83b: utils/font.rb -- doc file net chu nen -----
+  _aebde291: ver
+  _8e587281: hdr_len
+  _ee63bedc: glyph_len
+  _2f3325c7: steps
+
+  # ----- ME 83c: method/xeptam/drag.rb va method/gannhan.rb -----
+  _aa866019: best_d2x
+  _110de770: z_lo
+  _ddbd086b: cur_rec
+  _49fd085d: defn2
+  _310b620e: node4
+
+  _298717ec:
+    ksu_vn/utils/label.rb: prev_dir
+    ksu_vn/utils/nesting/edit.rb: v2
+    ksu_vn/method/nesting/simplify.rb: v_out
+  _7e53f420:
+    "ksu_vn/utils/cutting/detail.rb#_5edc6938": lbl_scale
+    ksu_vn/method/netcatcuoi/lastcut.rb: run2
+    ksu_vn/method/gannhan.rb: face2
+  _4bcb6213:
+    "*": off
+    ksu_vn/method/xuatdxf/entry.rb: inset2
+    ksu_vn/utils/font.rb: pos
 
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.
@@ -3378,7 +3436,6 @@ bo:
   - _5e0c1b8d   # blk: 2 lan, ban tay giu _5d690575 (9 lan)
   - _0dc41cf2   # dlg: 13 lan, ban tay giu _a72a3dce (50 lan)
    # grp: tenauto doan kieu, _d533ec26 dung 144 lan
-  - _3cc0311c   # num: tenauto doan kieu, _5e86883a la mot method
   - _538a3d28   # pname: 6 lan, cay sinh doi cung goi _2bcd29a8 (27 lan) la pname
   - _43ae5f3d   # rows: _62ef82e9 co 5 lan tu soi guong, cai nay khong co
   - _081c2f3e   # section: 22 lan, cay sinh doi cung goi _f86dea4f (40 lan) la section

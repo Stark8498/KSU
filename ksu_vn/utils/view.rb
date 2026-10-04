@@ -26,12 +26,12 @@ module KSU::View
         next unless KSU.container?(panel)
         acc << panel.entityID
         acc << panel.transformation.to_a.hash
-        grp2 = panel.respond_to?(:definition) ? panel.definition : nil
-        next unless grp2
-        acc << grp2.entityID
-        acc << grp2.entities.size
-        acc << grp2.bounds.min.to_a.hash
-        acc << grp2.bounds.max.to_a.hash
+        defn2 = panel.respond_to?(:definition) ? panel.definition : nil
+        next unless defn2
+        acc << defn2.entityID
+        acc << defn2.entities.size
+        acc << defn2.bounds.min.to_a.hash
+        acc << defn2.bounds.max.to_a.hash
       end
     end
     acc.hash

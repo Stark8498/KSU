@@ -35,22 +35,22 @@ module KSU::Nfp
   end
   def self.minkowski_convex(arr4, b)
     num3 = arr4.length
-    num4 = b.length
+    hdr_len = b.length
     ia = lowest_ix(arr4)
     ib = lowest_ix(b)
     arr = num3.times.map { |i| arr4[(ia + i) % num3] }
-    arr2 = num4.times.map { |i| b[(ib + i) % num4] }
+    arr2 = hdr_len.times.map { |i| b[(ib + i) % hdr_len] }
     arr << arr[0] << arr[1]
     arr2 << arr2[0] << arr2[1]
     out = []
     i = 0
     j = 0
-    while i < num3 || j < num4
+    while i < num3 || j < hdr_len
       out << [arr[i][0] + arr2[j][0], arr[i][1] + arr2[j][1]]
       cross = (arr[i + 1][0] - arr[i][0]) * (arr2[j + 1][1] - arr2[j][1]) -
               (arr[i + 1][1] - arr[i][1]) * (arr2[j + 1][0] - arr2[j][0])
       i += 1 if cross >= 0 && i < num3
-      j += 1 if cross <= 0 && j < num4
+      j += 1 if cross <= 0 && j < hdr_len
     end
     out
   end

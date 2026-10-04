@@ -117,18 +117,18 @@ module KSU::Collide
     items = []
     if @nesting && @nesting.valid?
       tr = @nesting.transformation
-      @nesting.definition.entities.each do |grp|
-        next unless KSU.container?(grp)
-        if grp.name.to_s.downcase.include?("sheet")
-          next if KSU::Sheet.bottom_sheet?(grp)
-          stroke_w = tr * grp.transformation
-          grp.definition.entities.each do |panel|
+      @nesting.definition.entities.each do |node4|
+        next unless KSU.container?(node4)
+        if node4.name.to_s.downcase.include?("sheet")
+          next if KSU::Sheet.bottom_sheet?(node4)
+          stroke_w = tr * node4.transformation
+          node4.definition.entities.each do |panel|
             next unless KSU::Sheet.panel?(panel)
             next if KSU::Cutting.bottom_face?(panel)
-            items << screen_rec(view, panel, grp, stroke_w * panel.transformation)
+            items << screen_rec(view, panel, node4, stroke_w * panel.transformation)
           end
-        elsif !grp.get_attribute("ABF", "board-index").nil? && !KSU::Cutting.bottom_face?(grp)
-          items << screen_rec(view, grp, nil, tr * grp.transformation)
+        elsif !node4.get_attribute("ABF", "board-index").nil? && !KSU::Cutting.bottom_face?(node4)
+          items << screen_rec(view, node4, nil, tr * node4.transformation)
         end
       end
     end
@@ -401,8 +401,8 @@ module KSU::Collide
   def overlap?(poly_a, poly_b, gap2)
     return KSU::Method.polygons_overlap?(poly_a, poly_b, gap2) if @flag15
     num = poly_a.size
-    num2 = poly_b.size
-    return false if num < 3 || num2 < 3
+    hdr_len = poly_b.size
+    return false if num < 3 || hdr_len < 3
     return true if poly_a.any? { |pt| KSU::Geom.point_in?(pt.x.to_f, pt.y.to_f, poly_b) }
     return true if poly_b.any? { |pt| KSU::Geom.point_in?(pt.x.to_f, pt.y.to_f, poly_a) }
     g = gap2.to_f
@@ -411,9 +411,9 @@ module KSU::Collide
     num.times do |i|
       a1 = poly_a[i]
       a2 = poly_a[(i + 1) % num]
-      num2.times do |j|
+      hdr_len.times do |j|
         b1 = poly_b[j]
-        b2 = poly_b[(j + 1) % num2]
+        b2 = poly_b[(j + 1) % hdr_len]
         return true if KSU::Geom.segments_cross?(a1, a2, b1, b2)
         return true if has_gap && KSU::Geom.seg_dist2(a1, a2, b1, b2) < gap2sq
       end

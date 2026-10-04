@@ -17,9 +17,9 @@ module KSU::Resize
     panels = panel_boxes(sheet, rec[:transform], true)
     return [] if panels.empty?
     gap2 = @tam_cach_nhau.to_f
-    num = @chieu_rong_toi_thieu.to_f
+    min_side = @chieu_rong_toi_thieu.to_f
     ux1, uy1, ux2, uy2 = usable_rect(rec)
-    return [] if ux2 - ux1 < num || uy2 - uy1 < num
+    return [] if ux2 - ux1 < min_side || uy2 - uy1 < min_side
     arr2 = panels.map do |pt|
       { x1: pt.min.x.to_f - gap2, x2: pt.max.x.to_f + gap2,
         y1: pt.min.y.to_f - gap2, y2: pt.max.y.to_f + gap2 }
@@ -32,14 +32,14 @@ module KSU::Resize
     end
     arr3 = []
     while arr3.length < 50
-      half = largest_gap(ux1, uy1, ux2, uy2, arr2, num)
+      half = largest_gap(ux1, uy1, ux2, uy2, arr2, min_side)
       break unless half
       arr3 << points(half)
       arr2 << half
     end
     arr3
   end
-  def largest_gap(ux1, uy1, ux2, uy2, arr3, _a0976be2)
+  def largest_gap(ux1, uy1, ux2, uy2, arr3, min_side)
     tol = 1e-6
     arr2 = KSU::Geom._a404e7b6([ux1, ux2] + arr3.flat_map { |b| [b[:x1], b[:x2]] }.select { |v| v > ux1 + tol && v < ux2 - tol })
     best = nil
@@ -49,27 +49,27 @@ module KSU::Resize
         x212 = arr2[i]
         x2 = arr2[j]
         w = x2 - x212
-        next if w < _a0976be2
+        next if w < min_side
         arr4 = []
         arr3.each do |b|
           next unless b[:x1] < x2 - tol && b[:x2] > x212 + tol
-          _e8649a72 = [b[:y1], uy1].max
-          _e25dbacd = [b[:y2], uy2].min
-          arr4 << [_e8649a72, _e25dbacd] if _e25dbacd > _e8649a72 + tol
+          ylo = [b[:y1], uy1].max
+          yhi = [b[:y2], uy2].min
+          arr4 << [ylo, yhi] if yhi > ylo + tol
         end
         gap2 = longest_free_y(uy1, uy2, arr4)
-        next if gap2[:len] < _a0976be2
-        _5fb96e91 = w * gap2[:len]
-        if _5fb96e91 > best_a + tol
-          best_a = _5fb96e91
+        next if gap2[:len] < min_side
+        area = w * gap2[:len]
+        if area > best_a + tol
+          best_a = area
           best = { x1: x212, y1: gap2[:y1], x2: x2, y2: gap2[:y2] }
         end
       end
     end
     best
   end
-  def longest_free_y(_e8649a72, _e25dbacd, arr2)
-    return { len: _e25dbacd - _e8649a72, y1: _e8649a72, y2: _e25dbacd } if arr2.empty?
+  def longest_free_y(ylo, yhi, arr2)
+    return { len: yhi - ylo, y1: ylo, y2: yhi } if arr2.empty?
     arr = []
     arr2.sort_by { |arr3| arr3[0] }.each do |_9710d820, b|
       if arr.any? && _9710d820 <= arr.last[1] + 1e-6
@@ -79,9 +79,9 @@ module KSU::Resize
       end
     end
     len = 0.0
-    y1 = _e8649a72
-    y2 = _e8649a72
-    _7e53f420 = _e8649a72
+    y1 = ylo
+    y2 = ylo
+    _7e53f420 = ylo
     arr.each do |_9710d820, b|
       if _9710d820 - _7e53f420 > len
         len = _9710d820 - _7e53f420
@@ -90,10 +90,10 @@ module KSU::Resize
       end
       _7e53f420 = b if b > _7e53f420
     end
-    if _e25dbacd - _7e53f420 > len
-      len = _e25dbacd - _7e53f420
+    if yhi - _7e53f420 > len
+      len = yhi - _7e53f420
       y1 = _7e53f420
-      y2 = _e25dbacd
+      y2 = yhi
     end
     { len: len, y1: y1, y2: y2 }
   end
@@ -158,13 +158,13 @@ module KSU::Resize
   end
   def edge_at(view, x, y)
     best = nil
-    _aa866019 = KSU::Const::EDGE_HIT_PX * KSU::Const::EDGE_HIT_PX
+    best_d2x = KSU::Const::EDGE_HIT_PX * KSU::Const::EDGE_HIT_PX
     @rects.each do |slot|
       slot_edges(slot).each do |ent|
         len2d = KSU::Geom.dist2_to_seg(Geom::Point3d.new(x, y, 0), view.screen_coords(ent[:a]), view.screen_coords(ent[:b]))
-        next unless len2d < _aa866019
+        next unless len2d < best_d2x
         next if edge_blocked?(slot, ent[:edge])
-        _aa866019 = len2d
+        best_d2x = len2d
         best = { entry: slot, edge: ent[:edge], sheet: slot[:sheet] }
       end
     end

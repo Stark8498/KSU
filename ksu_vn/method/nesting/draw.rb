@@ -6,7 +6,7 @@ module KSU::Draw
     @m_left, @m_right, @top, @m_bottom = KSU::Nest.margins_of(cfg).map { |v| v.mm }
     @errors = []
     @sheet_ix = 0
-    @_3cc0311c = 0
+    @strip_no = 0
     @root = nil
   end
   def ensure_root(model)
@@ -27,7 +27,7 @@ module KSU::Draw
       layer0 = model.layers["Layer0"]
       model.active_layer = layer0 if layer0 && model.active_layer != layer0
       ensure_root(model)
-      strip_y = -(@_3cc0311c + job[:slots]) * (@h + KSU::Const::SHEET_V_PADDING)
+      strip_y = -(@strip_no + job[:slots]) * (@h + KSU::Const::SHEET_V_PADDING)
       KSU::Sheet.add_row_label(@root.entities, job[:type][:name], strip_y, @h)
       @drawn_panels = []
       @drawn_sheets = []
@@ -41,8 +41,8 @@ module KSU::Draw
         arr2 << gr
         flag = true if has_bottom
       end
-      @_3cc0311c += job[:slots]
-      @_3cc0311c += 1 if flag && job[:slots] == 1
+      @strip_no += job[:slots]
+      @strip_no += 1 if flag && job[:slots] == 1
       flip_drawn_panels
       merge_cut_lines(@drawn_sheets)
       place_root
@@ -131,7 +131,7 @@ module KSU::Draw
       arr2.each { |g| g.set_attribute("KSU", "group-id", gid) }
     end
   end
-  def draw_panel(sheet_grp, grp, x, y, _33aa68d7, cfg)
+  def draw_panel(sheet_grp, grp, x, y, deg4, cfg)
     part_tf = grp[:part_tf]
     gr = sheet_grp.entities.add_group
     KSU::Cutting.copy_attrs(gr, grp[:group])
@@ -153,11 +153,11 @@ module KSU::Draw
     max_eb.set_attribute("ABF", "is-edge-banding-notation", true)
     KSU::Cutting.set_layer(max_eb, KSU::Cutting.layer("ABF_edgeBanding"))
     gr.transformation = gr.transformation * Geom::Transformation.translation([x, y, 0])
-    gr.transformation = gr.transformation * Geom::Transformation.rotation(ORIGIN, Z_AXIS, _33aa68d7.degrees)
+    gr.transformation = gr.transformation * Geom::Transformation.rotation(ORIGIN, Z_AXIS, deg4.degrees)
     gr.transformation = gr.transformation * part_tf
     KSU::Cutting.save_drills_desc(gr, grp[:drills], part_tf.inverse)
     KSU::Cutting.save_edgeband_desc(gr, grp[:edge_band_desc], part_tf.inverse)
-    _fc78e970(grp[:group])
+    mark_user_objs(grp[:group])
     faces = KSU::Cutting.split_by_face(grp[:group], grp[:up_face], grp[:tf])
     faces[:up].each do |grp5|
       next unless grp5.respond_to?(:definition) && grp5.definition
@@ -213,10 +213,10 @@ module KSU::Draw
              Geom::Transformation.translation([-(@w - @m_left), @m_bottom, 0])
     bottom.entities.transform_entities(tr2, bottom.entities.to_a)
     add_border(bottom)
-    _7da9d41e(bottom, true)
+    add_mark_curve(bottom, true)
     bottom
   end
-  def _fc78e970(grp)
+  def mark_user_objs(grp)
     (KSU.entities_in(grp) || []).each do |ent|
       next unless ent.is_a?(Sketchup::Group) && ent.name.to_s.start_with?("ABF_")
       ent.set_attribute("ABF", "is-user-nesting-obj", true)
@@ -239,8 +239,8 @@ module KSU::Draw
   end
   def ensure_layers(model)
     unless model.layers["ABF_cuttingLines"]
-      _2cb52d46 = model.layers.add("ABF_cuttingLines")
-      _2cb52d46.color = Sketchup::Color.new(255, 255, 255)
+      tag2 = model.layers.add("ABF_cuttingLines")
+      tag2.color = Sketchup::Color.new(255, 255, 255)
     end
     KSU::Cutting.layer("ABF_edgeBanding")
     KSU::Cutting.layer("ABF_sheetBorder")
@@ -253,12 +253,12 @@ module KSU::Draw
     gr.entities.add_curve([0, 0, 0], [@w, 0, 0], [@w, @h, 0], [0, @h, 0], [0, 0, 0])
     KSU::Cutting.set_layer(gr, KSU::Cutting.layer("ABF_sheetBorder"))
   end
-  def _7da9d41e(defn, _95f7dd2a)
+  def add_mark_curve(defn, full)
     gr = defn.entities.add_group
     gr.set_attribute("ABF", "is-mark-square", true)
     name = "ABF_markSquare"
     gr.name = "__" + name
-    if _95f7dd2a
+    if full
       gr.entities.add_curve([@w - @m_left, @h, 0], [@w - @m_left, @m_bottom, 0], [0, @m_bottom, 0])
     else
       gr.entities.add_curve([@m_left, @h, 0], [@m_left, @m_bottom, 0], [@w, @m_bottom, 0])
@@ -346,7 +346,7 @@ module KSU::Draw
     polys = arr3.flat_map { |i| i[:polys] }
     rings = KSU::Clipper.union(polys, 6)
     return if rings.nil? || rings.empty?
-    _2cb52d46 = arr3[0][:layer]
+    layer = arr3[0][:layer]
     ok = false
     rings.each do |arr2|
       next unless arr2 && arr2.length >= 3
@@ -362,7 +362,7 @@ module KSU::Draw
       grp.name = "_ABF_Intersect"
       grp.set_attribute("ABF", "is-intersect", true)
       grp.material = KSU::Cutting.transparent_material
-      KSU::Cutting.set_layer(grp, _2cb52d46) if _2cb52d46
+      KSU::Cutting.set_layer(grp, layer) if layer
       ok = true
     end
     defn.entities.erase_entities(arr3.map { |i| i[:gr] }) if ok

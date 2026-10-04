@@ -268,10 +268,10 @@ module KSU::Loop
     dx = box.width.to_f
     dy = box.height.to_f
     dz = box.depth.to_f
-    _a0976be2 = [dx, dy, dz].min
-    if _a0976be2 == dz
+    min_side = [dx, dy, dz].min
+    if min_side == dz
       [4, 5, 7, 6]
-    elsif _a0976be2 == dy
+    elsif min_side == dy
       [2, 3, 7, 6]
     else
       [1, 3, 7, 5]

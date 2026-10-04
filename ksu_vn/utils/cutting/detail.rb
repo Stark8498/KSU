@@ -4,15 +4,15 @@ module KSU::Detail
     return [nil, base_tr] unless ents
     tr3 = prev_key.transformation * prev_key.definition.bounds.center
     grp = ents.add_group
-    ents2 = grp.definition.entities
+    defn2 = grp.definition.entities
     loops.each do |arr|
       pts = arr[:pts]
       next if pts.length < 4
-      arr3 = ents2.add_curve(pts)
+      arr3 = defn2.add_curve(pts)
       next unless arr[:outer]
       arr3.each { |ent| ent.set_attribute("ABF", "is-outer-loop", true) if ent.is_a?(Sketchup::Edge) }
     end
-    ents2.grep(Sketchup::Face).each(&:erase!)
+    defn2.grep(Sketchup::Face).each(&:erase!)
     grp.transformation = base_tr
     tr2 = grp.transformation * grp.definition.bounds.center
     tr = Geom::Transformation.translation(tr3 - tr2) * base_tr

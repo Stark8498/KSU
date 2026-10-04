@@ -675,21 +675,21 @@ class KSU::Chongbay
     view.drawing_color = side_color(side)
     view.draw(GL_LINES, pts)
   end
-  def near_side?(bb, bb2, side, gap2)
+  def near_side?(rect4, bb2, side, gap2)
     return false unless gap2.to_f > 0
     case side
-    when :tren then bb.min.y >= bb2.max.y - gap2
-    when :duoi then bb.max.y <= bb2.min.y + gap2
-    when :phai then bb.min.x >= bb2.max.x - gap2
-    when :trai then bb.max.x <= bb2.min.x + gap2
+    when :tren then rect4.min.y >= bb2.max.y - gap2
+    when :duoi then rect4.max.y <= bb2.min.y + gap2
+    when :phai then rect4.min.x >= bb2.max.x - gap2
+    when :trai then rect4.max.x <= bb2.min.x + gap2
     end
   end
-  def threshold(bb, bb2, side)
+  def threshold(rect4, bb2, side)
     case side
-    when :tren then bb2.max.y - bb.max.y
-    when :duoi then bb.min.y - bb2.min.y
-    when :phai then bb2.max.x - bb.max.x
-    when :trai then bb.min.x - bb2.min.x
+    when :tren then bb2.max.y - rect4.max.y
+    when :duoi then rect4.min.y - bb2.min.y
+    when :phai then bb2.max.x - rect4.max.x
+    when :trai then rect4.min.x - bb2.min.x
     end
   end
   def preview_plan

@@ -194,15 +194,15 @@ class KSU::Gannhan
     (0...ph.count).each do |i|
       path = ph.path_at(i)
       next unless path
-      path.reverse_each do |_310b620e|
-        hit = yield(_310b620e)
+      path.reverse_each do |node4|
+        hit = yield(node4)
         return hit if hit
       end
     end
     yield(ph.best_picked)
   end
   def board_at(view, x, y)
-    walk_pick(view, x, y) { |_310b620e| labelable?(_310b620e) ? _310b620e : nil }
+    walk_pick(view, x, y) { |node4| labelable?(node4) ? node4 : nil }
   end
   def switch_mode(i)
     return if @mode == i
@@ -260,13 +260,13 @@ class KSU::Gannhan
     flip_label_face if fld
   end
   def label_pair_at(view, x, y)
-    walk_pick(view, x, y) { |_310b620e| label_pair_of(_310b620e) }
+    walk_pick(view, x, y) { |node4| label_pair_of(node4) }
   end
-  def label_pair_of(grp)
-    return nil unless grp && grp.valid? && KSU.container?(grp)
-    return nil unless grp.get_attribute(KSU::Label::DICT, KSU::Label::K_BOARD_INDEX)
-    lbl = KSU::Cutting.label_of(grp)
-    (lbl && lbl.valid?) ? [grp, lbl] : nil
+  def label_pair_of(node4)
+    return nil unless node4 && node4.valid? && KSU.container?(node4)
+    return nil unless node4.get_attribute(KSU::Label::DICT, KSU::Label::K_BOARD_INDEX)
+    lbl = KSU::Cutting.label_of(node4)
+    (lbl && lbl.valid?) ? [node4, lbl] : nil
   end
   def selected_pairs
     KSU.selection.map { |ent| pair_from_label(ent) }.compact
@@ -278,9 +278,9 @@ class KSU::Gannhan
     board ? [board, entity] : nil
   end
   def board_of_label(lbl)
-    _49fd085d = lbl.parent
-    return nil unless _49fd085d.is_a?(Sketchup::ComponentDefinition)
-    _49fd085d.instances.find { |i| i.valid? && i.get_attribute(KSU::Label::DICT, KSU::Label::K_BOARD_INDEX) }
+    defn2 = lbl.parent
+    return nil unless defn2.is_a?(Sketchup::ComponentDefinition)
+    defn2.instances.find { |i| i.valid? && i.get_attribute(KSU::Label::DICT, KSU::Label::K_BOARD_INDEX) }
   end
   def relabel_each
     items = selected_pairs
@@ -290,9 +290,9 @@ class KSU::Gannhan
       tf = KSU::Label.world_tf(board)
       src = KSU::Cutting.board_faces(board, tf)
       next unless src
-      _7e53f420 = KSU::Cutting.face_with(board, KSU::Label::K_IS_LABELED_FACE)
+      face2 = KSU::Cutting.face_with(board, KSU::Label::K_IS_LABELED_FACE)
       rot = (board.get_attribute(KSU::Label::DICT, KSU::Label::K_LABEL_ROTATION) || 0).to_i
-      font, rot = yield(board, src, _7e53f420, rot)
+      font, rot = yield(board, src, face2, rot)
       KSU::Label.label_box(lbl, font, tf, rot, @kich_thuoc_nhan, !@nhan_dat_trong_tam)
       board.set_attribute(KSU::Label::DICT, KSU::Label::K_LABEL_ROTATION, rot)
       KSU::Chuanhoa.normalize_group(board) if @chuan_hoa_vat_lieu
@@ -301,13 +301,13 @@ class KSU::Gannhan
     KSU::View.view.invalidate
   end
   def rotate_labels
-    relabel_each do |_256b4519, src, _7e53f420, rot|
-      [_7e53f420 || src[0], (rot + @goc_xoay_nhan) % 360]
+    relabel_each do |_256b4519, src, face2, rot|
+      [face2 || src[0], (rot + @goc_xoay_nhan) % 360]
     end
   end
   def flip_label_face
-    relabel_each do |board, src, _7e53f420, rot|
-      font = src[0] == _7e53f420 ? src[1] : src[0]
+    relabel_each do |board, src, face2, rot|
+      font = src[0] == face2 ? src[1] : src[0]
       clear_cnc_marks(board)
       KSU::Label.mark_labeled_face(board, font)
       [font, rot]

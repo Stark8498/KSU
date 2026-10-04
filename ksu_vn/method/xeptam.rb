@@ -496,7 +496,7 @@ class KSU::Xeptam
       view.invalidate
       return
     end
-    arr = record_for(@sel_sheets.first)
+    cur_rec = record_for(@sel_sheets.first)
     inst6 = @dest && @dest[:instance]
     was_free = @flag50
     flag = @flag25 ? nil : @arr23.find do |s|
@@ -508,19 +508,19 @@ class KSU::Xeptam
         @flag50 = false if fits_on?(flag)
         @dest = flag
       else
-        @dest = arr
+        @dest = cur_rec
       end
     elsif flag
       @dest = flag
     elsif @xep_tam_tu_do
-      @dest = arr
+      @dest = cur_rec
     else
       near, dist = nearest_sheet(@pt5)
       if dist && dist > 0.0
         @flag50 = true
-        @dest = arr
+        @dest = cur_rec
       else
-        @dest = near || arr
+        @dest = near || cur_rec
       end
     end
     went_free = @flag50 && !was_free
@@ -529,8 +529,8 @@ class KSU::Xeptam
       drag_follow if went_free
       save_drag_state
     end
-    dest = @dest || arr
-    crossed = !!(flag && arr && flag[:instance] != arr[:instance])
+    dest = @dest || cur_rec
+    crossed = !!(flag && cur_rec && flag[:instance] != cur_rec[:instance])
     if dest
       begin
         if @flag50

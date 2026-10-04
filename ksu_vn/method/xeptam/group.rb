@@ -32,18 +32,18 @@ module KSU::Group
   def all_panels
     out = []
     return out unless @nesting && @nesting.valid?
-    @nesting.definition.entities.each do |grp|
-      next unless KSU.container?(grp)
-      if grp.name.to_s.downcase.include?("sheet")
-        next if KSU::Sheet.bottom_sheet?(grp)
-        grp.definition.entities.each do |panel|
+    @nesting.definition.entities.each do |node4|
+      next unless KSU.container?(node4)
+      if node4.name.to_s.downcase.include?("sheet")
+        next if KSU::Sheet.bottom_sheet?(node4)
+        node4.definition.entities.each do |panel|
           next unless KSU::Sheet.panel?(panel)
           gid = panel.get_attribute("KSU", "group-id")
-          out << [panel, grp, gid] if gid
+          out << [panel, node4, gid] if gid
         end
       else
-        gid = grp.get_attribute("KSU", "group-id")
-        out << [grp, nil, gid] if gid
+        gid = node4.get_attribute("KSU", "group-id")
+        out << [node4, nil, gid] if gid
       end
     end
     out

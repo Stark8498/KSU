@@ -152,7 +152,7 @@ module KSU::Xuatdxf
     num2 = 0
     num3 = 0.0
     num4 = 0.0
-    _aa866019 = nil
+    best_d2x = nil
     arr = nil
     (0...n).each do |i|
       pt = pts[i]
@@ -166,8 +166,8 @@ module KSU::Xuatdxf
       trai = pt.x + thick * dx
       duoi = pt.y + thick * dy
       d2x = (trai - rx)**2 + (duoi - ry)**2
-      next unless _aa866019.nil? || d2x < _aa866019
-      _aa866019 = d2x
+      next unless best_d2x.nil? || d2x < best_d2x
+      best_d2x = d2x
       num2 = i
       num3 = thick
       num4 = Math.sqrt(_219a873c)

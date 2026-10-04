@@ -70,8 +70,8 @@ module KSU::Avail
     num2 = (num2 > 0 ? [num2 - dy, 0.0].max : [num2 + dy, 0.0].min) if dy > 0
     [num, num2]
   end
-  def shrink_poly(poly, num3, num5, num6, num4)
-    return poly if num3.abs < 1.0e-9 && num5.abs < 1.0e-9 && num6.abs < 1.0e-9 && num4.abs < 1.0e-9
+  def shrink_poly(poly, num3, num5, num6, glyph_len)
+    return poly if num3.abs < 1.0e-9 && num5.abs < 1.0e-9 && num6.abs < 1.0e-9 && glyph_len.abs < 1.0e-9
     bbox = KSU::Geom.bounds(poly)
     num2 = 0.1.mm
     poly.map do |pt|
@@ -79,7 +79,7 @@ module KSU::Avail
       y = pt.y.to_f
       x += num3 if (x - bbox[:min_x]).abs < num2
       x -= num5 if (x - bbox[:max_x]).abs < num2
-      y += num4 if (y - bbox[:min_y]).abs < num2
+      y += glyph_len if (y - bbox[:min_y]).abs < num2
       y -= num6 if (y - bbox[:max_y]).abs < num2
       Geom::Point3d.new(x, y, pt.z.to_f)
     end

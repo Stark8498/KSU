@@ -26,17 +26,17 @@ module KSU::Font
     @flag59 = false
     begin
       data = defined?(FONT_B64) ? FONT_B64.unpack1("m0") : File.binread(shx_path)
-      _4bcb6213 = SENTINEL.bytesize
-      want = data[_4bcb6213, 2].unpack1("S<")
-      _4bcb6213 += 2
-      _aebde291, _8e587281 = data[_4bcb6213, 4].unpack("S<S<")
-      _4bcb6213 += 4 + _8e587281
+      pos = SENTINEL.bytesize
+      want = data[pos, 2].unpack1("S<")
+      pos += 2
+      ver, hdr_len = data[pos, 4].unpack("S<S<")
+      pos += 4 + hdr_len
       (want - 1).times do
-        break if _4bcb6213 + 4 > data.bytesize
-        sheet_h, _ee63bedc = data[_4bcb6213, 4].unpack("S<S<")
-        _4bcb6213 += 4
-        @id_str[sheet_h] = data[_4bcb6213, _ee63bedc].bytes
-        _4bcb6213 += _ee63bedc
+        break if pos + 4 > data.bytesize
+        sheet_h, glyph_len = data[pos, 4].unpack("S<S<")
+        pos += 4
+        @id_str[sheet_h] = data[pos, glyph_len].bytes
+        pos += glyph_len
       end
       @flag16 = true
     rescue StandardError
@@ -185,11 +185,11 @@ module KSU::Font
     py = y - half * Math.sin(a0)
     total = num * (Math::PI / 4.0)
     total = -total if ccw
-    _2f3325c7 = num * 3
+    steps = num * 3
     trai = x
     duoi = y
-    (1.._2f3325c7).each do |k|
-      num2 = a0 + total * (k.to_f / _2f3325c7)
+    (1..steps).each do |k|
+      num2 = a0 + total * (k.to_f / steps)
       nx = px + half * Math.cos(num2)
       ny = py + half * Math.sin(num2)
       snap_edges << [trai, duoi, nx, ny] if pen
@@ -210,11 +210,11 @@ module KSU::Font
     h = (bulge.to_f / 127.0) * (chord / 2.0)
     nx = -(ry - y) / chord
     ny = (rx - x) / chord
-    num2 = 8
+    steps = 8
     trai = x
     duoi = y
-    (1..num2).each do |k|
-      thick = k.to_f / num2
+    (1..steps).each do |k|
+      thick = k.to_f / steps
       bx2 = x + (rx - x) * thick
       by2 = y + (ry - y) * thick
       _80ce9d04 = h * (1.0 - (2.0 * thick - 1.0) ** 2)
@@ -326,17 +326,17 @@ module KSU::Font
       snap_edges = strokes_for(0) if snap_edges.nil?
       entity = bounds_of(code)
       if flag
-        _4bcb6213 = -entity[0]
+        pos = -entity[0]
         _68cbfb72 = entity[1] - entity[0]
       else
         _68cbfb72 = width_of(code)
-        _4bcb6213 = (_68cbfb72 - entity[0] - entity[1]) / 2.0
+        pos = (_68cbfb72 - entity[0] - entity[1]) / 2.0
       end
       if snap_edges
         snap_edges.each do |ent|
           arr2 << [
-            [box[0] + ((ent[0] + _4bcb6213) * upm + x) * xf, box[1] + ent[1] * upm],
-            [box[0] + ((ent[2] + _4bcb6213) * upm + x) * xf, box[1] + ent[3] * upm]
+            [box[0] + ((ent[0] + pos) * upm + x) * xf, box[1] + ent[1] * upm],
+            [box[0] + ((ent[2] + pos) * upm + x) * xf, box[1] + ent[3] * upm]
           ]
         end
       end

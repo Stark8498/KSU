@@ -38,11 +38,11 @@ module KSU::Shape
     return true if (arr[:holes] || []).any? { |h| poly_hits_rect?(x1, y1, x2, y2, h) }
     point_in_part?(x1, y1, arr)
   end
-  def seg_hits_rect?(x24, _60000b16, x2, y2, x1, y1, x23, y22)
-    segs_cross?(x24, _60000b16, x2, y2, x1, y1, x23, y1) ||
-      segs_cross?(x24, _60000b16, x2, y2, x23, y1, x23, y22) ||
-      segs_cross?(x24, _60000b16, x2, y2, x23, y22, x1, y22) ||
-      segs_cross?(x24, _60000b16, x2, y2, x1, y22, x1, y1)
+  def seg_hits_rect?(x24, ay1, x2, y2, x1, y1, x23, y22)
+    segs_cross?(x24, ay1, x2, y2, x1, y1, x23, y1) ||
+      segs_cross?(x24, ay1, x2, y2, x23, y1, x23, y22) ||
+      segs_cross?(x24, ay1, x2, y2, x23, y22, x1, y22) ||
+      segs_cross?(x24, ay1, x2, y2, x1, y22, x1, y1)
   end
   def poly_hits_rect?(x1, y1, x2, y2, poly)
     n = poly.length
@@ -221,9 +221,9 @@ module KSU::Shape
     arr = KSU::Sheet.record_for(@sheets, row0[:sheet])
     number_by_sheet(parts, side_nearest(row0[:bbox], arr && arr[:bbox]))
   end
-  def side_nearest(_9fda117b, arr)
+  def side_nearest(rect4, arr)
     return nil unless arr
-    [:tren, :duoi, :trai, :phai].min_by { |s| threshold(_9fda117b, arr, s).to_f }
+    [:tren, :duoi, :trai, :phai].min_by { |s| threshold(rect4, arr, s).to_f }
   end
   def eligible(parts)
     return parts unless @gioi_han_kich_thuoc
@@ -279,12 +279,12 @@ module KSU::Shape
   end
   def edge_overlaps(sx1, sx2, sy1, sy2, rx1, rx2, ry1, ry2)
     ox = [[sx2, rx2].min - [sx1, rx1].max, 0].max
-    _aeb18298   = [[sy2, ry2].min - [sy1, ry1].max, 0].max
+    oy4   = [[sy2, ry2].min - [sy1, ry1].max, 0].max
     {
       top:    (sy2.between?(ry1, ry2) ? ox : 0),
       bottom: (sy1.between?(ry1, ry2) ? ox : 0),
-      left:   (sx1.between?(rx1, rx2) ? _aeb18298   : 0),
-      right:  (sx2.between?(rx1, rx2) ? _aeb18298   : 0)
+      left:   (sx1.between?(rx1, rx2) ? oy4   : 0),
+      right:  (sx2.between?(rx1, rx2) ? oy4   : 0)
     }
   end
   def dist(sx1, sx2, sy1, sy2, edge)
@@ -417,8 +417,8 @@ module KSU::Shape
     end
     false
   end
-  def segs_cross?(x27, _60000b16, x2, y2, bx1, by1, bx2, by2)
-    !seg_cross_t(x27, _60000b16, x2, y2, bx1, by1, bx2, by2).nil?
+  def segs_cross?(x27, ay1, x2, y2, bx1, by1, bx2, by2)
+    !seg_cross_t(x27, ay1, x2, y2, bx1, by1, bx2, by2).nil?
   end
   def band_key(p1, p2, arr)
     return 0.0 if point_in_part?(p1.x.to_f, p1.y.to_f, arr)
@@ -442,11 +442,11 @@ module KSU::Shape
     end
     best
   end
-  def seg_cross_t(x29, _60000b16, x2, y2, bx1, by1, bx2, by2)
-    num = (x29 - x2) * (by1 - by2) - (_60000b16 - y2) * (bx1 - bx2)
+  def seg_cross_t(x29, ay1, x2, y2, bx1, by1, bx2, by2)
+    num = (x29 - x2) * (by1 - by2) - (ay1 - y2) * (bx1 - bx2)
     return nil if num.abs < 1e-9
-    thick = ((x29 - bx1) * (by1 - by2) - (_60000b16 - by1) * (bx1 - bx2)) / num
-    _6facb951 = -((x29 - x2) * (_60000b16 - by1) - (_60000b16 - y2) * (x29 - bx1)) / num
+    thick = ((x29 - bx1) * (by1 - by2) - (ay1 - by1) * (bx1 - bx2)) / num
+    _6facb951 = -((x29 - x2) * (ay1 - by1) - (ay1 - y2) * (x29 - bx1)) / num
     return nil unless thick.between?(0.0, 1.0) && _6facb951.between?(0.0, 1.0)
     thick
   end
@@ -475,12 +475,12 @@ module KSU::Shape
   def draw_sweep_rect(view)
     return unless @sweeping && @sweep_a && @sweep_b
     x210, x2 = @sweep_a.x.to_f, @sweep_b.x.to_f
-    _60000b16, y2 = @sweep_a.y.to_f, @sweep_b.y.to_f
+    ay1, y2 = @sweep_a.y.to_f, @sweep_b.y.to_f
     pts = [
-      Geom::Point3d.new([x210, x2].min, [_60000b16, y2].min, @plane_z),
-      Geom::Point3d.new([x210, x2].max, [_60000b16, y2].min, @plane_z),
-      Geom::Point3d.new([x210, x2].max, [_60000b16, y2].max, @plane_z),
-      Geom::Point3d.new([x210, x2].min, [_60000b16, y2].max, @plane_z)
+      Geom::Point3d.new([x210, x2].min, [ay1, y2].min, @plane_z),
+      Geom::Point3d.new([x210, x2].max, [ay1, y2].min, @plane_z),
+      Geom::Point3d.new([x210, x2].max, [ay1, y2].max, @plane_z),
+      Geom::Point3d.new([x210, x2].min, [ay1, y2].max, @plane_z)
     ]
     KSU::View.draw_polygon2d(view, KSU::View.to_screen(pts))
     draw_sweep_arrow(view)

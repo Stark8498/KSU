@@ -354,12 +354,12 @@ module KSU::Push
       end
     end
     return want if free_at.call(want)
-    num3 = 48
-    _89bad203 = want / num3
+    steps = 48
+    _89bad203 = want / steps
     num = 0.0
     _e25dbacd = want
     partner = false
-    (1..num3).each do |k|
+    (1..steps).each do |k|
       s = k * _89bad203
       next if free_at.call(s)
       num = (k - 1) * _89bad203

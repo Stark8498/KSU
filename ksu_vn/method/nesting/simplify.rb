@@ -68,8 +68,8 @@ module KSU::Simplify
         i = 1
         while i <= arr.length - 2
           v_in = [arr[i][0] - arr[i - 1][0], arr[i][1] - arr[i - 1][1]]
-          _298717ec = [arr[i + 1][0] - arr[i][0], arr[i + 1][1] - arr[i][1]]
-          if angle_between(v_in, _298717ec) < 0.01
+          v_out = [arr[i + 1][0] - arr[i][0], arr[i + 1][1] - arr[i][1]]
+          if angle_between(v_in, v_out) < 0.01
             arr.delete_at(i)
             ok = false
           else

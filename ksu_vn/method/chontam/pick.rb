@@ -144,9 +144,9 @@ class KSU::Chontam
     end
     def label_hit(path)
       return nil unless path
-      path.each_with_index do |_310b620e, i|
+      path.each_with_index do |node4, i|
         next if i.zero?
-        next unless KSU.container?(_310b620e) && label_group?(_310b620e)
+        next unless KSU.container?(node4) && label_group?(node4)
         panel = path[i - 1]
         return nil unless panel && KSU.container?(panel)
         transform = Geom::Transformation.new
@@ -160,9 +160,9 @@ class KSU::Chontam
       end
       nil
     end
-    def label_group?(grp)
-      str = grp.respond_to?(:name) ? grp.name.to_s : ""
-      def_name = (grp.respond_to?(:definition) && grp.definition) ? grp.definition.name.to_s : ""
+    def label_group?(node4)
+      str = node4.respond_to?(:name) ? node4.name.to_s : ""
+      def_name = (node4.respond_to?(:definition) && node4.definition) ? node4.definition.name.to_s : ""
       str.include?("_ABF_Label") || def_name.include?("_ABF_Label")
     end
     def smallest_at(view, x, y)
@@ -189,18 +189,18 @@ class KSU::Chontam
     end
     def panel_from_path(path)
       return nil unless path
-      path.each_with_index do |_310b620e, i|
+      path.each_with_index do |node4, i|
         next if i.zero?
-        next unless KSU.container?(_310b620e) && cutting_lines?(_310b620e)
+        next unless KSU.container?(node4) && cutting_lines?(node4)
         return path[i - 1]
       end
       nil
     end
-    def cutting_lines?(grp)
-      return false unless grp.respond_to?(:get_attribute)
-      return true if grp.get_attribute("ABF", "is-cutting-lines")
-      str = grp.respond_to?(:name) ? grp.name.to_s : ""
-      def_name = (grp.respond_to?(:definition) && grp.definition) ? grp.definition.name.to_s : ""
+    def cutting_lines?(node4)
+      return false unless node4.respond_to?(:get_attribute)
+      return true if node4.get_attribute("ABF", "is-cutting-lines")
+      str = node4.respond_to?(:name) ? node4.name.to_s : ""
+      def_name = (node4.respond_to?(:definition) && node4.definition) ? node4.definition.name.to_s : ""
       str.include?("_ABF_cuttingLines") || def_name.include?("_ABF_cuttingLines")
     end
     def panels_in_rect(view, rect, strict)

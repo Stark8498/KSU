@@ -175,8 +175,8 @@ module KSU::Bilan
       return KSU::Method.polygons_overlap?(poly_a, poly_b, gap2)
     end
     num = poly_a.size
-    num2 = poly_b.size
-    return false if num < 3 || num2 < 3
+    hdr_len = poly_b.size
+    return false if num < 3 || hdr_len < 3
     return true if poly_a.any? { |pt| KSU::Geom.point_in?(pt.x.to_f, pt.y.to_f, poly_b) }
     return true if poly_b.any? { |pt| KSU::Geom.point_in?(pt.x.to_f, pt.y.to_f, poly_a) }
     g = gap2.to_f
@@ -185,9 +185,9 @@ module KSU::Bilan
     num.times do |i|
       a1 = poly_a[i]
       a2 = poly_a[(i + 1) % num]
-      num2.times do |j|
+      hdr_len.times do |j|
         b1 = poly_b[j]
-        b2 = poly_b[(j + 1) % num2]
+        b2 = poly_b[(j + 1) % hdr_len]
         return true if KSU::Geom.segments_cross?(a1, a2, b1, b2)
         return true if _e8b69b47 && KSU::Geom.seg_dist2(a1, a2, b1, b2) < _035baab0
       end

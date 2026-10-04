@@ -105,7 +105,7 @@ module KSU::Corner
     center = rec[:bbox].center
     num11 = (pt.x.to_f + b.x.to_f) * 0.5
     num9 = (pt.y.to_f + b.y.to_f) * 0.5
-    num4 = (b.x.to_f - pt.x.to_f).abs <= (b.y.to_f - pt.y.to_f).abs
+    oy4 = (b.x.to_f - pt.x.to_f).abs <= (b.y.to_f - pt.y.to_f).abs
     pt3 = rec[:bbox].min
     m_left, m_right, top, m_bottom = KSU::Avail.sides_for(sheet, gap_for)
     width_mm = rec[:bbox].width.to_f - m_left - m_right
@@ -134,7 +134,7 @@ module KSU::Corner
     end
     return nil if arr.empty?
     arr = group_items(arr)
-    if num4
+    if oy4
       id_str = pack(rotated(arr), height_mm, width_mm, gap2)
       if id_str.empty? || id_str.size < arr.size
         nested = nest_in_holes(arr)
@@ -149,7 +149,7 @@ module KSU::Corner
       end
     end
     return nil if arr2.empty?
-    if num4
+    if oy4
       start_x = num11 < center.x.to_f ? 1 : -1
       num7 = pt.x.to_f + (start_x > 0 ? [num2, 0.0].max : [num2, 0.0].min)
       flag2 = start_x > 0 ? m_left : m_right
@@ -167,7 +167,7 @@ module KSU::Corner
       num12 = pt3.x.to_f + (g && num2 > 0 ? g : m_left) + [num2, 0.0].max + center_off
     end
     moves = arr2.map do |members|
-      if num4
+      if oy4
         num10 = start_x > 0 ? members[:bbox].min.x.to_f : members[:bbox].max.x.to_f
         dx = num7 + start_x * (flag2 + members[:lx]) - num10
         dy = (num5 + members[:ly]) - members[:bbox].min.y.to_f

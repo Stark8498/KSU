@@ -128,46 +128,46 @@ module KSU::Edit
   def error_points(nesting, limit = 20)
     out = []
     return out unless nesting && nesting.valid?
-    _108666c3(nesting, nesting.transformation, out, limit)
+    walk_curves(nesting, nesting.transformation, out, limit)
     out
   end
-  def _108666c3(ents3, transform, out, limit)
+  def walk_curves(ents3, transform, out, limit)
     ents = KSU.entities_in(ents3)
     return unless ents
     ents.each do |entity|
       if entity.is_a?(Sketchup::Edge)
         next unless entity.layer.name == "ABF_cuttingLines"
         next unless entity.curve && entity == entity.curve.edges.first
-        _7276832b(entity.curve, transform, out, limit)
+        sharp_pts(entity.curve, transform, out, limit)
       elsif KSU.container?(entity)
-        _108666c3(entity, transform * entity.transformation, out, limit)
+        walk_curves(entity, transform * entity.transformation, out, limit)
       end
     end
   end
-  def _7276832b(lp, transform, out, limit)
+  def sharp_pts(lp, transform, out, limit)
     snap_edges = lp.edges
     (0...snap_edges.length - 1).each do |i|
       skip1, skip2 = snap_edges[i], snap_edges[i + 1]
-      v = _59205066(skip1, skip2)
+      v = shared_vertex(skip1, skip2)
       next unless v
-      pt = _f84d71f4(skip1.other_vertex(v).position, v.position, skip2.other_vertex(v).position)
-      next unless pt && pt < limit
+      deg4 = corner_deg(skip1.other_vertex(v).position, v.position, skip2.other_vertex(v).position)
+      next unless deg4 && deg4 < limit
       out << v.position.transform(transform)
     end
   end
-  def _f84d71f4(p1, p2, p3)
+  def corner_deg(p1, p2, p3)
     vec = (p1 - p2).normalize
-    _298717ec = (p3 - p2).normalize
-    dot = [[-1.0, vec.dot(_298717ec)].max, 1.0].min
+    v2 = (p3 - p2).normalize
+    dot = [[-1.0, vec.dot(v2)].max, 1.0].min
     Math.acos(dot).radians
   rescue
     nil
   end
-  def _59205066(skip1, skip2)
-    _97a0777d, _1ef55664 = skip1.start, skip1.end
-    _66bc2bf1, _7ed768a8 = skip2.start, skip2.end
-    return _97a0777d if _97a0777d == _66bc2bf1 || _97a0777d == _7ed768a8
-    return _1ef55664 if _1ef55664 == _66bc2bf1 || _1ef55664 == _7ed768a8
+  def shared_vertex(skip1, skip2)
+    a0v, a1v = skip1.start, skip1.end
+    b0v, b1v = skip2.start, skip2.end
+    return a0v if a0v == b0v || a0v == b1v
+    return a1v if a1v == b0v || a1v == b1v
     nil
   end
   def find_nesting(notify: true)

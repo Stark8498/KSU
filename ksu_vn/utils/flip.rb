@@ -71,35 +71,35 @@ module KSU::Flip
       KSU.container?(ent) && ent.respond_to?(:definition) && ent.definition == defn
     end
   end
-  def _cae3470a(ent)
+  def edgeband_part?(ent)
     return false unless KSU.container?(ent)
     return true if ent.respond_to?(:get_attribute) && ent.get_attribute("ABF", "is-edge-banding-notation")
     ent.name.to_s.include?("_ABF_edgeBanding")
   end
   def edgeband_groups(panel, sheet)
     return [] unless panel && panel.valid? && sheet && sheet.valid?
-    ents2 = panel.definition.entities.select { |ent| _cae3470a(ent) }
+    ents2 = panel.definition.entities.select { |ent| edgeband_part?(ent) }
     return [] if ents2.empty?
     tr = panel.transformation
     tr3 = ents2.map { |ent| [ent, ent.transformation.clone] }
-    bbox = tr3.map do |ent, _eef8786a|
-      ents = KSU::Nesting.clone_panel(sheet.definition.entities, ent, tr * _eef8786a)
-      [ents, _eef8786a]
+    bbox = tr3.map do |ent, etf|
+      ents = KSU::Nesting.clone_panel(sheet.definition.entities, ent, tr * etf)
+      [ents, etf]
     end
     tr2 = Geom::Transformation.scaling(panel.definition.bounds.center, 1, -1, 1)
-    bbox.map { |ents, _eef8786a| [ents, tr * tr2 * _eef8786a] }
+    bbox.map { |ents, etf| [ents, tr * tr2 * etf] }
   end
-  def drop_named(panel, _2cb52d46)
+  def drop_named(panel, layer_name2)
     return unless panel && panel.valid?
     vec = KSU::Cutting.cutting_group(panel)
     return unless vec && vec.valid?
-    KSU::Cutting.set_layer(vec, KSU::Cutting.layer(_2cb52d46))
+    KSU::Cutting.set_layer(vec, KSU::Cutting.layer(layer_name2))
   end
   def apply_edgeband(panel, arr)
     return unless panel && panel.valid?
-    arr.each do |inst, _b5060b46|
+    arr.each do |inst, itf|
       next unless inst && inst.valid?
-      KSU::Nesting.clone_panel(panel.definition.entities, inst, panel.transformation.inverse * _b5060b46)
+      KSU::Nesting.clone_panel(panel.definition.entities, inst, panel.transformation.inverse * itf)
     end
   end
   def attr_snapshot(entity)
@@ -120,13 +120,13 @@ module KSU::Flip
   def move_panel(nesting, panel, grp3, grp, grp2)
     return nil unless panel && panel.valid? && grp && grp.valid?
     tr = nesting.transformation * grp3.transformation * panel.transformation
-    _3beb117f = _4863ef50(panel, tr)
+    c_from = cut_center(panel, tr)
     tr3 = nesting.transformation * grp2.transformation * grp.transformation
-    _263973eb = _4863ef50(grp, tr3)
-    tr2 = Geom::Transformation.translation(_263973eb - _3beb117f) * tr
+    c_to = cut_center(grp, tr3)
+    tr2 = Geom::Transformation.translation(c_to - c_from) * tr
     (nesting.transformation * grp2.transformation).inverse * tr2
   end
-  def _4863ef50(panel, transform)
+  def cut_center(panel, transform)
     poly = KSU::Cutting.cut_outline(panel, transform)
     return panel.definition.bounds.center.transform(transform) unless poly && poly.length >= 3
     bbox = Geom::BoundingBox.new

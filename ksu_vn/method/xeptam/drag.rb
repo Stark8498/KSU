@@ -138,10 +138,10 @@ module KSU::Drag
         outer = bf[:fill] && bf[:fill][:outer]
         next unless outer && outer.length >= 3
         b = KSU::Geom.bounds(outer)
-        _110de770, arr5 = outer.map { |pt| pt.z.to_f }.minmax
+        z_lo, arr5 = outer.map { |pt| pt.z.to_f }.minmax
         arr4 = []
         arr3 = []
-        [_110de770, arr5].each do |z|
+        [z_lo, arr5].each do |z|
           [[b[:min_x], b[:min_y]], [b[:max_x], b[:min_y]], [b[:max_x], b[:max_y]], [b[:min_x], b[:max_y]]].each do |px, py|
             s = view.screen_coords(Geom::Point3d.new(px, py, z))
             arr4 << s.x
@@ -183,17 +183,17 @@ module KSU::Drag
   end
   def nearest_sheet(pt)
     best = nil
-    _aa866019 = nil
+    best_d2x = nil
     @arr23.each do |s|
       inst = s[:instance]
       next unless inst && inst.valid? && !KSU::Sheet.hidden?(inst)
       len2d = KSU::Sheet.dist_to_box(pt, s[:bbox])
-      if _aa866019.nil? || len2d < _aa866019
-        _aa866019 = len2d
+      if best_d2x.nil? || len2d < best_d2x
+        best_d2x = len2d
         best = s
       end
     end
-    [best, _aa866019]
+    [best, best_d2x]
   end
   def sheet_list(nesting, flag = false)
     @arr23 = KSU::Sheet.sheet_list(nesting, include_bottom: true)
@@ -289,9 +289,9 @@ module KSU::Drag
     hide_originals
     rebuild_sel_polys
     reset_anchor
-    _ddbd086b = record_for(@sel_sheets.first)
-    @flag33 = !@flag45 && _ddbd086b &&
-                               !fits_on?(_ddbd086b)
+    cur_rec = record_for(@sel_sheets.first)
+    @flag33 = !@flag45 && cur_rec &&
+                               !fits_on?(cur_rec)
     save_drag_state
   end
   def save_drag_state
