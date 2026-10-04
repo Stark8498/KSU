@@ -306,7 +306,7 @@ class KSU::Toiuuvan
     sheet_list
   end
   def sheet_under(view, x, y)
-    partner = @sheets.find { |rec| KSU::View._919af578(view, x, y, rec) }
+    partner = @sheets.find { |rec| KSU::View.hit_sheet_top?(view, x, y, rec) }
     partner && partner[:instance]
   end
   def select_sheet(sheet, additive)

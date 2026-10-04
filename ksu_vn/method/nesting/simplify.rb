@@ -1,6 +1,6 @@
 module KSU::Simplify
   module_function
-  def _c71fe5d3(box, _24bf279f)
+  def simplify_poly(box, want_ccw)
     n = box.length
     return box if n < 4
     min_x = box.map { |arr3| arr3[0] }.min
@@ -13,7 +13,7 @@ module KSU::Simplify
       b = box[(i + 1) % n]
       num2 += arr6[0] * b[1] - b[0] * arr6[1]
     end
-    flag2 = (num2 < 0 ? 1 : -1) * (_24bf279f ? 1 : -1)
+    flag2 = (num2 < 0 ? 1 : -1) * (want_ccw ? 1 : -1)
     vec = []
     (0...n - 1).each { |i| vec << [box[i + 1][0] - box[i][0], box[i + 1][1] - box[i][1]] }
     vec << [box[n - 1][0] - box[0][0], box[n - 1][1] - box[0][1]]
@@ -24,27 +24,27 @@ module KSU::Simplify
     idx = 0
     while idx <= n - 1
       if idx < n - 2
-        ang = _877aa5f8(vec[idx], vec[idx + 1])
+        ang = angle_between(vec[idx], vec[idx + 1])
         if ang < num5
-          flag = _92674c1b(vec[idx], vec[idx + 1]) > 0 ? -1 : 1
-          _474c31eb = idx
+          flag = cross2(vec[idx], vec[idx + 1]) > 0 ? -1 : 1
+          last_ix = idx
           j = idx + 1
           while j < n - 1
-            _4bfaa449 = _877aa5f8(vec[j], vec[j + 1])
-            flag3 = _92674c1b(vec[j], vec[j + 1]) > 0 ? -1 : 1
-            _a836bc0b = _877aa5f8(vec[idx], vec[j + 1])
-            break unless (_4bfaa449 - ang).abs < num3 && flag3 == flag && _a836bc0b < num4
-            _474c31eb = j
+            ang2 = angle_between(vec[j], vec[j + 1])
+            flag3 = cross2(vec[j], vec[j + 1]) > 0 ? -1 : 1
+            ang_span = angle_between(vec[idx], vec[j + 1])
+            break unless (ang2 - ang).abs < num3 && flag3 == flag && ang_span < num4
+            last_ix = j
             j += 1
           end
-          if _474c31eb > idx
+          if last_ix > idx
             bnds << box[idx]
             if flag * flag2 > 0
-              _76ee3d2c = _03ea1bb7(box[idx], vec[idx], box[_474c31eb], vec[_474c31eb])
-              bnds << _76ee3d2c if _76ee3d2c
+              meet = line_meet(box[idx], vec[idx], box[last_ix], vec[last_ix])
+              bnds << meet if meet
             end
-            bnds << box[_474c31eb]
-            idx = _474c31eb + 1
+            bnds << box[last_ix]
+            idx = last_ix + 1
             next
           end
         end
@@ -67,9 +67,9 @@ module KSU::Simplify
         ok = true
         i = 1
         while i <= arr.length - 2
-          _7e2557de = [arr[i][0] - arr[i - 1][0], arr[i][1] - arr[i - 1][1]]
+          v_in = [arr[i][0] - arr[i - 1][0], arr[i][1] - arr[i - 1][1]]
           _298717ec = [arr[i + 1][0] - arr[i][0], arr[i + 1][1] - arr[i][1]]
-          if _877aa5f8(_7e2557de, _298717ec) < 0.01
+          if angle_between(v_in, _298717ec) < 0.01
             arr.delete_at(i)
             ok = false
           else
@@ -80,31 +80,31 @@ module KSU::Simplify
       end
     end
     return box if arr.length < 3
-    _72faa8fa = [[min_x - 0.0001, min_y - 0.0001], [hi_x + 0.0001, min_y - 0.0001],
+    box4 = [[min_x - 0.0001, min_y - 0.0001], [hi_x + 0.0001, min_y - 0.0001],
                [hi_x + 0.0001, hi_y + 0.0001], [min_x - 0.0001, hi_y + 0.0001]]
-    arr7 = _578e7a65(arr, _72faa8fa)
+    arr7 = clip_to_box(arr, box4)
     arr7.length >= 3 ? arr7 : arr
   end
-  def _877aa5f8(arr2, b)
-    _8efa9bce = Math.sqrt(arr2[0] * arr2[0] + arr2[1] * arr2[1])
-    _71d780bd = Math.sqrt(b[0] * b[0] + b[1] * b[1])
-    return 0.0 if _8efa9bce < 1e-12 || _71d780bd < 1e-12
-    color = (arr2[0] * b[0] + arr2[1] * b[1]) / (_8efa9bce * _71d780bd)
+  def angle_between(arr2, b)
+    len_a = Math.sqrt(arr2[0] * arr2[0] + arr2[1] * arr2[1])
+    len_b = Math.sqrt(b[0] * b[0] + b[1] * b[1])
+    return 0.0 if len_a < 1e-12 || len_b < 1e-12
+    color = (arr2[0] * b[0] + arr2[1] * b[1]) / (len_a * len_b)
     color = 1.0 if color > 1.0
     color = -1.0 if color < -1.0
     Math.acos(color)
   end
-  def _92674c1b(arr2, b)
+  def cross2(arr2, b)
     arr2[0] * b[1] - arr2[1] * b[0]
   end
-  def _03ea1bb7(arr, v, arr2, w)
+  def line_meet(arr, v, arr2, w)
     num = v[0] * w[1] - v[1] * w[0]
     return nil if num.abs < 1e-12
     thick = ((arr2[0] - arr[0]) * w[1] - (arr2[1] - arr[1]) * w[0]) / num
     [arr[0] + thick * v[0], arr[1] + thick * v[1]]
   end
-  def _578e7a65(_6125f482, arr5)
-    result = _6125f482
+  def clip_to_box(poly, arr5)
+    result = poly
     arr2 = arr5.last
     arr5.each do |arr3|
       arr61 = result

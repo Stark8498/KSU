@@ -145,7 +145,7 @@ module KSU::Collect
     arr4 = KSU::Cutting.kids_with_attr(g, "is-label")
     return [:skip, _c348cdef] unless arr4
     vec = arr4[0].transformation.xaxis.transform(tf_axes * tf)
-    tr2 = Geom::Transformation.rotation(ORIGIN, Z_AXIS, _b33d5052(vec, Y_AXIS.reverse))
+    tr2 = Geom::Transformation.rotation(ORIGIN, Z_AXIS, vec_angle(vec, Y_AXIS.reverse))
     max_eb = KSU::Cutting.edgeband_spec(g, thickness_mm)
     anchor = (tr2 * tf_axes * tf).origin
     tr3 = Geom::Transformation.translation([-anchor.x, -anchor.y, -anchor.z])
@@ -155,7 +155,7 @@ module KSU::Collect
     rec = KSU::Cutting.cut_loops(g, face, _984e016d, max_eb[0], arr3[0], arr3[1])
     return [nil, _c348cdef] if rec[:loops].empty?
     bnds = rec[:loops].map do |arr|
-      KSU::Simplify._c71fe5d3(arr[:pts].map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }, arr[:outer])
+      KSU::Simplify.simplify_poly(arr[:pts].map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }, arr[:outer])
     end
     lx = nil
     flag = nil
@@ -213,7 +213,7 @@ module KSU::Collect
   def _099ecc27(stream)
     stream.to_s.split(/[,\n]/).map { |s| s.strip.downcase }.reject(&:empty?)
   end
-  def _b33d5052(vec, b)
+  def vec_angle(vec, b)
     ang = Math.atan2(vec.cross(b).z, vec.dot(b))
     ang += 2 * Math::PI if ang < 0
     ang

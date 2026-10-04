@@ -450,7 +450,7 @@ module KSU::View
     _35b1b769 = duoi - py
     _130a8af3 * _130a8af3 + _35b1b769 * _35b1b769 <= tol * tol
   end
-  def self._919af578(view, x, y, rec)
+  def self.hit_sheet_top?(view, x, y, rec)
     outer = rec[:top_corners].map { |_23505ef9| view.screen_coords(_23505ef9) }
     in_poly?(x, y, outer)
   end

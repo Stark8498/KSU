@@ -3011,6 +3011,57 @@ ten:
     ksu_vn/method/toiuuvan/engine.rb: v
     ksu_vn/method/nesting.rb: m_left
 
+  # ----- ME 77: method/nesting/simplify.rb -- gop cung tron thanh day cung -----
+  # Chuoi canh ngan lien tiep co goc re gan bang nhau va cung chieu la mot
+  # cung tron da chia nho; thay ca chuoi bang giao diem cua hai canh dau cuoi.
+  # Sau do cat theo hop bao hoi noi ra, de hinh khong bao gio phinh ra ngoai.
+  _c71fe5d3: simplify_poly
+  _877aa5f8: angle_between
+  _92674c1b: cross2
+  _03ea1bb7: line_meet
+  _578e7a65: clip_to_box         # cat Sutherland-Hodgman theo hop bao
+  _24bf279f: want_ccw
+  _8efa9bce: len_a
+  _71d780bd: len_b
+  _6125f482:
+    ksu_vn/method/nesting/simplify.rb: poly
+
+  _474c31eb:
+    ksu_vn/method/nesting/simplify.rb: last_ix
+  _4bfaa449:
+    ksu_vn/method/nesting/simplify.rb: ang2
+  _a836bc0b:
+    ksu_vn/method/nesting/simplify.rb: ang_span
+  _76ee3d2c:
+    ksu_vn/method/nesting/simplify.rb: meet
+  _7e2557de:
+    ksu_vn/method/nesting/simplify.rb: v_in
+  _72faa8fa:
+    ksu_vn/method/nesting/simplify.rb: box4
+
+  # ----- ME 77b: method/xuatdxf/geom.rb -- nhan ra cung tron trong chuoi diem -----
+  _2d01dec4: arc_center          # giao cua hai duong trung truc
+  _b33d5052: vec_angle           # 0..2pi, dau lay tu tich co huong voi Z
+  _826c9296: arc_at
+  _67416b90: step_len
+  _d9b81a7a:
+    ksu_vn/method/xuatdxf/geom.rb: chord
+  _771229d2: ja
+  _bfe9f61b: jb
+  _78b1bbe1: jp
+  _dc176291: p_next
+
+  # ----- ME 77c: method/xeptam/arrange.rb -- doi cho hai van -----
+  _35f2e047: swap_sheets
+  _650fb422: swap_panels
+  _14a635d9: shift_bottoms
+  _925b0a97: swap_edit_offsets   # thuoc tinh KSU "nest_edit_offset"
+  _505c425e: both_front
+  _69fdc9ce: off_a
+  _3cbe40ae: off_b
+  _919af578: hit_sheet_top?
+  _fde5708a: base_tr2
+
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.
 # Moi dong duoi day la mot hex da thua mot tu cho hex khac dung nhieu

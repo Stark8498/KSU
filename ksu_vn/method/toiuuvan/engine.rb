@@ -321,7 +321,7 @@ module KSU::Engine
     end
     arr4 = outer.map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }
     arr4 = rot_poly(arr4, ang) unless ang == 0.0
-    arr2 = KSU::Simplify._c71fe5d3(arr4, true)
+    arr2 = KSU::Simplify.simplify_poly(arr4, true)
     min_x = arr2.map { |_23505ef9| _23505ef9[0] }.min
     min_y = arr2.map { |_23505ef9| _23505ef9[1] }.min
     conv2 = ->(arr10) { arr10.map { |_23505ef9| [(_23505ef9[0] - min_x) * 25.4, (_23505ef9[1] - min_y) * 25.4] } }
@@ -330,7 +330,7 @@ module KSU::Engine
       next unless h && h.length >= 3
       arr3 = h.map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }
       arr3 = rot_poly(arr3, ang) unless ang == 0.0
-      arr5 = KSU::Simplify._c71fe5d3(arr3, false)
+      arr5 = KSU::Simplify.simplify_poly(arr3, false)
       next if arr5.length < 3
       loops << conv2.call(arr5)
     end

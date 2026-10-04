@@ -13,7 +13,7 @@ module KSU::Arrange
       sheet = rec[:instance]
       next unless sheet && sheet.valid?
       next if KSU::Sheet.hidden?(sheet)
-      return sheet if KSU::View._919af578(view, x, y, rec) ||
+      return sheet if KSU::View.hit_sheet_top?(view, x, y, rec) ||
                          near_outline?(view, x, y, rec)
     end
     nil
@@ -84,7 +84,7 @@ module KSU::Arrange
       end
     arr2 = load_data[0]
     tr3 = load_data[1]
-    _fde5708a = load_data[2]
+    base_tr2 = load_data[2]
     arr4 = arr2.each_with_object({}) do |s, h|
       h[s] = KSU::Sheet.sheet_labels(s, @nesting) if s && s.valid?
     end
@@ -110,8 +110,8 @@ module KSU::Arrange
       pt = tr3.origin - tr2.origin
       arr3 = KSU::Sheet.rebuild_dims(labels, pt, @nesting)
       arr3.each { |len2d| KSU::Sheet.set_dim_text(len2d, str) } if new_id
-      if grp4 && _fde5708a
-        grp3 = KSU::Sheet.clone_sheet_shell(grp4, _fde5708a, @nesting)
+      if grp4 && base_tr2
+        grp3 = KSU::Sheet.clone_sheet_shell(grp4, base_tr2, @nesting)
         if grp3
           if new_id
             grp3.name = "#{str}-bottom"
@@ -166,47 +166,47 @@ module KSU::Arrange
       when :next then ix < sheets.length - 1 ? sheets[ix + 1] : nil
       end
     return false unless target
-    _35f2e047(@flag37, target)
+    swap_sheets(@flag37, target)
     @flag37 = target if target.valid?
     sheet_list(@nesting)
     true
   end
-  def _35f2e047(vec, vec2)
+  def swap_sheets(vec, vec2)
     return if vec == vec2
     return unless vec && vec.valid? && vec2 && vec2.valid?
     KSU.start
-    _505c425e = !(KSU::Sheet.bottom_sheet?(vec) || KSU::Sheet.bottom_sheet?(vec2))
-    flag2 = _505c425e ? KSU::Sheet.bottom_for(vec, @nesting) : nil
-    flag = _505c425e ? KSU::Sheet.bottom_for(vec2, @nesting) : nil
-    _650fb422(vec, vec2)
-    if _505c425e
-      _14a635d9(vec, vec2, flag2, flag)
-      _925b0a97(vec, vec2)
+    both_front = !(KSU::Sheet.bottom_sheet?(vec) || KSU::Sheet.bottom_sheet?(vec2))
+    flag2 = both_front ? KSU::Sheet.bottom_for(vec, @nesting) : nil
+    flag = both_front ? KSU::Sheet.bottom_for(vec2, @nesting) : nil
+    swap_panels(vec, vec2)
+    if both_front
+      shift_bottoms(vec, vec2, flag2, flag)
+      swap_edit_offsets(vec, vec2)
     end
     KSU.commit
   end
-  def _925b0a97(grp, grp2)
-    _69fdc9ce = KSU::Sheet.edit_offset(grp)
-    _3cbe40ae = KSU::Sheet.edit_offset(grp2)
-    return if _69fdc9ce.nil? && _3cbe40ae.nil?
-    if _3cbe40ae
-      grp.set_attribute("KSU", "nest_edit_offset", _3cbe40ae)
+  def swap_edit_offsets(grp, grp2)
+    off_a = KSU::Sheet.edit_offset(grp)
+    off_b = KSU::Sheet.edit_offset(grp2)
+    return if off_a.nil? && off_b.nil?
+    if off_b
+      grp.set_attribute("KSU", "nest_edit_offset", off_b)
     else
       grp.delete_attribute("KSU", "nest_edit_offset")
     end
-    if _69fdc9ce
-      grp2.set_attribute("KSU", "nest_edit_offset", _69fdc9ce)
+    if off_a
+      grp2.set_attribute("KSU", "nest_edit_offset", off_a)
     else
       grp2.delete_attribute("KSU", "nest_edit_offset")
     end
   end
-  def _650fb422(grp, grp2)
+  def swap_panels(grp, grp2)
     ents2 = grp.definition.entities.to_a.select { |ent| KSU::Nesting._88f4d2bb(ent) }
     ents = grp2.definition.entities.to_a.select { |ent| KSU::Nesting._88f4d2bb(ent) }
     ents2.each { |vec| KSU::Nesting.clone_panel_into(vec, grp2) if vec.valid? }
     ents.each { |vec| KSU::Nesting.clone_panel_into(vec, grp) if vec.valid? }
   end
-  def _14a635d9(grp4, grp3, grp2, grp)
+  def shift_bottoms(grp4, grp3, grp2, grp)
     return unless grp2 || grp
     delta = grp3.transformation.origin - grp4.transformation.origin
     vec = Geom::Vector3d.new(-delta.x, -delta.y, -delta.z)
@@ -264,7 +264,7 @@ module KSU::Arrange
   def swap_part_type(forward)
     target = KSU::Sheet._de0a88d4(@nesting, @flag37, forward)
     return unless target && target.valid?
-    _35f2e047(@flag37, target)
+    swap_sheets(@flag37, target)
     @flag37 = target if target.valid?
     sheet_list(@nesting)
     refresh_state

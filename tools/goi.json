@@ -968,7 +968,7 @@
   },
   {
    "ns": "KSU::Simplify",
-   "m": "_c71fe5d3",
+   "m": "simplify_poly",
    "f": "ksu_vn/method/nesting/collect.rb",
    "l": 158
   },
@@ -1796,7 +1796,7 @@
   },
   {
    "ns": "KSU::View",
-   "m": "_919af578",
+   "m": "hit_sheet_top?",
    "f": "ksu_vn/method/toiuuvan.rb",
    "l": 309
   },

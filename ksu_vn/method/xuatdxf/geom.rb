@@ -16,7 +16,7 @@ module KSU::Xuatdxf
     end
   end
   module_function
-  def _2d01dec4(p1, p2, p3)
+  def arc_center(p1, p2, p3)
     return nil if p1 == p2 || p2 == p3
     pt3 = Geom::Point3d.new((p1.x + p2.x) / 2, (p1.y + p2.y) / 2, 0)
     pt4 = Geom::Point3d.new((p2.x + p3.x) / 2, (p2.y + p3.y) / 2, 0)
@@ -25,7 +25,7 @@ module KSU::Xuatdxf
     return nil unless d1.valid? && d2.valid?
     Geom.intersect_line_line([pt3, d1], [pt4, d2])
   end
-  def _b33d5052(vec2, b)
+  def vec_angle(vec2, b)
     vec2 = vec2.normalize
     b = b.normalize
     len2d = vec2.dot(b)
@@ -37,11 +37,11 @@ module KSU::Xuatdxf
   end
   def circle?(box)
     return nil if box.size < 12
-    _67416b90 = box[0].distance(box[1])
+    step_len = box[0].distance(box[1])
     (1...box.size - 1).each do |i|
-      return nil if (_67416b90 - box[i].distance(box[i + 1])).abs > EPS_ARC
+      return nil if (step_len - box[i].distance(box[i + 1])).abs > EPS_ARC
     end
-    center = _2d01dec4(box[0], box[box.size / 3], box[box.size * 2 / 3])
+    center = arc_center(box[0], box[box.size / 3], box[box.size * 2 / 3])
     return nil unless center
     half = center.distance(box[0])
     (1...box.size).each do |i|
@@ -49,52 +49,52 @@ module KSU::Xuatdxf
     end
     { center: center, radius: half }
   end
-  def _826c9296(box, i)
+  def arc_at(box, i)
     num = box.size
     p1 = box[i]
     p2 = box[(i + 1) % num]
     p3 = box[(i + 2) % num]
-    _d9b81a7a = p1.distance(p2)
-    return nil if (p2.distance(p3) - _d9b81a7a).abs > EPS_ARC
-    center = _2d01dec4(p1, p2, p3)
+    chord = p1.distance(p2)
+    return nil if (p2.distance(p3) - chord).abs > EPS_ARC
+    center = arc_center(p1, p2, p3)
     return nil unless center
     r = p1.distance(center)
     num15 = 2
     start_i = i
     end_i = i + 2
     (start_i - 1).downto(i - num + 3) do |j|
-      _771229d2 = j % num
-      _bfe9f61b = (j + 1) % num
-      break unless (box[_771229d2].distance(box[_bfe9f61b]) - _d9b81a7a).abs < EPS_ARC &&
-                   (box[_771229d2].distance(center) - r).abs < EPS_ARC
-      start_i = _771229d2
+      ja = j % num
+      jb = (j + 1) % num
+      break unless (box[ja].distance(box[jb]) - chord).abs < EPS_ARC &&
+                   (box[ja].distance(center) - r).abs < EPS_ARC
+      start_i = ja
       num15 += 1
     end
     pt3 = box[start_i - 1]
     pt = box[start_i]
     pt4 = box[(start_i + 1) % num]
-    _dc176291 = box[(start_i + 2) % num]
-    a1 = _b33d5052(pt4.vector_to(_dc176291), pt4.vector_to(pt))
-    a2 = _b33d5052(pt.vector_to(pt4), pt.vector_to(pt3))
-    if pt.distance(pt3) < _d9b81a7a && a1.radians < 72.001 && (a1 - a2).abs < EPS_ARC
+    p_next = box[(start_i + 2) % num]
+    a1 = vec_angle(pt4.vector_to(p_next), pt4.vector_to(pt))
+    a2 = vec_angle(pt.vector_to(pt4), pt.vector_to(pt3))
+    if pt.distance(pt3) < chord && a1.radians < 72.001 && (a1 - a2).abs < EPS_ARC
       start_i -= 1
       num15 += 1
     end
     (end_i + 1..end_i + num - 3).each do |j|
-      _771229d2 = j % num
-      _78b1bbe1 = (j - 1) % num
-      break unless (box[_78b1bbe1].distance(box[_771229d2]) - _d9b81a7a).abs < EPS_ARC &&
-                   (box[_771229d2].distance(center) - r).abs < EPS_ARC
-      end_i = _771229d2
+      ja = j % num
+      jp = (j - 1) % num
+      break unless (box[jp].distance(box[ja]) - chord).abs < EPS_ARC &&
+                   (box[ja].distance(center) - r).abs < EPS_ARC
+      end_i = ja
       num15 += 1
     end
     end_i %= num
     pt3 = box[end_i - 1]
     pt = box[end_i]
     pt4 = box[(end_i + 1) % num]
-    a1 = _b33d5052(pt.vector_to(pt4), pt.vector_to(pt3))
-    a2 = _b33d5052(pt3.vector_to(pt), pt3.vector_to(box[end_i - 2]))
-    if end_i < num - 1 && pt.distance(pt4) < _d9b81a7a && a1.radians < 72.001 && (a1 - a2).abs < EPS_ARC
+    a1 = vec_angle(pt.vector_to(pt4), pt.vector_to(pt3))
+    a2 = vec_angle(pt3.vector_to(pt), pt3.vector_to(box[end_i - 2]))
+    if end_i < num - 1 && pt.distance(pt4) < chord && a1.radians < 72.001 && (a1 - a2).abs < EPS_ARC
       end_i += 1
       num15 += 1
     end
@@ -107,7 +107,7 @@ module KSU::Xuatdxf
     vec5 = p2.vector_to(center)
     vec4 = box[end_i].vector_to(center)
     _0f0ce717 = vec2.cross(vec5).z > 0
-    flag = _0f0ce717 ? _b33d5052(vec2, vec4) : _b33d5052(vec4, vec2)
+    flag = _0f0ce717 ? vec_angle(vec2, vec4) : vec_angle(vec4, vec2)
     return nil if num == 6 && num15 == 5 && flag.radians > 299
     return nil if num15 == 6 && flag.radians > 359
     bulge = Math.tan(flag / 4)
@@ -128,7 +128,7 @@ module KSU::Xuatdxf
       break if deadline && Time.now > deadline
       done = true
       (0...box.size).each do |i|
-        color = _826c9296(box, i)
+        color = arc_at(box, i)
         next unless color
         start_i = color[:start_i]
         end_i = color[:end_i]

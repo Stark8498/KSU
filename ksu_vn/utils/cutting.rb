@@ -257,13 +257,13 @@ module KSU::Cutting
             next unless ent.used_by?(font)
             axis[0] = axis[0].offset(vec, -thickness)
             next unless h.key?(ent.entityID)
-            pt = ent.start.position.transform(tf) + ent.end.position.transform(tf).to_a
-            pt.set!(pt.x / 2, pt.y / 2, pt.z / 2)
-            p_ref = pt.offset!(vec, -thickness - arrow_padding)
+            p_next = ent.start.position.transform(tf) + ent.end.position.transform(tf).to_a
+            p_next.set!(p_next.x / 2, p_next.y / 2, p_next.z / 2)
+            p_ref = p_next.offset!(vec, -thickness - arrow_padding)
             pp_vec = vec.cross(vec2)
             next unless pp_vec.length.to_f > 0.0
             arr3 << { p0: p_ref, vec: vec, pp_vec: pp_vec, size: [arrow_size, num / 2].min }
-            edge_band_desc << { p0: pt, p1: pt.offset(vec, 1), name: rec[2], fields: rec[3], kind: rec[5] }
+            edge_band_desc << { p0: p_next, p1: p_next.offset(vec, 1), name: rec[2], fields: rec[3], kind: rec[5] }
           end
           count_by_length << axis
         end
