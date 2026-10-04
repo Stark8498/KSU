@@ -149,29 +149,29 @@ module KSU::Mirror
       next unless pair
       partner, back_sheet = pair
       next unless partner && partner.valid? && back_sheet && back_sheet.valid?
-      _794181de = target_box(anchor, back_sheet, inst4, bb)
-      next unless _794181de
-      bb2, _1b6c344e = _794181de
+      tb = target_box(anchor, back_sheet, inst4, bb)
+      next unless tb
+      bb2, framed = tb
       tr = KSU::View.panel_world_box(partner, @nesting.transformation * back_sheet.transformation)
       arr = panel_outline(partner, back_sheet)
       poly = arr ? arr[:outer] : outer_pts_of(partner, back_sheet)
       next if poly.length < 3
       holes = arr ? (arr[:holes] || []) : []
-      _17ed90bb = (bb.min.x + bb.max.x) / 2.0
-      _46ac7359 = bb2.center.x - bb.center.x
-      _478babd6 = bb2.center.y - bb.center.y
-      _5f2b530c = (2.0 * _17ed90bb - arr2[:max_x]) + _46ac7359
-      _76baa4cb = arr2[:min_y] + _478babd6
-      dx = _5f2b530c - tr.min.x
-      dy = _76baa4cb - tr.min.y
+      axis_x = (bb.min.x + bb.max.x) / 2.0
+      off_x = bb2.center.x - bb.center.x
+      off_y = bb2.center.y - bb.center.y
+      nx0 = (2.0 * axis_x - arr2[:max_x]) + off_x
+      ny0 = arr2[:min_y] + off_y
+      dx = nx0 - tr.min.x
+      dy = ny0 - tr.min.y
       partner.hidden = true unless partner.hidden?
       @arr33 << partner
       @arr57 << {
         front: vec,
         partner: partner,
-        frame: (_1b6c344e ? KSU::View.bbox_top(bb2) : nil),
+        frame: (framed ? KSU::View.bbox_top(bb2) : nil),
         polygon: KSU::Geom.translate(poly, dx, dy),
-        holes: holes.map { |_c9fa72f2| KSU::Geom.translate(_c9fa72f2, dx, dy) },
+        holes: holes.map { |hole| KSU::Geom.translate(hole, dx, dy) },
       }
     end
   end
@@ -197,7 +197,7 @@ module KSU::Mirror
     bbox.add(Geom::Point3d.new(bb.max.x + dx, bb.max.y + dy, bb.max.z))
     [bbox, true]
   end
-  def _f42544d1(view)
+  def draw_mirror_preview(view)
     return if @arr57.nil? || @arr57.empty?
     flag = @flag21 ? KSU::View.warn_color : KSU::View.face_color
     edge = @flag21 ? KSU::View.warning_color : KSU::View.edge_color
@@ -227,19 +227,19 @@ module KSU::Mirror
   def draw_rect2d(view)
     return unless @down_x && @drag_x
     KSU::View.draw_rect2d(view, @down_x, @down_y, @drag_x, @drag_y)
-    _9b91a3d7(view)
+    draw_box_preview(view)
   end
-  def _9b91a3d7(view)
+  def draw_box_preview(view)
     return unless @nesting && @nesting.valid?
     arr = panels_in_box(view, @down_x, @down_y, @drag_x, @drag_y)
     return if arr.empty?
-    _33c34f08 = KSU::View.face_color
+    fill_c = KSU::View.face_color
     edge = KSU::View.edge_color
     arr.each do |half|
       panel = half[:panel]
       sheet = half[:sheet]
       next unless panel && panel.valid? && sheet && sheet.valid?
-      draw_panel_fill(panel, sheet, _33c34f08, edge)
+      draw_panel_fill(panel, sheet, fill_c, edge)
     end
   end
   def update_hover_sheets(x, y, view)
@@ -254,7 +254,7 @@ module KSU::Mirror
       @panel = @sheet3 = @sheet = nil
       @arr41 = []
     else
-      answer = _b01ddcaf(view, x, y)
+      answer = pick_panel_at(view, x, y)
       if answer
         @arr41 = group_mates(answer[:panel]) if @panel != answer[:panel]
         @panel = answer[:panel]
@@ -266,10 +266,10 @@ module KSU::Mirror
         @sheet = sheet_at2(view, x, y)
       end
     end
-    _13d621f9 = [@panel, @sheet, @hover_side, @flag12, @hover_corner, @hover_edge, @vec3]
-    view.invalidate if _13d621f9 != prev
+    now = [@panel, @sheet, @hover_side, @flag12, @hover_corner, @hover_edge, @vec3]
+    view.invalidate if now != prev
   end
-  def _b01ddcaf(view, x, y)
+  def pick_panel_at(view, x, y)
     best = nil
     best_a = Float::INFINITY
     screen_items(view).each do |arr|
@@ -287,41 +287,41 @@ module KSU::Mirror
     best
   end
   def panels_in_box(view, x218, _60000b16, x2, y2)
-    _2cf18878, _d6439c88 = [x218, x2].minmax
-    _ab593548, bot = [_60000b16, y2].minmax
-    _3b0d8ae2 = x2 < x218
+    left, right = [x218, x2].minmax
+    top, bot = [_60000b16, y2].minmax
+    crossing = x2 < x218
     arr2 = []
     screen_items(view).each do |arr|
       next unless arr[:panel] && arr[:panel].valid?
-      next if arr[:sxmax] < _2cf18878 || arr[:sxmin] > _d6439c88 || arr[:symax] < _ab593548 || arr[:symin] > bot
+      next if arr[:sxmax] < left || arr[:sxmin] > right || arr[:symax] < top || arr[:symin] > bot
       ensure_screen_poly(view, arr)
       outer = arr[:outer]
       if outer.nil?
-        next unless _3b0d8ae2 || (arr[:sxmin] >= _2cf18878 && arr[:sxmax] <= _d6439c88 && arr[:symin] >= _ab593548 && arr[:symax] <= bot)
-      elsif _3b0d8ae2
-        next unless _ee68e33c(_2cf18878, _ab593548, _d6439c88, bot, arr)
+        next unless crossing || (arr[:sxmin] >= left && arr[:sxmax] <= right && arr[:symin] >= top && arr[:symax] <= bot)
+      elsif crossing
+        next unless box_touches?(left, top, right, bot, arr)
       else
-        next unless outer.all? { |pt| pt.x.to_f.between?(_2cf18878, _d6439c88) && pt.y.to_f.between?(_ab593548, bot) }
+        next unless outer.all? { |pt| pt.x.to_f.between?(left, right) && pt.y.to_f.between?(top, bot) }
       end
       arr2 << { panel: arr[:panel], sheet: arr[:sheet] }
     end
     arr2
   end
-  def _ee68e33c(_2cf18878, _ab593548, _d6439c88, bot, arr)
+  def box_touches?(left, top, right, bot, arr)
     scr = [
-      Geom::Point3d.new(_2cf18878, _ab593548, 0), Geom::Point3d.new(_d6439c88, _ab593548, 0),
-      Geom::Point3d.new(_d6439c88, bot, 0), Geom::Point3d.new(_2cf18878, bot, 0),
+      Geom::Point3d.new(left, top, 0), Geom::Point3d.new(right, top, 0),
+      Geom::Point3d.new(right, bot, 0), Geom::Point3d.new(left, bot, 0),
     ]
-    return true if _c949afeb(_2cf18878, _ab593548, _d6439c88, bot, scr, arr[:outer])
-    return true if arr[:holes].any? { |h| h.length >= 3 && _c949afeb(_2cf18878, _ab593548, _d6439c88, bot, scr, h) }
-    return false unless KSU::View.in_poly?(_2cf18878, _ab593548, arr[:outer])
-    arr[:holes].none? { |h| h.length >= 3 && KSU::View.in_poly?(_2cf18878, _ab593548, h) }
+    return true if box_cuts_poly?(left, top, right, bot, scr, arr[:outer])
+    return true if arr[:holes].any? { |h| h.length >= 3 && box_cuts_poly?(left, top, right, bot, scr, h) }
+    return false unless KSU::View.in_poly?(left, top, arr[:outer])
+    arr[:holes].none? { |h| h.length >= 3 && KSU::View.in_poly?(left, top, h) }
   end
-  def _c949afeb(_2cf18878, _ab593548, _d6439c88, bot, scr, poly)
+  def box_cuts_poly?(left, top, right, bot, scr, poly)
     n = poly.length
     n.times do |i|
       pt = poly[i]
-      return true if pt.x.to_f.between?(_2cf18878, _d6439c88) && pt.y.to_f.between?(_ab593548, bot)
+      return true if pt.x.to_f.between?(left, right) && pt.y.to_f.between?(top, bot)
       b = poly[(i + 1) % n]
       4.times do |j|
         return true if KSU::Geom.segments_cross?(pt, b, scr[j], scr[(j + 1) % 4])
@@ -362,7 +362,7 @@ module KSU::Mirror
     return nil unless panel && panel.respond_to?(:object_id)
     @h24[panel.object_id] ||= panel_outline(panel, sheet)
   end
-  def draw_panel_fill(panel, sheet, color, _4a7d3cee = nil)
+  def draw_panel_fill(panel, sheet, color, edge_c = nil)
     fill = fill_of(panel, sheet)
     return false unless fill && fill[:outer].length >= 3
     tris = (fill[:tris] ||= KSU::View.poly_tris(fill[:outer], fill[:holes]))
@@ -372,7 +372,7 @@ module KSU::Mirror
     else
       KSU::View.draw_poly_holes(fill[:outer], fill[:holes], color: color, line: false)
     end
-    KSU::View.draw_loops(fill[:outer], fill[:holes], _4a7d3cee)
+    KSU::View.draw_loops(fill[:outer], fill[:holes], edge_c)
     true
   end
   def rebuild_geom

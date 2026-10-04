@@ -2319,6 +2319,7 @@ ten:
     ksu_vn/method/xeptam/nfp.rb: holes
   _9710d820:
     ksu_vn/method/xeptam/nfp.rb: area
+    ksu_vn/utils/preset/field.rb: ang
   _29cc5eaa:
     ksu_vn/method/xeptam/nfp.rb: ccw
   _496e1356:
@@ -2468,8 +2469,6 @@ ten:
     ksu_vn/utils/label.rb: lbl
   _2cb52d46:
     ksu_vn/utils/label.rb: layer
-  _ab593548:
-    "ksu_vn/utils/label.rb#inner_rect": top
   _5fb96e91:
     "ksu_vn/utils/label.rb#inner_rect": area
 
@@ -2740,6 +2739,82 @@ ten:
     "ksu_vn/utils/view.rb#_b9fdc2d5": y2
     "ksu_vn/utils/view.rb#_e519e18d": y2
 
+  # ----- ME 69: method/xeptam/mirror.rb -- lat tam sang van mat sau -----
+  # Khung chon keo tu phai sang trai la kieu "cat qua": nhan ca tam chi
+  # cham khung. Keo tu trai sang phai thi tam phai nam tron trong khung.
+  _f42544d1: draw_mirror_preview
+  _9b91a3d7: draw_box_preview
+  _b01ddcaf: pick_panel_at
+  _ee68e33c: box_touches?
+  _c949afeb: box_cuts_poly?
+
+  _2cf18878:
+    ksu_vn/method/xeptam/mirror.rb: left
+  _d6439c88:
+    ksu_vn/method/xeptam/mirror.rb: right
+  _ab593548:
+    "ksu_vn/utils/label.rb#inner_rect": top
+    ksu_vn/method/xeptam/mirror.rb: top
+  _3b0d8ae2:
+    ksu_vn/method/xeptam/mirror.rb: crossing
+  _13d621f9:
+    ksu_vn/method/xeptam/mirror.rb: now
+  _33c34f08:
+    ksu_vn/method/xeptam/mirror.rb: fill_c
+  _4a7d3cee:
+    ksu_vn/method/xeptam/mirror.rb: edge_c
+  _794181de:
+    ksu_vn/method/xeptam/mirror.rb: tb
+  _1b6c344e:
+    ksu_vn/method/xeptam/mirror.rb: framed
+  _17ed90bb:
+    ksu_vn/method/xeptam/mirror.rb: axis_x
+  _46ac7359:
+    ksu_vn/method/xeptam/mirror.rb: off_x
+  _478babd6:
+    ksu_vn/method/xeptam/mirror.rb: off_y
+  _5f2b530c:
+    ksu_vn/method/xeptam/mirror.rb: nx0
+  _76baa4cb:
+    ksu_vn/method/xeptam/mirror.rb: ny0
+  _c9fa72f2:
+    ksu_vn/method/xeptam/mirror.rb: hole
+
+  # ----- ME 70: utils/preset/field.rb -- bang cai dat ve tren khung nhin -----
+  # Moi dong mot o: tieu de ben trai, cong tac hoac o chu ben phai, va mot
+  # o khoa canh tieu de. Kich thuoc deu tinh tu `size`, nen doi co chu la
+  # ca bang co theo.
+  _6796ef4d: ui                  # KSU::Preset.ui[:font_size] ... `cfg` da thuoc _b09af5f8
+  _21df1025: draw_divider
+  _1cbe116a: draw_sub_tick
+  _c19b2977: draw_lock
+  _a4a34f6b: lock_rect
+  _be61172a: row_h2
+  _aeeff86b: hair                # size * 0.1, do day net manh nhat
+  _8adbceca: cache_text_y
+  _72271107: draw_switch
+  _9139e52d: "on"      # YAML doc  khong trong nhay la true
+  _a8835766: open_ix
+
+  _7cad5a48:
+    ksu_vn/utils/preset/field.rb: pad2
+  _5704b6f3:
+    ksu_vn/utils/preset/field.rb: ty
+  _79582570:
+    ksu_vn/utils/preset/field.rb: border_c
+  _f02ec4af:
+    ksu_vn/utils/preset/field.rb: tw
+  _e0af5943:
+    ksu_vn/utils/preset/field.rb: on_lock
+  _f4241e44:
+    ksu_vn/utils/preset/field.rb: my
+  _936e8d94:
+    ksu_vn/utils/preset/field.rb: cy
+  _709b21ed:
+    ksu_vn/utils/preset/field.rb: a0
+  _e74b5af2:
+    ksu_vn/utils/preset/field.rb: r2
+
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.
 # Moi dong duoi day la mot hex da thua mot tu cho hex khac dung nhieu
@@ -2884,7 +2959,6 @@ bo:
   # duoc dung nhieu hon. Ben thua o day la de xuat tu cay sinh doi;
   # sinhdoi.yml sinh lai moi lan chay nen tu choi phai nam o day.
   - _5e0c1b8d   # blk: 2 lan, ban tay giu _5d690575 (9 lan)
-  - _6796ef4d   # cfg: 18 lan, ban tay giu _b09af5f8 (77 lan)
   - _0dc41cf2   # dlg: 13 lan, ban tay giu _a72a3dce (50 lan)
    # grp: tenauto doan kieu, _d533ec26 dung 144 lan
   - _fab4f06f   # job: 12 lan, ban tay giu _fea16e8e (48 lan)

@@ -50,7 +50,7 @@ module KSU::Preset
     KSU::Const::GLOBAL_SETTING_KEYS.include?(key.to_s)
   end
   def self.colors
-    _6796ef4d[:dark] ? COLOR_DARK : COLOR_LIGHT
+    ui[:dark] ? COLOR_DARK : COLOR_LIGHT
   end
   def self.load_cfg
     KSU::Avail.reset3 if defined?(KSU::Avail)
@@ -72,7 +72,7 @@ module KSU::Preset
       text_y: nil
     }
   end
-  def self._6796ef4d
+  def self.ui
     load_cfg unless @cfg_memo
     @cfg_memo
   end

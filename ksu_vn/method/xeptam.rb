@@ -424,7 +424,7 @@ class KSU::Xeptam
     elsif @flag56
       drag_end
     else
-      answer = _b01ddcaf(view, x, y)
+      answer = pick_panel_at(view, x, y)
       if answer
         select_one(answer)
         @flag37 = @sel.size == 1 ? @sel_sheets[0] : nil
@@ -457,7 +457,7 @@ class KSU::Xeptam
       dx = (x - @down_x).abs
       dy = (y - @down_y).abs
       if dx > 3 || dy > 3
-        answer = _b01ddcaf(view, @down_x, @down_y)
+        answer = pick_panel_at(view, @down_x, @down_y)
         if @sel.any? && answer && @sel.include?(answer[:panel])
           drag_begin(view, @down_x, @down_y)
         elsif answer
@@ -692,7 +692,7 @@ class KSU::Xeptam
         end
       end
     end
-    _f42544d1(view) if @flag56
+    draw_mirror_preview(view) if @flag56
     draw_hover(view) unless @flag56
     draw_presets(view)
     draw_fields(view)

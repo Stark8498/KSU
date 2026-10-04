@@ -88,8 +88,8 @@ module KSU::Xuatdxf
       nil
     end
     unless _9535dc0b.is_a?(Array) && !_9535dc0b.empty?
-      h2 = _4d1bd02d
-      return sheets.select { |s| h2.key?(s[:key]) ? h2[s[:key]] : true }
+      on = _4d1bd02d
+      return sheets.select { |s| on.key?(s[:key]) ? on[s[:key]] : true }
     end
     h3 = {}
     _9535dc0b.each do |half|

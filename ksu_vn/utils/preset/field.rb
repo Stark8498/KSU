@@ -4,7 +4,7 @@ module KSU::Field
     @hover_ix = nil
     @hover_part = nil
     @edit_field = nil
-    @_a8835766 = nil
+    @open_ix = nil
     @input_buf = nil
     @caret = 0
     @blink_timer = nil
@@ -12,7 +12,7 @@ module KSU::Field
     @flag62 = false
   end
   def draw_fields(view)
-    return unless KSU::Preset._6796ef4d[:hien_setting]
+    return unless KSU::Preset.ui[:hien_setting]
     return unless @field_defs
     @view_ref = view
     items = visible_fields
@@ -24,31 +24,31 @@ module KSU::Field
     items.each_with_index do |fld, i|
       box2 = layout[i]
       hovered = @hover_ix == i
-      is_sel = @_a8835766 == i
+      is_sel = @open_ix == i
       border = is_sel ? palette[:ctrl_sel] : (hovered ? palette[:ctrl_hover] : nil)
       if i > 0 && !fld[:group_start]
-        _21df1025(view, layout[i - 1], box2)
+        draw_divider(view, layout[i - 1], box2)
       end
       pad_x = size * (fld[:sub] ? 2.6 : 1.2)
-      _1cbe116a(view, box2, fld, items[i + 1])
-      _7cad5a48 = size * 1.0
-      _5704b6f3 = text_mid_y(view, box2)
-      draw_text(view, fld[:title], box2[:x] + pad_x, _5704b6f3, palette[:title], TextAlignLeft)
+      draw_sub_tick(view, box2, fld, items[i + 1])
+      pad2 = size * 1.0
+      ty = text_mid_y(view, box2)
+      draw_text(view, fld[:title], box2[:x] + pad_x, ty, palette[:title], TextAlignLeft)
       if fld[:lock]
-        _c19b2977(view, _a4a34f6b(view, fld, box2),
+        draw_lock(view, lock_rect(view, fld, box2),
                           fld[:lock_open], @hover_part == i)
       end
       ent2 = !!fld[:lock_open]
       border = nil if ent2
       width = fld[:type] == :switch ? size * 4 : close_color_picker
-      height = _be61172a
+      height = row_h2
       arr = {
-        x: box2[:x] + box2[:width] - width - _7cad5a48,
+        x: box2[:x] + box2[:width] - width - pad2,
         y: box2[:y] + box2[:height] / 2.0 - height / 2.0,
         width: width, height: height
       }
       if fld[:type] == :switch
-        _72271107(view, arr, fld[:on], hovered)
+        draw_switch(view, arr, fld[:on], hovered)
       elsif fld[:type] == :text
         draw_round_rect(view, arr, height / 2.0, border: border || palette[:divider], fill: palette[:pill_fill], line_width: 1, outset: 1)
         text_color = palette[:text]
@@ -56,18 +56,18 @@ module KSU::Field
         lbl = "..." if lbl.empty?
         lbl = lbl[0, 13] + "..." if lbl.length > 16
         view.draw_text(
-          Geom::Point3d.new(arr[:x] + arr[:width] / 2.0, _5704b6f3, 0),
+          Geom::Point3d.new(arr[:x] + arr[:width] / 2.0, ty, 0),
           lbl, size: size, font: font_name,
           color: Sketchup::Color.new(*text_color), align: TextAlignCenter
         )
       else
-        _79582570 = border || palette[:divider]
+        border_c = border || palette[:divider]
         draw_round_rect(view, arr, height / 2.0,
-                          border: _79582570, fill: palette[:pill_fill], line_width: 1, outset: 1)
+                          border: border_c, fill: palette[:pill_fill], line_width: 1, outset: 1)
         text_color = palette[:text]
         flag = ent2 ? palette[:tri] : (is_sel ? palette[:val_sel] : text_color)
         pt = Geom::Point3d.new(
-          arr[:x] + arr[:width] / 2.0, _5704b6f3, 0
+          arr[:x] + arr[:width] / 2.0, ty, 0
         )
         flag2 = is_sel && @input_buf && !@input_buf.empty?
         text = flag2 ? @input_buf : fld[:label]
@@ -78,11 +78,11 @@ module KSU::Field
         if flag2 && @caret_on
           topts = { size: size, font: font_name }
           anchor = Geom::Point3d.new(0, 0, 0)
-          _f02ec4af = view.text_bounds(anchor, text, topts).width
+          tw = view.text_bounds(anchor, text, topts).width
           ch = view.text_bounds(anchor, "0", topts).height
           kids = text[0...(@caret || text.length)]
           stroke_w = kids.nil? || kids.empty? ? 0 : view.text_bounds(anchor, kids, topts).width
-          px = arr[:x] + arr[:width] / 2.0 - _f02ec4af / 2.0 + stroke_w
+          px = arr[:x] + arr[:width] / 2.0 - tw / 2.0 + stroke_w
           py = arr[:y] + arr[:height] / 2.0
           view.line_width = 1
           view.drawing_color = Sketchup::Color.new(*flag)
@@ -94,7 +94,7 @@ module KSU::Field
     end
   end
   def hover_field(x, y, view)
-    return false unless KSU::Preset._6796ef4d[:hien_setting]
+    return false unless KSU::Preset.ui[:hien_setting]
     return false unless @field_defs
     @view_ref = view
     prev_field = @hover_ix
@@ -106,7 +106,7 @@ module KSU::Field
     items.each_with_index do |fld, i|
       if in_rect?(x, y, layout[i])
         @hover_ix = i
-        if fld[:lock] && in_rect?(x, y, _a4a34f6b(view, fld, layout[i]))
+        if fld[:lock] && in_rect?(x, y, lock_rect(view, fld, layout[i]))
           @hover_part = i
         end
         break
@@ -133,7 +133,7 @@ module KSU::Field
         end
       end
     end
-    return false unless KSU::Preset._6796ef4d[:hien_setting]
+    return false unless KSU::Preset.ui[:hien_setting]
     return false unless @field_defs
     view ||= @view_ref
     return false unless view
@@ -142,9 +142,9 @@ module KSU::Field
     items.each_with_index do |fld, i|
       next unless in_rect?(x, y, layout[i])
       if fld[:lock]
-        _e0af5943 = in_rect?(x, y, _a4a34f6b(view, fld, layout[i]))
-        if _e0af5943 || fld[:lock_open]
-          if _e0af5943
+        on_lock = in_rect?(x, y, lock_rect(view, fld, layout[i]))
+        if on_lock || fld[:lock_open]
+          if on_lock
             val = !instance_variable_get("@#{fld[:lock]}")
             instance_variable_set("@#{fld[:lock]}", val)
             set(fld[:lock], val)
@@ -172,12 +172,12 @@ module KSU::Field
       elsif fld[:type] == :text
         open_tool_settings
         cancel_edit
-      elsif @_a8835766 == i
+      elsif @open_ix == i
         cancel_edit
         update_status
       else
         @edit_field = fld
-        @_a8835766 = i
+        @open_ix = i
         @input_buf = ""
         @caret = 0
         @caret_on = true
@@ -286,27 +286,27 @@ module KSU::Field
   end
   private
   def size
-    KSU::Preset._6796ef4d[:font_size]
+    KSU::Preset.ui[:font_size]
   end
   def radius
-    KSU::Preset._6796ef4d[:radius]
+    KSU::Preset.ui[:radius]
   end
   def font_name
-    KSU::Preset._6796ef4d[:font]
+    KSU::Preset.ui[:font]
   end
-  def _8adbceca(view)
-    _6796ef4d = KSU::Preset._6796ef4d
-    _6796ef4d[:text_y] ||= begin
-      topts = { size: _6796ef4d[:font_size], font: _6796ef4d[:font] }
+  def cache_text_y(view)
+    ui = KSU::Preset.ui
+    ui[:text_y] ||= begin
+      topts = { size: ui[:font_size], font: ui[:font] }
       bnds = view.text_bounds(Geom::Point3d.new(0, 0, 0), "Ag", topts)
       bnds.height / 2.0
     end
   end
   def gap
-    KSU::Preset._6796ef4d[:gap]
+    KSU::Preset.ui[:gap]
   end
   def opacity
-    KSU::Preset._6796ef4d[:opacity]
+    KSU::Preset.ui[:opacity]
   end
   def row_size
     { width: size * 22 + 5, height: size * 2.85 }
@@ -314,13 +314,13 @@ module KSU::Field
   def close_color_picker
     size * 7.5
   end
-  def _be61172a
+  def row_h2
     size * 1.85
   end
   def pad
     size * 0.3
   end
-  def _aeeff86b
+  def hair
     size * 0.1
   end
   def sec_gap
@@ -355,10 +355,10 @@ module KSU::Field
       [x + w - r, y + h - r, 0],
       [x + r, y + h - r, Math::PI / 2]
     ]
-    pts = scr.flat_map { |px, py, _709b21ed|
+    pts = scr.flat_map { |px, py, a0|
       9.times.map { |i|
-        _9710d820 = _709b21ed + i * Math::PI / 16
-        Geom::Point3d.new(px + Math.cos(_9710d820) * r, py + Math.sin(_9710d820) * r, 0)
+        ang = a0 + i * Math::PI / 16
+        Geom::Point3d.new(px + Math.cos(ang) * r, py + Math.sin(ang) * r, 0)
       }
     }
     if fill
@@ -369,11 +369,11 @@ module KSU::Field
       view.line_width = line_width
       view.drawing_color = Sketchup::Color.new(*border)
       if outset > 0
-        _e74b5af2 = r + outset
-        arr = scr.flat_map { |px, py, _709b21ed|
+        r2 = r + outset
+        arr = scr.flat_map { |px, py, a0|
           9.times.map { |i|
-            _9710d820 = _709b21ed + i * Math::PI / 16
-            Geom::Point3d.new(px + Math.cos(_9710d820) * _e74b5af2, py + Math.sin(_9710d820) * _e74b5af2, 0)
+            ang = a0 + i * Math::PI / 16
+            Geom::Point3d.new(px + Math.cos(ang) * r2, py + Math.sin(ang) * r2, 0)
           }
         }
         view.draw2d(GL_LINE_LOOP, arr)
@@ -382,39 +382,39 @@ module KSU::Field
       end
     end
   end
-  def _72271107(view, box2, _9139e52d, hovered)
-    tx, _51d53976, _f02ec4af, _a1bf6a3a = box2[:x], box2[:y], box2[:width], box2[:height]
+  def draw_switch(view, box2, on, hovered)
+    tx, _51d53976, tw, _a1bf6a3a = box2[:x], box2[:y], box2[:width], box2[:height]
     half = _a1bf6a3a / 2.0
-    fill = if _9139e52d
+    fill = if on
                     hovered ? palette[:sw_on_hover] : palette[:sw_on]
                   else
                     hovered ? palette[:sw_off_hover] : palette[:sw_off]
                   end
     draw_round_rect(view, box2, half, border: nil, fill: fill)
     _63378db3 = _a1bf6a3a / 2.0 - 2 * KSU::View.ui_scale
-    flag = _9139e52d ? tx + _f02ec4af - half : tx + half
+    flag = on ? tx + tw - half : tx + half
     _16daa7da = _51d53976 + _a1bf6a3a / 2.0
     _92fb4be7 = KSU::View._8a0d2500(flag, _16daa7da, _63378db3, segments: 24)
     view.drawing_color = Sketchup::Color.new(*palette[:knob])
     view.draw2d(GL_POLYGON, _92fb4be7)
   end
   def text_mid_y(view, box2)
-    box2[:y] + box2[:height] / 2.0 - _8adbceca(view)
+    box2[:y] + box2[:height] / 2.0 - cache_text_y(view)
   end
-  def draw_text(view, text, x, _5704b6f3, color, align)
-    view.draw_text(Geom::Point3d.new(x, _5704b6f3, 0), text,
+  def draw_text(view, text, x, ty, color, align)
+    view.draw_text(Geom::Point3d.new(x, ty, 0), text,
                    size: size, font: font_name,
                    color: Sketchup::Color.new(*color),
                    align: align)
   end
-  def _21df1025(view, prev, box2)
-    _f4241e44 = (prev[:y] + prev[:height] + box2[:y]) / 2.0
+  def draw_divider(view, prev, box2)
+    my = (prev[:y] + prev[:height] + box2[:y]) / 2.0
     view.line_stipple = ""
     view.line_width = 1
     view.drawing_color = Sketchup::Color.new(*palette[:divider])
     view.draw2d(GL_LINES,
-                   Geom::Point3d.new(box2[:x] + size, _f4241e44, 0),
-                   Geom::Point3d.new(box2[:x] + box2[:width] - size, _f4241e44, 0))
+                   Geom::Point3d.new(box2[:x] + size, my, 0),
+                   Geom::Point3d.new(box2[:x] + box2[:width] - size, my, 0))
   end
   def _cbadd90f(num, fmt)
     case fmt
@@ -427,7 +427,7 @@ module KSU::Field
   end
   def cancel_edit
     @edit_field = nil
-    @_a8835766 = nil
+    @open_ix = nil
     @input_buf = nil
     @caret = 0
     _da1dd91a
@@ -493,7 +493,7 @@ module KSU::Field
     end
     items
   end
-  def _a4a34f6b(view, fld, box2)
+  def lock_rect(view, fld, box2)
     pad_x = size * 1.2
     pt = view.text_bounds(Geom::Point3d.new(0, 0, 0), fld[:title],
                                 size: size, font: font_name).width
@@ -502,23 +502,23 @@ module KSU::Field
       y: box2[:y] + box2[:height] / 2.0 - rsz / 2.0,
       width: rsz, height: rsz }
   end
-  def _1cbe116a(view, box2, fld, arr)
+  def draw_sub_tick(view, box2, fld, arr)
     return unless fld[:sub]
     x = box2[:x] + size * 1.75
-    _936e8d94 = box2[:y] + box2[:height] / 2.0
-    gap2 = _aeeff86b
+    cy = box2[:y] + box2[:height] / 2.0
+    gap2 = hair
     view.line_stipple = ""
     view.line_width = 1
     view.drawing_color = Sketchup::Color.new(*palette[:divider])
-    flag = arr && arr[:sub] ? box2[:y] + box2[:height] + gap2 : _936e8d94
+    flag = arr && arr[:sub] ? box2[:y] + box2[:height] + gap2 : cy
     view.draw2d(GL_LINES,
                    Geom::Point3d.new(x, box2[:y] - gap2, 0),
                    Geom::Point3d.new(x, flag, 0))
     view.draw2d(GL_LINES,
-                   Geom::Point3d.new(x, _936e8d94, 0),
-                   Geom::Point3d.new(x + size * 0.55, _936e8d94, 0))
+                   Geom::Point3d.new(x, cy, 0),
+                   Geom::Point3d.new(x + size * 0.55, cy, 0))
   end
-  def _c19b2977(view, rect, lock_open, hover)
+  def draw_lock(view, rect, lock_open, hover)
     view.line_stipple = ""
     view.line_width = hover ? 2 : 1
     view.drawing_color = Sketchup::Color.new(*(hover ? palette[:title] : palette[:tri]))
@@ -546,7 +546,7 @@ module KSU::Field
     items.each_with_index.map do |fld, i|
       if i > 0
         y += pad + sec_gap + pad if fld[:group_start]
-        y += _aeeff86b unless fld[:group_start]
+        y += hair unless fld[:group_start]
       end
       box = { x: x, y: y, width: w, height: h }
       y += h
@@ -562,8 +562,8 @@ module KSU::Field
         groups.last[1] = i
       end
     end
-    groups.each do |_9710d820, b|
-      p_ref = layout[_9710d820]
+    groups.each do |ang, b|
+      p_ref = layout[ang]
       p1 = layout[b]
       grp_box = {
         x: p_ref[:x],
