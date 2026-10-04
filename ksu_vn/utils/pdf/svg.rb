@@ -41,11 +41,11 @@ module KSU::Svg
     num3 = meta[1].to_f * Math::PI / 180.0
     px = meta[2].to_f
     py = meta[3].to_f
-    arr2 = Math.cos(num3)
-    _a877a0fa = Math.sin(num3)
-    ent = px - px * arr2 + py * _a877a0fa
-    f = py - px * _a877a0fa - py * arr2
-    ["#{n(arr2)} #{n(_a877a0fa)} #{n(-_a877a0fa)} #{n(arr2)} #{n(ent)} #{n(f)} cm"]
+    cos_a = Math.cos(num3)
+    sin_a = Math.sin(num3)
+    ent = px - px * cos_a + py * sin_a
+    f = py - px * sin_a - py * cos_a
+    ["#{n(cos_a)} #{n(sin_a)} #{n(-sin_a)} #{n(cos_a)} #{n(ent)} #{n(f)} cm"]
   end
   def _a846d664(node)
     ["q"] + transform_ops(attr(node, "transform").to_s)

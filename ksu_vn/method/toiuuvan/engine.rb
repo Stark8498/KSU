@@ -25,17 +25,17 @@ module KSU::Engine
       return
     end
     parts = prep_parts(parts)
-    polys, _05c18602, _0638a063, _ad07fd49 = flatten_polys(parts)
-    run_engine(@cho_phep_xoay ? _05c18602 : false, polys, _0638a063, two_sided ? _ad07fd49 : [], parts, width_mm, height_mm, gap2,
+    polys, any_rot, orders, two_ids = flatten_polys(parts)
+    run_engine(@cho_phep_xoay ? any_rot : false, polys, orders, two_sided ? two_ids : [], parts, width_mm, height_mm, gap2,
                        base, span, seed, &blk)
   end
-  def run_engine(rot, polys, _0638a063, _ad07fd49, parts, width_mm, height_mm, gap2, base, span, seed = nil, &blk)
+  def run_engine(rot, polys, orders, two_ids, parts, width_mm, height_mm, gap2, base, span, seed = nil, &blk)
     @str = "Đang tính dữ liệu"
     KSU::Nesting::Engine.instance.start2(
       width_mm: width_mm * 25.4, height_mm: height_mm * 25.4, spacing_mm: gap2 * 25.4,
       rotate90: [rot], use_holes: true, parts_groups: [polys],
-      two_sided: [_ad07fd49 || []],
-      orders: [@thu_tu_don == "theo_ten" ? _0638a063 : []],
+      two_sided: [two_ids || []],
+      orders: [@thu_tu_don == "theo_ten" ? orders : []],
       pair: KSU::Settings.get("ghep_cap_toi_uu", true, "nesting").to_s != "false",
       on_progress: lambda do |pct|
         unless @str == "Đang xếp tấm"
@@ -50,8 +50,8 @@ module KSU::Engine
       end,
       on_done: lambda do |data, arr24|
         begin
-          _0850aa4d = read_result(data["0"], parts)
-          blk.call(_0850aa4d)
+          out = read_result(data["0"], parts)
+          blk.call(out)
         rescue StandardError => ent
           @progress = nil
           @str = nil
@@ -63,16 +63,16 @@ module KSU::Engine
     )
   end
   def align_to_corner(arr, width_mm, height_mm, seed)
-    _d6439c88 = (seed == 1 || seed == 2)
-    _ab593548 = (seed == 2 || seed == 3)
+    flip_x = (seed == 1 || seed == 2)
+    flip_y = (seed == 2 || seed == 3)
     arr.each do |placements|
       next if placements.empty?
       lx = placements.map { |members| members[:lx] }.min
       ly = placements.map { |members| members[:ly] }.min
       arr3 = placements.map { |members| members[:lx] + members[:w] }.max
       arr2 = placements.map { |members| members[:ly] + members[:h] }.max
-      dx = _d6439c88 ? width_mm - arr3 : -lx
-      dy = _ab593548 ? height_mm - arr2 : -ly
+      dx = flip_x ? width_mm - arr3 : -lx
+      dy = flip_y ? height_mm - arr2 : -ly
       placements.each do |members|
         members[:lx] += dx
         members[:ly] += dy
@@ -172,15 +172,15 @@ module KSU::Engine
     flag47 = 0.0
     flat = []
     rot = []
-    arr4 = []
-    arr6 = []
+    two_ids = []
+    orders = []
     layers = {}
     if @thu_tu_don == "theo_ten"
       node.each_with_index
               .sort_by { |pt, i| [KSU::Nesting.sort_key(pt[:panel].name), i] }
-              .each_with_index { |(_56afdcfc, _b7a8e470), half| layers[_b7a8e470] = half }
+              .each_with_index { |(lv, pi), half| layers[pi] = half }
     end
-    node.each_with_index do |pt, _b7a8e470|
+    node.each_with_index do |pt, pi|
       loops = loops_mm(pt, true)
       outer = loops.first
       num = 0.0
@@ -192,15 +192,15 @@ module KSU::Engine
         m_left = loops_mm(m_bottom[:part]).first
         m_bottom[:part][:poly_mm] = m_left.map { |arr| [arr[0] + m_bottom[:rx] + num2, arr[1] + m_bottom[:ry]] }
       end
-      arr7.each do |_b41d8800|
-        flat << _b41d8800
+      arr7.each do |v|
+        flat << v
         rot << (pt[:rotatable] != false)
-        arr4 << (pt[:two_sided] == true)
-        arr6 << (layers[_b7a8e470] || 0)
+        two_ids << (pt[:two_sided] == true)
+        orders << (layers[pi] || 0)
       end
       flag47 += num + 25.4
     end
-    [flat, rot, arr6, arr4]
+    [flat, rot, orders, two_ids]
   end
   def group_id_of(pt)
     panel = pt[:panel]
@@ -228,7 +228,7 @@ module KSU::Engine
       end
     end
     return parts if groups.empty?
-    arr3 = parts.map do |pt|
+    base_xy = parts.map do |pt|
       w = pt[:w].to_f * 25.4
       h = pt[:h].to_f * 25.4
       [[w, h].min, [w, h].max]
@@ -237,12 +237,12 @@ module KSU::Engine
       if members.length < 2
         members.each { |meta| out << meta[0] }
       else
-        out << _46279528(members, arr3)
+        out << group_poly(members, base_xy)
       end
     end
     out
   end
-  def _46279528(members, _e17f53e7)
+  def group_poly(members, base_xy)
     arr5 = []
     members.each do |pt, arr4|
       loops = loops_mm(pt)
@@ -271,7 +271,7 @@ module KSU::Engine
       end
     end
     outer = nil if outer && KSU::Nesting.poly_area(outer) < 1.0
-    outer = _f573a61c(members) unless outer
+    outer = group_bbox(members) unless outer
     arr2 = KSU::Nesting.poly_bounds(outer)
     arr9 = ->(arr6) { arr6.map { |arr3| [arr3[0] - arr2[0], arr3[1] - arr2[1]] } }
     num = members.max_by { |pt, _part| pt[:w].to_f * pt[:h].to_f }[0]
@@ -291,7 +291,7 @@ module KSU::Engine
       members: members.map { |pt, arr4| { part: pt, rx: arr4[0] - arr2[0], ry: arr4[1] - arr2[1] } },
     }
   end
-  def _f573a61c(members)
+  def group_bbox(members)
     min_x = min_y = hi_x = hi_y = nil
     members.each do |pt, arr2|
       loops_mm(pt).first.each do |arr|
@@ -314,13 +314,13 @@ module KSU::Engine
       h = grp[:h] * 25.4
       rect = [[0.0, 0.0], [w, 0.0], [w, h], [0.0, h]]
       return [rect] if ang == 0.0
-      rect = _d3de41b2(rect, ang)
+      rect = rot_poly(rect, ang)
       arr8 = rect.map { |_23505ef9| _23505ef9[0] }.min
       arr9 = rect.map { |_23505ef9| _23505ef9[1] }.min
       return [rect.map { |_23505ef9| [_23505ef9[0] - arr8, _23505ef9[1] - arr9] }]
     end
     arr4 = outer.map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }
-    arr4 = _d3de41b2(arr4, ang) unless ang == 0.0
+    arr4 = rot_poly(arr4, ang) unless ang == 0.0
     arr2 = KSU::Simplify._c71fe5d3(arr4, true)
     min_x = arr2.map { |_23505ef9| _23505ef9[0] }.min
     min_y = arr2.map { |_23505ef9| _23505ef9[1] }.min
@@ -329,31 +329,31 @@ module KSU::Engine
     (grp[:holes] || []).each do |h|
       next unless h && h.length >= 3
       arr3 = h.map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }
-      arr3 = _d3de41b2(arr3, ang) unless ang == 0.0
+      arr3 = rot_poly(arr3, ang) unless ang == 0.0
       arr5 = KSU::Simplify._c71fe5d3(arr3, false)
       next if arr5.length < 3
       loops << conv2.call(arr5)
     end
     loops
   end
-  def _d3de41b2(pts, _62dc8af5)
-    rad = _62dc8af5 * Math::PI / 180.0
-    _fdb496e4 = Math.cos(rad)
-    _a877a0fa = Math.sin(rad)
-    pts.map { |arr| [arr[0] * _fdb496e4 - arr[1] * _a877a0fa, arr[0] * _a877a0fa + arr[1] * _fdb496e4] }
+  def rot_poly(pts, deg)
+    rad = deg * Math::PI / 180.0
+    cos_a = Math.cos(rad)
+    sin_a = Math.sin(rad)
+    pts.map { |arr| [arr[0] * cos_a - arr[1] * sin_a, arr[0] * sin_a + arr[1] * cos_a] }
   end
   def read_result(arr3, parts)
     return [] unless arr3
     arr3.map do |sheet|
       sheet.flat_map do |fld|
-        id, num2, num, rot = fld
+        id, ox2, oy2, rot = fld
         grp = parts[id]
         next [] unless grp
         members = !!grp[:members]
         arr4 = members ? grp[:members].map { |m_bottom| m_bottom[:part] } : [grp]
         arr4.map do |arr|
           poly = arr[:poly_mm] || loops_mm(arr, !members).first
-          screen_box = _6d7a71cf(poly, num2.to_f, num.to_f, rot.to_f)
+          screen_box = placed_bbox(poly, ox2.to_f, oy2.to_f, rot.to_f)
           addon_data = members ? 0.0 : (arr[:cano] || 0.0)
           {
             panel: arr[:panel], source_sheet: arr[:sheet], bbox: arr[:bbox],
@@ -364,21 +364,21 @@ module KSU::Engine
       end.compact
     end.reject(&:empty?)
   end
-  def _6d7a71cf(arr, _8242598f, _7ad94e21, _07d6adce)
-    rad = _07d6adce * Math::PI / 180.0
-    _fdb496e4 = Math.cos(rad)
-    _a877a0fa = Math.sin(rad)
+  def placed_bbox(arr, ox2, oy2, deg2)
+    rad = deg2 * Math::PI / 180.0
+    cos_a = Math.cos(rad)
+    sin_a = Math.sin(rad)
     lx = nil
     ly = nil
     flag = nil
     flag2 = nil
     arr.each do |trai, duoi|
-      _ebffc3f1 = trai * _fdb496e4 - duoi * _a877a0fa + _8242598f
-      _0e6f8149 = trai * _a877a0fa + duoi * _fdb496e4 + _7ad94e21
-      lx = _ebffc3f1 if lx.nil? || _ebffc3f1 < lx
-      ly = _0e6f8149 if ly.nil? || _0e6f8149 < ly
-      flag = _ebffc3f1 if flag.nil? || _ebffc3f1 > flag
-      flag2 = _0e6f8149 if flag2.nil? || _0e6f8149 > flag2
+      rx = trai * cos_a - duoi * sin_a + ox2
+      ry = trai * sin_a + duoi * cos_a + oy2
+      lx = rx if lx.nil? || rx < lx
+      ly = ry if ly.nil? || ry < ly
+      flag = rx if flag.nil? || rx > flag
+      flag2 = ry if flag2.nil? || ry > flag2
     end
     {
       lx: lx / 25.4, ly: ly / 25.4,

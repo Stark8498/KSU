@@ -90,7 +90,7 @@ module KSU::Collect
     @done_n = nil
     @total_area = nil
   end
-  def _2d469ec2
+  def stop_collect
     return unless @collecting
     clear_collect
     @progress = nil

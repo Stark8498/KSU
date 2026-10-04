@@ -162,8 +162,8 @@ module KSU::Reorder
       type_set[thick.sub(part_re3, "")] = true
     end
     str3 = nil
-    arr4 = ents.grep(Sketchup::DimensionLinear)
-    arr4.each do |len2d|
+    base_xy = ents.grep(Sketchup::DimensionLinear)
+    base_xy.each do |len2d|
       next if len2d.deleted? || !len2d.valid?
       next if len2d.get_attribute("KSU", "sheet-label") == true
       next if len2d.get_attribute("KSU", "row-label") == true
@@ -173,7 +173,7 @@ module KSU::Reorder
       str3 = thick
     end
     str3 ||= "Mặt sau"
-    ents.erase_entities(arr4) unless arr4.empty?
+    ents.erase_entities(base_xy) unless base_xy.empty?
     arr, bot = sheet_maps(nesting)
     return if arr.empty?
     arr5 = arr.keys.sort

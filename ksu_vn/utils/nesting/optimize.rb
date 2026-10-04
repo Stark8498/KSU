@@ -218,10 +218,10 @@ module KSU::Optimize
     len = Math.sqrt(vec.x.to_f**2 + vec.y.to_f**2)
     return 0.0 if len < 1e-9
     ang = Math.atan2(-vec.x.to_f, -vec.y.to_f)
-    _62dc8af5 = ang * 180.0 / Math::PI
-    _62dc8af5 += 360.0 if _62dc8af5 < 0
-    num = (_62dc8af5 / 90.0).round * 90.0
-    (_62dc8af5 - num).abs < 0.05 ? num % 360.0 : _62dc8af5
+    deg = ang * 180.0 / Math::PI
+    deg += 360.0 if deg < 0
+    num = (deg / 90.0).round * 90.0
+    (deg - num).abs < 0.05 ? num % 360.0 : deg
   rescue StandardError
     0.0
   end

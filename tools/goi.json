@@ -1070,13 +1070,13 @@
   },
   {
    "ns": "KSU::Nest",
-   "m": "_b2c4c1d5",
+   "m": "abort_labelling",
    "f": "ksu_vn/method/nesting.rb",
    "l": 9
   },
   {
    "ns": "KSU::Nest",
-   "m": "_2d469ec2",
+   "m": "stop_collect",
    "f": "ksu_vn/method/nesting.rb",
    "l": 10
   },

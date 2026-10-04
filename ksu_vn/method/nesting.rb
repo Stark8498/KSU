@@ -6,8 +6,8 @@ module KSU::Nest
       KSU::View.view.invalidate
     end
     def deactivate(view)
-      KSU::Nest._b2c4c1d5
-      KSU::Nest._2d469ec2
+      KSU::Nest.abort_labelling
+      KSU::Nest.stop_collect
       KSU::Nest.abort_unless_done
       view.invalidate
     end
@@ -143,12 +143,12 @@ module KSU::Nest
     @flag42 = false
     @flag58 = false
     @arr47 = []
-    rows.each do |_381d1670|
-      groups = one_group(_381d1670)
+    rows.each do |type|
+      groups = one_group(type)
       next if groups.empty?
       slots = groups.any? { |g| g[:two] } ? 2 : 1
       groups.each_with_index do |arr, i|
-        @arr47 << { type: _381d1670, two: arr[:two], parts: arr[:parts],
+        @arr47 << { type: type, two: arr[:two], parts: arr[:parts],
                               last: i == groups.length - 1, slots: slots }
       end
     end
@@ -169,7 +169,7 @@ module KSU::Nest
     end
     reset_layout
     hide_all
-    _47d154e7(job_list)
+    start_run(job_list)
   rescue StandardError => ent
     abort_collect
     UI.messagebox("Lỗi nesting: #{ent.message}")
@@ -178,8 +178,8 @@ module KSU::Nest
     !!job[:two] && @cfg[:tach_nhom] != false
   end
   def sheet_area(job)
-    _b41d8800, half, thick, b = margins_of(@cfg)
-    width_mm = @cfg[:sheet_w] - _b41d8800 - half
+    m_left, half, thick, b = margins_of(@cfg)
+    width_mm = @cfg[:sheet_w] - m_left - half
     height_mm = @cfg[:sheet_h] - thick - b
     if job[:two] && !split_two?(job)
       len2d = KSU::Avail.two_sided_margin
@@ -206,26 +206,26 @@ module KSU::Nest
     if cfg[:by_name]
       job[:parts].each_with_index
                     .sort_by { |arr, i| [KSU::Nesting.sort_key(arr[:group].name), i] }
-                    .each_with_index { |(_56afdcfc, _b57e5a96), half| layers[_b57e5a96] = half }
+                    .each_with_index { |(lv, pi), half| layers[pi] = half }
     end
-    job[:parts].each_with_index do |arr, _b57e5a96|
+    job[:parts].each_with_index do |arr, pi|
       arr[:bounds_mm].each do |b|
         flat << b
         rot << (arr[:rotatable] != false)
         arr3 << (arr[:two_sided] == true)
-        arr4 << (layers[_b57e5a96] || 0)
+        arr4 << (layers[pi] || 0)
       end
     end
     err_code = corner_code
     groups = rotate_coords([flat], err_code)
-    _e84e5dc5 = err_code == 1 || err_code == 3
+    swapped = err_code == 1 || err_code == 3
     w2, h2 = pack_area(job)
     return nil if w2 <= 0 || h2 <= 0
     {
-      w: _e84e5dc5 ? height_mm : width_mm,
-      h: _e84e5dc5 ? width_mm : height_mm,
-      w2: _e84e5dc5 ? h2 : w2,
-      h2: _e84e5dc5 ? w2 : h2,
+      w: swapped ? height_mm : width_mm,
+      h: swapped ? width_mm : height_mm,
+      w2: swapped ? h2 : w2,
+      h2: swapped ? w2 : h2,
       sp: cfg[:spacing],
       rot: rot,
       holes: true,
@@ -235,12 +235,12 @@ module KSU::Nest
       pair: cfg[:ghep_cap] != false
     }
   end
-  def _47d154e7(job_list)
+  def start_run(job_list)
     @type_name = @arr47[0][:type][:name]
     @progress = 0
     @str = "Đang tính dữ liệu"
     model = Sketchup.active_model
-    _02d60c07(Progress) unless model.tools.active_tool.instance_of?(Progress)
+    switch_tool(Progress) unless model.tools.active_tool.instance_of?(Progress)
     KSU::Nesting::Engine.instance.start_jobs(
       jobs: job_list,
       on_job_progress: lambda { |j, pct|
@@ -256,22 +256,22 @@ module KSU::Nest
           KSU::View.view.invalidate
         end
       },
-      on_job_done: ->(j, data, _c11be090) { _77cf09ee(j, data, _c11be090) }
+      on_job_done: ->(j, data, label_data) { job_done(j, data, label_data) }
     )
   end
-  def _77cf09ee(j, data, _c11be090)
+  def job_done(j, data, label_data)
     return unless @cfg && @h22
-    @h22[j] = [data, _c11be090]
-    _37275936
+    @h22[j] = [data, label_data]
+    drain_jobs
   end
-  def _37275936
+  def drain_jobs
     return if @flag42 || @flag58
     @flag58 = true
     while @cfg && @h22 && @h22.key?(@num4)
-      data, arr2 = @h22.delete(@num4)
+      data, label_data = @h22.delete(@num4)
       job = @arr47[@num4]
       @num4 += 1
-      _3ac6e0c3(job, [[0, arr2]]) if arr2 && !arr2.empty?
+      tag_parts(job, [[0, label_data]]) if label_data && !label_data.empty?
       sheets = data ? to_sheets(job, data) : []
       shift_to_corner(sheets, job)
       @arr51.concat(sheets)
@@ -284,19 +284,19 @@ module KSU::Nest
       @refine_name = job[:type][:name]
       @flag42 = true
       @flag58 = false
-      _02d60c07(Refine)
+      switch_tool(Refine)
       return
     end
     @flag58 = false
     return unless @cfg
     if @num4 >= @arr47.length
-      _3bfa2532
+      finish_run
     else
       @type_name = @arr47[@num4][:type][:name]
       @progress = 0
       @str = "Đang tính dữ liệu"
       model = Sketchup.active_model
-      _02d60c07(Progress) unless model.tools.active_tool.instance_of?(Progress)
+      switch_tool(Progress) unless model.tools.active_tool.instance_of?(Progress)
       model.active_view.invalidate
     end
   rescue StandardError => ent
@@ -305,9 +305,9 @@ module KSU::Nest
   ensure
     @flag58 = false
   end
-  def _02d60c07(_75318d78)
+  def switch_tool(tool_cls)
     @flag24 = true
-    KSU.select_tool(_75318d78)
+    KSU.select_tool(tool_cls)
   ensure
     @flag24 = false
   end
@@ -316,9 +316,9 @@ module KSU::Nest
     @refine_name = nil
     @flag42 = false
     return clear_progress unless @arr47
-    _37275936
+    drain_jobs
   end
-  def _3bfa2532
+  def finish_run
     @arr47 = nil
     @h22 = nil
     @num4 = nil
@@ -328,14 +328,14 @@ module KSU::Nest
     @str = nil
     finish_draw
     restore_view
-    _741ca308
+    restore_selection
     @cfg = nil
     @arr61 = nil
     @arr45 = nil
     @arr39 = nil
     clear_progress
   end
-  def _0b686c6e
+  def reset_jobs
     @arr47 = nil
     @h22 = nil
     @num4 = nil
@@ -356,14 +356,14 @@ module KSU::Nest
   def abort_collect
     stop_engine
     clear_collect
-    _0b686c6e
+    reset_jobs
     restore_view
     clear_progress
   end
   def abort_run
     return unless @arr47
     stop_engine
-    _0b686c6e
+    reset_jobs
     restore_view
   end
   def abort_unless_done
@@ -603,14 +603,14 @@ module KSU::Nest
     @layer2 = nil
     @_dc5a9dc0 = nil
   end
-  def _b2c4c1d5
+  def abort_labelling
     return unless @labelling
     _37cfb2cb
     KSU.abort_op
   end
-  def _3ac6e0c3(job, arr24)
+  def tag_parts(job, arr24)
     return if arr24.nil? || arr24.empty?
-    arr24.each do |_8f637db2, parts|
+    arr24.each do |lvl2, parts|
       Array(parts).each do |num2|
         grp = job[:parts][num2.to_i]
         next unless grp
@@ -622,7 +622,7 @@ module KSU::Nest
       end
     end
   end
-  def _741ca308
+  def restore_selection
     return if @arr45.nil? || @arr45.empty?
     ents = (@arr39 || []).select { |g| g && g.valid? }
     KSU.select_only(ents)

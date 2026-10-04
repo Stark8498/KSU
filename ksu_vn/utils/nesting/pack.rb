@@ -3,9 +3,9 @@ module KSU::Pack
     seed = pack_seed
     num = 0
     num2 = 1000
-    arr = parts.map { |len2d| allow_rot && !!len2d[:rotatable] }
+    any_rot = parts.map { |len2d| allow_rot && !!len2d[:rotatable] }
     id_str = KSU::Method.pack_bl(parts.map { |len2d| len2d[:w] }, parts.map { |len2d| len2d[:h] },
-                                 width_mm, height_mm, gap2, arr, num2, num, seed)
+                                 width_mm, height_mm, gap2, any_rot, num2, num, seed)
     h = {}
     id_str.each_with_index do |(placements, x, y, w, h23), i|
       next if placements < 0

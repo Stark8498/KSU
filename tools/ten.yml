@@ -2739,11 +2739,6 @@ ten:
 
   _2cf18878:
     ksu_vn/method/xeptam/mirror.rb: left
-  _d6439c88:
-    ksu_vn/method/xeptam/mirror.rb: right
-  _ab593548:
-    "ksu_vn/utils/label.rb#inner_rect": top
-    ksu_vn/method/xeptam/mirror.rb: top
   _3b0d8ae2:
     ksu_vn/method/xeptam/mirror.rb: crossing
   _13d621f9:
@@ -2896,10 +2891,6 @@ ten:
     "ksu_vn/utils/isolate.rb": keep_list
     ksu_vn/method/xuatdxf/entry.rb: ring
     ksu_vn/method/xeptam/collide.rb: in_sel
-  _b41d8800:
-    ksu_vn/utils/cutting/detail.rb: value
-    "ksu_vn/utils/label.rb#inner_rect": hole
-    ksu_vn/method/xeptam/collide.rb: lo_x
 
   # ----- ME 74: utils/cutting/loop.rb -- noi doan thang thanh vong kin -----
   # Moi doan la mot canh giua hai nut; nut la toa do da lam tron. Di tu mot
@@ -2951,6 +2942,74 @@ ten:
     "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_y
     "ksu_vn/utils/view.rb#_c9d9f590": oy
     ksu_vn/utils/cutting/loop.rb: dy_out
+
+  # ----- ME 75: method/toiuuvan/engine.rb -- goi bo xep ngoai -----
+  # Chuyen hinh sang mm cho bo xep, va nhan ket qua ve. Cac tam dinh nhau
+  # thanh mot chum duoc gop lai thanh MOT hinh truoc khi gui di, de bo xep
+  # khong tach chung ra.
+  _46279528: group_poly          # gop ca chum thanh mot vien chung
+  _f573a61c: group_bbox
+  _d3de41b2: rot_poly
+  _6d7a71cf: placed_bbox         # hop bao sau khi xoay va dat vao (x, y)
+  _62dc8af5: deg
+  _fdb496e4: cos_a
+  _a877a0fa: sin_a
+  _8242598f: ox2
+  _7ad94e21: oy2
+  _07d6adce: deg2
+  _05c18602: any_rot
+  _0638a063: orders
+  _ad07fd49: two_ids
+  _e17f53e7: base_xy
+
+  _0850aa4d:
+    ksu_vn/method/toiuuvan/engine.rb: out
+  _d6439c88:
+    ksu_vn/method/xeptam/mirror.rb: right
+    ksu_vn/method/toiuuvan/engine.rb: flip_x
+  _ab593548:
+    "ksu_vn/utils/label.rb#inner_rect": top
+    ksu_vn/method/xeptam/mirror.rb: top
+    ksu_vn/method/toiuuvan/engine.rb: flip_y
+  _b7a8e470:
+    ksu_vn/method/toiuuvan/engine.rb: pi
+  _ebffc3f1:
+    ksu_vn/method/toiuuvan/engine.rb: rx
+  _0e6f8149:
+    ksu_vn/method/toiuuvan/engine.rb: ry
+
+  # ----- ME 76: method/nesting.rb -- chay tung job xep rồi ve -----
+  # Bo xep tra ket qua khong theo thu tu, nen ket qua duoc giu lai va chi
+  # rut ra khi job dung so thu tu tiep theo da ve -- so do ve ra moi dung
+  # thu tu. Co hau ky thi dung giua chung, chuyen sang cong cu Refine.
+  _47d154e7: start_run
+  _77cf09ee: job_done            # `on_job_done` da thuoc _918fdb2b
+  _37275936: drain_jobs
+  _02d60c07: switch_tool
+  _3bfa2532: finish_run
+  _0b686c6e: reset_jobs
+  _b2c4c1d5: abort_labelling
+  _2d469ec2: stop_collect     #  da thuoc _a762c251 o nesting.rb
+  _741ca308: restore_selection
+  _3ac6e0c3: tag_parts
+  _c11be090: label_data
+  _75318d78: tool_cls
+  _e84e5dc5: swapped
+  _8f637db2: lvl2
+
+  _381d1670:
+    ksu_vn/method/nesting.rb: type
+  _b57e5a96:
+    ksu_vn/method/nesting.rb: pi
+  _56afdcfc:
+    ksu_vn/method/toiuuvan/engine.rb: lv
+    ksu_vn/method/nesting.rb: lv
+  _b41d8800:
+    ksu_vn/utils/cutting/detail.rb: value
+    "ksu_vn/utils/label.rb#inner_rect": hole
+    ksu_vn/method/xeptam/collide.rb: lo_x
+    ksu_vn/method/toiuuvan/engine.rb: v
+    ksu_vn/method/nesting.rb: m_left
 
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.
