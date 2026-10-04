@@ -118,6 +118,8 @@ def best(scores: Counter, chac: float) -> str | None:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
+    ap.add_argument("--force", action="store_true",
+                    help="ghi de du ban moi it hex hon ban dang co")
     ap.add_argument("--chac", type=float, default=0.5,
                     help="ty le diem toi thieu cua kieu thang (mac dinh 0.5)")
     args = ap.parse_args()
@@ -244,6 +246,21 @@ def main() -> int:
 
     if args.write:
         out = ROOT / "tools" / "tenauto.yml"
+        # Evidence is read off the tree as it stands, and the tree no longer
+        # stands as it did: every name already applied has replaced the hex the
+        # scan looks for, so a second run sees less than the first and writes a
+        # SMALLER file over the bigger one. Rerunning this against a tree that
+        # has been named drops proposals wholesale -- it is not idempotent, and
+        # the only safe input is the all-hex baseline.
+        if out.exists():
+            had = len(re.findall(r"^  _[0-9a-f]{8}:", out.read_text(
+                encoding="utf-8"), re.M))
+            if len(flat) < had and not args.force:
+                print(f"TU CHOI GHI: file dang co {had} hex, ban moi chi co "
+                      f"{len(flat)}.\nChay lai tren cay DA DAT TEN thi bang "
+                      f"chung mat dan -- dung `git stash` ve moc hex truoc,\n"
+                      f"hoac --force neu that su muon ghi de.")
+                return 1
         buf = ["# Sinh boi tools/dexuat.py -- ten theo KIEU DU LIEU, suy tu tap",
                "# method goi len tung hex trong tung pham vi. Chay lai se GHI DE:",
                "# muon sua mot ten thi dat lai o ten.yml, dung sua o day.",
