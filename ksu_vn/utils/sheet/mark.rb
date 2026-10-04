@@ -34,13 +34,13 @@ module KSU::Mark
     z = pts.first.z.to_f
     scr = [[min_x, min_y], [hi_x, min_y], [hi_x, hi_y], [min_x, hi_y]]
     tol_x = w * 0.25
-    _0cd9b30a = h * 0.25
+    tol_y = h * 0.25
     arr4 = scr.map do |px, py|
-      pts.any? { |pt| (pt.x - px).abs < tol_x && (pt.y - py).abs < _0cd9b30a }
+      pts.any? { |pt| (pt.x - px).abs < tol_x && (pt.y - py).abs < tol_y }
     end
-    _a14aed83 = arr4.index(false)
-    return nil unless _a14aed83
-    bx2, by2 = scr[(_a14aed83 + 2) % 4]
+    free_ix = arr4.index(false)
+    return nil unless free_ix
+    bx2, by2 = scr[(free_ix + 2) % 4]
     Geom::Point3d.new(bx2, by2, z)
   end
   def mark_corner(sheet, nesting = nil)
@@ -77,31 +77,31 @@ module KSU::Mark
     flag = (vside == :bottom) ? arr : -arr
     [flag3.to_f, flag.to_f]
   end
-  def _5134c34c(bb2, bb, _3e7613f3, _9ba1a361, hside, vside, _7bb0b74c, _5e0b9d0f, _16d547ab, _740b67b8, _08bd07cc, _29b02ee7, _e9f5ddbc, _1aa82cff)
-    _18feedaf = _16d547ab - _7bb0b74c
-    _331de21b = _740b67b8 - _7bb0b74c
-    _ce465202 = _08bd07cc - _5e0b9d0f
-    _93bc3b1a = _29b02ee7 - _5e0b9d0f
+  def mirror_pos(bb2, bb, _3e7613f3, _9ba1a361, hside, vside, eoff_x, eoff_y, px0, px1, py0, py1, part_w, part_h)
+    lx0 = px0 - eoff_x
+    lx1 = px1 - eoff_x
+    lyy0 = py0 - eoff_y
+    ly1 = py1 - eoff_y
     flag5 = (hside == :right) ? :left : :right
-    flag2 = (flag5 == :left) ? (_18feedaf - bb2.min.x) : (bb2.max.x - _331de21b)
-    flag = (vside == :bottom) ? (_ce465202 - bb2.min.y) : (bb2.max.y - _93bc3b1a)
+    flag2 = (flag5 == :left) ? (lx0 - bb2.min.x) : (bb2.max.x - lx1)
+    flag = (vside == :bottom) ? (lyy0 - bb2.min.y) : (bb2.max.y - ly1)
     num = (hside == :right) ? bb.max.x.to_f - _3e7613f3 : bb.min.x.to_f + _3e7613f3
     num2 = (vside == :top) ? bb.max.y.to_f - _9ba1a361 : bb.min.y.to_f + _9ba1a361
-    flag4 = (hside == :right) ? (num - flag2 - _e9f5ddbc) : (num + flag2)
-    flag3 = (vside == :bottom) ? (num2 + flag) : (num2 - flag - _1aa82cff)
+    flag4 = (hside == :right) ? (num - flag2 - part_w) : (num + flag2)
+    flag3 = (vside == :bottom) ? (num2 + flag) : (num2 - flag - part_h)
     [flag4, flag3]
   end
-  def _1c44e717(_f4e85c51, grp, tr)
-    return nil unless _f4e85c51 && grp && grp.valid? && tr && tr.valid?
+  def mirror_of_tf(tr0, grp, tr)
+    return nil unless tr0 && grp && grp.valid? && tr && tr.valid?
     bd2 = border_of(grp)
     bbox = (bd2 && bd2.respond_to?(:bounds) && bd2.bounds.valid?) ? bd2.bounds : grp.definition.bounds
     px = (bbox.min.x.to_f + bbox.max.x.to_f) / 2.0
     pt = Geom::Transformation.rotation(Geom::Point3d.new(px, 0, 0), Geom::Vector3d.new(0, 1, 0), Math::PI)
-    pt * _f4e85c51
+    pt * tr0
   end
   def mirror_tf(grp, sheet, tr)
     return nil unless grp && grp.valid?
-    _1c44e717(grp.transformation, sheet, tr)
+    mirror_of_tf(grp.transformation, sheet, tr)
   end
   def offset_polys(sheet, nesting)
     bot = bottom_of(sheet, nesting)

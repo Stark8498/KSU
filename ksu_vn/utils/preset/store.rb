@@ -55,10 +55,10 @@ module KSU::Store
   def apply_settings(s, except: nil)
     return unless @field_defs
     @field_defs.each_value do |keys|
-      keys.each do |key, _fab4f06f|
+      keys.each do |key, spec|
         next if except&.include?(key)
         next if KSU::Preset.global_key?(key)
-        fmt = _fab4f06f.is_a?(Array) ? _fab4f06f.first : _fab4f06f
+        fmt = spec.is_a?(Array) ? spec.first : spec
         conv2 = case fmt
                when :mm then ->(v) { v.to_f.mm }
                when nil
@@ -108,10 +108,10 @@ module KSU::Store
   def draw_presets(view)
     return unless KSU::Preset.ui[:hien_preset]
     return unless @state && @state[:sections]&.any?
-    _9aa9564d = slot_rects
+    rects = slot_rects
     opac = opacity
     prev = nil
-    _9aa9564d.each do |slot|
+    rects.each do |slot|
       if slot[:type] == :card
         draw_round_rect(view, slot[:rect], radius, border: nil, fill: palette[:card] + [opac[:normal]], line_width: 1)
         prev = nil
@@ -212,16 +212,16 @@ module KSU::Store
     y = color[:y] + pad
     flat_index = 0
     entries = []
-    @state[:sections].each_with_index do |key, _429f3bf7|
-      y += pad + sec_gap + pad if _429f3bf7 > 0
+    @state[:sections].each_with_index do |key, si|
+      y += pad + sec_gap + pad if si > 0
       arr = []
       rect = { x: color[:x], y: y, **rsz }
       collapsed2 = @collapsed_map[key[:name]]
       arr << { type: :header, name: key[:name], rect: rect, collapsed: collapsed2 }
       y += rsz[:height]
       unless collapsed2
-        key[:choices].each_with_index do |choice, _14ea4fab|
-          y += _14ea4fab == 0 ? pad : hair
+        key[:choices].each_with_index do |choice, ci|
+          y += ci == 0 ? pad : hair
           rect = { x: color[:x], y: y, **rsz }
           arr << { type: :button, choice: choice, rect: rect, flat_index: flat_index }
           y += rsz[:height]
@@ -262,8 +262,8 @@ module KSU::Store
         [bx2 + bw2 - half, by2 + half, Math::PI * 1.5]
       ].flat_map { |px, py, a1b|
         9.times.map { |i|
-          _9710d820 = a1b + i * Math::PI / 16
-          Geom::Point3d.new(px + Math.cos(_9710d820) * half, py + Math.sin(_9710d820) * half, 0)
+          ang = a1b + i * Math::PI / 16
+          Geom::Point3d.new(px + Math.cos(ang) * half, py + Math.sin(ang) * half, 0)
         }
       }
       pts << Geom::Point3d.new(bx2 + bw2, by2 + bh2, 0)
@@ -274,21 +274,21 @@ module KSU::Store
     pad_x = size * 1.2
     draw_text(view, slot[:name], box2[:x] + pad_x,
                      text_mid_y(view, box2), title_col2, TextAlignLeft)
-    _89bc654b = size * 1.0
-    _d04269c4 = box2[:x] + box2[:width] - pad_x - _89bc654b * 0.5
-    _2015e4a6 = box2[:y] + box2[:height] / 2.0
+    ic = size * 1.0
+    icx = box2[:x] + box2[:width] - pad_x - ic * 0.5
+    icy = box2[:y] + box2[:height] / 2.0
     tri_col = hovered ? palette[:text_hover] : palette[:tri]
     if collapsed2
       tri_pts = [
-        Geom::Point3d.new(_d04269c4 - _89bc654b * 0.4, _2015e4a6 - _89bc654b * 0.5, 0),
-        Geom::Point3d.new(_d04269c4 + _89bc654b * 0.4, _2015e4a6, 0),
-        Geom::Point3d.new(_d04269c4 - _89bc654b * 0.4, _2015e4a6 + _89bc654b * 0.5, 0),
+        Geom::Point3d.new(icx - ic * 0.4, icy - ic * 0.5, 0),
+        Geom::Point3d.new(icx + ic * 0.4, icy, 0),
+        Geom::Point3d.new(icx - ic * 0.4, icy + ic * 0.5, 0),
       ]
     else
       tri_pts = [
-        Geom::Point3d.new(_d04269c4 - _89bc654b * 0.5, _2015e4a6 - _89bc654b * 0.35, 0),
-        Geom::Point3d.new(_d04269c4 + _89bc654b * 0.5, _2015e4a6 - _89bc654b * 0.35, 0),
-        Geom::Point3d.new(_d04269c4, _2015e4a6 + _89bc654b * 0.45, 0),
+        Geom::Point3d.new(icx - ic * 0.5, icy - ic * 0.35, 0),
+        Geom::Point3d.new(icx + ic * 0.5, icy - ic * 0.35, 0),
+        Geom::Point3d.new(icx, icy + ic * 0.45, 0),
       ]
     end
     view.drawing_color = Sketchup::Color.new(*tri_col)

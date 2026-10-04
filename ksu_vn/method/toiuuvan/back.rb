@@ -39,13 +39,13 @@ module KSU::Back
       partner = KSU::Nesting.move_to_sheet(partner, back_sheet, vec, @nesting)
     end
     return unless partner && partner.valid?
-    _a7fa30d2(partner, vec, num) if num && num != 0
+    rotate_partner(partner, vec, num) if num && num != 0
     place_mirror(panel2, partner, sheet3, vec)
   end
-  def _a7fa30d2(panel, sheet, _74c34b47)
+  def rotate_partner(panel, sheet, deg3)
     tr = @nesting.transformation * sheet.transformation
     center = KSU::View.panel_world_box(panel, tr).center
-    rad = -_74c34b47 * Math::PI / 180.0
+    rad = -deg3 * Math::PI / 180.0
     tr2 = Geom::Transformation.rotation(center, Z_AXIS, rad)
     panel.transformation = tr.inverse * tr2 * tr * panel.transformation
   end
@@ -55,8 +55,8 @@ module KSU::Back
     return partner if partner && partner.valid?
     vec2 = KSU::Sheet.bottom_of(sheet3, @nesting)
     if vec2 && vec2.valid?
-      _3fccea3f(vec2, sheet3)
-      return _76d37ecf(sheet3, vec2)
+      drop_from_sheet(vec2, sheet3)
+      return move_onto_sheet(sheet3, vec2)
     end
     flag = (back_sheet && back_sheet.valid?) ? back_sheet : KSU::Sheet.first_bottom(@nesting)
     return back_sheet unless flag && flag.valid?
@@ -83,14 +83,14 @@ module KSU::Back
     end
     grp2.name = sheet3.name.to_s + "-bottom"
     grp2.set_attribute("ABF", "sheet-id", str) if str
-    _76d37ecf(sheet3, grp2)
+    move_onto_sheet(sheet3, grp2)
   end
-  def _76d37ecf(sheet3, tr)
+  def move_onto_sheet(sheet3, tr)
     return tr unless @pack_cache && sheet3 && sheet3.valid?
     @pack_cache[sheet3.entityID] = tr if tr && tr.valid?
     tr
   end
-  def _3fccea3f(tr, sheet3)
+  def drop_from_sheet(tr, sheet3)
     return unless tr && tr.valid? && sheet3 && sheet3.valid?
     bb = KSU::Sheet.world_bbox(tr, @nesting)
     bb2 = KSU::Sheet.world_bbox(sheet3, @nesting)
@@ -101,18 +101,18 @@ module KSU::Back
     tr.transformation = Geom::Transformation.translation(vec2) * tr.transformation
   end
   def place_mirror(panel2, grp3, grp2, tr4)
-    _d0a341c6 = KSU::Sheet.world_bbox(grp2, @nesting)
-    _cc2599da = KSU::Sheet.world_bbox(tr4, @nesting)
-    tr = _cc53f14a(panel2, @nesting.transformation * grp2.transformation)
-    bb = _cc53f14a(grp3, @nesting.transformation * tr4.transformation)
-    return unless _d0a341c6 && _cc2599da && tr && bb
+    front_bb = KSU::Sheet.world_bbox(grp2, @nesting)
+    back_bb = KSU::Sheet.world_bbox(tr4, @nesting)
+    tr = part_box(panel2, @nesting.transformation * grp2.transformation)
+    bb = part_box(grp3, @nesting.transformation * tr4.transformation)
+    return unless front_bb && back_bb && tr && bb
     _3e7613f3, _9ba1a361 = KSU::Sheet.inset_of(tr4)
     hside, vside = KSU::Sheet.mark_corner(tr4, @nesting)
     hside ||= :right
     vside ||= :bottom
-    _7bb0b74c, _5e0b9d0f = KSU::Sheet.edit_offset(grp2) || [0.0, 0.0]
-    _5f2b530c, _76baa4cb = KSU::Sheet._5134c34c(
-      _d0a341c6, _cc2599da, _3e7613f3, _9ba1a361, hside, vside, _7bb0b74c, _5e0b9d0f,
+    eoff_x, eoff_y = KSU::Sheet.edit_offset(grp2) || [0.0, 0.0]
+    _5f2b530c, _76baa4cb = KSU::Sheet.mirror_pos(
+      front_bb, back_bb, _3e7613f3, _9ba1a361, hside, vside, eoff_x, eoff_y,
       tr.min.x, tr.max.x, tr.min.y, tr.max.y,
       bb.width, bb.height
     )
@@ -120,7 +120,7 @@ module KSU::Back
     tr2 = vec.transform((@nesting.transformation * tr4.transformation).inverse)
     grp3.transformation = Geom::Transformation.translation(tr2) * grp3.transformation
   end
-  def _cc53f14a(panel, _6a989d41)
+  def part_box(panel, _6a989d41)
     return KSU::View.panel_world_box(panel, _6a989d41) unless @tach_nhom_2_mat && @tu_dong_sua_vi_tri
     poly = KSU::Cutting.cut_outline(panel, _6a989d41 * panel.transformation)
     return KSU::View.panel_world_box(panel, _6a989d41) unless poly && poly.length >= 3

@@ -453,8 +453,8 @@ module KSU::Field
     items = []
     @field_defs.each do |sec3, keys|
       flag = true
-      keys.each do |key, _fab4f06f|
-        arr = _fab4f06f.is_a?(Array) ? _fab4f06f : [_fab4f06f, key.to_s.tr("_", " ")]
+      keys.each do |key, job|
+        arr = job.is_a?(Array) ? job : [job, key.to_s.tr("_", " ")]
         fmt = arr[0]
         title = arr[1]
         cond = arr[2]

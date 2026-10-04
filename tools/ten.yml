@@ -2314,9 +2314,6 @@ ten:
     ksu_vn/method/xeptam/nfp.rb: outers
   _99491fe1:
     ksu_vn/method/xeptam/nfp.rb: holes
-  _9710d820:
-    ksu_vn/method/xeptam/nfp.rb: area
-    ksu_vn/utils/preset/field.rb: ang
   _29cc5eaa:
     ksu_vn/method/xeptam/nfp.rb: ccw
   _496e1356:
@@ -2637,8 +2634,6 @@ ten:
     ksu_vn/utils/sheet/reorder.rb: next_id
   _c7528123:
     ksu_vn/utils/sheet/reorder.rb: k
-  _14ea4fab:
-    ksu_vn/utils/sheet/reorder.rb: pi
   _bdf6b67b:
     ksu_vn/utils/sheet/reorder.rb: ix
   _cea5e419:
@@ -3062,6 +3057,61 @@ ten:
   _919af578: hit_sheet_top?
   _fde5708a: base_tr2
 
+  # ----- ME 78: utils/sheet/mark.rb -- soi guong vi tri tam sang van mat sau -----
+  # Khoang cach tu tam toi goc DANH DAU cua van truoc duoc giu nguyen o van
+  # sau, nhung doi ben ngang: goc danh dau o phai thi do tu trai sang.
+  _5134c34c: mirror_pos          # tra [x, y] cua goc duoi-trai tam tren van sau
+  _16d547ab: px0
+  _740b67b8: px1
+  _08bd07cc: py0
+  _29b02ee7: py1
+  _e9f5ddbc: part_w
+  _1aa82cff: part_h
+  _18feedaf: lx0
+  _331de21b: lx1
+  _ce465202: lyy0
+  _93bc3b1a: ly1
+  _7bb0b74c: eoff_x
+  _5e0b9d0f: eoff_y
+  _1c44e717: mirror_of_tf        # nhan cong viec cho mirror_tf (_555efb37)
+  _f4e85c51: tr0
+  _a14aed83: free_ix             # goc dau tien khong co diem nao ben canh
+
+  # ----- ME 78b: method/toiuuvan/back.rb -----
+  _a7fa30d2: rotate_partner
+  _76d37ecf: move_onto_sheet     #  da thuoc _03018fe6
+  _3fccea3f: drop_from_sheet
+  _cc53f14a: part_box            # vien cat neu dang tach nhom hai mat, khong thi hop bao
+  _74c34b47: deg3
+
+  _d0a341c6:
+    ksu_vn/method/toiuuvan/back.rb: front_bb
+  _cc2599da:
+    ksu_vn/method/toiuuvan/back.rb: back_bb
+  _0cd9b30a:
+    ksu_vn/utils/sheet/mark.rb: tol_y
+
+  # ----- ME 78c: utils/preset/store.rb -----
+  _89bc654b:
+    ksu_vn/utils/preset/store.rb: ic
+  _d04269c4:
+    ksu_vn/utils/preset/store.rb: icx
+  _2015e4a6:
+    ksu_vn/utils/preset/store.rb: icy
+  _429f3bf7:
+    ksu_vn/utils/preset/store.rb: si
+  _14ea4fab:
+    ksu_vn/utils/sheet/reorder.rb: pi
+    ksu_vn/utils/preset/store.rb: ci
+  _9710d820:
+    ksu_vn/method/xeptam/nfp.rb: area
+    ksu_vn/utils/preset/field.rb: ang
+    ksu_vn/utils/preset/store.rb: ang
+  _fab4f06f:
+    ksu_vn/utils/preset/store.rb: spec
+  _9aa9564d:
+    ksu_vn/utils/preset/store.rb: rects
+
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.
 # Moi dong duoi day la mot hex da thua mot tu cho hex khac dung nhieu
@@ -3208,13 +3258,11 @@ bo:
   - _5e0c1b8d   # blk: 2 lan, ban tay giu _5d690575 (9 lan)
   - _0dc41cf2   # dlg: 13 lan, ban tay giu _a72a3dce (50 lan)
    # grp: tenauto doan kieu, _d533ec26 dung 144 lan
-  - _fab4f06f   # job: 12 lan, ban tay giu _fea16e8e (48 lan)
   - _3cc0311c   # num: tenauto doan kieu, _5e86883a la mot method
   - _538a3d28   # pname: 6 lan, cay sinh doi cung goi _2bcd29a8 (27 lan) la pname
   - _43ae5f3d   # rows: _62ef82e9 co 5 lan tu soi guong, cai nay khong co
   - _081c2f3e   # section: 22 lan, cay sinh doi cung goi _f86dea4f (40 lan) la section
   - _79f8d55d   # sel: 3 lan, ban tay giu _7e48d1c7 (123 lan)
-  - _9aa9564d   # slots: _1cfbd98a co soi guong `slots: slots`, cai nay khong co
 
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,
