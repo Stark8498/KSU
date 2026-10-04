@@ -286,9 +286,9 @@ module KSU::Mirror
     end
     best
   end
-  def panels_in_box(view, x218, _60000b16, x2, y2)
+  def panels_in_box(view, x218, ay, x2, y2)
     left, right = [x218, x2].minmax
-    top, bot = [_60000b16, y2].minmax
+    top, bot = [ay, y2].minmax
     crossing = x2 < x218
     arr2 = []
     screen_items(view).each do |arr|
@@ -463,7 +463,7 @@ module KSU::Mirror
 end
 KSU::Xeptam.include(KSU::Mirror)
 module KSU::Mirror
-  def self._4b6ac4b0
-    KSU::Arrange._9fcc1956(KSU::Caidat.machine_fingerprint)
+  def self.machine_id
+    KSU::Arrange.normalize_hw_id(KSU::Caidat.machine_fingerprint)
   end
 end

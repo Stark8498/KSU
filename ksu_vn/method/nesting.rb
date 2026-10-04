@@ -540,17 +540,17 @@ module KSU::Nest
       UI.messagebox("Có lỗi xảy ra khi nesting!")
       return
     end
-    _e25d94df = !!KSU::Settings.get("nhan_dat_trong_tam", false, "gan_nhan")
-    @_dc5a9dc0 = {
+    center_labels = !!KSU::Settings.get("nhan_dat_trong_tam", false, "gan_nhan")
+    @label_ctx = {
       max_size: KSU::Settings.get("kich_thuoc_nhan", 50.0, "gan_nhan").to_f.mm,
       gap: KSU::Settings.get("do_gian_chu", -0.1, "gan_nhan").to_f,
       xf: KSU::Settings.get("chieu_rong_chu", 80, "gan_nhan").to_i / 100.0,
       letter_case: KSU::Settings.get("kieu_tieu_de", "upper", "gan_nhan").to_s,
-      center: !_e25d94df,
+      center: !center_labels,
       renumber: renumber[:renumber]
     }
-    @_a7e29efc = cfg
-    @_576fddc0 = saved_sel
+    @pend_cfg = cfg
+    @pend_sel = saved_sel
     @jobs = renumber[:jobs]
     @layer2 = renumber[:layer]
     @label_total = @jobs.size
@@ -563,22 +563,22 @@ module KSU::Nest
     @label_timer = UI.start_timer(0, true) { label_step }
   end
   def label_step
-    return _0c3a8be0 if @label_done >= @label_total
+    return label_finish2 if @label_done >= @label_total
     n = 0
     while n < 16 && @label_done < @label_total
       job = @jobs[@label_done]
-      KSU::Label.draw_label_on(job[0], job[1], @layer2, @_dc5a9dc0) if job && job[0] && job[0].valid?
+      KSU::Label.draw_label_on(job[0], job[1], @layer2, @label_ctx) if job && job[0] && job[0].valid?
       @label_done += 1
       n += 1
     end
     KSU::View.view.invalidate
   rescue StandardError => ent
-    _a3c31f39(ent.message)
+    label_fail2(ent.message)
   end
-  def _0c3a8be0
-    cfg = @_a7e29efc
-    saved_sel = @_576fddc0
-    _37cfb2cb
+  def label_finish2
+    cfg = @pend_cfg
+    saved_sel = @pend_sel
+    label_reset
     KSU.commit
     KSU::View.view.invalidate
     cfg.delete(:materials) if cfg.is_a?(Hash)
@@ -587,25 +587,25 @@ module KSU::Nest
     abort_collect
     UI.messagebox("Lỗi nesting: #{ent.message}")
   end
-  def _a3c31f39(msg2)
-    _37cfb2cb
+  def label_fail2(msg2)
+    label_reset
     KSU.abort_op
     clear_progress
     UI.messagebox("Lỗi gắn nhãn: #{msg2}")
   end
-  def _37cfb2cb
+  def label_reset
     UI.stop_timer(@label_timer) if @label_timer
     @label_timer = nil
     @labelling = false
-    @_a7e29efc = nil
-    @_576fddc0 = nil
+    @pend_cfg = nil
+    @pend_sel = nil
     @jobs = nil
     @layer2 = nil
-    @_dc5a9dc0 = nil
+    @label_ctx = nil
   end
   def abort_labelling
     return unless @labelling
-    _37cfb2cb
+    label_reset
     KSU.abort_op
   end
   def tag_parts(job, arr24)

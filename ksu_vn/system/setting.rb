@@ -6,7 +6,7 @@ module KSU::Settings
   SETTINGS_BACKUP = File.join(SETTINGS_DIR, "settings_backup.json")
   STARTUP_FILE = File.join(SETTINGS_DIR, "startup.json")
   STARTUP_KEYS = %w[xep_tam chon_tam them_tam xep_hang danh_so_van net_cat_cuoi gan_nhan chong_bay toi_uu_van nesting thong_ke in_tem xuat_dxf cai_dat].freeze
-  @_0dc41cf2 = nil
+  @dlg3 = nil
   SETTINGS_VERSION = 1
   def self.ensure_file
     FileUtils.mkdir_p(SETTINGS_DIR)
@@ -400,12 +400,12 @@ module KSU::Settings
     bind_callbacks(dlg2)
     select_preset_later(dlg2, pname)
     dlg2.set_on_closed {
-      @_0dc41cf2 = nil
+      @dlg3 = nil
       @open_tab = nil
       KSU::Preset.load_cfg
       KSU::View.refresh
     }
-    @_0dc41cf2 = dlg2
+    @dlg3 = dlg2
     dlg2.center
     dlg2.show
   end
@@ -521,16 +521,16 @@ module KSU::Settings
       parts = payload2.split("@")
       section2 = parts[0]
       sec4 = parts[1]
-      _3b7dc41a = parts[2]
+      val2 = parts[2]
       path = UI.openpanel("Chọn file", "", "SketchUp Files|*.skp||")
       str4 = "iframe_#{section2}"
       if path && File.exist?(path)
         path2 = path.gsub("\\", "/")
-        set(_3b7dc41a, path2, section2)
-        str2 = "var iframe = document.getElementById('#{str4}'); if (iframe && iframe.contentWindow) { iframe.contentWindow.postMessage({ action: 'file_picked', shapeKey: '#{sec4}', pathKey: '#{_3b7dc41a}', path: '#{path2}' }, '*'); }"
+        set(val2, path2, section2)
+        str2 = "var iframe = document.getElementById('#{str4}'); if (iframe && iframe.contentWindow) { iframe.contentWindow.postMessage({ action: 'file_picked', shapeKey: '#{sec4}', pathKey: '#{val2}', path: '#{path2}' }, '*'); }"
         dlg2.execute_script(str2)
       else
-        str2 = "var iframe = document.getElementById('#{str4}'); if (iframe && iframe.contentWindow) { iframe.contentWindow.postMessage({ action: 'file_picked', shapeKey: '#{sec4}', pathKey: '#{_3b7dc41a}', path: null }, '*'); }"
+        str2 = "var iframe = document.getElementById('#{str4}'); if (iframe && iframe.contentWindow) { iframe.contentWindow.postMessage({ action: 'file_picked', shapeKey: '#{sec4}', pathKey: '#{val2}', path: null }, '*'); }"
         dlg2.execute_script(str2)
       end
       reload_tool
@@ -542,7 +542,7 @@ module KSU::Settings
       reopen_with_message(dlg2, "Đã đồng bộ cài đặt thành công!") if KSU::Settings.import_online
     end
     dlg2.add_action_callback("view_hardware_id") do |_part|
-      id2 = KSU::Mirror._4b6ac4b0
+      id2 = KSU::Mirror.machine_id
       if id2.to_s.empty?
         UI.messagebox("Không lấy được mã phần cứng của máy!")
       else
@@ -550,7 +550,7 @@ module KSU::Settings
       end
     end
     dlg2.add_action_callback("remove_activation") do |_part|
-      if KSU::Postproc._7b2b347d
+      if KSU::Postproc.confirm_deactivate
         dlg2.close
       end
     end
@@ -585,9 +585,9 @@ module KSU::Settings
       end
       return
     end
-    _a249f8a6(kind2, pname)
+    push_presets2(kind2, pname)
   end
-  def self._a249f8a6(kind2, pname = nil)
+  def self.push_presets2(kind2, pname = nil)
     dlg2 = new_dialog("ksu_tool_" + kind2)
     dlg2.set_html(KSU::Caidat.build_html(kind2, load_all, true))
     bind_callbacks(dlg2)
@@ -622,17 +622,17 @@ module KSU::Settings
     @open_tab.to_s
   end
   def self.dialog_open?
-    @_0dc41cf2 && @_0dc41cf2.visible?
+    @dlg3 && @dlg3.visible?
   end
-  def self._0dc41cf2
-    dialog_open? ? @_0dc41cf2 : nil
+  def self.dlg3
+    dialog_open? ? @dlg3 : nil
   end
   def self.push_to_dialog(key, key3, value)
     return unless dialog_open?
     resp = { key3 => value }.to_json
     str = "if (window.sendSettingsToIframe) {" \
       " window.sendSettingsToIframe('#{key}', #{resp}); }"
-    @_0dc41cf2.execute_script(str)
+    @dlg3.execute_script(str)
   end
   def self.open_settings(section = "cai_dat", pname = nil, switch_tab = false)
     KSU::Xeptam.check_license
@@ -640,27 +640,27 @@ module KSU::Settings
     return open_window(section.to_s, pname) if TOOL_WINDOWS.include?(section.to_s)
     if dialog_open?
       if pname
-        @_0dc41cf2.execute_script("switchToTab('#{section}');")
+        @dlg3.execute_script("switchToTab('#{section}');")
         UI.start_timer(0.1, false) do
-          @_0dc41cf2.execute_script("if (window.selectPresetByName) { window.selectPresetByName('#{pname}'); }")
+          @dlg3.execute_script("if (window.selectPresetByName) { window.selectPresetByName('#{pname}'); }")
         end
         return
       end
       if switch_tab
         if @open_tab.to_s == section.to_s
-          @_0dc41cf2.close
+          @dlg3.close
         else
           @open_tab = section.to_s
-          @_0dc41cf2.execute_script("switchToTab('#{section}', true);")
+          @dlg3.execute_script("switchToTab('#{section}', true);")
         end
         return
       end
-      @_0dc41cf2.close
+      @dlg3.close
       return
     end
     open_dialog(section, pname)
   end
-  def self._7314dc1a
+  def self.close_dialog
     data = load
     h = (data["cai_dat"] ||= {})
     src = data["xep_tam"] || {}
@@ -675,7 +675,7 @@ module KSU::Settings
   end
 end
 begin
-  KSU::Settings._7314dc1a
+  KSU::Settings.close_dialog
 rescue StandardError
 end
 require "uri"
@@ -684,7 +684,7 @@ module KSU::Settings
     File.join(ENV["LOCALAPPDATA"], "KSU")
   end
   def self.activate_key(serial_key)
-    KSU::Const.fetch_json(KSU::Loop.license_url(serial_key, "activate") + "&instance=" + URI.encode_www_form_component(KSU::Mirror._4b6ac4b0))
+    KSU::Const.fetch_json(KSU::Loop.license_url(serial_key, "activate") + "&instance=" + URI.encode_www_form_component(KSU::Mirror.machine_id))
   end
 end
 module KSU::Settings

@@ -427,20 +427,20 @@ module KSU::Drag
     show_originals
     build_snap_grid
     apply_offset
-    _09012de8 = @sel_sheets.compact
-    _09012de8 += [@dest[:instance]] if @dest && @dest[:instance]
+    touched = @sel_sheets.compact
+    touched += [@dest[:instance]] if @dest && @dest[:instance]
     flag = false
     if @dest && !@flag45
       @sel.each_with_index do |panel, ix|
         next if @sel_sheets[ix] == @dest[:instance]
         cur_sheet = @sel_sheets[ix]
         pair = back_of(panel)
-        _2f683801 = clone_to(panel, cur_sheet, @dest)
-        next unless _2f683801&.valid?
-        @sel[ix] = _2f683801
+        moved_panel = clone_to(panel, cur_sheet, @dest)
+        next unless moved_panel&.valid?
+        @sel[ix] = moved_panel
         @sel_sheets[ix] = @dest[:instance]
         flag = true
-        sync_back(_2f683801, pair, cur_sheet, @dest[:instance]) if pair
+        sync_back(moved_panel, pair, cur_sheet, @dest[:instance]) if pair
       end
       KSU::Sheet.prune_bottoms(@nesting) if flag
     end
@@ -450,9 +450,9 @@ module KSU::Drag
       sheet_list(@nesting)
       build_pairs
     end
-    _b1981961 = partners_of(@sel)
+    partners = partners_of(@sel)
     drop_panel_cache(@sel)
-    drop_panel_cache(_b1981961)
+    drop_panel_cache(partners)
     @sel_polys = nil
     @sel_hull = nil
     @arr3 = nil
@@ -460,32 +460,32 @@ module KSU::Drag
       @obstacle_cache = {}
       clear_grid_cache
     else
-      _b7284874 = (_09012de8 + sheets_of(_b1981961)).uniq
-      drop_sheet_cache(_b7284874)
-      drop_grid_cache(_b7284874)
+      all_sheets = (touched + sheets_of(partners)).uniq
+      drop_sheet_cache(all_sheets)
+      drop_grid_cache(all_sheets)
     end
     @nfp_memo = {}
     @moving_poly = nil
     @anchor_pt = nil
     @nfp_on = false
-    refresh_hits(@sel + _b1981961)
+    refresh_hits(@sel + partners)
     rebuild_outlines
     inst2 = @dest&.dig(:instance)
     @flag37 = inst2 if inst2&.valid? && !@flag45
     @sheet2 = @flag37
     @flag45 = false
     stamp_sig
-    KSU::View.refresh_panels(@nesting, @sel + _b1981961, @flag11)
+    KSU::View.refresh_panels(@nesting, @sel + partners, @flag11)
     update_status
   end
 end
 KSU::Xeptam.include(KSU::Drag)
 module KSU::Drag
   def self.licensed?
-    str = KSU::Sheet._b98c616b(KSU::Reorder._f9ff0de9[1] ||= KSU::Mirror._4b6ac4b0.to_s)
-    return true if KSU::Reorder._f9ff0de9[0] == str
-    ok = KSU::Xeptam._3d509e12
-    KSU::Reorder._f9ff0de9[0] = str if ok
+    str = KSU::Sheet.id_hash(KSU::Reorder.id_cache[1] ||= KSU::Mirror.machine_id.to_s)
+    return true if KSU::Reorder.id_cache[0] == str
+    ok = KSU::Xeptam.license_gate
+    KSU::Reorder.id_cache[0] = str if ok
     ok
   end
 end

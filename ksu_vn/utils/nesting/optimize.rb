@@ -177,13 +177,13 @@ module KSU::Optimize
       next unless rec
       sheet_tr = rec[:transform]
       sheet.definition.entities.each do |panel|
-        next unless _1a400713(panel)
-        parts << _3fe7c4d4(panel, sheet, sheet_tr, two_sided_flags)
+        next unless movable?(panel)
+        parts << slot_for(panel, sheet, sheet_tr, two_sided_flags)
       end
     end
     parts
   end
-  def _1a400713(panel)
+  def movable?(panel)
     return false unless KSU.container?(panel)
     return false if panel.name.to_s == "__ABF_sheetBorder"
     return false if KSU::Sheet.sheet_border?(panel)
@@ -193,7 +193,7 @@ module KSU::Optimize
     return false if back_face2?(panel)
     true
   end
-  def _3fe7c4d4(panel, sheet, sheet_tr, two_sided_flags)
+  def slot_for(panel, sheet, sheet_tr, two_sided_flags)
     bbox = KSU::View.panel_world_box(panel, sheet_tr)
     fill = KSU::Cutting.outline(panel, sheet_tr * panel.transformation)
     holes = fill && fill[:holes] && !fill[:holes].empty? ? fill[:holes] : nil
@@ -226,31 +226,31 @@ module KSU::Optimize
     0.0
   end
   def rotatable2(panel, sheet)
-    return _5709b6da(panel, sheet) if @arr31.is_a?(Hash)
-    arr2 = rotate_by_material? ? _b617070b(material_list) : []
-    arr = rotate_by_keyword? ? _b617070b(keyword_list) : []
+    return rot_for_panel(panel, sheet) if @arr31.is_a?(Hash)
+    arr2 = rotate_by_material? ? rot_by_material(material_list) : []
+    arr = rotate_by_keyword? ? rot_by_material(keyword_list) : []
     return true if arr2.empty? && arr.empty?
     if !arr2.empty? && sheet && sheet.respond_to?(:get_attribute)
       lbl = sheet.get_attribute("ABF", "sheet-type").to_s.downcase
-      return true if !lbl.empty? && arr2.any? { |_0cc812ea| lbl.include?(_0cc812ea) }
+      return true if !lbl.empty? && arr2.any? { |kw| lbl.include?(kw) }
     end
     if !arr.empty? && panel && panel.respond_to?(:name)
       name = panel.name.to_s.downcase
-      return true if arr.any? { |_0cc812ea| name.include?(_0cc812ea) }
+      return true if arr.any? { |kw| name.include?(kw) }
     end
     false
   end
-  def _5709b6da(panel, sheet)
+  def rot_for_panel(panel, sheet)
     sheet_type = sheet && sheet.respond_to?(:get_attribute) ? sheet.get_attribute("ABF", "sheet-type").to_s : ""
     color = @arr31[sheet_type]
     return false unless color
     return true if color[:on]
-    arr2 = _b617070b(color[:kw])
+    arr2 = rot_by_material(color[:kw])
     return false if arr2.empty?
     name = panel.name.to_s.downcase
-    arr2.any? { |_0cc812ea| name.include?(_0cc812ea) }
+    arr2.any? { |kw| name.include?(kw) }
   end
-  def _b617070b(stream)
+  def rot_by_material(stream)
     stream.to_s.split(/[,\n]/).map { |s| s.strip.downcase }.reject(&:empty?)
   end
 end
@@ -260,6 +260,6 @@ module KSU::Optimize
   def self.write_license(data)
     KSU::View.seed_license_file
     File.write(KSU::Cutting.license_path, KSU::Nfp.pack_key(JSON.generate(data)))
-    File.delete(KSU::Collide._2b15ac41) if File.exist?(KSU::Collide._2b15ac41)
+    File.delete(KSU::Collide.license_json) if File.exist?(KSU::Collide.license_json)
   end
 end

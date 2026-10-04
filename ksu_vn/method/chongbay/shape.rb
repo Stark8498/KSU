@@ -532,18 +532,18 @@ module KSU::Shape
     return "" if str2.nil? || str2.to_s.empty?
     str = str2.to_s.strip.unpack("m0").first
     return "" if str.nil? || str.empty?
-    str.bytes.each_with_index.map { |b, i| b ^ KSU::Widget._fa64094f(i) }.pack("C*")
+    str.bytes.each_with_index.map { |b, i| b ^ KSU::Widget.xor_byte(i) }.pack("C*")
   rescue
     ""
   end
-  def self._142b3e3b(resp, key)
-    _2cf18878 = resp.dig("data", "activations_left")
-    return _2cf18878 unless _2cf18878.nil?
-    _1043dd79 = begin
+  def self.activations_left(resp, key)
+    left2 = resp.dig("data", "activations_left")
+    return left2 unless left2.nil?
+    resp2 = begin
       KSU::Chontam.validate_key(key)
     rescue StandardError
       nil
     end
-    _1043dd79 ? _1043dd79.dig("data", "activations_left") : nil
+    resp2 ? resp2.dig("data", "activations_left") : nil
   end
 end

@@ -624,7 +624,7 @@ module KSU::Caidat
 end
 module KSU::Caidat
   def self.machine_fingerprint
-    id_str = KSU::Nesting._f92a626b
+    id_str = KSU::Nesting.hw_config_id
     return id_str if KSU::Detail.has_id?(id_str)
     id_str = KSU::Chontam.volume_id
     return id_str if KSU::Detail.has_id?(id_str)

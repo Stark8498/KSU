@@ -217,12 +217,12 @@ module KSU::Font
       thick = k.to_f / steps
       bx2 = x + (rx - x) * thick
       by2 = y + (ry - y) * thick
-      _80ce9d04 = h * (1.0 - (2.0 * thick - 1.0) ** 2)
-      _4208cdd3 = bx2 + nx * _80ce9d04
-      _b570767e = by2 + ny * _80ce9d04
-      snap_edges << [trai, duoi, _4208cdd3, _b570767e] if pen
-      trai = _4208cdd3
-      duoi = _b570767e
+      bulge_h = h * (1.0 - (2.0 * thick - 1.0) ** 2)
+      bx3 = bx2 + nx * bulge_h
+      by3 = by2 + ny * bulge_h
+      snap_edges << [trai, duoi, bx3, by3] if pen
+      trai = bx3
+      duoi = by3
     end
     [rx, ry]
   end
@@ -255,16 +255,16 @@ module KSU::Font
     strokes_for(err_code) unless @h17.key?(err_code)
     @h17[err_code] || [0.0, 0.0]
   end
-  def _df558da5
-    return @_004b3534 if defined?(@_004b3534) && @_004b3534
+  def digit_y_range
+    return @digit_range if defined?(@digit_range) && @digit_range
     ent = strokes_for(48)
     if ent && !ent.empty?
       arr2 = ent.flat_map { |g| [g[1], g[3]] }
-      @_004b3534 = [arr2.min, arr2.max]
+      @digit_range = [arr2.min, arr2.max]
     else
-      @_004b3534 = [0.0, HEIGHT]
+      @digit_range = [0.0, HEIGHT]
     end
-    @_004b3534
+    @digit_range
   end
   def text_extent(text)
     import
@@ -315,11 +315,11 @@ module KSU::Font
     stream = text.to_s.unicode_normalize
     x = 0.0
     pad_x = (gap3 || (flag ? TIGHT_GAP : CHAR_PADDING)) * upm
-    _738ce77b = SPACE * upm
+    space_w = SPACE * upm
     stream.each_char do |color|
       code = color.ord
       if code == 32 || code == 9
-        x += _738ce77b
+        x += space_w
         next
       end
       snap_edges = strokes_for(code)
@@ -327,10 +327,10 @@ module KSU::Font
       entity = bounds_of(code)
       if flag
         pos = -entity[0]
-        _68cbfb72 = entity[1] - entity[0]
+        adv2 = entity[1] - entity[0]
       else
-        _68cbfb72 = width_of(code)
-        pos = (_68cbfb72 - entity[0] - entity[1]) / 2.0
+        adv2 = width_of(code)
+        pos = (adv2 - entity[0] - entity[1]) / 2.0
       end
       if snap_edges
         snap_edges.each do |ent|
@@ -340,7 +340,7 @@ module KSU::Font
           ]
         end
       end
-      x += _68cbfb72 * upm + pad_x
+      x += adv2 * upm + pad_x
     end
     arr2
   end

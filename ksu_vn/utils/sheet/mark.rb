@@ -68,16 +68,16 @@ module KSU::Mark
   def offset_for(sheet, nesting)
     bot = bottom_of(sheet, nesting)
     return nil unless bot && marks_of(bot).any?
-    _3e7613f3, arr = inset_of(bot)
-    return nil if _3e7613f3 <= 0 && arr <= 0
+    inset_x, arr = inset_of(bot)
+    return nil if inset_x <= 0 && arr <= 0
     hside, vside = mark_corner(bot, nesting)
     return nil unless hside
     flag2 = (hside == :right) ? :left : :right
-    flag3 = (flag2 == :left) ? _3e7613f3 : -_3e7613f3
+    flag3 = (flag2 == :left) ? inset_x : -inset_x
     flag = (vside == :bottom) ? arr : -arr
     [flag3.to_f, flag.to_f]
   end
-  def mirror_pos(bb2, bb, _3e7613f3, _9ba1a361, hside, vside, eoff_x, eoff_y, px0, px1, py0, py1, part_w, part_h)
+  def mirror_pos(bb2, bb, inset_x, inset_y, hside, vside, eoff_x, eoff_y, px0, px1, py0, py1, part_w, part_h)
     lx0 = px0 - eoff_x
     lx1 = px1 - eoff_x
     lyy0 = py0 - eoff_y
@@ -85,8 +85,8 @@ module KSU::Mark
     flag5 = (hside == :right) ? :left : :right
     flag2 = (flag5 == :left) ? (lx0 - bb2.min.x) : (bb2.max.x - lx1)
     flag = (vside == :bottom) ? (lyy0 - bb2.min.y) : (bb2.max.y - ly1)
-    num = (hside == :right) ? bb.max.x.to_f - _3e7613f3 : bb.min.x.to_f + _3e7613f3
-    num2 = (vside == :top) ? bb.max.y.to_f - _9ba1a361 : bb.min.y.to_f + _9ba1a361
+    num = (hside == :right) ? bb.max.x.to_f - inset_x : bb.min.x.to_f + inset_x
+    num2 = (vside == :top) ? bb.max.y.to_f - inset_y : bb.min.y.to_f + inset_y
     flag4 = (hside == :right) ? (num - flag2 - part_w) : (num + flag2)
     flag3 = (vside == :bottom) ? (num2 + flag) : (num2 - flag - part_h)
     [flag4, flag3]
@@ -106,11 +106,11 @@ module KSU::Mark
   def offset_polys(sheet, nesting)
     bot = bottom_of(sheet, nesting)
     return [] unless bot
-    _bd796177 = border_of(sheet)
-    _7e85d3e0 = border_of(bot)
-    return [] unless _bd796177 && _7e85d3e0
-    bb = _bd796177.bounds
-    bb2 = _7e85d3e0.bounds
+    bd_front = border_of(sheet)
+    bd_back = border_of(bot)
+    return [] unless bd_front && bd_back
+    bb = bd_front.bounds
+    bb2 = bd_back.bounds
     border_polys(bot).map do |pts|
       pts.map do |pt|
         Geom::Point3d.new(bb.min.x + (bb2.max.x - pt.x), bb.min.y + (pt.y - bb2.min.y), bb.max.z)

@@ -43,22 +43,22 @@ module KSU::Thongke::Quet
     end
   end
   def self.sheet_of_board
-    h = {}
+    seen3 = {}
     each_sheet(all_roots) do |sheet, sheet_id|
       (KSU.entities_in(sheet) || []).each do |grp|
         next unless KSU.container?(grp)
         pid = grp.get_attribute("ABF", "board-index")
-        h[pid] = sheet_id if pid
+        seen3[pid] = sheet_id if pid
       end
     end
-    h
+    seen3
   end
   def self.long_axis(font, tf)
     KSU::Cutting.box_axes(font.bounds, tf)[2][1]
   end
   def self.label_group(node)
-    arr = KSU::Cutting.kids_with_attr(node, "is-label")
-    arr ? arr[0] : nil
+    seen3 = KSU::Cutting.kids_with_attr(node, "is-label")
+    seen3 ? seen3[0] : nil
   end
   def self.extent_along(pts, axis)
     dir = axis[1].normalize

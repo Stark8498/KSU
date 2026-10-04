@@ -14,12 +14,12 @@ class KSU::Xuatdxf::Dxf
     layer_name
   end
   def write_polyline(box, kind, closed)
-    _2cb52d46 = layer_for(kind)
+    layer = layer_for(kind)
     @num14 += 1
     @txt << "0\nLWPOLYLINE\n"
     @txt << "5\n" << @num14.to_s(16) << "\n"
     @txt << "100\nAcDbEntity\n"
-    @txt << "8\n" << _2cb52d46 << "\n"
+    @txt << "8\n" << layer << "\n"
     @txt << "100\nAcDbPolyline\n"
     @txt << "90\n" << box.length.to_s << "\n"
     @txt << "66\n1\n70\n" << (closed ? "1" : "0") << "\n"
@@ -31,12 +31,12 @@ class KSU::Xuatdxf::Dxf
     end
   end
   def write_circle(center, r, kind)
-    _2cb52d46 = layer_for(kind)
+    layer = layer_for(kind)
     @num14 += 1
     @txt << "0\nCIRCLE\n"
     @txt << "5\n" << @num14.to_s(16) << "\n"
     @txt << "100\nAcDbEntity\n"
-    @txt << "8\n" << _2cb52d46 << "\n"
+    @txt << "8\n" << layer << "\n"
     @txt << "100\nAcDbCircle\n"
     @txt << "10\n" << (center.x * TO_MM).to_s << "\n"
     @txt << "20\n" << (center.y * TO_MM).to_s << "\n"

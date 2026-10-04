@@ -150,8 +150,8 @@ module KSU::Xuatdxf
         end
       end
       tag = arr2.first ? dxf_layer(arr2.first, normal) : "0"
-      merge_loops(arr2).each do |_c9fa72f2|
-        ents << { layer: tag, pts: xy_of(_c9fa72f2, tf3),
+      merge_loops(arr2).each do |loop_pts|
+        ents << { layer: tag, pts: xy_of(loop_pts, tf3),
                      closed: true, via_module: true, bulge: true, pid: pid, sect: false }
       end
     elsif is_border || is_mark
@@ -210,28 +210,28 @@ module KSU::Xuatdxf
       [pt.x.to_f, pt.y.to_f]
     end
   end
-  def sheet_id_text(rec, mat, _8ddd8c6f, _68165b06)
+  def sheet_id_text(rec, mat, sheet_w2, sheet_h2)
     return [] unless KSU::Font.import
     out = []
     num = 18.0
-    _5cb20db4 = rec[:id].to_s
+    id_txt = rec[:id].to_s
     if rec[:has_bottom]
-      _5cb20db4 = _5cb20db4 + "-" + (rec[:bottom] ? "0" : "1")
-      num = 16.0 if _5cb20db4.size > 2
-      num = 14.0 if _5cb20db4.size > 3
-      num = 12.0 if _5cb20db4.size > 4
+      id_txt = id_txt + "-" + (rec[:bottom] ? "0" : "1")
+      num = 16.0 if id_txt.size > 2
+      num = 14.0 if id_txt.size > 3
+      num = 12.0 if id_txt.size > 4
     end
-    _6b31f7ce = KSU::Font.half_width(_5cb20db4)
-    num = [num, (_8ddd8c6f - 0.123 * _8ddd8c6f) / _6b31f7ce].min if _6b31f7ce > 0
-    _60000b16 = _68165b06 * 0.5 - (KSU::Font::HEIGHT * num / 2)
-    KSU::Font.text_strokes(_5cb20db4, [_8ddd8c6f * 0.5 - (_6b31f7ce * num / 2), _60000b16], num).each do |poly|
+    id_w = KSU::Font.half_width(id_txt)
+    num = [num, (sheet_w2 - 0.123 * sheet_w2) / id_w].min if id_w > 0
+    ty0 = sheet_h2 * 0.5 - (KSU::Font::HEIGHT * num / 2)
+    KSU::Font.text_strokes(id_txt, [sheet_w2 * 0.5 - (id_w * num / 2), ty0], num).each do |poly|
       out << { layer: "ABF_sheetId", pts: poly, closed: false, via_module: false, bulge: false }
     end
     str = mat.to_s
     unless str.empty?
-      _4c541df4 = KSU::Font.half_width(str)
-      flag = _4c541df4 > 0 ? [8.0, (_8ddd8c6f - 0.123 * _8ddd8c6f) / _4c541df4].min : 8.0
-      KSU::Font.text_strokes(str, [_8ddd8c6f * 0.5 - (_4c541df4 * flag / 2), _60000b16 + 0.45 * _68165b06], flag).each do |poly|
+      txt_w = KSU::Font.half_width(str)
+      flag = txt_w > 0 ? [8.0, (sheet_w2 - 0.123 * sheet_w2) / txt_w].min : 8.0
+      KSU::Font.text_strokes(str, [sheet_w2 * 0.5 - (txt_w * flag / 2), ty0 + 0.45 * sheet_h2], flag).each do |poly|
         out << { layer: "ABF_sheetMaterial", pts: poly, closed: false, via_module: false, bulge: false }
       end
     end

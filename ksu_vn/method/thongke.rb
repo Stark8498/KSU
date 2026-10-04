@@ -73,7 +73,7 @@ module KSU::Thongke
     KSU::Settings.send_to_dialog(dlg, "thong_ke", "tkLoad", data.merge(settings: settings).to_json)
   end
   def self.load_data(dlg)
-    @data = KSU::Thongke::Tonghop._984ac2f3
+    @data = KSU::Thongke::Tonghop.summary_rows
     push_data(dlg)
   end
 end

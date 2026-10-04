@@ -248,13 +248,13 @@ end
 module KSU::Nfp
   def self.pack_key(arr61)
     return "" if arr61.nil? || arr61.to_s.empty?
-    txt = arr61.to_s.bytes.each_with_index.map { |b, i| b ^ KSU::Widget._fa64094f(i) }.pack("C*")
+    txt = arr61.to_s.bytes.each_with_index.map { |b, i| b ^ KSU::Widget.xor_byte(i) }.pack("C*")
     [txt].pack("m0")
   end
   def self.save_binding(key)
     KSU::Store.set_binding("k", key)
-    KSU::Store.set_binding("i", KSU::Mirror._4b6ac4b0)
+    KSU::Store.set_binding("i", KSU::Mirror.machine_id)
     KSU::Store.set_binding("t", Time.now.iso8601)
-    KSU::Toiuuvan._e899e740
+    KSU::Toiuuvan.drop_id_cache
   end
 end

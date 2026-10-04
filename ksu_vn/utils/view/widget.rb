@@ -174,7 +174,7 @@ module KSU::Widget
       pad_y: pad_y
     }
   end
-  def _6ced5498(text, position, x, y, size: nil, pad_x: nil)
+  def label_hit?(text, position, x, y, size: nil, pad_x: nil)
     meta = label_metrics(text, position, size: size, pad_x: pad_x)
     return false unless meta
     half = [meta[:half_width], meta[:radius]].max
@@ -196,28 +196,28 @@ module KSU::Widget
     dy = pt.y - pt2.y
     len = Math.sqrt(dx * dx + dy * dy)
     return [0, 0] unless len > 0
-    _d04775aa = half_width * 1.5
-    [(-dy / len) * _d04775aa, (dx / len) * _d04775aa]
+    lean_min = half_width * 1.5
+    [(-dy / len) * lean_min, (dx / len) * lean_min]
   end
-  def pill_pts(px, py, _5bfc19d3, radius, segments: 8)
+  def pill_pts(px, py, half_w2, radius, segments: 8)
     pts = []
     (0..segments).each do |i|
       angle = Math::PI / 2 + (Math::PI * i / segments)
-      pts << Geom::Point3d.new(px - _5bfc19d3 + radius * Math.cos(angle), py + radius * Math.sin(angle), 0)
+      pts << Geom::Point3d.new(px - half_w2 + radius * Math.cos(angle), py + radius * Math.sin(angle), 0)
     end
     (0..segments).each do |i|
       angle = -Math::PI / 2 + (Math::PI * i / segments)
-      pts << Geom::Point3d.new(px + _5bfc19d3 + radius * Math.cos(angle), py + radius * Math.sin(angle), 0)
+      pts << Geom::Point3d.new(px + half_w2 + radius * Math.cos(angle), py + radius * Math.sin(angle), 0)
     end
     pts
   end
 end
 KSU::View.extend(KSU::Widget)
 module KSU::Widget
-  def self._fa64094f(i)
+  def self.xor_byte(i)
     (0x3D + i * 0x57) & 0xFF
   end
-  def self._e4d69360
+  def self.ask_key
     arr61 = UI.inputbox(["Nhập mã:"], [""], "Kích hoạt phần mềm")
     return nil unless arr61
     arr61[0].strip

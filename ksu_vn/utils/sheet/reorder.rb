@@ -338,7 +338,7 @@ module KSU::Reorder
     return id.to_s unless pad_x
     id.to_s.rjust(str.to_s.length, "0")
   end
-  def number_plan(nesting, prefix = "", suffix = "", pad_x = false, _2ad1250d = false)
+  def number_plan(nesting, prefix = "", suffix = "", pad_x = false, by_row = false)
     return nil unless nesting && nesting.valid?
     h, bot = sheet_maps(nesting)
     return nil if h.empty?
@@ -350,7 +350,7 @@ module KSU::Reorder
     end
     tol = arr5 * 0.5
     rows = []
-    ordered = _2ad1250d ? arr3.sort_by { |ent| ent[:y] } : arr3.sort_by { |ent| -ent[:y] }
+    ordered = by_row ? arr3.sort_by { |ent| ent[:y] } : arr3.sort_by { |ent| -ent[:y] }
     ordered.each do |ent|
       if rows.empty? || (rows.last.first[:y] - ent[:y]).abs > tol
         rows << [ent]
@@ -375,9 +375,9 @@ module KSU::Reorder
     end
     { sheet_w: sheet_w, type_set: type_set, plan: plan }
   end
-  def apply_numbers(nesting, prefix = "", suffix = "", pad_x = false, _2ad1250d = false)
+  def apply_numbers(nesting, prefix = "", suffix = "", pad_x = false, by_row = false)
     sync_ids(nesting)
-    data = number_plan(nesting, prefix, suffix, pad_x, _2ad1250d)
+    data = number_plan(nesting, prefix, suffix, pad_x, by_row)
     return 0 unless data
     plan = data[:plan]
     sheet_w = data[:sheet_w]
@@ -407,12 +407,12 @@ module KSU::Reorder
 end
 KSU::Sheet.extend(KSU::Reorder)
 module KSU::Reorder
-  @_f9ff0de9 = []
-  def self._f9ff0de9
-    @_f9ff0de9
+  @id_cache = []
+  def self.id_cache
+    @id_cache
   end
-  def self._b25875c4(err_code)
-    UI.messagebox "Gỡ kích hoạt thất bại! " + KSU::Back._cd99bb15(err_code)
+  def self.deactivate_error(err_code)
+    UI.messagebox "Gỡ kích hoạt thất bại! " + KSU::Back.activation_error(err_code)
     false
   end
 end

@@ -383,20 +383,20 @@ module KSU::Field
     end
   end
   def draw_switch(view, box2, on, hovered)
-    tx, ty, tw, _a1bf6a3a = box2[:x], box2[:y], box2[:width], box2[:height]
-    half = _a1bf6a3a / 2.0
+    tx, ty, tw, th2 = box2[:x], box2[:y], box2[:width], box2[:height]
+    half = th2 / 2.0
     fill = if on
                     hovered ? palette[:sw_on_hover] : palette[:sw_on]
                   else
                     hovered ? palette[:sw_off_hover] : palette[:sw_off]
                   end
     draw_round_rect(view, box2, half, border: nil, fill: fill)
-    _63378db3 = _a1bf6a3a / 2.0 - 2 * KSU::View.ui_scale
+    rr = th2 / 2.0 - 2 * KSU::View.ui_scale
     flag = on ? tx + tw - half : tx + half
-    _16daa7da = ty + _a1bf6a3a / 2.0
-    _92fb4be7 = KSU::View.circle_pts(flag, _16daa7da, _63378db3, segments: 24)
+    ccy = ty + th2 / 2.0
+    ring_pts = KSU::View.circle_pts(flag, ccy, rr, segments: 24)
     view.drawing_color = Sketchup::Color.new(*palette[:knob])
-    view.draw2d(GL_POLYGON, _92fb4be7)
+    view.draw2d(GL_POLYGON, ring_pts)
   end
   def text_mid_y(view, box2)
     box2[:y] + box2[:height] / 2.0 - cache_text_y(view)
@@ -416,13 +416,13 @@ module KSU::Field
                    Geom::Point3d.new(box2[:x] + size, my, 0),
                    Geom::Point3d.new(box2[:x] + box2[:width] - size, my, 0))
   end
-  def _cbadd90f(num, fmt)
+  def fmt_value(on2, fmt)
     case fmt
     when :mm
-      num2 = num.to_mm.round(2)
+      num2 = on2.to_mm.round(2)
       num2 == num2.to_i ? num2.to_i.to_s : num2.to_s
     else
-      num.is_a?(Integer) ? num.to_s : num.round(2).to_s
+      on2.is_a?(Integer) ? on2.to_s : on2.round(2).to_s
     end
   end
   def cancel_edit
@@ -430,7 +430,7 @@ module KSU::Field
     @open_ix = nil
     @input_buf = nil
     @caret = 0
-    _da1dd91a
+    close_edit
   end
   def sync_label_section
     return unless instance_variable_defined?("@label_section_hidden")
@@ -443,7 +443,7 @@ module KSU::Field
       @view_ref&.invalidate
     end
   end
-  def _da1dd91a
+  def close_edit
     UI.stop_timer(@blink_timer) if @blink_timer
     @blink_timer = nil
     @caret_on = true
@@ -462,11 +462,11 @@ module KSU::Field
         max = arr[4]
         ivar = "@#{key}"
         next unless instance_variable_defined?(ivar)
-        str = instance_variable_get(ivar)
+        on2 = instance_variable_get(ivar)
         if fmt == :select
           opts2 = cond || {}
           next if v_min && !cond_met?(v_min)
-          disp = opts2[str] || str.to_s
+          disp = opts2[on2] || on2.to_s
           items << { type: :select, key: key.to_s, title: title, label: disp,
                      fmt: fmt, options: opts2, group_start: flag }
           flag = false
@@ -474,14 +474,14 @@ module KSU::Field
         end
         next if cond && !cond_met?(cond)
         if fmt == :switch
-          disp = str ? "ON" : "OFF"
+          disp = on2 ? "ON" : "OFF"
           items << { type: :switch, key: key.to_s, title: title, label: disp,
-                     fmt: fmt, on: !!str, group_start: flag }
+                     fmt: fmt, on: !!on2, group_start: flag }
         elsif fmt == :text
-          items << { type: :text, key: key.to_s, title: title, label: str.to_s, fmt: fmt, group_start: flag }
+          items << { type: :text, key: key.to_s, title: title, label: on2.to_s, fmt: fmt, group_start: flag }
         else
-          next unless str.is_a?(Numeric)
-          disp = _cbadd90f(str, fmt)
+          next unless on2.is_a?(Numeric)
+          disp = fmt_value(on2, fmt)
           lock = arr[5].is_a?(String) ? arr[5] : nil
           lock_open = lock ? !!instance_variable_get("@#{lock}") : false
           items << { type: :value, key: key.to_s, title: title, label: disp,

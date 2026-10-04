@@ -256,24 +256,24 @@ module KSU::Lastcut
         i = k
       end
     end
-    _b8f3387b = Array.new(ny) { |j| Array.new(arr[j].length, false) }
+    seen2 = Array.new(ny) { |j| Array.new(arr[j].length, false) }
     arr4 = []
     ny.times do |j|
-      arr[j].each_with_index do |start2, _f777bf99|
-        next if _b8f3387b[j][_f777bf99]
-        _b8f3387b[j][_f777bf99] = true
-        _eac99076 = j
+      arr[j].each_with_index do |start2, ci2|
+        next if seen2[j][ci2]
+        seen2[j][ci2] = true
+        j0 = j
         loop do
-          _79be379e = _eac99076 + 1
-          break if _79be379e >= ny
-          _a95eb156 = arr[_79be379e].index { |half| half == start2 }
-          break unless _a95eb156 && !_b8f3387b[_79be379e][_a95eb156]
-          _b8f3387b[_79be379e][_a95eb156] = true
-          _eac99076 = _79be379e
+          j1 = j0 + 1
+          break if j1 >= ny
+          k2 = arr[j1].index { |half| half == start2 }
+          break unless k2 && !seen2[j1][k2]
+          seen2[j1][k2] = true
+          j0 = j1
         end
         bbox = Geom::BoundingBox.new
         bbox.add(Geom::Point3d.new(arr3[start2[0]], arr2[j], @plane_z))
-        bbox.add(Geom::Point3d.new(arr3[start2[1]], arr2[_eac99076 + 1], @plane_z))
+        bbox.add(Geom::Point3d.new(arr3[start2[1]], arr2[j0 + 1], @plane_z))
         arr4 << bbox
       end
     end
@@ -282,7 +282,7 @@ module KSU::Lastcut
 end
 KSU::Netcatcuoi.include(KSU::Lastcut)
 module KSU::Lastcut
-  def self._af392092(key, default)
+  def self.license_value(key, default)
     data = KSU::Font.read_license
     data.key?(key) ? data[key] : default
   end

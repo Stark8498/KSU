@@ -344,7 +344,7 @@ module KSU::Intem
     end
     out
   end
-  def self.ebs(grp, part_tf, _53962504)
+  def self.ebs(grp, part_tf, eb_spec)
     arr2 = grp.get_attribute("ABF", "edge-band-desc")
     return [] unless arr2.is_a?(Array)
     out = []
@@ -357,26 +357,26 @@ module KSU::Intem
       num = [(p_ref.x * 25.4).round(2), (p_ref.y * 25.4).round(2),
                 (p1.x * 25.4).round(2), (p1.y * 25.4).round(2), arr[6].to_s, joint]
       fields = n >= 11 ? arr[7, 4].map(&:to_s) : nil
-      fields = _6eef93f0(_53962504, arr[6].to_s, fields)
+      fields = merge_band_fields(eb_spec, arr[6].to_s, fields)
       num.concat(fields) if fields
       out << num
     end
     out
   end
-  def self._6eef93f0(arr, name, fields)
-    return fields unless arr.is_a?(Array) && !arr.empty?
+  def self.merge_band_fields(eb_spec, name, fields)
+    return fields unless eb_spec.is_a?(Array) && !eb_spec.empty?
     if fields
-      hit = arr.find { |thick| thick[0] == fields[0] && thick[3] == fields[3] }
+      hit = eb_spec.find { |thick| thick[0] == fields[0] && thick[3] == fields[3] }
     else
-      hit = arr.find do |thick|
-        !thick[0].empty? && name.start_with?(thick[0]) && _a1ae3880(name, thick[3])
+      hit = eb_spec.find do |thick|
+        !thick[0].empty? && name.start_with?(thick[0]) && name_matches?(name, thick[3])
       end
-      hit ||= arr[0] if arr.length == 1 && _a1ae3880(name, arr[0][3])
+      hit ||= eb_spec[0] if eb_spec.length == 1 && name_matches?(name, eb_spec[0][3])
     end
     hit || fields
   end
-  def self._a1ae3880(name, _204e57f4)
-    tail_pt = "#{_204e57f4}mm"
+  def self.name_matches?(name, want2)
+    tail_pt = "#{want2}mm"
     return false unless name.end_with?(tail_pt)
     ch = name[-(tail_pt.length + 1), 1]
     ch.nil? || !(ch =~ /[\d.]/)

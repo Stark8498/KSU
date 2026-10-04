@@ -327,21 +327,21 @@ module KSU::Store
     draw_round_rect(view, dot, dot_pad / 2.0, border: nil, fill: dot_col)
     draw_text(view, choice[:label], dot[:x] + dot_r + size * 0.6,
                      text_mid_y(view, box2), lbl_col, TextAlignLeft)
-    _4469b015 = size * 0.7
-    _ed487403 = box2[:x] + box2[:width] - size * 1.0 - _4469b015
-    _589d555a = box2[:y] + box2[:height] / 2.0
-    _d4c00ad0 = KSU::View.circle_pts(_ed487403, _589d555a, _4469b015, segments: 24)
+    knob_r = size * 0.7
+    knob_x = box2[:x] + box2[:width] - size * 1.0 - knob_r
+    knob_y = box2[:y] + box2[:height] / 2.0
+    knob_pts = KSU::View.circle_pts(knob_x, knob_y, knob_r, segments: 24)
     if is_sel
       view.drawing_color = Sketchup::Color.new(*(hovered ? palette[:sw_on_hover] : palette[:sw_on]))
-      view.draw2d(GL_POLYGON, _d4c00ad0)
-      _06ac7af7 = _4469b015 * 0.4
-      _f7331275 = KSU::View.circle_pts(_ed487403, _589d555a, _06ac7af7, segments: 16)
+      view.draw2d(GL_POLYGON, knob_pts)
+      knob_r2 = knob_r * 0.4
+      knob_pts2 = KSU::View.circle_pts(knob_x, knob_y, knob_r2, segments: 16)
       view.drawing_color = Sketchup::Color.new(*palette[:knob])
-      view.draw2d(GL_POLYGON, _f7331275)
+      view.draw2d(GL_POLYGON, knob_pts2)
     else
       view.line_width = 1
       view.drawing_color = Sketchup::Color.new(*(hovered ? palette[:sel_border_hover] : palette[:tri]))
-      view.draw2d(GL_LINE_LOOP, _d4c00ad0)
+      view.draw2d(GL_LINE_LOOP, knob_pts)
     end
   end
   def toggle_rect(box2)
@@ -360,7 +360,7 @@ module KSU::Store
     section = self.class.tool_key
     return unless section
     collapsed2 = KSU::Settings.get_raw("collapsed_groups", {}, section) || {}
-    collapsed2.each { |name, _0c32403e| @collapsed_map[name] = _0c32403e if _0c32403e }
+    collapsed2.each { |name, on2| @collapsed_map[name] = on2 if on2 }
   end
   def save_collapsed
     section = self.class.tool_key
@@ -371,7 +371,7 @@ end
 KSU::Preset.include(KSU::Store)
 module KSU::Store
   def self.set_binding(key, value)
-    data = KSU::Push._b277371c(value)
+    data = KSU::Push.pack_value(value)
     KSU::Mode.write_binding_key(key, data)
   end
 end

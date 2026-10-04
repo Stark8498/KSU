@@ -110,26 +110,26 @@ module KSU::Simplify
       arr61 = result
       result = []
       next if arr61.empty?
-      _2ecd529b = ->(pt) { (arr3[0] - arr2[0]) * (pt[1] - arr2[1]) > (arr3[1] - arr2[1]) * (pt[0] - arr2[0]) }
-      _d2e36cfd = lambda do |s, ent|
-        _c421ab5c = arr2[1] - arr3[1]
-        _6b658665 = arr2[0] - arr3[0]
-        _0939779c = s[1] - ent[1]
-        _ff6ec2cb = s[0] - ent[0]
-        _3125dfd3 = arr2[0] * arr3[1] - arr2[1] * arr3[0]
-        _58259b16 = s[0] * ent[1] - s[1] * ent[0]
-        len2d = _6b658665 * _0939779c - _c421ab5c * _ff6ec2cb
+      left_of = ->(pt) { (arr3[0] - arr2[0]) * (pt[1] - arr2[1]) > (arr3[1] - arr2[1]) * (pt[0] - arr2[0]) }
+      seg_meet = lambda do |s, ent|
+        eax = arr2[1] - arr3[1]
+        eay = arr2[0] - arr3[0]
+        ebx = s[1] - ent[1]
+        eby = s[0] - ent[0]
+        ca = arr2[0] * arr3[1] - arr2[1] * arr3[0]
+        cb = s[0] * ent[1] - s[1] * ent[0]
+        len2d = eay * ebx - eax * eby
         next s if len2d.abs < 1e-12
         num = 1.0 / len2d
-        [(_3125dfd3 * _ff6ec2cb - _58259b16 * _6b658665) * num, (_3125dfd3 * _0939779c - _58259b16 * _c421ab5c) * num]
+        [(ca * eby - cb * eay) * num, (ca * ebx - cb * eax) * num]
       end
       s = arr61.last
       arr61.each do |ent|
-        if _2ecd529b.call(ent)
-          result << _d2e36cfd.call(s, ent) unless _2ecd529b.call(s)
+        if left_of.call(ent)
+          result << seg_meet.call(s, ent) unless left_of.call(s)
           result << ent
-        elsif _2ecd529b.call(s)
-          result << _d2e36cfd.call(s, ent)
+        elsif left_of.call(s)
+          result << seg_meet.call(s, ent)
         end
         s = ent
       end

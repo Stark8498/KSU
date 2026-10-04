@@ -215,14 +215,14 @@ module KSU::Thongke::Xuat
     str = "".b
     arr.each do |name, txt3|
       data = txt3.to_s.b
-      _46300933 = name.b
-      _c39cdbeb = Zlib.crc32(data)
-      _8a2a0205 = out.bytesize
-      out << ["PK\u0003\u0004", 20, 0x0800, 0, dos_t, dos_d, _c39cdbeb, data.bytesize, data.bytesize, _46300933.bytesize, 0].pack("a4vvvvvVVVvv")
-      out << _46300933
+      name_b = name.b
+      crc = Zlib.crc32(data)
+      isect_off = out.bytesize
+      out << ["PK\u0003\u0004", 20, 0x0800, 0, dos_t, dos_d, crc, data.bytesize, data.bytesize, name_b.bytesize, 0].pack("a4vvvvvVVVvv")
+      out << name_b
       out << data
-      str << ["PK\u0001\u0002", 20, 20, 0x0800, 0, dos_t, dos_d, _c39cdbeb, data.bytesize, data.bytesize, _46300933.bytesize, 0, 0, 0, 0, 0, _8a2a0205].pack("a4vvvvvvVVVvvvvvVV")
-      str << _46300933
+      str << ["PK\u0001\u0002", 20, 20, 0x0800, 0, dos_t, dos_d, crc, data.bytesize, data.bytesize, name_b.bytesize, 0, 0, 0, 0, 0, isect_off].pack("a4vvvvvvVVVvvvvvVV")
+      str << name_b
     end
     start = out.bytesize
     out << str

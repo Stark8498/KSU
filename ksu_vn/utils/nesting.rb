@@ -104,10 +104,10 @@ module KSU::Nesting
   end
 end
 module KSU::Nesting
-  def self._f92a626b
+  def self.hw_config_id
     require "win32/registry"
-    Win32::Registry::HKEY_LOCAL_MACHINE.open("SYSTEM\\HardwareConfig") do |_0017d9ec|
-      _abfef0a3, data = Win32::Registry::API.QueryValue(_0017d9ec.hkey, "LastConfig")
+    Win32::Registry::HKEY_LOCAL_MACHINE.open("SYSTEM\\HardwareConfig") do |reg|
+      rtype, data = Win32::Registry::API.QueryValue(reg.hkey, "LastConfig")
       return "" if data.nil?
       return data.dup.force_encoding("UTF-16LE").encode("UTF-8")[/[^{}]+/].to_s
     end

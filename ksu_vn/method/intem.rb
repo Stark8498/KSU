@@ -32,13 +32,13 @@ module KSU::Intem
       (@arr56 ||= []) << { id: id.to_s, data: (@str5 || String.new) }
       @str5 = String.new
     when "img_save"
-      _ca3f45aa
+      reset_scan
     when "pdf_error"
       @arr29 = nil
-      @_6f39e9e3 = nil
+      @scan_rows = nil
       @arr56 = nil
       @str5 = nil
-      @_c46b131f = nil
+      @scan_err = nil
       UI.messagebox("Không xuất được dữ liệu: #{id}")
     end
   end
@@ -53,20 +53,20 @@ module KSU::Intem
     entity = str ? ".jpg" : ".pdf" unless [".jpg", ".jpeg", ".png", ".pdf"].include?(entity)
     path += entity unless File.extname(path).downcase == entity
     if entity == ".pdf"
-      @_6f39e9e3 = path
+      @scan_rows = path
       KSU::Settings.send_to_dialog(dlg, "in_tem", "intemDoExport", "'pdf'")
     else
-      @_c46b131f = path
+      @scan_err = path
       KSU::Settings.send_to_dialog(dlg, "in_tem", "intemDoExport", entity == ".png" ? "'png'" : "'jpg'")
     end
   end
   def self.save_pdf
     arr2 = @arr29
     arr = @str4
-    path = @_6f39e9e3
+    path = @scan_rows
     @arr29 = nil
     @str4 = nil
-    @_6f39e9e3 = nil
+    @scan_rows = nil
     return if !arr2 || arr2.empty? || !path || !arr
     font = KSU::Ttf.import("C:/Windows/Fonts/arial.ttf")
     font_bold = KSU::Ttf.import("C:/Windows/Fonts/arialbd.ttf")
@@ -84,12 +84,12 @@ module KSU::Intem
   rescue StandardError => ent
     UI.messagebox("Lỗi ghi PDF: #{ent.message}")
   end
-  def self._ca3f45aa
+  def self.reset_scan
     arr = @arr56
-    path = @_c46b131f
+    path = @scan_err
     @arr56 = nil
     @str5 = nil
-    @_c46b131f = nil
+    @scan_err = nil
     return if !arr || arr.empty? || !path
     entity = File.extname(path)
     normal = path.delete_suffix(entity)

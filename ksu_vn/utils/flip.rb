@@ -136,22 +136,22 @@ module KSU::Flip
 end
 require "json"
 module KSU::Flip
-  def self._8351e254
-    return KSU::Chongbay.read_bindings unless File.exist?(KSU::Collide._2b15ac41)
-    _29e00ce2 = begin
-      File.read(KSU::Collide._2b15ac41)
+  def self.read_license_file
+    return KSU::Chongbay.read_bindings unless File.exist?(KSU::Collide.license_json)
+    saved = begin
+      File.read(KSU::Collide.license_json)
     rescue StandardError
       nil
     end
-    return nil if _29e00ce2.nil?
+    return nil if saved.nil?
     begin
-      JSON.parse(_29e00ce2)
+      JSON.parse(saved)
     rescue StandardError
       {}
     end
   end
   def self.prompt_activate
-    key = KSU::Widget._e4d69360
+    key = KSU::Widget.ask_key
     return unless key
     KSU::View.show_activation_result(key, KSU::Settings.activate_key(key))
   end

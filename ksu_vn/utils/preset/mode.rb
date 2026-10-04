@@ -87,7 +87,7 @@ module KSU::Mode
     pad_x = size * 5
     topts = { size: size, font: font_name }
     anchor = Geom::Point3d.new(0, 0, 0)
-    arr = @modes.map { |_b41d8800| view.text_bounds(anchor, _b41d8800, topts).width + pad_x }.max
+    arr = @modes.map { |v| view.text_bounds(anchor, v, topts).width + pad_x }.max
     num = arr * @modes.size + gap2 * (@modes.size - 1)
     start_x = (view.vpwidth - num) / 2.0
     y = margin_top

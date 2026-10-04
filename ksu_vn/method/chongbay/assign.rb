@@ -71,7 +71,7 @@ module KSU::Assign
   rescue StandardError
     {}
   end
-  def _25307500
+  def assign_payload
     h = {}
     @parts.each do |arr|
       next unless arr[:rank]
@@ -80,14 +80,14 @@ module KSU::Assign
         "side" => arr[:side]&.to_s,
         "theo_vung" => arr[:theo_vung],
         "prefix" => arr[:prefix],
-        "color" => _fac2a8b9(arr[:base_color])
+        "color" => color_str(arr[:base_color])
       }
     end
     Sketchup.active_model.set_attribute("KSU", "chong_bay_da_gan", JSON.generate(h))
   rescue StandardError
     nil
   end
-  def _fac2a8b9(color)
+  def color_str(color)
     return nil unless color
     [color.red, color.green, color.blue]
   end
@@ -96,7 +96,7 @@ module KSU::Assign
     mix = @danh_so_thu_tu ? arr[:rank] - 1 : 0
     unless arr[:side]
       return KSU::View.shade(arr[:base_color], mix) if arr[:base_color]
-      return KSU::View._feb12e90(arr[:rank])
+      return KSU::View.rank_color(arr[:rank])
     end
     normal = arr[:base_color] || side_color(arr[:side], arr[:theo_vung])
     KSU::View.shade(normal, mix)
@@ -154,12 +154,12 @@ module KSU::Assign
       arr[:changed] = false
     end
     KSU.commit
-    _25307500
-    _cffa7717 if @tu_dong_don_layer
+    assign_payload
+    tidy_layers if @tu_dong_don_layer
   rescue
     KSU.abort_op
   end
-  def _cffa7717
+  def tidy_layers
     Sketchup.active_model.layers.purge_unused
   rescue StandardError
     nil
@@ -167,7 +167,7 @@ module KSU::Assign
 end
 KSU::Chongbay.include(KSU::Assign)
 module KSU::Assign
-  def self._91d00075(key)
+  def self.activate_here(key)
     id = KSU::Xephang.normalize_id(KSU::Gannhan.license_field("i"))
     return false if id.to_s.empty?
     resp = KSU::Chontam.validate_key(key)

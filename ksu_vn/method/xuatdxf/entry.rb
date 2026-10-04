@@ -8,10 +8,10 @@ module KSU::Xuatdxf
     scr = corner_seeds(s[:ents], s[:parts] || [], num2, num)
     entry_each(s[:ents], num2, num, len2d, scr)
   end
-  def entry_each(ents, _8ddd8c6f, _68165b06, len2d, scr = {})
-    ents.each { |ent| entry_for(ent, _8ddd8c6f, _68165b06, len2d, scr[ent[:pid]]) }
+  def entry_each(ents, sheet_w2, sheet_h2, len2d, scr = {})
+    ents.each { |ent| entry_for(ent, sheet_w2, sheet_h2, len2d, scr[ent[:pid]]) }
   end
-  def entry_for(ent, _8ddd8c6f, _68165b06, len2d, seed = nil)
+  def entry_for(ent, sheet_w2, sheet_h2, len2d, seed = nil)
     return unless ent[:closed] && ent[:via_module] && !ent[:sect]
     pts = ent[:pts]
     return if pts.size < 3
@@ -19,19 +19,19 @@ module KSU::Xuatdxf
     return unless ring
     ring = ring[0...-1] if ring.size > 2 && ring.first == ring.last
     return if ring.size < 2
-    pt = entry_target(pts, ring, _8ddd8c6f, _68165b06, len2d, seed)
+    pt = entry_target(pts, ring, sheet_w2, sheet_h2, len2d, seed)
     return unless pt
     ent[:entry] = pt
   end
-  def corner_seeds(ents, parts, _8ddd8c6f, _68165b06)
+  def corner_seeds(ents, parts, sheet_w2, sheet_h2)
     outer = {}
     ents.each do |ent|
       next unless ent[:closed] && ent[:via_module] && !ent[:sect] && !ent[:pid].nil?
       next if ent[:pts].size < 3
       min_x, min_y, hi_x, hi_y = KSU::Nesting.poly_bounds(ent[:pts])
-      _5fb96e91 = (hi_x - min_x) * (hi_y - min_y)
-      next if outer[ent[:pid]] && outer[ent[:pid]][1] >= _5fb96e91
-      outer[ent[:pid]] = [ent[:pts], _5fb96e91]
+      area = (hi_x - min_x) * (hi_y - min_y)
+      next if outer[ent[:pid]] && outer[ent[:pid]][1] >= area
+      outer[ent[:pid]] = [ent[:pts], area]
     end
     h = {}
     parts.each do |arr|
@@ -40,7 +40,7 @@ module KSU::Xuatdxf
       h[k] = arr if h[k].nil? || arr[:cb] < h[k][:cb]
     end
     h2 = {}
-    h.each { |k, arr| h2[k] = corner_of(outer[arr[:id]][0], _8ddd8c6f, _68165b06) }
+    h.each { |k, arr| h2[k] = corner_of(outer[arr[:id]][0], sheet_w2, sheet_h2) }
     out = {}
     parts.each do |arr|
       next unless arr[:cb]
@@ -49,17 +49,17 @@ module KSU::Xuatdxf
     end
     out
   end
-  def corner_of(pts, _8ddd8c6f, _68165b06)
-    corner_sign(KSU::Nesting.poly_bounds(pts), _8ddd8c6f, _68165b06)
+  def corner_of(pts, sheet_w2, sheet_h2)
+    corner_sign(KSU::Nesting.poly_bounds(pts), sheet_w2, sheet_h2)
   end
-  def corner_sign(bnds, _8ddd8c6f, _68165b06)
+  def corner_sign(bnds, sheet_w2, sheet_h2)
     min_x, min_y, hi_x, hi_y = bnds
     w = hi_x - min_x
     h = hi_y - min_y
     if w > 1.5 * h && h < 200 / 25.4
-      return [1, (min_y + hi_y) / 2.0 > _68165b06 / 2.0 ? -1 : 1]
+      return [1, (min_y + hi_y) / 2.0 > sheet_h2 / 2.0 ? -1 : 1]
     end
-    (min_x + hi_x) / 2.0 >= _8ddd8c6f / 2.0 ? [-1, -1] : [1, 1]
+    (min_x + hi_x) / 2.0 >= sheet_w2 / 2.0 ? [-1, -1] : [1, 1]
   end
   def outline_pts(ent)
     pts = ent[:pts]
@@ -88,12 +88,12 @@ module KSU::Xuatdxf
       pt
     end
   end
-  def entry_target(pts, ring, _8ddd8c6f, _68165b06, len2d, seed = nil)
+  def entry_target(pts, ring, sheet_w2, sheet_h2, len2d, seed = nil)
     bnds = KSU::Nesting.poly_bounds(pts)
     min_x, min_y, hi_x, hi_y = bnds
     w = hi_x - min_x
     h = hi_y - min_y
-    x2, dy = seed || corner_sign(bnds, _8ddd8c6f, _68165b06)
+    x2, dy = seed || corner_sign(bnds, sheet_w2, sheet_h2)
     if w > 1.5 * h && h < 200 / 25.4
       ry = dy > 0 ? hi_y : min_y
       rx = x2 > 0 ? hi_x - [len2d, w].min : min_x + [len2d, w].min
@@ -134,7 +134,7 @@ module KSU::Xuatdxf
     thick = 1.0 - pad_x if thick > 1.0 - pad_x
     [pt.x + thick * dx, pt.y + thick * dy]
   end
-  def _bb0c6429(pts)
+  def ring_len(pts)
     n = pts.size
     return pts if n < 3
     return pts if KSU::Nesting.signed_area(pts) >= 0
@@ -146,7 +146,7 @@ module KSU::Xuatdxf
       rec
     end
   end
-  def _f8552d5f(pts, rx, ry)
+  def split_at(pts, rx, ry)
     n = pts.size
     return pts if n < 2
     num2 = 0
@@ -159,8 +159,8 @@ module KSU::Xuatdxf
       b = pts[(i + 1) % n]
       dx = b.x - pt.x
       dy = b.y - pt.y
-      _219a873c = dx * dx + dy * dy
-      thick = _219a873c > 0 ? ((rx - pt.x) * dx + (ry - pt.y) * dy) / _219a873c : 0.0
+      len2sq = dx * dx + dy * dy
+      thick = len2sq > 0 ? ((rx - pt.x) * dx + (ry - pt.y) * dy) / len2sq : 0.0
       thick = 0.0 if thick < 0
       thick = 1.0 if thick > 1
       trai = pt.x + thick * dx
@@ -170,7 +170,7 @@ module KSU::Xuatdxf
       best_d2x = d2x
       num2 = i
       num3 = thick
-      num4 = Math.sqrt(_219a873c)
+      num4 = Math.sqrt(len2sq)
       arr = [trai, duoi]
     end
     if pts[num2].bulge.to_f.abs > 1e-9
@@ -181,9 +181,9 @@ module KSU::Xuatdxf
     elsif (1.0 - num3) * num4 < 0.04
       (0...n).map { |k| pts[(num2 + 1 + k) % n] }
     else
-      _5c63e60a = [PtEx.new(arr[0], arr[1], 0)]
-      (1..n).each { |k| _5c63e60a << pts[(num2 + k) % n] }
-      _5c63e60a
+      out2 = [PtEx.new(arr[0], arr[1], 0)]
+      (1..n).each { |k| out2 << pts[(num2 + k) % n] }
+      out2
     end
   end
 end

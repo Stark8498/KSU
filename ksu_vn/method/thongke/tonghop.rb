@@ -18,8 +18,8 @@ module KSU::Thongke::Tonghop
         acc[key][:quantity] += v
       end
     end
-    arr2 = acc.values.each { |fld| fld[:quantity] = KSU::Thongke.round_len(fld[:quantity]) }
-    arr2.sort_by { |fld| [fld[:name].to_s, fld[:material].to_s, fld[:board_thickness].to_f] }
+    seen3 = acc.values.each { |fld| fld[:quantity] = KSU::Thongke.round_len(fld[:quantity]) }
+    seen3.sort_by { |fld| [fld[:name].to_s, fld[:material].to_s, fld[:board_thickness].to_f] }
   end
   def self.list_sheet(scope)
     h = {}
@@ -33,10 +33,10 @@ module KSU::Thongke::Tonghop
       h[sheet_type] = (h[sheet_type] || 0) + 1
       min_sheet_id[sheet_type] = [(min_sheet_id[sheet_type] || 9999), sheet_id].min
     end
-    arr = h.map { |k, v|
+    seen3 = h.map { |k, v|
       { thickness: thickness.fetch(k, k), name: k, quantity: v, min_sheet_id: min_sheet_id[k] }
     }
-    arr.sort_by { |fld| fld[:min_sheet_id].to_i }
+    seen3.sort_by { |fld| fld[:min_sheet_id].to_i }
   end
   def self.part_data(arr2)
     arr2 = arr2.sort_by { |rec| [rec[:sheet].to_i, rec[:material].to_s, rec[:name].to_s] }
@@ -78,21 +78,21 @@ module KSU::Thongke::Tonghop
     }
     data.merge(part_data: grp.merge(rows: rows))
   end
-  def self._984ac2f3
-    _9535dc0b = KSU::Thongke::Quet.selected_roots
-    scope = _9535dc0b.empty? ? KSU::Thongke::Quet.all_roots : _9535dc0b
+  def self.summary_rows
+    roots = KSU::Thongke::Quet.selected_roots
+    scope = roots.empty? ? KSU::Thongke::Quet.all_roots : roots
     KSU::Thongke::Phukien.make_unique_all(scope)
-    _d0ed3d7d = KSU::Thongke::Quet.list_boards(scope)
+    boards = KSU::Thongke::Quet.list_boards(scope)
     list_connector = KSU::Thongke::Phukien.list_minifix(scope) + KSU::Thongke::Phukien.list_hinge(scope)
     {
       sum_data: {
         list_connector: list_connector,
         list_intersect: KSU::Thongke::Phukien.list_intersect(scope),
         list_statistical_object: KSU::Thongke::Phukien.list_statistical(scope),
-        list_edgeband: list_edgeband(_d0ed3d7d),
+        list_edgeband: list_edgeband(boards),
         list_sheet: list_sheet(scope),
       },
-      part_data: part_data(_d0ed3d7d),
+      part_data: part_data(boards),
     }
   end
 end

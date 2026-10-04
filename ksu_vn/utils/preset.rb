@@ -110,7 +110,7 @@ module KSU::Preset
       super if defined?(super)
     end
     def deactivate(view)
-      _da1dd91a
+      close_edit
       super if defined?(super)
     end
     def onUserText(text, view)
@@ -143,8 +143,8 @@ module KSU::Preset
         if @input_buf && !@input_buf.empty?
           disp = @input_buf
         else
-          _0c32403e = instance_variable_get("@#{fld[:key]}")
-          disp = _cbadd90f(_0c32403e, fld[:fmt])
+          on2 = instance_variable_get("@#{fld[:key]}")
+          disp = fmt_value(on2, fld[:fmt])
         end
         KSU.set_vcb(fld[:title], disp)
         return

@@ -24,8 +24,8 @@ module KSU::Collect
   def collect_tick
     total = @boards.length
     return collect_done if @done_n >= total
-    _b32f69ac = Time.now
-    while @done_n < total && Time.now - _b32f69ac < 0.05
+    t_slice = Time.now
+    while @done_n < total && Time.now - t_slice < 0.05
       g = @boards[@done_n]
       @done_n += 1
       next unless g && g.valid?
@@ -99,12 +99,12 @@ module KSU::Collect
   def gather_boards(ents, out, seen)
     ents.each do |ent|
       next unless KSU.container?(ent) && ent.valid?
-      next if _2409a439(ent)
+      next if hidden_by_layer?(ent)
       next if seen[ent.entityID]
       seen[ent.entityID] = true
       next if ent.get_attribute("ABF", "is-flatten") || ent.get_attribute("ABF", "is-flatten-root") ||
               ent.get_attribute("ABF", "is-nesting-root")
-      flag = ent.is_a?(Sketchup::Group) || _a1ffed00(ent)
+      flag = ent.is_a?(Sketchup::Group) || board_like?(ent)
       if flag && KSU::Cutting.board_faces(ent, KSU::Cutting.tf_of(ent))
         out << ent
       else
@@ -113,13 +113,13 @@ module KSU::Collect
       end
     end
   end
-  def _2409a439(ent)
+  def hidden_by_layer?(ent)
     return true if ent.hidden?
-    _2cb52d46 = ent.layer
-    return false unless _2cb52d46
-    return true unless _2cb52d46.visible?
-    if _2cb52d46.respond_to?(:folder)
-      f = _2cb52d46.folder
+    layer = ent.layer
+    return false unless layer
+    return true unless layer.visible?
+    if layer.respond_to?(:folder)
+      f = layer.folder
       while f
         return true unless f.visible?
         f = f.folder
@@ -127,33 +127,33 @@ module KSU::Collect
     end
     false
   end
-  def _a1ffed00(ent)
+  def board_like?(ent)
     return true if ent.get_attribute("ABF", "is-board") || ent.get_attribute("ABF", "board-index")
     !!KSU::Cutting.kids_with_attr(ent, "is-label")
   end
-  def part_of(g, cfg, _c348cdef)
+  def part_of(g, cfg, seen2)
     tf = KSU::Cutting.tf_of(g)
     b2 = KSU::Cutting.board_faces(g, tf)
-    return [nil, _c348cdef] unless b2
+    return [nil, seen2] unless b2
     thickness_mm = thickness_of(b2, tf)
-    return [:skip, _c348cdef] if thickness_mm < 1.0 || thickness_mm > 50.0
+    return [:skip, seen2] if thickness_mm < 1.0 || thickness_mm > 50.0
     face = KSU::Cutting.front_face(g, b2)
     mat = material_of(g, face)
-    return [:skip, _c348cdef] if cfg[:materials] && !cfg[:materials]["#{mat}#{thickness_mm}"]
+    return [:skip, seen2] if cfg[:materials] && !cfg[:materials]["#{mat}#{thickness_mm}"]
     out = face.normal.transform(tf).axes
     tf_axes = Geom::Transformation.axes(ORIGIN, out[0], out[1], out[2]).inverse
     arr4 = KSU::Cutting.kids_with_attr(g, "is-label")
-    return [:skip, _c348cdef] unless arr4
+    return [:skip, seen2] unless arr4
     vec = arr4[0].transformation.xaxis.transform(tf_axes * tf)
     tr2 = Geom::Transformation.rotation(ORIGIN, Z_AXIS, vec_angle(vec, Y_AXIS.reverse))
     max_eb = KSU::Cutting.edgeband_spec(g, thickness_mm)
     anchor = (tr2 * tf_axes * tf).origin
     tr3 = Geom::Transformation.translation([-anchor.x, -anchor.y, -anchor.z])
-    _984e016d = tr3 * tr2 * tf_axes * tf
+    world_tf2 = tr3 * tr2 * tf_axes * tf
     small_size = KSU::Cutting.short_side(face, tf)
     arr3 = KSU::Cutting.arrow_sizes(small_size)
-    rec = KSU::Cutting.cut_loops(g, face, _984e016d, max_eb[0], arr3[0], arr3[1])
-    return [nil, _c348cdef] if rec[:loops].empty?
+    rec = KSU::Cutting.cut_loops(g, face, world_tf2, max_eb[0], arr3[0], arr3[1])
+    return [nil, seen2] if rec[:loops].empty?
     bnds = rec[:loops].map do |arr|
       KSU::Simplify.simplify_poly(arr[:pts].map { |pt| [pt.x.to_f, pt.y.to_f] }, arr[:outer])
     end
@@ -167,13 +167,13 @@ module KSU::Collect
         ly = pt[1] if ly.nil? || pt[1] < ly
       end
     end
-    return [nil, _c348cdef] unless lx
-    ax = _c348cdef - flag
+    return [nil, seen2] unless lx
+    ax = seen2 - flag
     ay = -ly
-    _c348cdef -= (flag - lx + 1)
+    seen2 -= (flag - lx + 1)
     tr = Geom::Transformation.translation([ax, ay, 0])
     part_tf = tr3 * tr * tr2 * tf_axes * tf
-    found = KSU::Cutting.side_drills(g, face, _984e016d)
+    found = KSU::Cutting.side_drills(g, face, world_tf2)
     found[1].each do |len2d|
       if len2d[:depth] > 0 && len2d[:poly]
         len2d[:poly].map! { |pt| pt.transform(tr) }
@@ -197,7 +197,7 @@ module KSU::Collect
       thickness_mm: thickness_mm,
       rotatable: rotatable(g, cfg, mat, thickness_mm)
     }
-    [grp, _c348cdef]
+    [grp, seen2]
   end
   def rotatable(g, cfg, mat, thickness_mm)
     rotate_cfg = cfg[:rotate_cfg]
@@ -205,12 +205,12 @@ module KSU::Collect
     color = rotate_cfg["#{mat}#{thickness_mm}"]
     return false unless color
     return true if color[:on]
-    arr2 = _099ecc27(color[:kw])
+    arr2 = split_keywords(color[:kw])
     return false if arr2.empty?
     name = g.name.to_s.downcase
-    arr2.any? { |_0cc812ea| name.include?(_0cc812ea) }
+    arr2.any? { |kw| name.include?(kw) }
   end
-  def _099ecc27(stream)
+  def split_keywords(stream)
     stream.to_s.split(/[,\n]/).map { |s| s.strip.downcase }.reject(&:empty?)
   end
   def vec_angle(vec, b)

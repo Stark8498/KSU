@@ -28,7 +28,7 @@ class KSU::Xephang
     @xoa_nhan_mat_sau = !!get("xoa_nhan_mat_sau", true)
     @presets = get("presets", nil)
     @nesting = KSU::Nesting.find_nesting(notify: false)
-    @groups = _38252db1
+    @groups = group_rows
   end
   def activate
     KSU::Danhsovan.check_license
@@ -88,8 +88,8 @@ class KSU::Xephang
     @hien_so_van = !!s["hien_so_van"] if s.key?("hien_so_van")
     @cho_phep_xuong_dong = !!s["cho_phep_xuong_dong"] if s.key?("cho_phep_xuong_dong")
     @xoa_nhan_mat_sau = !!s["xoa_nhan_mat_sau"] if s.key?("xoa_nhan_mat_sau")
-    _31ee1298
-    @groups = _38252db1
+    redraw_rows
+    @groups = group_rows
   end
   def draw(view)
     if @groups && @groups.any?
@@ -106,7 +106,7 @@ class KSU::Xephang
   end
   def onLButtonDown(kflags, x, y, view)
     if click_field(x, y, view)
-      @groups = _38252db1
+      @groups = group_rows
       view.invalidate
       return
     end
@@ -114,7 +114,7 @@ class KSU::Xephang
   end
   def commit_field_input(view)
     answer = super
-    @groups = _38252db1
+    @groups = group_rows
     view.invalidate
     answer
   end
@@ -132,7 +132,7 @@ class KSU::Xephang
     true
   end
   private
-  def _38252db1
+  def group_rows
     groups = []
     return groups unless @nesting && @nesting.valid?
     return groups unless @gioi_han_do_dai_hang
@@ -156,8 +156,8 @@ class KSU::Xephang
     materials.each do |normal|
       arr2 = h[normal].each_slice(per_row).to_a
       next if arr2.size <= 1
-      arr2.each_with_index do |arr4, _14ea4fab|
-        name = "#{normal}-#{suffix}#{_14ea4fab + 1}"
+      arr2.each_with_index do |arr4, ri|
+        name = "#{normal}-#{suffix}#{ri + 1}"
         segments = {}
         arr3 = []
         arr4.each do |id|
@@ -175,14 +175,14 @@ class KSU::Xephang
             box.add(bbox) if bbox
           end
           next if box.empty?
-          _2ea74b89 = KSU::View.bbox_top(box)
-          groups << { corners: KSU::View.expand_corners(_2ea74b89), label: name, center: KSU::View.center_of(_2ea74b89) }
+          top4 = KSU::View.bbox_top(box)
+          groups << { corners: KSU::View.expand_corners(top4), label: name, center: KSU::View.center_of(top4) }
         end
       end
     end
     groups
   end
-  def _31ee1298
+  def redraw_rows
     set("gioi_han_do_dai_hang", @gioi_han_do_dai_hang)
     set("so_van_moi_hang", @so_van_moi_hang)
     set("hau_to_phan_manh", @hau_to_phan_manh)

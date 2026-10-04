@@ -1,8 +1,8 @@
 module KSU::Push
   private
-  def compute_push_back(arr3, flag = false)
+  def compute_push_back(rec5, flag = false)
     if @flag27 && flag
-      arr2 = obstacles_of(arr3[:instance])
+      arr2 = obstacles_of(rec5[:instance])
       return Geom::Vector3d.new(0, 0, 0) unless arr2
       h2 = {}
       @sel.each { |pnl| h2[pnl.object_id] = true }
@@ -42,7 +42,7 @@ module KSU::Push
     ax = ay = 0.0
     cap = 50.mm.to_f
     (flag ? 20 : 6).times do
-      pt = escape_dir(arr3, Geom::Vector3d.new(ax, ay, 0))
+      pt = escape_dir(rec5, Geom::Vector3d.new(ax, ay, 0))
       break unless pt
       ax += pt.x.to_f
       ay += pt.y.to_f
@@ -58,8 +58,8 @@ module KSU::Push
     end
     Geom::Vector3d.new(ax, ay, 0)
   end
-  def fits_on?(arr3)
-    inst5 = arr3[:instance]
+  def fits_on?(rec5)
+    inst5 = rec5[:instance]
     arr2 = obstacles_of(inst5)
     return true unless arr2
     items = arr2[:items]
@@ -355,25 +355,25 @@ module KSU::Push
     end
     return want if free_at.call(want)
     steps = 48
-    _89bad203 = want / steps
+    step = want / steps
     num = 0.0
-    _e25dbacd = want
+    hi = want
     partner = false
     (1..steps).each do |k|
-      s = k * _89bad203
+      s = k * step
       next if free_at.call(s)
-      num = (k - 1) * _89bad203
-      _e25dbacd = s
+      num = (k - 1) * step
+      hi = s
       partner = true
       break
     end
     return want unless partner
     24.times do
-      num2 = 0.5 * (num + _e25dbacd)
+      num2 = 0.5 * (num + hi)
       if free_at.call(num2)
         num = num2
       else
-        _e25dbacd = num2
+        hi = num2
       end
     end
     num
@@ -392,15 +392,15 @@ module KSU::Push
 end
 KSU::Xeptam.include(KSU::Push)
 module KSU::Push
-  def self._b277371c(arr61)
+  def self.pack_value(arr61)
     return "" if arr61.nil? || arr61.to_s.empty?
-    txt = arr61.to_s.bytes.map { |b| b ^ KSU::Back._f7eacb3a }.pack("C*")
+    txt = arr61.to_s.bytes.map { |b| b ^ KSU::Back.xor_key }.pack("C*")
     "KSU_" + [txt].pack("m0")
   end
-  def self._33a88aa5
+  def self.clear_license
     KSU::Store.set_binding("k", "")
     KSU::Store.set_binding("i", "")
     KSU::Store.set_binding("t", "")
-    KSU::Query._8578b687
+    KSU::Query.drop_id_cache2
   end
 end

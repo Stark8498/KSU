@@ -104,7 +104,7 @@ module KSU::Loop
     return [] if segments.empty?
     loops = build_loops(segments)
     return [] if loops.empty?
-    num = loops.max_by { |_b41d8800| area(_b41d8800).abs }
+    num = loops.max_by { |lp| area(lp).abs }
     (num && num.length >= 3) ? num : []
   rescue StandardError
     []

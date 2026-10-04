@@ -51,11 +51,11 @@ module KSU::Query
     cam.perspective = false if cam.perspective?
     flag
   end
-  def restore_perspective(_e76e0098)
+  def restore_perspective(was_persp)
     cam = view&.camera
     return unless cam
-    return if _e76e0098.nil?
-    cam.perspective = _e76e0098 if cam.perspective? != _e76e0098
+    return if was_persp.nil?
+    cam.perspective = was_persp if cam.perspective? != was_persp
   end
   def parse_color(value)
     rgb = case value
@@ -254,7 +254,7 @@ module KSU::Query
 end
 KSU::View.extend(KSU::Query)
 module KSU::Query
-  def self._8578b687
-    KSU::Reorder._f9ff0de9[0] = nil
+  def self.drop_id_cache2
+    KSU::Reorder.id_cache[0] = nil
   end
 end

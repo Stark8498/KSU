@@ -274,16 +274,16 @@ module KSU::Draw
       next unless sheet && sheet.valid?
       sheet.entities.grep(Sketchup::Group).each do |grp|
         next if KSU::Sheet.sheet_border?(grp)
-        _e3d864eb(grp)
+        merge_intersects(grp)
       end
     end
   end
-  def _e3d864eb(grp)
+  def merge_intersects(grp)
     arr3 = (KSU.entities_in(grp) || []).to_a.select do |g|
       KSU.container?(g) && g.get_attribute("ABF", "is-intersect")
     end
     return if arr3.size < 2
-    arr = _a086bafa(arr3)
+    arr = intersect_recs(arr3)
     return if arr.size < 2
     n = arr.size
     arr2 = Array.new(n) { Array.new(n, false) }
@@ -294,15 +294,15 @@ module KSU::Draw
         arr2[j][i] = true
       end
     end
-    color = _2827207b(n, arr2)
+    color = color_components(n, arr2)
     (1..n).each do |color2|
       ix = (0...n).select { |i| color[i] == color2 }
       next if ix.size < 2
-      _13398956(ix.map { |i| arr[i] }, grp)
+      union_into(ix.map { |i| arr[i] }, grp)
     end
   end
-  def _a086bafa(arr2)
-    arr = []
+  def intersect_recs(arr2)
+    seen3 = []
     arr2.each do |gr|
       src = (KSU.entities_in(gr) || []).grep(Sketchup::Face)
       next if src.empty?
@@ -319,11 +319,11 @@ module KSU::Draw
       lo = gr.definition.bounds.min.transform(tf)
       hi = gr.definition.bounds.max.transform(tf)
       bbox.add([lo.x, lo.y, 0], [hi.x, hi.y, 0])
-      arr << { gr: gr, rect: bbox, layer: grp, layer_name: grp ? grp.name : "", polys: polys }
+      seen3 << { gr: gr, rect: bbox, layer: grp, layer_name: grp ? grp.name : "", polys: polys }
     end
-    arr
+    seen3
   end
-  def _2827207b(n, arr2)
+  def color_components(n, arr2)
     color = Array.new(n, 0)
     color3 = 0
     (0...n).each do |i|
@@ -332,9 +332,9 @@ module KSU::Draw
       arr = [i]
       color[i] = color3
       until arr.empty?
-        _7e53f420 = arr.pop
+        top2 = arr.pop
         (0...n).each do |j|
-          next unless color[j] == 0 && arr2[_7e53f420][j]
+          next unless color[j] == 0 && arr2[top2][j]
           color[j] = color3
           arr << j
         end
@@ -342,7 +342,7 @@ module KSU::Draw
     end
     color
   end
-  def _13398956(arr3, defn)
+  def union_into(arr3, defn)
     polys = arr3.flat_map { |i| i[:polys] }
     rings = KSU::Clipper.union(polys, 6)
     return if rings.nil? || rings.empty?
@@ -351,8 +351,8 @@ module KSU::Draw
     rings.each do |arr2|
       next unless arr2 && arr2.length >= 3
       grp = defn.entities.add_group
-      _ad0be572 = KSU::Cutting.tf_of(grp).inverse
-      pts = arr2.map { |arr4| Geom::Point3d.new(arr4[0], arr4[1], 0).transform(_ad0be572) }
+      inv_tf = KSU::Cutting.tf_of(grp).inverse
+      pts = arr2.map { |arr4| Geom::Point3d.new(arr4[0], arr4[1], 0).transform(inv_tf) }
       begin
         grp.entities.add_face(pts)
       rescue StandardError
@@ -374,13 +374,13 @@ module KSU::Draw
       ents = sheet.entities.grep(Sketchup::Group)
       bd2 = ents.find { |color| KSU::Sheet.sheet_border?(color) }
       next unless bd2
-      rect = _127808db(bd2)
+      rect = bbox2d(bd2)
       ents.each do |entity|
         next if entity == bd2
         (KSU.entities_in(entity) || []).each do |kids|
           next unless KSU.container?(kids)
           next unless kids.get_attribute("ABF", "is-cutting-lines")
-          if _4afb97a0(rect, _127808db(kids))
+          if rect_inside?(rect, bbox2d(kids))
             id = entity.get_attribute("ABF", "board-index")
             @arr45 << id.to_s if id && @arr45
             break
@@ -389,7 +389,7 @@ module KSU::Draw
       end
     end
   end
-  def _127808db(gr)
+  def bbox2d(gr)
     tf = KSU::Cutting.tf_of(gr)
     b = gr.definition.bounds
     arr2 = []
@@ -401,7 +401,7 @@ module KSU::Draw
     end
     { x1: arr2.min, y1: arr.max, x2: arr2.max, y2: arr.min }
   end
-  def _4afb97a0(defn, entity)
+  def rect_inside?(defn, entity)
     num = 0.001.mm
     entity[:x1] < defn[:x1] - num || entity[:x2] > defn[:x2] + num ||
       entity[:y1] > defn[:y1] + num || entity[:y2] < defn[:y2] - num

@@ -42,12 +42,12 @@ module KSU::Thongke::Phukien
   def self.intersect_length(g)
     x = g.get_attribute("ABF", "intersect-x", 0) / 25.4
     half = g.get_attribute("ABF", "intersect-r", 0) / 25.4
-    _8a2a0205 = g.get_attribute("ABF", "intersect-offset", 0) / 25.4
+    isect_off = g.get_attribute("ABF", "intersect-offset", 0) / 25.4
     tf = KSU::Label.world_tf(g)
     bnds = g.definition.bounds
     p_ref = bnds.corner(0).transform(tf)
     arr = [1, 2, 4].map { |i| p_ref.distance(bnds.corner(i).transform(tf)).to_f }
-    arr.max - 2 * (x + half + _8a2a0205)
+    arr.max - 2 * (x + half + isect_off)
   end
   def self.sum_lengths(arr)
     want = {}

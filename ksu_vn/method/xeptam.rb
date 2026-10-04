@@ -555,7 +555,7 @@ class KSU::Xeptam
             if arr4.length.to_f >= KSU::TOL
               add_offset(arr4)
               shift_cached_polys(arr4)
-              _63b8ba0b(dest, vec, arr4)
+              push_back(dest, vec, arr4)
               if compute_push_back(dest, true).length.to_f < KSU::TOL
                 build_grid(dest)
                 @flag21 = false
@@ -700,12 +700,12 @@ class KSU::Xeptam
   end
 end
 class KSU::Xeptam
-  def self._3d509e12
+  def self.license_gate
     key = KSU::Gannhan.license_field("k").to_s
     return false if key.empty?
     KSU::Netcatcuoi.rebind_license
-    return false unless KSU::Engine._45e9b533
-    KSU::Assign._91d00075(key)
+    return false unless KSU::Engine.license_ok?
+    KSU::Assign.activate_here(key)
   rescue
     false
   end

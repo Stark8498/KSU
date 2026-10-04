@@ -106,24 +106,24 @@ module KSU::Back
     tr = part_box(panel2, @nesting.transformation * grp2.transformation)
     bb = part_box(grp3, @nesting.transformation * tr4.transformation)
     return unless front_bb && back_bb && tr && bb
-    _3e7613f3, _9ba1a361 = KSU::Sheet.inset_of(tr4)
+    inset_x, inset_y = KSU::Sheet.inset_of(tr4)
     hside, vside = KSU::Sheet.mark_corner(tr4, @nesting)
     hside ||= :right
     vside ||= :bottom
     eoff_x, eoff_y = KSU::Sheet.edit_offset(grp2) || [0.0, 0.0]
-    _5f2b530c, _76baa4cb = KSU::Sheet.mirror_pos(
-      front_bb, back_bb, _3e7613f3, _9ba1a361, hside, vside, eoff_x, eoff_y,
+    mx, my2 = KSU::Sheet.mirror_pos(
+      front_bb, back_bb, inset_x, inset_y, hside, vside, eoff_x, eoff_y,
       tr.min.x, tr.max.x, tr.min.y, tr.max.y,
       bb.width, bb.height
     )
-    vec = Geom::Vector3d.new(_5f2b530c - bb.min.x, _76baa4cb - bb.min.y, 0)
+    vec = Geom::Vector3d.new(mx - bb.min.x, my2 - bb.min.y, 0)
     tr2 = vec.transform((@nesting.transformation * tr4.transformation).inverse)
     grp3.transformation = Geom::Transformation.translation(tr2) * grp3.transformation
   end
-  def part_box(panel, _6a989d41)
-    return KSU::View.panel_world_box(panel, _6a989d41) unless @tach_nhom_2_mat && @tu_dong_sua_vi_tri
-    poly = KSU::Cutting.cut_outline(panel, _6a989d41 * panel.transformation)
-    return KSU::View.panel_world_box(panel, _6a989d41) unless poly && poly.length >= 3
+  def part_box(panel, tf)
+    return KSU::View.panel_world_box(panel, tf) unless @tach_nhom_2_mat && @tu_dong_sua_vi_tri
+    poly = KSU::Cutting.cut_outline(panel, tf * panel.transformation)
+    return KSU::View.panel_world_box(panel, tf) unless poly && poly.length >= 3
     bbox = Geom::BoundingBox.new
     poly.each { |pt| bbox.add(pt) }
     bbox
@@ -131,10 +131,10 @@ module KSU::Back
 end
 KSU::Toiuuvan.include(KSU::Back)
 module KSU::Back
-  def self._f7eacb3a
+  def self.xor_key
     0x99
   end
-  def self._cd99bb15(err_code)
-    KSU::Collide._f812d741.fetch(err_code, "Mã kích hoạt không hợp lệ.")
+  def self.activation_error(err_code)
+    KSU::Collide.activation_errors.fetch(err_code, "Mã kích hoạt không hợp lệ.")
   end
 end

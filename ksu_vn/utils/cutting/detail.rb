@@ -337,10 +337,10 @@ module KSU::Detail
     end
   end
   def depth(value, digits, factor)
-    num = value.to_f * factor
-    num = num.round(digits)
-    return num unless (num % 1) == 0
-    num.to_i
+    seen3 = value.to_f * factor
+    seen3 = seen3.round(digits)
+    return seen3 unless (seen3 % 1) == 0
+    seen3.to_i
   end
   def d(value)
     depth(value, 2, 25.4)
@@ -366,9 +366,9 @@ module KSU::Detail
     far_pt = lp.vertices[num / 2].position.transform(tf)
     len2d = pt.distance(far_pt)
     r = len2d / 2
-    arr = { d: d(len2d), depth: depth(num2, 1, 1), edge: -1 }
+    seen3 = { d: d(len2d), depth: depth(num2, 1, 1), edge: -1 }
     p_ref = Geom::Point3d.new((pt[0] + far_pt[0]) / 2, (pt[1] + far_pt[1]) / 2, (pt[2] + far_pt[2]) / 2)
-    arr[:pos] = p_ref
+    seen3[:pos] = p_ref
     depth_len = num2.mm
     pt3 = lp.vertices[num / 4].position.transform(tf)
     pt4 = lp.vertices[num * 3 / 4].position.transform(tf)
@@ -378,18 +378,18 @@ module KSU::Detail
       vec = f[1].reverse
       break
     end
-    return arr unless vec.valid?
+    return seen3 unless vec.valid?
     vec2 = vec.cross(Z_AXIS)
-    return arr unless vec2.valid?
+    return seen3 unless vec2.valid?
     p1 = p_ref.offset(vec2, -r)
     p2 = p1.offset(vec, depth_len)
     p3 = p2.offset(vec2, len2d)
     p4 = p_ref.offset(vec2, r)
-    arr[:poly] = [p1, p2, p3, p4]
+    seen3[:poly] = [p1, p2, p3, p4]
     ent = edge_index(vec.reverse)
-    return arr unless num2 > 0 && ent
-    arr[:edge] = ent
-    arr
+    return seen3 unless num2 > 0 && ent
+    seen3[:edge] = ent
+    seen3
   end
   def side_drills(gr, up_face, tf)
     bnds = edge_bounds(up_face.outer_loop.vertices, tf)

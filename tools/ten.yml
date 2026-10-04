@@ -539,7 +539,6 @@ ten:
   _2c4a47df: pt_key           # toa do lam tron thanh khoa gop
   _52cf7ee0: make_unique_all  # tach cac definition dung chung truoc khi dem
   _702c1707: intersect_length # dai thuc cua thanh giao, tru hai dau
-  _8a2a0205: off
   _8e279a49: sum_lengths      # gop theo ten, cong tong dai va dem theo tung dai
   _669c75c3: list_intersect
   _b4768d27: list_minifix
@@ -2079,8 +2078,6 @@ ten:
     ksu_vn/method/themtam.rb: anchor
   _9d8da98b:
     ksu_vn/method/themtam.rb: pz
-  _8d05dd56:
-    ksu_vn/method/themtam.rb: arm
   _1dc6660d:
     ksu_vn/method/themtam.rb: layer
 
@@ -2136,8 +2133,6 @@ ten:
     "ksu_vn/utils/view/query.rb#_bbaa2919": out_d
   _3c01cc7b:
     "ksu_vn/utils/view/query.rb#_bbaa2919": in_d
-  _2ea74b89:
-    "ksu_vn/utils/view/query.rb#_bbaa2919": quad
 
   # ----- ME 58: method/chontam.rb -- cong cu chon tam -----
   # Ba trang thai chuot chay song song: ro tam, ro nhan, va keo khung chon.
@@ -2218,8 +2213,6 @@ ten:
   # trong ca cay (178 lan) va moi noi mot nghia; o day luon la mot ban ghi tam.
   _c723bcc4:
     ksu_vn/method/chongbay.rb: plan
-  _d41bb15d:
-    ksu_vn/method/chongbay.rb: pt
   _b1c23df1:
     ksu_vn/method/chongbay.rb: prev_hover
   _10b8f37f:
@@ -2398,8 +2391,6 @@ ten:
     ksu_vn/utils/label.rb: xq
   _972803c5:
     ksu_vn/utils/label.rb: vals
-  _89bad203:
-    ksu_vn/utils/label.rb: step
   _1431d16b:
     ksu_vn/utils/label.rb: to_2d
   _4664cd3f:
@@ -2524,8 +2515,6 @@ ten:
   # Khong phai partner: tra ve vien cua nhung tam DANG CO VAN DE tren van
   # do -- sat le qua, hoac chong len tam khac -- de ve canh bao.
   _726c65ba: clash_fills
-  _9a88c1a2:
-    ksu_vn/utils/geom.rb: tf
 
   _13b5e235:
     ksu_vn/method/xeptam/push.rb: free_at
@@ -2533,8 +2522,6 @@ ten:
     ksu_vn/method/xeptam/push.rb: d
   _7f4cfb48:
     ksu_vn/method/xeptam/push.rb: others
-  _9ba5a7e0:
-    ksu_vn/method/xeptam/push.rb: other
   _32c9a9b9:
     ksu_vn/method/xeptam/push.rb: horiz
   _7ddb69ec:
@@ -2549,8 +2536,6 @@ ten:
     ksu_vn/method/xeptam/push.rb: sel_bb
   _6a5c7d09:
     ksu_vn/method/xeptam/push.rb: hull
-  _b1981961:
-    ksu_vn/method/xeptam/push.rb: partners
 
   # ----- ME 66: utils/sheet/reorder.rb -- xep van thanh hang va ghi nhan hang -----
   # Cac nhan deu la DimensionLinear khong mui ten, phan biet nhau bang thuoc
@@ -2656,8 +2641,6 @@ ten:
 
   _fe2b89ec:
     ksu_vn/utils/view.rb: half
-  _a1bf6a3a:
-    ksu_vn/utils/view.rb: depth2
   _1d34ab11:
     ksu_vn/utils/view.rb: inner
   _82825d9e:
@@ -2666,8 +2649,6 @@ ten:
     ksu_vn/utils/view.rb: dy
   _775466f2:
     ksu_vn/utils/view.rb: nlen
-  _6a989d41:
-    ksu_vn/utils/view.rb: tf
 
   # ----- ME 69: method/xeptam/mirror.rb -- lat tam sang van mat sau -----
   # Khung chon keo tu phai sang trai la kieu "cat qua": nhan ca tam chi
@@ -2678,8 +2659,6 @@ ten:
   _ee68e33c: box_touches?
   _c949afeb: box_cuts_poly?
 
-  _2cf18878:
-    ksu_vn/method/xeptam/mirror.rb: left
   _3b0d8ae2:
     ksu_vn/method/xeptam/mirror.rb: crossing
   _13d621f9:
@@ -2698,12 +2677,6 @@ ten:
     ksu_vn/method/xeptam/mirror.rb: off_x
   _478babd6:
     ksu_vn/method/xeptam/mirror.rb: off_y
-  _5f2b530c:
-    ksu_vn/method/xeptam/mirror.rb: nx0
-  _76baa4cb:
-    ksu_vn/method/xeptam/mirror.rb: ny0
-  _c9fa72f2:
-    ksu_vn/method/xeptam/mirror.rb: hole
 
   # ----- ME 70: utils/preset/field.rb -- bang cai dat ve tren khung nhin -----
   # Moi dong mot o: tieu de ben trai, cong tac hoac o chu ben phai, va mot
@@ -2762,10 +2735,6 @@ ten:
   _892e5ea9: best_d
   _fa09db7b: d2x
 
-  _8ddd8c6f:
-    ksu_vn/method/xuatdxf: sheet_w2
-  _68165b06:
-    ksu_vn/method/xuatdxf: sheet_h2
 
   # ----- ME 72: method/xuatdxf/scan.rb -- quet van thanh thuc the DXF -----
   # Di de quy xuong cac nhom con, moi loai hinh nhan ra bang mot thuoc tinh
@@ -2780,8 +2749,6 @@ ten:
   _c73c2639: merge_loops
   _302ced66: dxf_color           # "#rrggbb"
   _c57d63ae: dxf_name            # "<ten>_007_01.dxf"
-  _e64bdf77:
-    ksu_vn/method/xuatdxf: lname   #  toan cuc la cua _86717f44
   _7bafc8a5: tf3
   _8d6669ce: parent_layer
   _27846c89: is_border
@@ -2810,10 +2777,6 @@ ten:
     ksu_vn/method/xeptam/collide.rb: edge_gap
   _69887b79:
     ksu_vn/method/xeptam/collide.rb: merged
-  _e8b69b47:
-    ksu_vn/method/xeptam/collide.rb: has_gap
-  _035baab0:
-    ksu_vn/method/xeptam/collide.rb: gap2sq
   _77aba818:
     ksu_vn/method/xeptam/collide.rb: worst
   _0b24b753:
@@ -2888,10 +2851,6 @@ ten:
   _d6439c88:
     ksu_vn/method/xeptam/mirror.rb: right
     ksu_vn/method/toiuuvan/engine.rb: flip_x
-  _ab593548:
-    "ksu_vn/utils/label.rb#inner_rect": top
-    ksu_vn/method/xeptam/mirror.rb: top
-    ksu_vn/method/toiuuvan/engine.rb: flip_y
   _ebffc3f1:
     ksu_vn/method/toiuuvan/engine.rb: rx
   _0e6f8149:
@@ -2923,12 +2882,6 @@ ten:
   _56afdcfc:
     ksu_vn/method/toiuuvan/engine.rb: lv
     ksu_vn/method/nesting.rb: lv
-  _b41d8800:
-    ksu_vn/utils/cutting/detail.rb: value
-    "ksu_vn/utils/label.rb#inner_rect": hole
-    ksu_vn/method/xeptam/collide.rb: lo_x
-    ksu_vn/method/toiuuvan/engine.rb: v
-    ksu_vn/method/nesting.rb: m_left
 
   # ----- ME 77: method/nesting/simplify.rb -- gop cung tron thanh day cung -----
   # Chuoi canh ngan lien tiep co goc re gan bang nhau va cung chieu la mot
@@ -3024,9 +2977,6 @@ ten:
     ksu_vn/utils/preset/store.rb: icy
   _429f3bf7:
     ksu_vn/utils/preset/store.rb: si
-  _14ea4fab:
-    ksu_vn/utils/sheet/reorder.rb: pi
-    ksu_vn/utils/preset/store.rb: ci
   _fab4f06f:
     ksu_vn/utils/preset/store.rb: spec
   _9aa9564d:
@@ -3073,9 +3023,6 @@ ten:
   _982c8eb9:
     ksu_vn/method/xeptam/push.rb: small2
     ksu_vn/utils/nesting/bilan.rb: small2
-  _33f52d3e:
-    ksu_vn/method/xeptam/push.rb: hole
-    ksu_vn/utils/nesting/bilan.rb: hole
   _3e1d5f51:
     ksu_vn/method/xeptam/push.rb: hole2
     ksu_vn/utils/nesting/bilan.rb: hole2
@@ -3116,23 +3063,6 @@ ten:
   _b5af8dbf:
     ksu_vn/method/xeptam.rb: jump
     ksu_vn/method/toiuuvan.rb: jump
-  _9535dc0b:
-    "ksu_vn/utils/isolate.rb": keep_list
-    ksu_vn/method/xuatdxf/entry.rb: ring
-    ksu_vn/method/xeptam/collide.rb: in_sel
-    ksu_vn/method/toiuuvan.rb: live
-  _3e7613f3:
-    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_x
-    "ksu_vn/utils/view.rb#_c9d9f590": ox
-    ksu_vn/utils/cutting/loop.rb: dx_out
-    ksu_vn/method/netcatcuoi/lastcut.rb: sx
-    ksu_vn/method/intem/scan.rb: org_x
-  _9ba1a361:
-    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_y
-    "ksu_vn/utils/view.rb#_c9d9f590": oy
-    ksu_vn/utils/cutting/loop.rb: dy_out
-    ksu_vn/method/netcatcuoi/lastcut.rb: sy
-    ksu_vn/method/intem/scan.rb: org_y
 
   # ----- ME 81: utils/pdf/ttf.rb -- bang cmap cua font TrueType -----
   _a3257134: cmap_table          # chon nhanh doc theo format
@@ -3197,12 +3127,6 @@ ten:
   _e8649a72:
     ksu_vn/utils/label.rb: lo
     ksu_vn/method/netcatcuoi/resize.rb: ylo
-  _e25dbacd:
-    ksu_vn/utils/label.rb: hi
-    ksu_vn/method/netcatcuoi/resize.rb: yhi
-  _5fb96e91:
-    "ksu_vn/utils/label.rb#inner_rect": area
-    ksu_vn/method/netcatcuoi/resize.rb: area
   _eef8786a:
     ksu_vn/utils/flip.rb: etf
   _b5060b46:
@@ -3211,12 +3135,6 @@ ten:
     ksu_vn/utils/flip.rb: c_from
   _263973eb:
     ksu_vn/utils/flip.rb: c_to
-  _2cb52d46:
-    ksu_vn/utils/label.rb: layer
-    ksu_vn/method/chongbay/assign.rb: layer
-    "ksu_vn/method/nesting/draw.rb#_a2d1d319": tag2
-    ksu_vn/method/nesting/draw.rb: layer
-    ksu_vn/utils/flip.rb: layer_name2
 
   # ----- ME 83: utils/nesting/edit.rb -- diem goc nhon tren duong cong -----
   # Hai canh lien tiep cua mot curve gap nhau o mot dinh; goc o do nho hon
@@ -3247,14 +3165,6 @@ ten:
     ksu_vn/utils/label.rb: prev_dir
     ksu_vn/utils/nesting/edit.rb: v2
     ksu_vn/method/nesting/simplify.rb: v_out
-  _7e53f420:
-    "ksu_vn/utils/cutting/detail.rb#_5edc6938": lbl_scale
-    ksu_vn/method/netcatcuoi/lastcut.rb: run2
-    ksu_vn/method/gannhan.rb: face2
-  _4bcb6213:
-    "*": off
-    ksu_vn/method/xuatdxf/entry.rb: inset2
-    ksu_vn/utils/font.rb: pos
 
   # ----- ME 84: hex con lai duoc dung nhieu nhat -----
   # _23505ef9 la ten chung chung cua tac gia cho tham so khoi: cho la diem,
@@ -3336,25 +3246,6 @@ ten:
   _621a105c:
     ksu_vn/method/xeptam/nfp.rb: cross
     ksu_vn/utils/nesting/corner.rb: den
-  _9710d820:
-    ksu_vn/method/xeptam/nfp.rb: area
-    ksu_vn/utils/preset/field.rb: ang
-    ksu_vn/utils/preset/store.rb: ang
-    ksu_vn/method/netcatcuoi/lastcut.rb: a
-    ksu_vn/method/chongbay/shape.rb: a
-    ksu_vn/utils/nesting/corner.rb: a
-  _65570dfe:
-    ksu_vn/utils/pdf/build.rb: off
-    ksu_vn/utils/font.rb: code
-    ksu_vn/utils/nesting/corner.rb: other
-  _60000b16:
-    "ksu_vn/utils/view.rb#_23ea970c": y2
-    "ksu_vn/utils/view.rb#_b9fdc2d5": y2
-    "ksu_vn/utils/view.rb#_e519e18d": y2
-    "ksu_vn/utils/view.rb#_0b8e9c29": ya
-    ksu_vn/method/chongbay.rb: y2
-    ksu_vn/utils/nesting/corner.rb: y2
-    ksu_vn/method/chongbay/shape.rb: ay1
 
   # ----- ME 86: dot gan cuoi -----
   _7144b643: styles_xml          # <styleSheet>: font, fill, border, xf
@@ -3390,8 +3281,436 @@ ten:
   _b4835d15:
     ksu_vn/method/toiuuvan/postproc.rb: gy
     ksu_vn/utils/nesting/pack.rb: gy
+
+  # ----- ME 87: dot ap chot -----
+  # nesting/draw.rb: cac hinh "is-intersect" cham nhau VA cung layer thi phai
+  # noi lai thanh mot; gom chung bang to mau do thi lien thong.
+  _e3d864eb: merge_intersects
+  _a086bafa: intersect_recs
+  _2827207b: color_components    # to mau do thi: moi mau la mot cum lien thong
+  _13398956: union_into
+  _5f641d51: skip_face?
+  _ea9e841c: reorder_cycle       # Tab/Shift+Tab di qua cac van cung vat lieu
+  _44a5d1aa: step_order
+  _687e1def: apply_order
+  _a1ffed00: board_like?         # is-board, board-index, hoac co nhan con
+  _2409a439: hidden_by_layer?
+  _4469b015: knob_r
+  _ed487403: knob_x
+  _589d555a: knob_y
+  _d4c00ad0: knob_pts
+  _06ac7af7: knob_r2
+  _f7331275: knob_pts2
+  _0c32403e: on2
+  _7b905c3b: d0
+  _09012de8: touched
+  _2f683801: moved_panel
+  _b32f69ac: t_slice
+
+  _5f2b530c:
+    ksu_vn/method/xeptam/mirror.rb: nx0
+    ksu_vn/method/toiuuvan/back.rb: mx
+  _76baa4cb:
+    ksu_vn/method/xeptam/mirror.rb: ny0
+    ksu_vn/method/toiuuvan/back.rb: my2
+  _6a989d41:
+    ksu_vn/utils/view.rb: tf
+    ksu_vn/method/toiuuvan/back.rb: tf
+  _b1981961:
+    ksu_vn/method/xeptam/push.rb: partners
+    ksu_vn/method/xeptam/drag.rb: partners
+
+  # ----- ME 88: dot cuoi -- phan con lai -----
+  _5e0c1b8d: run_blk
+  _6ced5498: label_hit?
+  _feb12e90: rank_color
+  _fac2a8b9: color_str
+  _25307500: assign_payload
+  _cffa7717: tidy_layers
+  _8692db05: label_tick
+  _ed0aba0e: label_finish
+  _feede56d: label_fail
+  _ca3f45aa: reset_scan
+  _6eef93f0: merge_band_fields
+  _a1ae3880: name_matches?
+  _204e57f4: want2
+  _53962504: eb_spec
+  _0c3a8be0: label_finish2
+  _a3c31f39: label_fail2
+  _37cfb2cb: label_reset
+  _099ecc27: split_keywords
+  _127808db: bbox2d
+  _4afb97a0: rect_inside?
+  _984ac2f3: summary_rows
+  _88f4d2bb: nest_panel?
+  _1a400713: movable?
+  _3fe7c4d4: slot_for
+  _38252db1: group_rows
+  _31ee1298: redraw_rows
+  _63b8ba0b: push_back
+  _de0a88d4: next_part_sheet
+  _091b9335: base_name
+  _de24fd0f: write_one_dxf
+  _bb0c6429: ring_len
+  _f8552d5f: split_at
+  _4e8cbee3: walk_arc
+  _c520310e: seen3
+  _f341d1ac: norm_board
+  _3f61ee64: box_corners
+  _405c3f80: vals2
+  _a233e68c: skip_layer?
+  _5709b6da: rot_for_panel
+  _b617070b: rot_by_material
+  _cbadd90f: fmt_value
+  _da1dd91a: close_edit
+  _df558da5: digit_y_range
+  _004b3534: digit_range
+  _77984365: valid_key_format?
+  _3c7812cc: svg_ops
+  _a846d664: path_ops
+  _7314dc1a: close_dialog
+  _a249f8a6: push_presets2
+  _0dc41cf2: dlg3
+  _435e9c11: rec5
+  _2ad1250d: by_row
+  _5bfc19d3: half_w2
+  _d04775aa: lean_min
+  _af9dd713: id2
+  _8a2a0205: isect_off
+  _e25d94df: center_labels
+  _a7e29efc: pend_cfg
+  _576fddc0: pend_sel
+  _dc5a9dc0: label_ctx
+  _6f39e9e3: scan_rows
+  _c46b131f: scan_err
+
+  _c9fa72f2:
+    ksu_vn/method/xeptam/mirror.rb: hole
+    ksu_vn/method/xuatdxf/scan.rb: loop_pts
+    ksu_vn/method/chontam/pick.rb: lbl_pts
+  _9a88c1a2:
+    ksu_vn/utils/geom.rb: tf
+    ksu_vn/method/chontam/pick.rb: tf
+  _256b4519:
+    ksu_vn/method/gannhan.rb: board
+  _c348cdef:
+    ksu_vn/method/nesting/collect.rb: seen2
+  _984e016d:
+    ksu_vn/method/nesting/collect.rb: world_tf2
+  _ad0be572:
+    ksu_vn/method/nesting/draw.rb: inv_tf
+  _2ecd529b:
+    ksu_vn/method/nesting/simplify.rb: left_of
+  _d2e36cfd:
+    ksu_vn/method/nesting/simplify.rb: seg_meet
+  _c421ab5c:
+    ksu_vn/method/nesting/simplify.rb: eax
+  _6b658665:
+    ksu_vn/method/nesting/simplify.rb: eay
+  _0939779c:
+    ksu_vn/method/nesting/simplify.rb: ebx
+  _ff6ec2cb:
+    ksu_vn/method/nesting/simplify.rb: eby
+  _3125dfd3:
+    ksu_vn/method/nesting/simplify.rb: ca
+  _58259b16:
+    ksu_vn/method/nesting/simplify.rb: cb
+  _d41bb15d:
+    ksu_vn/method/chongbay.rb: pt
+    ksu_vn/method/netcatcuoi.rb: pt
+  _7ebf0e82:
+    ksu_vn/method/netcatcuoi.rb: x_hi2
+  _b51d21a5:
+    ksu_vn/method/netcatcuoi.rb: y_hi2
+  _b8f3387b:
+    ksu_vn/method/netcatcuoi/lastcut.rb: seen2
+  _f777bf99:
+    ksu_vn/method/netcatcuoi/lastcut.rb: ci2
+  _eac99076:
+    ksu_vn/method/netcatcuoi/lastcut.rb: j0
+  _79be379e:
+    ksu_vn/method/netcatcuoi/lastcut.rb: j1
+  _a95eb156:
+    ksu_vn/method/netcatcuoi/lastcut.rb: k2
+  _fcc2ae55:
+    ksu_vn/method/netcatcuoi/resize.rb: bx0
+  _e9dd4105:
+    ksu_vn/method/netcatcuoi/resize.rb: bx1
+  _f2b1338e:
+    ksu_vn/method/netcatcuoi/resize.rb: by0
+  _175bc002:
+    ksu_vn/method/netcatcuoi/resize.rb: by1
+  _d0ed3d7d:
+    ksu_vn/method/thongke/tonghop.rb: boards
+  _46300933:
+    ksu_vn/method/thongke/xuat.rb: name_b
+  _c39cdbeb:
+    ksu_vn/method/thongke/xuat.rb: crc
+  _8bb0188d:
+    ksu_vn/method/toiuuvan.rb: ok2
+  _14ea4fab:
+    ksu_vn/utils/sheet/reorder.rb: pi
+    ksu_vn/utils/preset/store.rb: ci
+    ksu_vn/method/xephang.rb: ri
+  _2ea74b89:
+    ksu_vn/utils/view.rb: quad
+    "ksu_vn/utils/view/query.rb#_bbaa2919": quad
+    ksu_vn/method/xephang.rb: top4
+  _33f52d3e:
+    ksu_vn/method/xeptam/push.rb: hole
+    ksu_vn/utils/nesting/bilan.rb: hole
+    ksu_vn/method/xeptam/collide.rb: hole
+  _b7284874:
+    ksu_vn/method/xeptam/drag.rb: all_sheets
+  _89bad203:
+    ksu_vn/utils/label.rb: step
+    ksu_vn/method/toiuuvan.rb: dir2
+    ksu_vn/method/xeptam/push.rb: step
+  _e25dbacd:
+    ksu_vn/utils/label.rb: hi
+    ksu_vn/method/netcatcuoi/resize.rb: yhi
+    ksu_vn/method/xeptam/push.rb: hi
+  _2cb52d46:
+    ksu_vn/utils/label.rb: layer
+    ksu_vn/method/chongbay/assign.rb: layer
+    "ksu_vn/method/nesting/draw.rb#_a2d1d319": tag2
+    ksu_vn/method/nesting/draw.rb: layer
+    ksu_vn/utils/flip.rb: layer_name2
+    ksu_vn/method/nesting/collect.rb: layer
+    ksu_vn/method/xuatdxf/dxf.rb: layer
+  _8ddd8c6f:
+    ksu_vn/method/xuatdxf/entry.rb: sheet_w2
+    ksu_vn/method/xuatdxf/scan.rb: sheet_w2
+  _68165b06:
+    ksu_vn/method/xuatdxf/entry.rb: sheet_h2
+    ksu_vn/method/xuatdxf/scan.rb: sheet_h2
+  _219a873c:
+    ksu_vn/method/xuatdxf/entry.rb: len2sq
+  _5c63e60a:
+    ksu_vn/method/xuatdxf/entry.rb: out2
+  _0f0ce717:
+    ksu_vn/method/xuatdxf/geom.rb: ccw3
+  _7e53f420:
+    "ksu_vn/utils/cutting/detail.rb#_5edc6938": lbl_scale
+    ksu_vn/method/netcatcuoi/lastcut.rb: run2
+    ksu_vn/method/gannhan.rb: face2
+    ksu_vn/method/netcatcuoi/resize.rb: cur_y
+    ksu_vn/method/nesting/draw.rb: top2
+    ksu_vn/method/xuatdxf/geom.rb: last_i
+  _133ee34f:
+    ksu_vn/method/xuatdxf/geom.rb: style2
+  _e64bdf77:
+    ksu_vn/method/xuatdxf/geom.rb: lname
+  _5cb20db4:
+    ksu_vn/method/xuatdxf/scan.rb: id_txt
+  _6b31f7ce:
+    ksu_vn/method/xuatdxf/scan.rb: id_w
+  _4c541df4:
+    ksu_vn/method/xuatdxf/scan.rb: txt_w
+  _3b7dc41a:
+    ksu_vn/system/setting.rb: val2
+  _43ae5f3d:
+    ksu_vn/system/update.rb: qry
+  _419b7d17:
+    ksu_vn/utils/cutting.rb: sep
+  _05045e96:
+    ksu_vn/utils/cutting.rb: ratio
+  _9ba5a7e0:
+    ksu_vn/method/xeptam/push.rb: other
+    ksu_vn/utils/cutting.rb: meet
+  _d28e4f82:
+    ksu_vn/utils/cutting.rb: meet0
+  _8d05dd56:
+    ksu_vn/method/themtam.rb: arm
+    ksu_vn/utils/cutting.rb: tri_r
+  _29e00ce2:
+    ksu_vn/utils/flip.rb: saved
+  _80ce9d04:
+    ksu_vn/utils/font.rb: bulge_h
+  _4208cdd3:
+    ksu_vn/utils/font.rb: bx3
+  _b570767e:
+    ksu_vn/utils/font.rb: by3
+  _738ce77b:
+    ksu_vn/utils/font.rb: space_w
+  _68cbfb72:
+    ksu_vn/utils/font.rb: adv2
+  _7150030a:
+    ksu_vn/utils/geom.rb: pen_v
+  _a9cb01d0:
+    ksu_vn/utils/geom.rb: pen_u
+  _0017d9ec:
+    ksu_vn/utils/nesting.rb: reg
+  _abfef0a3:
+    ksu_vn/utils/nesting.rb: rtype
+  _e8b69b47:
+    ksu_vn/method/xeptam/collide.rb: has_gap
+    ksu_vn/utils/nesting/bilan.rb: has_gap
+  _035baab0:
+    ksu_vn/method/xeptam/collide.rb: gap2sq
+    ksu_vn/utils/nesting/bilan.rb: gap2sq
+  _072ce009:
+    ksu_vn/utils/nesting/edit.rb: dict
+  _1233c2de:
+    ksu_vn/utils/nesting/pack.rb: rvec
+  _79f8d55d:
+    ksu_vn/utils/other.rb: sel2
+  _0bc8ddc6:
+    ksu_vn/utils/pdf/build.rb: page
+  _a1bf6a3a:
+    ksu_vn/utils/view.rb: depth2
+    ksu_vn/utils/preset/field.rb: th2
+  _63378db3:
+    ksu_vn/utils/preset/field.rb: rr
+  _16daa7da:
+    ksu_vn/utils/preset/field.rb: ccy
+  _92fb4be7:
+    ksu_vn/utils/preset/field.rb: ring_pts
+  _f84bb2e3:
+    ksu_vn/utils/sheet.rb: best_d3
+  _e305cedd:
+    ksu_vn/utils/sheet/bottom.rb: slot2
+  _9d031de6:
+    ksu_vn/utils/sheet/bottom.rb: acc2
+  _bd796177:
+    ksu_vn/utils/sheet/mark.rb: bd_front
+  _7e85d3e0:
+    ksu_vn/utils/sheet/mark.rb: bd_back
   _e76e0098:
     ksu_vn/utils/nesting/pack.rb: slot
+    ksu_vn/utils/view/query.rb: was_persp
+
+  # ----- ME 89: chuoi ban quyen -- 27 method rai khap cac module -----
+  # Day la phan duy nhat trong cay ma MOI method nam o mot module khong lien
+  # quan gi den viec no lam: ham doi chieu ma may nam trong KSU::Widget, bang
+  # thong bao loi nam trong KSU::Collide. Rai nhu vay la co y, de doc mot file
+  # thi khong thay duoc duong di. Ten o day lay tu viec tung ham LAM GI.
+  _f92a626b: hw_config_id        # registry SYSTEM\HardwareConfig, LastConfig
+  _f58dcea4: disk_serial         # WMI: Win32_DiskPartition -> Win32_DiskDrive
+  _4b6ac4b0: machine_id
+  _9fcc1956: normalize_hw_id
+  _b98c616b: id_hash             # SHA256(id + muoi) & 0x7FF...
+  _fa64094f: xor_byte            # (0x3D + i * 0x57) & 0xFF
+  _f7eacb3a: xor_key             # 0x99
+  _b277371c: pack_value
+  _75f2a016: unpack_value
+  _2b15ac41: license_json        # <data_dir>/license.json; 
+                                 # da thuoc _cb137c25 (file license.dat)
+  _8351e254: read_license_file
+  _af392092: license_value
+  _e4d69360: ask_key             # hop thoai "Kich hoat phan mem"
+  _91d00075: activate_here
+  _4ac4c12f: deactivate_now
+  _7b2b347d: confirm_deactivate
+  _33a88aa5: clear_license
+  _142b3e3b: activations_left
+  _f812d741: activation_errors   # bang ma loi -> cau thong bao
+  _cd99bb15: activation_error
+  _b25875c4: deactivate_error
+  _45e9b533: license_ok?
+  _3d509e12: license_gate
+  _016675b8: bound_here?
+  _f9ff0de9: id_cache
+  _e899e740: drop_id_cache
+  _8578b687: drop_id_cache2
+
+  _2cf18878:
+    ksu_vn/method/xeptam/mirror.rb: left
+    ksu_vn/method/chongbay/shape.rb: left2
+  _1043dd79:
+    ksu_vn/method/chongbay/shape.rb: resp2
+  _0cc812ea:
+    ksu_vn/method/nesting/collect.rb: kw
+    ksu_vn/method/nesting/launch.rb: kw
+    ksu_vn/utils/nesting/optimize.rb: kw
+  _9710d820:
+    ksu_vn/method/xeptam/nfp.rb: area
+    ksu_vn/utils/preset/field.rb: ang
+    ksu_vn/utils/preset/store.rb: ang
+    ksu_vn/method/netcatcuoi/lastcut.rb: a
+    ksu_vn/method/chongbay/shape.rb: a
+    ksu_vn/utils/nesting/corner.rb: a
+    ksu_vn/method/netcatcuoi/resize.rb: a
+    ksu_vn/method/xeptam/arrange.rb: a
+    ksu_vn/method/xuatdxf/geom.rb: args
+    ksu_vn/utils/pdf/svg.rb: sx2
+    ksu_vn/utils/view.rb: ax2
+  _ab593548:
+    "ksu_vn/utils/label.rb#inner_rect": top
+    ksu_vn/utils/label.rb: top
+    ksu_vn/method/xeptam/mirror.rb: top
+    ksu_vn/method/toiuuvan/engine.rb: flip_y
+    ksu_vn/method/xeptam/arrange.rb: ty2
+  _5fb96e91:
+    ksu_vn/utils/label.rb: area
+    ksu_vn/method/netcatcuoi/resize.rb: area
+    ksu_vn/method/chontam/pick.rb: area
+    ksu_vn/method/toiuuvan/postproc.rb: area
+    ksu_vn/method/xuatdxf/entry.rb: area
+  _3e7613f3:
+    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_x
+    "ksu_vn/utils/view.rb#_c9d9f590": ox
+    ksu_vn/utils/cutting/loop.rb: dx_out
+    ksu_vn/method/netcatcuoi/lastcut.rb: sx
+    ksu_vn/method/intem/scan.rb: org_x
+    ksu_vn/method/toiuuvan/back.rb: inset_x
+    ksu_vn/utils/sheet/mark.rb: inset_x
+    ksu_vn/utils/sheet/overlay.rb: dx3
+  _9ba1a361:
+    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_y
+    "ksu_vn/utils/view.rb#_c9d9f590": oy
+    ksu_vn/utils/cutting/loop.rb: dy_out
+    ksu_vn/method/netcatcuoi/lastcut.rb: sy
+    ksu_vn/method/intem/scan.rb: org_y
+    ksu_vn/method/toiuuvan/back.rb: inset_y
+    ksu_vn/utils/sheet/mark.rb: inset_y
+    ksu_vn/utils/sheet/overlay.rb: dy3
+
+  # ----- ME 90: sau cai cuoi cung -----
+  # `off` phai trong nhay: PyYAML doc `off` tran la false, va mot gia tri
+  # false bi coi nhu "chua biet ten" nen muc do lang le khong duoc ap.
+  _4bcb6213:
+    "*": "off"
+    ksu_vn/method/xuatdxf/entry.rb: inset2
+    ksu_vn/utils/font.rb: pos
+    ksu_vn/utils/pdf/ttf.rb: "off"
+  _65570dfe:
+    ksu_vn/utils/pdf/build.rb: "off"
+    ksu_vn/utils/font.rb: code
+    ksu_vn/utils/nesting/corner.rb: other
+  _9535dc0b:
+    "ksu_vn/utils/isolate.rb": keep_list
+    ksu_vn/method/xuatdxf/entry.rb: ring
+    ksu_vn/method/xeptam/collide.rb: in_sel
+    ksu_vn/method/toiuuvan.rb: live
+    ksu_vn/method/chontam/pick.rb: panel
+    ksu_vn/method/gannhan.rb: sel3
+    ksu_vn/method/thongke/tonghop.rb: roots
+    ksu_vn/method/xuatdxf.rb: rows2
+  _60000b16:
+    "ksu_vn/utils/view.rb#_23ea970c": y2
+    "ksu_vn/utils/view.rb#_b9fdc2d5": y2
+    "ksu_vn/utils/view.rb#_e519e18d": y2
+    "ksu_vn/utils/view.rb#_0b8e9c29": ya
+    ksu_vn/method/chongbay.rb: y2
+    ksu_vn/utils/nesting/corner.rb: y2
+    ksu_vn/method/chongbay/shape.rb: ay1
+    ksu_vn/method/netcatcuoi/resize.rb: ry0
+    ksu_vn/method/toiuuvan.rb: y1b
+    ksu_vn/method/xeptam/mirror.rb: ay
+    ksu_vn/method/xuatdxf/scan.rb: ty0
+    ksu_vn/utils/pdf/svg.rb: y_hi3
+  _b41d8800:
+    ksu_vn/utils/cutting/detail.rb: value
+    "ksu_vn/utils/label.rb#inner_rect": hole
+    "ksu_vn/utils/label.rb#_d5ca0b39": hole
+    ksu_vn/method/xeptam/collide.rb: lo_x
+    ksu_vn/method/toiuuvan/engine.rb: v
+    ksu_vn/method/nesting.rb: m_left
+    ksu_vn/method/xuatdxf.rb: layer2
+    ksu_vn/utils/preset/mode.rb: v
+    ksu_vn/utils/nesting/avail.rb: v
+    ksu_vn/utils/cutting/loop.rb: lp
 
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.
@@ -3536,11 +3855,7 @@ bo:
   # Khong ben nao tu soi guong trong chuoi con sot, nen phan cho hex
   # duoc dung nhieu hon. Ben thua o day la de xuat tu cay sinh doi;
   # sinhdoi.yml sinh lai moi lan chay nen tu choi phai nam o day.
-  - _5e0c1b8d   # blk: 2 lan, ban tay giu _5d690575 (9 lan)
-  - _0dc41cf2   # dlg: 13 lan, ban tay giu _a72a3dce (50 lan)
    # grp: tenauto doan kieu, _d533ec26 dung 144 lan
-  - _43ae5f3d   # rows: _62ef82e9 co 5 lan tu soi guong, cai nay khong co
-  - _79f8d55d   # sel: 3 lan, ban tay giu _7e48d1c7 (123 lan)
 
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,

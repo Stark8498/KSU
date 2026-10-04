@@ -301,7 +301,7 @@ class KSU::Gannhan
     KSU::View.view.invalidate
   end
   def rotate_labels
-    relabel_each do |_256b4519, src, face2, rot|
+    relabel_each do |board, src, face2, rot|
       [face2 || src[0], (rot + @goc_xoay_nhan) % 360]
     end
   end
@@ -320,8 +320,8 @@ class KSU::Gannhan
   end
   def run_attach(flag = false)
     return if @labelling
-    _9535dc0b = flag ? [] : KSU.selection
-    renumber = KSU::Label.label_plan(_9535dc0b)
+    sel3 = flag ? [] : KSU.selection
+    renumber = KSU::Label.label_plan(sel3)
     if renumber.nil?
       UI.messagebox("Không tải được font ksu.shx.")
       return
@@ -332,7 +332,7 @@ class KSU::Gannhan
     end
     @jobs = renumber[:jobs]
     @layer2 = renumber[:layer]
-    @_dc5a9dc0 = {
+    @label_ctx = {
       max_size: @kich_thuoc_nhan,
       gap: @do_gian_chu,
       xf: @chieu_rong_chu / 100.0,
@@ -347,15 +347,15 @@ class KSU::Gannhan
     @labelling = true
     KSU.start(true)
     KSU::View.view.invalidate
-    @label_timer = UI.start_timer(0, true) { _8692db05 }
+    @label_timer = UI.start_timer(0, true) { label_tick }
   end
-  def _8692db05
-    return _ed0aba0e if @label_done >= @label_total
+  def label_tick
+    return label_finish if @label_done >= @label_total
     n = 0
     while n < 16 && @label_done < @label_total
       job = @jobs[@label_done]
       if job && job[0] && job[0].valid?
-        KSU::Label.draw_label_on(job[0], job[1], @layer2, @_dc5a9dc0)
+        KSU::Label.draw_label_on(job[0], job[1], @layer2, @label_ctx)
         KSU::Chuanhoa.normalize_group(job[0]) if @chuan_hoa_vat_lieu
       end
       @label_done += 1
@@ -363,13 +363,13 @@ class KSU::Gannhan
     end
     KSU::View.view.invalidate
   rescue StandardError => ent
-    _feede56d(ent.message)
+    label_fail(ent.message)
   end
-  def _ed0aba0e
+  def label_finish
     stop_labelling(true)
     KSU::View.view.invalidate
   end
-  def _feede56d(msg2)
+  def label_fail(msg2)
     stop_labelling(false)
     UI.messagebox("Lỗi gắn nhãn: #{msg2}")
     KSU::View.view.invalidate
@@ -403,8 +403,8 @@ class KSU::Gannhan
 end
 class KSU::Gannhan
   def self.license_field(key)
-    data = KSU::Lastcut._af392092(key, "")
-    KSU::Postproc._75f2a016(data)
+    data = KSU::Lastcut.license_value(key, "")
+    KSU::Postproc.unpack_value(data)
   end
 end
 class KSU::Gannhan

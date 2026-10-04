@@ -115,7 +115,7 @@ module KSU::Launch
       else
         name = g.name.to_s.downcase
         mat = g.material ? g.material.name.to_s.downcase : ""
-        arr.any? { |_0cc812ea| name.include?(_0cc812ea) || (!mat.empty? && mat.include?(_0cc812ea)) }
+        arr.any? { |kw| name.include?(kw) || (!mat.empty? && mat.include?(kw)) }
       end
     end
     KSU.select_only(arr5)

@@ -70,9 +70,9 @@ module KSU::Xuatdxf
     return if arr.empty? && arr9.empty?
     KSU.start
     arr.each { |ent| ent.erase! if ent.valid? }
-    arr9.each do |_b41d8800|
+    arr9.each do |layer2|
       begin
-        model.layers.remove(_b41d8800)
+        model.layers.remove(layer2)
       rescue StandardError
         nil
       end
@@ -82,17 +82,17 @@ module KSU::Xuatdxf
     KSU.abort_op
   end
   def self.set_selection(sheets, only_keys)
-    _9535dc0b = begin
+    rows2 = begin
       JSON.parse(only_keys.to_s)
     rescue StandardError
       nil
     end
-    unless _9535dc0b.is_a?(Array) && !_9535dc0b.empty?
+    unless rows2.is_a?(Array) && !rows2.empty?
       on = layer_flags
       return sheets.select { |s| on.key?(s[:key]) ? on[s[:key]] : true }
     end
     h3 = {}
-    _9535dc0b.each do |half|
+    rows2.each do |half|
       next unless half.is_a?(Hash)
       h3["#{half["id"]}|#{half["bottom"] ? 1 : 0}"] = half
     end
@@ -109,11 +109,11 @@ module KSU::Xuatdxf
     end
     out
   end
-  def self._091b9335(s)
+  def self.base_name(s)
     ascii_name(s[:key]).gsub(/_+/, "_")
   end
   def self.dxf_name(s, arr)
-    normal = _091b9335(s) + "_" + s[:id].to_s.rjust(3, "0")
+    normal = base_name(s) + "_" + s[:id].to_s.rjust(3, "0")
     normal += s[:bottom] ? "_01" : "_02" if arr[s[:key]]
     normal + ".dxf"
   end
@@ -126,7 +126,7 @@ module KSU::Xuatdxf
     ok = true
     arr2.each_with_index do |key, i|
       node = sheets.select { |s| s[:key] == key }
-      str = File.join(dir, (i + 1).to_s.rjust(3, "0") + "_" + _091b9335(node.first))
+      str = File.join(dir, (i + 1).to_s.rjust(3, "0") + "_" + base_name(node.first))
       FileUtils.mkdir_p(str)
       str3 = str
       str2 = str
@@ -139,14 +139,14 @@ module KSU::Xuatdxf
       node.each do |s|
         set_entries(s) if str4
         layer_name = KSU::Xuatdxf::Dxf.new(collect_in_rect[:true_color])
-        _de24fd0f(layer_name, s[:ents], str4)
+        write_one_dxf(layer_name, s[:ents], str4)
         inst2 = s[:bottom] ? str2 : str3
         ok = false unless layer_name.write_file(File.join(inst2, dxf_name(s, h)))
       end
     end
     ok
   end
-  def self._de24fd0f(layer_name, ents, flag = false)
+  def self.write_one_dxf(layer_name, ents, flag = false)
     ents.each do |entity|
       pts = entity[:pts].map { |arr2| KSU::Xuatdxf::PtEx.new(arr2[0], arr2[1], 0) }
       if entity[:via_module]
@@ -161,7 +161,7 @@ module KSU::Xuatdxf
       end
       if flag && entity[:entry] && entity[:closed]
         pts = pts[0...-1] if pts.size > 2 && pts.first == pts.last
-        pts = _f8552d5f(_bb0c6429(pts), entity[:entry][0], entity[:entry][1])
+        pts = split_at(ring_len(pts), entity[:entry][0], entity[:entry][1])
       end
       layer_name.write_polyline(pts, entity[:layer], entity[:closed])
     end

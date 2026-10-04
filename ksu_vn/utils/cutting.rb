@@ -88,8 +88,8 @@ module KSU::Cutting
   def self.kids_with_attr(g, attr)
     ents = KSU.entities_in(g)
     return nil unless ents
-    arr = ents.select { |ent| KSU.container?(ent) && ent.get_attribute("ABF", attr, false) }
-    arr.empty? ? nil : arr
+    seen3 = ents.select { |ent| KSU.container?(ent) && ent.get_attribute("ABF", attr, false) }
+    seen3.empty? ? nil : seen3
   end
   def self.front_face(g, b2)
     labeled = face_with(g, "is-labeled-face")
@@ -155,8 +155,8 @@ module KSU::Cutting
       meta = arr2[arr[i * 5]]
       next unless meta
       thickness = arr[i * 5 + 2].to_f
-      str = thickness > thickness.to_i ? thickness.to_s : thickness.to_i.to_s
-      out << edgeband_row(meta, arr[i * 5 + 1].to_s, mat, thick_mm, str)
+      want2 = thickness > thickness.to_i ? thickness.to_s : thickness.to_i.to_s
+      out << edgeband_row(meta, arr[i * 5 + 1].to_s, mat, thick_mm, want2)
     end
     out
   end
@@ -166,16 +166,16 @@ module KSU::Cutting
     arr3 = edgeband_meta(g)
     mat = material_for(g)
     flag = thick_mm || (arr3.empty? ? nil : board_thickness(g))
-    _419b7d17 = separator
+    sep = separator
     h = {}
     (0...arr2.size / 5).each do |i|
       id = arr2[i * 5]
       name = arr2[i * 5 + 1].to_s
       thickness = arr2[i * 5 + 2].to_f
-      str = thickness > thickness.to_i ? thickness.to_s : thickness.to_i.to_s
-      fields = edgeband_row(arr3[id], name, mat, flag, str)
+      want2 = thickness > thickness.to_i ? thickness.to_s : thickness.to_i.to_s
+      fields = edgeband_row(arr3[id], name, mat, flag, want2)
       stat = arr3[id] ? arr3[id][3] != false : true
-      h[id] = { thickness: thickness / 25.4, display_name: display_name(fields, _419b7d17), fields: fields, stat: stat }
+      h[id] = { thickness: thickness / 25.4, display_name: display_name(fields, sep), fields: fields, stat: stat }
     end
     src = []
     hi = 0.1.mm
@@ -212,10 +212,10 @@ module KSU::Cutting
       num2 = 17
       num = 4
     end
-    _05045e96 = small_size / num2
+    ratio = small_size / num2
     num3 = 15.mm * Math.sqrt(3) / 2
-    _05045e96 = num3 if _05045e96 > num3
-    [_05045e96, _05045e96 / num]
+    ratio = num3 if ratio > num3
+    [ratio, ratio / num]
   end
   def self.box_axes(bnds, tf)
     p_ref = bnds.corner(0).transform(tf)
@@ -270,12 +270,12 @@ module KSU::Cutting
         next if count_by_length.empty?
         out = []
         (0...count_by_length.length - 1).each do |i|
-          _9ba5a7e0 = Geom.intersect_line_line(count_by_length[i], count_by_length[i + 1])
-          out << _9ba5a7e0 if _9ba5a7e0
+          meet = Geom.intersect_line_line(count_by_length[i], count_by_length[i + 1])
+          out << meet if meet
         end
-        _d28e4f82 = Geom.intersect_line_line(count_by_length[-1], count_by_length[0])
-        if _d28e4f82
-          out << _d28e4f82
+        meet0 = Geom.intersect_line_line(count_by_length[-1], count_by_length[0])
+        if meet0
+          out << meet0
         elsif !count_by_length[-1][1].parallel?(count_by_length[0][1])
           next
         end
@@ -295,9 +295,9 @@ module KSU::Cutting
       end
       arr3.each do |arr|
         pt4 = arr[:p0].offset(arr[:vec], -arr[:size])
-        _8d05dd56 = arr[:size] / Math.sqrt(3)
-        p1 = pt4.offset(arr[:pp_vec], _8d05dd56)
-        p2 = pt4.offset(arr[:pp_vec], -_8d05dd56)
+        tri_r = arr[:size] / Math.sqrt(3)
+        p1 = pt4.offset(arr[:pp_vec], tri_r)
+        p2 = pt4.offset(arr[:pp_vec], -tri_r)
         edge_band_lines << [arr[:p0], p1, p2, arr[:p0]].map { |pt2| Geom::Point3d.new(pt2.x, pt2.y, 0) }
       end
     else

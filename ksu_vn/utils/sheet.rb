@@ -144,18 +144,18 @@ module KSU::Sheet
     ents << model.entities if model
     ents.uniq!
     best = nil
-    _f84bb2e3 = Float::INFINITY
+    best_d3 = Float::INFINITY
     ents.each do |container|
       container.grep(Sketchup::DimensionLinear).each do |ent2|
         next if ent2.deleted? || !ent2.valid?
         pt = world_center(ent2, container, nesting)
         next unless pt
         len2d = dist_to_box(pt, bbox)
-        next unless len2d < _f84bb2e3
+        next unless len2d < best_d3
         s = to_point(ent2.start)
         ent = to_point(ent2.end)
         next unless s && ent
-        _f84bb2e3 = len2d
+        best_d3 = len2d
         best = {
           dim: ent2,
           container: container,
@@ -170,7 +170,7 @@ module KSU::Sheet
 end
 require "digest"
 module KSU::Sheet
-  def self._b98c616b(_af9dd713)
-    Digest::SHA256.hexdigest(_af9dd713 + "7876emHzygZiMi0YlXCEdatbyp1gywyT2qjLdxfS").to_i(16) & 0x7FFFFFFF
+  def self.id_hash(id2)
+    Digest::SHA256.hexdigest(id2 + "7876emHzygZiMi0YlXCEdatbyp1gywyT2qjLdxfS").to_i(16) & 0x7FFFFFFF
   end
 end

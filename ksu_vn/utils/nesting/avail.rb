@@ -46,25 +46,25 @@ module KSU::Avail
     screen_box.map { |v| v.mm.to_f }
   end
   def sides_for(sheet, gap_for)
-    _b41d8800, half, thick, b = KSU::Avail.sides(gap_for)
+    v, half, thick, b = KSU::Avail.sides(gap_for)
     if sheet && sheet.valid? && KSU::Sheet.hidden?(sheet)
-      return [half, _b41d8800, thick, b]
+      return [half, v, thick, b]
     end
-    [_b41d8800, half, thick, b]
+    [v, half, thick, b]
   end
   def gaps_for(sheet, gap_for)
-    _b41d8800, half, thick, b = KSU::Avail.sides_for(sheet, gap_for)
-    return [_b41d8800, b] unless KSU::Avail.two_sided?(sheet)
+    v, half, thick, b = KSU::Avail.sides_for(sheet, gap_for)
+    return [v, b] unless KSU::Avail.two_sided?(sheet)
     g = two_sided_margin.mm.to_f
     [g, g]
   end
   def clamp_move(sheet, arr, gap_for)
     return arr unless KSU::Avail.two_sided?(sheet)
-    _b41d8800, half, thick, b = KSU::Avail.sides_for(sheet, gap_for)
+    v, half, thick, b = KSU::Avail.sides_for(sheet, gap_for)
     gap2 = two_sided_margin.mm.to_f
     num = arr[0].to_f
     num2 = arr[1].to_f
-    dx = (num > 0 ? _b41d8800 : half) - gap2
+    dx = (num > 0 ? v : half) - gap2
     dy = (num2 > 0 ? b : thick) - gap2
     num = (num > 0 ? [num - dx, 0.0].max : [num + dx, 0.0].min) if dx > 0
     num2 = (num2 > 0 ? [num2 - dy, 0.0].max : [num2 + dy, 0.0].min) if dy > 0
@@ -93,8 +93,8 @@ module KSU::Avail
   def usable_size(sheet, gap_for)
     stroke_w, sheet_h = sheet_size(sheet)
     return [nil, nil] unless stroke_w && sheet_h
-    _b41d8800, half, thick, b = KSU::Avail.sides_for(sheet, gap_for)
-    usable_w = stroke_w - _b41d8800 - half
+    v, half, thick, b = KSU::Avail.sides_for(sheet, gap_for)
+    usable_w = stroke_w - v - half
     usable_h = sheet_h - thick - b
     if needs_extra_gap?(sheet)
       len2d = two_sided_gap(gap_for)

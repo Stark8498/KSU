@@ -71,28 +71,28 @@ module KSU::Resize
   def longest_free_y(ylo, yhi, arr2)
     return { len: yhi - ylo, y1: ylo, y2: yhi } if arr2.empty?
     arr = []
-    arr2.sort_by { |arr3| arr3[0] }.each do |_9710d820, b|
-      if arr.any? && _9710d820 <= arr.last[1] + 1e-6
+    arr2.sort_by { |arr3| arr3[0] }.each do |a, b|
+      if arr.any? && a <= arr.last[1] + 1e-6
         arr.last[1] = [arr.last[1], b].max
       else
-        arr << [_9710d820, b]
+        arr << [a, b]
       end
     end
     len = 0.0
     y1 = ylo
     y2 = ylo
-    _7e53f420 = ylo
-    arr.each do |_9710d820, b|
-      if _9710d820 - _7e53f420 > len
-        len = _9710d820 - _7e53f420
-        y1 = _7e53f420
-        y2 = _9710d820
+    cur_y = ylo
+    arr.each do |a, b|
+      if a - cur_y > len
+        len = a - cur_y
+        y1 = cur_y
+        y2 = a
       end
-      _7e53f420 = b if b > _7e53f420
+      cur_y = b if b > cur_y
     end
-    if yhi - _7e53f420 > len
-      len = yhi - _7e53f420
-      y1 = _7e53f420
+    if yhi - cur_y > len
+      len = yhi - cur_y
+      y1 = cur_y
       y2 = yhi
     end
     { len: len, y1: y1, y2: y2 }
@@ -147,12 +147,12 @@ module KSU::Resize
   def slot_edges(slot)
     pts = slot[:points]
     return [] unless pts && pts.length == 4
-    x213, x2, _60000b16, y2 = xy_bounds(pts)
+    x213, x2, ry0, y2 = xy_bounds(pts)
     z = @plane_z
     [
-      { edge: :x1, a: Geom::Point3d.new(x213, _60000b16, z), b: Geom::Point3d.new(x213, y2, z) },
-      { edge: :x2, a: Geom::Point3d.new(x2, _60000b16, z), b: Geom::Point3d.new(x2, y2, z) },
-      { edge: :y1, a: Geom::Point3d.new(x213, _60000b16, z), b: Geom::Point3d.new(x2, _60000b16, z) },
+      { edge: :x1, a: Geom::Point3d.new(x213, ry0, z), b: Geom::Point3d.new(x213, y2, z) },
+      { edge: :x2, a: Geom::Point3d.new(x2, ry0, z), b: Geom::Point3d.new(x2, y2, z) },
+      { edge: :y1, a: Geom::Point3d.new(x213, ry0, z), b: Geom::Point3d.new(x2, ry0, z) },
       { edge: :y2, a: Geom::Point3d.new(x213, y2, z), b: Geom::Point3d.new(x2, y2, z) }
     ]
   end
@@ -174,20 +174,20 @@ module KSU::Resize
     return false unless @cur_pt
     pts = slot[:points]
     return false unless pts && pts.length == 4
-    x214, x2, _60000b16, y2 = xy_bounds(pts)
+    x214, x2, ry0, y2 = xy_bounds(pts)
     num = 1.0.mm.to_f
     px = @cur_pt.x.to_f
     py = @cur_pt.y.to_f
     case edge
     when :x1
       tx = x214 - num
-      ty = py.clamp(_60000b16, y2)
+      ty = py.clamp(ry0, y2)
     when :x2
       tx = x2 + num
-      ty = py.clamp(_60000b16, y2)
+      ty = py.clamp(ry0, y2)
     when :y1
       tx = px.clamp(x214, x2)
-      ty = _60000b16 - num
+      ty = ry0 - num
     when :y2
       tx = px.clamp(x214, x2)
       ty = y2 + num
@@ -197,8 +197,8 @@ module KSU::Resize
       next false unless panel[:sheet] == slot[:sheet]
       opac = panel[:points]
       next false unless opac && opac.length == 4
-      _fcc2ae55, _e9dd4105, _f2b1338e, _175bc002 = xy_bounds(opac)
-      tx > _fcc2ae55 - 1e-6 && tx < _e9dd4105 + 1e-6 && ty > _f2b1338e - 1e-6 && ty < _175bc002 + 1e-6
+      bx0, bx1, by0, by1 = xy_bounds(opac)
+      tx > bx0 - 1e-6 && tx < bx1 + 1e-6 && ty > by0 - 1e-6 && ty < by1 + 1e-6
     end
   end
   def cursor_for(edge)
@@ -222,28 +222,28 @@ module KSU::Resize
   def resize_to_cursor(view)
     return unless @entry && @cur_pt
     pts = @entry[:points]
-    x215, x2, _60000b16, y23 = xy_bounds(pts)
+    x215, x2, ry0, y23 = xy_bounds(pts)
     arr = @flag61
     case @edge
     when :x1, :x2
       v = @cur_pt.x.to_f
       v = [[v, arr[:xs]].max, arr[:xe]].min if arr
-      v = clamp_to_panels(@flag31, @edge, v, x215, x2, _60000b16, y23)
+      v = clamp_to_panels(@flag31, @edge, v, x215, x2, ry0, y23)
       if @edge == :x1 then x215 = v else x2 = v end
     when :y1, :y2
       v = @cur_pt.y.to_f
       v = [[v, arr[:ys]].max, arr[:ye]].min if arr
-      v = clamp_to_panels(@flag31, @edge, v, x215, x2, _60000b16, y23)
-      if @edge == :y1 then _60000b16 = v else y23 = v end
+      v = clamp_to_panels(@flag31, @edge, v, x215, x2, ry0, y23)
+      if @edge == :y1 then ry0 = v else y23 = v end
     end
     x12 = [x215, x2].min
     x22 = [x215, x2].max
-    y1 = [_60000b16, y23].min
-    y2 = [_60000b16, y23].max
+    y1 = [ry0, y23].min
+    y2 = [ry0, y23].max
     @entry[:points] = points({ x1: x12, y1: y1, x2: x22, y2: y2 })
     @flag60 = nil
   end
-  def clamp_to_panels(panels, edge, v, x216, x2, _60000b16, y2)
+  def clamp_to_panels(panels, edge, v, x216, x2, ry0, y2)
     return v unless panels
     gap2 = @tam_cach_nhau.to_f
     tol = 1.mm.to_f
@@ -254,16 +254,16 @@ module KSU::Resize
       num4 = bb.max.y.to_f + gap2
       case edge
       when :x1
-        next unless num4 > _60000b16 + tol && num5 < y2 - tol && num2 < x2
+        next unless num4 > ry0 + tol && num5 < y2 - tol && num2 < x2
         v = num3 if num3 > v
       when :x2
-        next unless num4 > _60000b16 + tol && num5 < y2 - tol && num3 > x216
+        next unless num4 > ry0 + tol && num5 < y2 - tol && num3 > x216
         v = num2 if num2 < v
       when :y1
         next unless num3 > x216 + tol && num2 < x2 - tol && num5 < y2
         v = num4 if num4 > v
       when :y2
-        next unless num3 > x216 + tol && num2 < x2 - tol && num4 > _60000b16
+        next unless num3 > x216 + tol && num2 < x2 - tol && num4 > ry0
         v = num5 if num5 < v
       end
     end
@@ -353,7 +353,7 @@ module KSU::Resize
 end
 KSU::Netcatcuoi.include(KSU::Resize)
 module KSU::Resize
-  def self._77984365(key)
+  def self.valid_key_format?(key)
     return false unless key.length == 19
     return false unless key[0] == "k"
     return false unless key[4] == "-" && key[9] == "-" && key[14] == "-"

@@ -510,11 +510,11 @@ class KSU::Themtam
       next unless slot_panel && slot_panel.valid? && cur_sheet && cur_sheet.valid?
       bb = slot_panel.bounds.center
       base_tr = (@nesting.transformation * cur_sheet.transformation).inverse * grp2.transformation * panel.transformation
-      grp = KSU::Nesting.clone_panel(cur_sheet.definition.entities, panel, base_tr)
-      next unless grp
-      delta = grp.bounds.center.vector_to(bb)
-      grp.transformation = Geom::Transformation.translation(delta) * grp.transformation
-      clear_cut_desc(grp)
+      moved_panel = KSU::Nesting.clone_panel(cur_sheet.definition.entities, panel, base_tr)
+      next unless moved_panel
+      delta = moved_panel.bounds.center.vector_to(bb)
+      moved_panel.transformation = Geom::Transformation.translation(delta) * moved_panel.transformation
+      clear_cut_desc(moved_panel)
       slot_panel.erase! if slot_panel.valid?
     end
   end
@@ -599,11 +599,11 @@ class KSU::Themtam
     return unless grp && grp.valid?
     panels_of(src).each do |panel|
       next unless panel.valid?
-      tr = KSU::Nesting.clone_panel(grp.definition.entities, panel, panel.transformation)
-      next unless tr
-      renumber_panel(tr, index_map: index_map, back: back)
-      clear_cut_desc(tr)
-      blank_label(tr)
+      moved_panel = KSU::Nesting.clone_panel(grp.definition.entities, panel, panel.transformation)
+      next unless moved_panel
+      renumber_panel(moved_panel, index_map: index_map, back: back)
+      clear_cut_desc(moved_panel)
+      blank_label(moved_panel)
     end
   end
   def clear_cut_desc(panel)

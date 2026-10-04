@@ -180,8 +180,8 @@ module KSU::Bilan
     return true if poly_a.any? { |pt| KSU::Geom.point_in?(pt.x.to_f, pt.y.to_f, poly_b) }
     return true if poly_b.any? { |pt| KSU::Geom.point_in?(pt.x.to_f, pt.y.to_f, poly_a) }
     g = gap2.to_f
-    _e8b69b47 = g > 1e-9
-    _035baab0 = g * g
+    has_gap = g > 1e-9
+    gap2sq = g * g
     num.times do |i|
       a1 = poly_a[i]
       a2 = poly_a[(i + 1) % num]
@@ -189,7 +189,7 @@ module KSU::Bilan
         b1 = poly_b[j]
         b2 = poly_b[(j + 1) % hdr_len]
         return true if KSU::Geom.segments_cross?(a1, a2, b1, b2)
-        return true if _e8b69b47 && KSU::Geom.seg_dist2(a1, a2, b1, b2) < _035baab0
+        return true if has_gap && KSU::Geom.seg_dist2(a1, a2, b1, b2) < gap2sq
       end
     end
     false

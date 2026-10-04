@@ -620,7 +620,7 @@ module KSU::Corner
 end
 KSU::Nesting.extend(KSU::Corner)
 module KSU::Corner
-  def self._4ac4c12f(key)
+  def self.deactivate_now(key)
     KSU::Cutting.deactivate_key(key)
     resp = KSU::Settings.activate_key(key)
     resp = KSU::Settings.activate_key(key) unless KSU::Field.activation_ok?(resp)

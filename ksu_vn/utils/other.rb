@@ -48,11 +48,11 @@ module KSU
     Sketchup.active_model.selection.to_a
   end
   def self.select_only(ents)
-    _79f8d55d = Sketchup.active_model.selection
-    _79f8d55d.clear
+    sel2 = Sketchup.active_model.selection
+    sel2.clear
     ents = Array(ents)
     return if ents.empty?
-    _79f8d55d.add(ents)
+    sel2.add(ents)
   end
   def self.model_dir
     path = Sketchup.active_model.path.to_s

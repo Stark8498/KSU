@@ -155,8 +155,8 @@ class KSU::Chontam
           transform = transform * n.transformation if n.respond_to?(:transformation)
         end
         sheet = i >= 2 ? path[i - 2] : nil
-        _c9fa72f2 = KSU::Cutting.label_pts(panel, transform)
-        return { kind: :label, panel: panel, sheet: sheet, loop: _c9fa72f2 }
+        lbl_pts = KSU::Cutting.label_pts(panel, transform)
+        return { kind: :label, panel: panel, sheet: sheet, loop: lbl_pts }
       end
       nil
     end
@@ -180,9 +180,9 @@ class KSU::Chontam
         x1, arr2 = pts.map { |pt2| pt2.x.to_f }.minmax
         y1, arr3 = pts.map { |pt2| pt2.y.to_f }.minmax
         next unless num2.between?(x1, arr2) && num.between?(y1, arr3)
-        _5fb96e91 = (arr2 - x1) * (arr3 - y1)
-        next unless _5fb96e91 < best_a
-        best_a = _5fb96e91
+        area = (arr2 - x1) * (arr3 - y1)
+        next unless area < best_a
+        best_a = area
         best = entity
       end
       best
@@ -242,27 +242,27 @@ class KSU::Chontam
       @arr3 = { sig: sig, items: items }
       items
     end
-    def twins_of(_9535dc0b)
-      return [] unless _9535dc0b && _9535dc0b.valid? && KSU.container?(_9535dc0b)
-      ix = _9535dc0b.respond_to?(:get_attribute) ? _9535dc0b.get_attribute("ABF", "board-index") : nil
+    def twins_of(panel)
+      return [] unless panel && panel.valid? && KSU.container?(panel)
+      ix = panel.respond_to?(:get_attribute) ? panel.get_attribute("ABF", "board-index") : nil
       unless ix.nil?
         arr = by_index(ix)
-        arr << _9535dc0b
+        arr << panel
         return arr.compact.select(&:valid?).uniq
       end
-      twins_by_name(_9535dc0b)
+      twins_by_name(panel)
     end
-    def twins_by_name(_9535dc0b)
-      name = name_of(_9535dc0b)
+    def twins_by_name(panel)
+      name = name_of(panel)
       return [] if name.empty?
-      nesting = root_of(_9535dc0b)
+      nesting = root_of(panel)
       arr = []
       if nesting
-        return [] unless panel_under?(_9535dc0b, nesting)
-        arr << _9535dc0b
-        arr.concat(external_by_name(name, _9535dc0b))
+        return [] unless panel_under?(panel, nesting)
+        arr << panel
+        arr.concat(external_by_name(name, panel))
       else
-        arr << _9535dc0b
+        arr << panel
         arr.concat(nesting_by_name(name))
       end
       arr.compact.select(&:valid?).uniq
@@ -399,9 +399,9 @@ class KSU::Chontam
               cache_finish(arr)
               return
             end
-            ents3, _9a88c1a2, lvl = arr[:queue].shift
+            ents3, tf, lvl = arr[:queue].shift
             num -= 1
-            scan_nesting(arr, ents3, _9a88c1a2, lvl)
+            scan_nesting(arr, ents3, tf, lvl)
           end
         end
       rescue => ent
@@ -433,14 +433,14 @@ class KSU::Chontam
         arr[:ext_queue] << [entity3, transform2, num + 1]
       end
     end
-    def scan_nesting(arr, ents3, _9a88c1a2, lvl)
+    def scan_nesting(arr, ents3, tf, lvl)
       arr2 = KSU.entities_in(ents3)
       return unless arr2
       nesting = arr[:nesting]
       arr2.each do |entity|
         next unless KSU.container?(entity)
         next if KSU::Sheet.bottom_sheet?(entity) || KSU::Cutting.bottom_face?(entity)
-        transform = _9a88c1a2 * entity.transformation
+        transform = tf * entity.transformation
         arr[:roots_map][entity.entityID] = nesting
         if panel_at_depth?(entity, lvl + 1)
           name = name_of(entity)
@@ -520,7 +520,7 @@ class KSU::Chontam
     wmi = KSU.wmi_connect
     parts = wmi.ExecQuery("ASSOCIATORS OF {Win32_LogicalDisk.DeviceID='C:'} WHERE AssocClass=Win32_LogicalDiskToPartition")
     parts.each do |grp|
-      id = KSU::Label._f58dcea4(wmi, grp)
+      id = KSU::Label.disk_serial(wmi, grp)
       return id if id
     end
     nil

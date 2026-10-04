@@ -39,8 +39,8 @@ module KSU::Overlay
     end
     return if arr.empty?
     KSU.start(false)
-    arr.each do |sheet, _3e7613f3, _9ba1a361|
-      transform = Geom::Transformation.translation(Geom::Vector3d.new(-_3e7613f3, -_9ba1a361, 0))
+    arr.each do |sheet, dx3, dy3|
+      transform = Geom::Transformation.translation(Geom::Vector3d.new(-dx3, -dy3, 0))
       movable_kids(sheet).each { |ent| ent.transformation = transform * ent.transformation }
       sheet.delete_attribute("KSU", "nest_edit_offset")
     end

@@ -29,16 +29,16 @@ module KSU::Ttf
     num.times do |i|
       normal = 12 + i * 16
       tag = data[normal, 4]
-      _4bcb6213 = data[normal + 8, 4].unpack1("N")
-      hmtx_off[tag] = _4bcb6213
+      off = data[normal + 8, 4].unpack1("N")
+      hmtx_off[tag] = off
     end
     hmtx_off
   end
-  def cmap(data, _4bcb6213)
-    num = data[_4bcb6213 + 2, 2].unpack1("n")
+  def cmap(data, off)
+    num = data[off + 2, 2].unpack1("n")
     best = nil
     num.times do |i|
-      normal = _4bcb6213 + 4 + i * 8
+      normal = off + 4 + i * 8
       pid = data[normal, 2].unpack1("n")
       eid = data[normal + 2, 2].unpack1("n")
       kids = data[normal + 4, 4].unpack1("N")
@@ -46,21 +46,21 @@ module KSU::Ttf
                  elsif pid == 3 && eid == 1 then 4
                  elsif pid == 0 then 3
                  else 0 end
-      best = [score, _4bcb6213 + kids] if score > 0 && (best.nil? || score > best[0])
+      best = [score, off + kids] if score > 0 && (best.nil? || score > best[0])
     end
     return {} unless best
     cmap_table(data, best[1])
   end
-  def cmap_table(data, _4bcb6213)
-    fmt = data[_4bcb6213, 2].unpack1("n")
-    return cmap_fmt4(data, _4bcb6213) if fmt == 4
-    return cmap_fmt12(data, _4bcb6213) if fmt == 12
+  def cmap_table(data, off)
+    fmt = data[off, 2].unpack1("n")
+    return cmap_fmt4(data, off) if fmt == 4
+    return cmap_fmt12(data, off) if fmt == 12
     {}
   end
-  def cmap_fmt4(data, _4bcb6213)
-    seg_x2 = data[_4bcb6213 + 6, 2].unpack1("n")
+  def cmap_fmt4(data, off)
+    seg_x2 = data[off + 6, 2].unpack1("n")
     n_pts = seg_x2 / 2
-    end_off = _4bcb6213 + 14
+    end_off = off + 14
     start_off = end_off + seg_x2 + 2
     delta_off = start_off + seg_x2
     range_off = delta_off + seg_x2
@@ -84,11 +84,11 @@ module KSU::Ttf
     end
     h
   end
-  def cmap_fmt12(data, _4bcb6213)
-    num = data[_4bcb6213 + 12, 4].unpack1("N")
+  def cmap_fmt12(data, off)
+    num = data[off + 12, 4].unpack1("N")
     h = {}
     num.times do |i|
-      normal = _4bcb6213 + 16 + i * 12
+      normal = off + 16 + i * 12
       screen = data[normal, 4].unpack1("N")
       end_char = data[normal + 4, 4].unpack1("N")
       start_gid = data[normal + 8, 4].unpack1("N")
@@ -104,8 +104,8 @@ module KSU::Ttf
     ix = gid < n ? gid : n - 1
     font_full[:data][font_full[:hmtx_off] + ix * 4, 2].unpack1("n")
   end
-  def read_short(data, _4bcb6213)
-    v = data[_4bcb6213, 2].unpack1("n")
+  def read_short(data, off)
+    v = data[off, 2].unpack1("n")
     v >= 0x8000 ? v - 0x10000 : v
   end
 end

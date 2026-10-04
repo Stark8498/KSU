@@ -71,9 +71,9 @@ module KSU::Collide
       @hit_list << { panel: ent, fill: fill } if fill
     end
   end
-  def build_grid(arr4)
-    return unless @refine_on && @sel_polys && arr4 && arr4[:instance]
-    arr3 = obstacles_of(arr4[:instance])
+  def build_grid(rec5)
+    return unless @refine_on && @sel_polys && rec5 && rec5[:instance]
+    arr3 = obstacles_of(rec5[:instance])
     return unless arr3
     arr5 = []
     bbox = nil
@@ -237,9 +237,9 @@ module KSU::Collide
     return [nil, nil] if lx.nil?
     [(lx + flag2) / 2.0, (ly + flag) / 2.0]
   end
-  def escape_hole(arr)
+  def escape_hole(rec5)
     return nil unless @pt5 && @sel_polys
-    obs = obstacles_of(arr[:instance])
+    obs = obstacles_of(rec5[:instance])
     return nil unless obs
     num2 = @pt5.x.to_f
     num = @pt5.y.to_f
@@ -420,9 +420,9 @@ module KSU::Collide
     end
     false
   end
-  def hits_border?(arr)
-    return false unless @sel_polys && arr && arr[:instance]
-    arr2 = obstacles_of(arr[:instance])
+  def hits_border?(rec5)
+    return false unless @sel_polys && rec5 && rec5[:instance]
+    arr2 = obstacles_of(rec5[:instance])
     return false unless arr2 && !arr2[:borders].empty?
     @sel_polys.each do |poly|
       next if poly.nil? || poly.length < 3
@@ -432,8 +432,8 @@ module KSU::Collide
     end
     false
   end
-  def escape_dir(arr4, pt2)
-    inst5 = arr4[:instance]
+  def escape_dir(rec5, pt2)
+    inst5 = rec5[:instance]
     arr3 = obstacles_of(inst5)
     return nil unless arr3
     items = arr3[:items]
@@ -471,9 +471,9 @@ module KSU::Collide
       KSU::Nfp.grid_query(grid, moved_bb, @tam_cach_nhau).each do |i|
         fld = items[i]
         next if h[fld[:panel].object_id]
-        _33f52d3e = hole_around([bbox], fld[:holes])
-        if _33f52d3e
-          pt = KSU::Geom.polys_overlap?(bbox, _33f52d3e, @tam_cach_nhau)
+        hole = hole_around([bbox], fld[:holes])
+        if hole
+          pt = KSU::Geom.polys_overlap?(bbox, hole, @tam_cach_nhau)
           if pt
             mag = Math.sqrt(pt.x * pt.x + pt.y * pt.y)
             if mag > num
@@ -499,10 +499,10 @@ module KSU::Collide
 end
 KSU::Xeptam.include(KSU::Collide)
 module KSU::Collide
-  def self._2b15ac41
+  def self.license_json
     File.join(KSU::Settings.data_dir, "license.json")
   end
-  def self._f812d741
+  def self.activation_errors
     {
       "invalid_key" => "Mã kích hoạt không tồn tại.",
       "invalid_product_id" => "Mã kích hoạt không tồn tại.",

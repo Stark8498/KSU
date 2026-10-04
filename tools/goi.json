@@ -140,7 +140,7 @@
   },
   {
    "ns": "KSU::Nesting",
-   "m": "_f92a626b",
+   "m": "hw_config_id",
    "f": "ksu_vn/method/caidat.rb",
    "l": 627
   },
@@ -176,7 +176,7 @@
   },
   {
    "ns": "KSU::View",
-   "m": "_feb12e90",
+   "m": "rank_color",
    "f": "ksu_vn/method/chongbay/assign.rb",
    "l": 99
   },
@@ -278,7 +278,7 @@
   },
   {
    "ns": "KSU::Widget",
-   "m": "_fa64094f",
+   "m": "xor_byte",
    "f": "ksu_vn/method/chongbay/shape.rb",
    "l": 535
   },
@@ -362,7 +362,7 @@
   },
   {
    "ns": "KSU::View",
-   "m": "_6ced5498",
+   "m": "label_hit?",
    "f": "ksu_vn/method/chongbay.rb",
    "l": 424
   },
@@ -578,7 +578,7 @@
   },
   {
    "ns": "KSU::Label",
-   "m": "_f58dcea4",
+   "m": "disk_serial",
    "f": "ksu_vn/method/chontam/pick.rb",
    "l": 523
   },
@@ -818,13 +818,13 @@
   },
   {
    "ns": "KSU::Lastcut",
-   "m": "_af392092",
+   "m": "license_value",
    "f": "ksu_vn/method/gannhan.rb",
    "l": 406
   },
   {
    "ns": "KSU::Postproc",
-   "m": "_75f2a016",
+   "m": "unpack_value",
    "f": "ksu_vn/method/gannhan.rb",
    "l": 407
   },
@@ -1280,7 +1280,7 @@
   },
   {
    "ns": "KSU::Mirror",
-   "m": "_4b6ac4b0",
+   "m": "machine_id",
    "f": "ksu_vn/method/netcatcuoi.rb",
    "l": 430
   },
@@ -1292,7 +1292,7 @@
   },
   {
    "ns": "KSU::Corner",
-   "m": "_4ac4c12f",
+   "m": "deactivate_now",
    "f": "ksu_vn/method/netcatcuoi.rb",
    "l": 432
   },
@@ -1304,7 +1304,7 @@
   },
   {
    "ns": "KSU::Toiuuvan",
-   "m": "_e899e740",
+   "m": "drop_id_cache",
    "f": "ksu_vn/method/netcatcuoi.rb",
    "l": 435
   },
@@ -1610,7 +1610,7 @@
   },
   {
    "ns": "KSU::Thongke::Tonghop",
-   "m": "_984ac2f3",
+   "m": "summary_rows",
    "f": "ksu_vn/method/thongke.rb",
    "l": 76
   },
@@ -1670,7 +1670,7 @@
   },
   {
    "ns": "KSU::Collide",
-   "m": "_f812d741",
+   "m": "activation_errors",
    "f": "ksu_vn/method/toiuuvan/back.rb",
    "l": 138
   },
@@ -1712,7 +1712,7 @@
   },
   {
    "ns": "KSU::Bottom",
-   "m": "_016675b8",
+   "m": "bound_here?",
    "f": "ksu_vn/method/toiuuvan/engine.rb",
    "l": 395
   },
@@ -1748,7 +1748,7 @@
   },
   {
    "ns": "KSU::Back",
-   "m": "_f7eacb3a",
+   "m": "xor_key",
    "f": "ksu_vn/method/toiuuvan/postproc.rb",
    "l": 608
   },
@@ -1760,13 +1760,13 @@
   },
   {
    "ns": "KSU::Reorder",
-   "m": "_b25875c4",
+   "m": "deactivate_error",
    "f": "ksu_vn/method/toiuuvan/postproc.rb",
    "l": 620
   },
   {
    "ns": "KSU::Push",
-   "m": "_33a88aa5",
+   "m": "clear_license",
    "f": "ksu_vn/method/toiuuvan/postproc.rb",
    "l": 621
   },
@@ -1826,7 +1826,7 @@
   },
   {
    "ns": "KSU::Nesting",
-   "m": "_88f4d2bb",
+   "m": "nest_panel?",
    "f": "ksu_vn/method/toiuuvan.rb",
    "l": 449
   },
@@ -1862,7 +1862,7 @@
   },
   {
    "ns": "KSU::Reorder",
-   "m": "_f9ff0de9",
+   "m": "id_cache",
    "f": "ksu_vn/method/toiuuvan.rb",
    "l": 494
   },
@@ -1958,7 +1958,7 @@
   },
   {
    "ns": "KSU::Sheet",
-   "m": "_de0a88d4",
+   "m": "next_part_sheet",
    "f": "ksu_vn/method/xeptam/arrange.rb",
    "l": 265
   },
@@ -2138,13 +2138,13 @@
   },
   {
    "ns": "KSU::Sheet",
-   "m": "_b98c616b",
+   "m": "id_hash",
    "f": "ksu_vn/method/xeptam/drag.rb",
    "l": 485
   },
   {
    "ns": "KSU::Xeptam",
-   "m": "_3d509e12",
+   "m": "license_gate",
    "f": "ksu_vn/method/xeptam/drag.rb",
    "l": 487
   },
@@ -2168,7 +2168,7 @@
   },
   {
    "ns": "KSU::Arrange",
-   "m": "_9fcc1956",
+   "m": "normalize_hw_id",
    "f": "ksu_vn/method/xeptam/mirror.rb",
    "l": 467
   },
@@ -2228,7 +2228,7 @@
   },
   {
    "ns": "KSU::Query",
-   "m": "_8578b687",
+   "m": "drop_id_cache2",
    "f": "ksu_vn/method/xeptam/push.rb",
    "l": 404
   },
@@ -2276,13 +2276,13 @@
   },
   {
    "ns": "KSU::Engine",
-   "m": "_45e9b533",
+   "m": "license_ok?",
    "f": "ksu_vn/method/xeptam.rb",
    "l": 707
   },
   {
    "ns": "KSU::Assign",
-   "m": "_91d00075",
+   "m": "activate_here",
    "f": "ksu_vn/method/xeptam.rb",
    "l": 708
   },
@@ -2396,7 +2396,7 @@
   },
   {
    "ns": "KSU::Postproc",
-   "m": "_7b2b347d",
+   "m": "confirm_deactivate",
    "f": "ksu_vn/system/setting.rb",
    "l": 553
   },
@@ -2462,7 +2462,7 @@
   },
   {
    "ns": "KSU::Settings",
-   "m": "_7314dc1a",
+   "m": "close_dialog",
    "f": "ksu_vn/system/setting.rb",
    "l": 678
   },
@@ -2516,13 +2516,13 @@
   },
   {
    "ns": "KSU::Collide",
-   "m": "_2b15ac41",
+   "m": "license_json",
    "f": "ksu_vn/utils/flip.rb",
    "l": 140
   },
   {
    "ns": "KSU::Widget",
-   "m": "_e4d69360",
+   "m": "ask_key",
    "f": "ksu_vn/utils/flip.rb",
    "l": 154
   },
@@ -2660,7 +2660,7 @@
   },
   {
    "ns": "KSU::Svg",
-   "m": "_3c7812cc",
+   "m": "svg_ops",
    "f": "ksu_vn/utils/pdf/build.rb",
    "l": 74
   },
@@ -2714,7 +2714,7 @@
   },
   {
    "ns": "KSU::Push",
-   "m": "_b277371c",
+   "m": "pack_value",
    "f": "ksu_vn/utils/preset/store.rb",
    "l": 374
   },
@@ -2744,7 +2744,7 @@
   },
   {
    "ns": "KSU::Back",
-   "m": "_cd99bb15",
+   "m": "activation_error",
    "f": "ksu_vn/utils/sheet/reorder.rb",
    "l": 415
   },
@@ -2768,7 +2768,7 @@
   },
   {
    "ns": "KSU::Flip",
-   "m": "_8351e254",
+   "m": "read_license_file",
    "f": "ksu_vn/utils/view.rb",
    "l": 503
   },
@@ -2780,7 +2780,7 @@
   },
   {
    "ns": "KSU::Shape",
-   "m": "_142b3e3b",
+   "m": "activations_left",
    "f": "ksu_vn/utils/view.rb",
    "l": 519
   }

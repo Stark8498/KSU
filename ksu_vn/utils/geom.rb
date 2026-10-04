@@ -143,7 +143,7 @@ module KSU::Geom
   def self.polys_overlap?(arr2, arr, gap2)
     g = gap2.to_f
     num = 0.0
-    _a9cb01d0 = _7150030a = 0.0
+    pen_u = pen_v = 0.0
     n = arr.size
     n.times do |i|
       pt = arr[i]
@@ -162,26 +162,26 @@ module KSU::Geom
       end
       if num2 > num
         num = num2
-        _a9cb01d0 = nx
-        _7150030a = ny
+        pen_u = nx
+        pen_v = ny
       end
     end
     return nil if num < 1e-9
-    Geom::Vector3d.new(_a9cb01d0 * num, _7150030a * num, 0)
+    Geom::Vector3d.new(pen_u * num, pen_v * num, 0)
   end
-  def self._3f61ee64(bnds, tf = nil)
+  def self.box_corners(bnds, tf = nil)
     return [] unless bnds
     return (0..7).map { |i| bnds.corner(i) } unless tf
     (0..7).map { |i| bnds.corner(i).transform(tf) }
   end
   def self.world_box(bnds, tf = nil)
     bbox = Geom::BoundingBox.new
-    _3f61ee64(bnds, tf).each { |pt| bbox.add(pt) }
+    box_corners(bnds, tf).each { |pt| bbox.add(pt) }
     bbox
   end
-  def self.merge_near(_405c3f80, tol = 1e-6)
+  def self.merge_near(vals2, tol = 1e-6)
     out = []
-    _405c3f80.sort.each { |v| out << v if out.empty? || (v - out.last).abs > tol }
+    vals2.sort.each { |v| out << v if out.empty? || (v - out.last).abs > tol }
     out
   end
 end

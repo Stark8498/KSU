@@ -389,9 +389,9 @@ end
 KSU::Toiuuvan.include(KSU::Engine)
 KSU::Xeptam.include(KSU::Engine)
 module KSU::Engine
-  def self._45e9b533
+  def self.license_ok?
     id = KSU::Xephang.normalize_id(KSU::Gannhan.license_field("i"))
     return false if id.to_s.empty?
-    KSU::Bottom._016675b8.include?(id)
+    KSU::Bottom.bound_here?.include?(id)
   end
 end

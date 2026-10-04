@@ -1,13 +1,13 @@
 module KSU::Bottom
   def shift_sheets(nesting, from_id, delta, sort: false)
     return unless nesting && nesting.valid?
-    arr = nesting.definition.entities.each_with_object([]) do |ent, _9d031de6|
+    arr = nesting.definition.entities.each_with_object([]) do |ent, acc2|
       next unless ent.respond_to?(:name)
       name = ent.name.to_s
       next if name.downcase.include?("-bottom")
       id = sheet_no(name)
       next unless id && id >= from_id
-      _9d031de6 << {
+      acc2 << {
         instance: ent, id: id,
         bottom: bottom_of(ent, nesting),
         labels: sheet_labels(ent, nesting),
@@ -162,8 +162,8 @@ module KSU::Bottom
     arr.each do |b|
       arr2 = Hash.new(0)
       index_set(b).each_key do |board_index|
-        _e305cedd = h[board_index]
-        arr2[_e305cedd] += 1 if _e305cedd
+        slot2 = h[board_index]
+        arr2[slot2] += 1 if slot2
       end
       next if arr2.empty?
       best = arr2.max_by { |arr3| arr3[1] }[0]
@@ -171,7 +171,7 @@ module KSU::Bottom
       b.set_attribute("ABF", "sheet-id", best) if b.get_attribute("ABF", "sheet-id") != best
     end
   end
-  def _de0a88d4(nesting, sheet, forward)
+  def next_part_sheet(nesting, sheet, forward)
     return nil unless nesting && nesting.valid? && sheet && sheet.valid?
     phan = sheet.get_attribute("KSU", "phan")
     return nil if phan.nil?
@@ -339,8 +339,8 @@ module KSU::Bottom
 end
 KSU::Sheet.extend(KSU::Bottom)
 module KSU::Bottom
-  def self._016675b8
-    id = KSU::Arrange._9fcc1956(KSU::Caidat.machine_fingerprint)
+  def self.bound_here?
+    id = KSU::Arrange.normalize_hw_id(KSU::Caidat.machine_fingerprint)
     id ? [id] : []
   end
 end

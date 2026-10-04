@@ -14,9 +14,9 @@ module KSU::Pdf
     font_id = write_font(add, font, used, "Arial", arr)
     bold_id = write_font(add, font_bold, used_bold, "Arial-Bold", arr)
     arr3 = []
-    arr5.each_with_index do |_0bc8ddc6, i|
+    arr5.each_with_index do |page, i|
       group_rgb = arr4[i]
-      content_id = add.call(stream_obj(_0bc8ddc6))
+      content_id = add.call(stream_obj(page))
       page_id = add.call(
         "<< /Type /Page /Parent #{pages_id} 0 R /MediaBox [0 0 #{num(group_rgb[:pw])} #{num(group_rgb[:ph])}] " \
         "/Resources << /Font << /F1 #{font_id} 0 R /F2 #{bold_id} 0 R >> >> /Contents #{content_id} 0 R >>"
@@ -71,7 +71,7 @@ module KSU::Pdf
       ops << "0 -1 1 0 0 #{num(w * S)} cm"
     end
     ops << "#{num(S)} 0 0 #{num(-S)} 0 #{num(h * S)} cm"
-    ops.concat(KSU::Svg._3c7812cc(group_rgb[:svg], font, font_bold, used, used_bold))
+    ops.concat(KSU::Svg.svg_ops(group_rgb[:svg], font, font_bold, used, used_bold))
     ops << "Q"
     ops.join("\n")
   end
@@ -95,7 +95,7 @@ module KSU::Pdf
     xref_at = out.bytesize
     total = arr.size + 1
     out << "xref\n0 #{total}\n0000000000 65535 f \n"
-    arr2.each { |_65570dfe| out << format("%010d 00000 n \n", _65570dfe) }
+    arr2.each { |off| out << format("%010d 00000 n \n", off) }
     out << "trailer\n<< /Size #{total} /Root 1 0 R >>\nstartxref\n#{xref_at}\n%%EOF"
     out
   end

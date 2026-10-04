@@ -390,7 +390,7 @@ class KSU::Toiuuvan
       arr2 = arr.each_index.select { |i| live.include?(arr[i]) }
       next if arr2.empty?
       arr4.concat(arr2.map { |i| arr[i] })
-      materials = _ea9e841c(arr.length, arr2, dir)
+      materials = reorder_cycle(arr.length, arr2, dir)
       arr3 << [arr, arr2, materials] if materials
     end
     return if arr3.empty?
@@ -398,7 +398,7 @@ class KSU::Toiuuvan
     arr6 = []
     arr5 = []
     arr3.each do |arr, arr2, materials|
-      _687e1def(arr, materials)
+      apply_order(arr, materials)
       arr2.each do |src|
         arr6 << arr[src]
         arr5 << arr[materials.index(src)]
@@ -411,7 +411,7 @@ class KSU::Toiuuvan
   rescue StandardError
     KSU.abort_op
   end
-  def _ea9e841c(n, arr, dir)
+  def reorder_cycle(n, arr, dir)
     materials = (0...n).to_a
     live = Array.new(n, false)
     arr.each { |i| live[i] = true }
@@ -419,16 +419,16 @@ class KSU::Toiuuvan
     repeat = dir == :first || dir == :last
     bbox = false
     loop do
-      _8bb0188d = _44a5d1aa(materials, live, flag)
-      bbox ||= _8bb0188d
-      break if !_8bb0188d || !repeat
+      ok2 = step_order(materials, live, flag)
+      bbox ||= ok2
+      break if !ok2 || !repeat
     end
     bbox ? materials : nil
   end
-  def _44a5d1aa(materials, live, _89bad203)
+  def step_order(materials, live, dir2)
     n = materials.length
     bbox = false
-    if _89bad203 == :next
+    if dir2 == :next
       (n - 2).downto(0) do |i|
         next unless live[i] && !live[i + 1]
         materials[i], materials[i + 1] = materials[i + 1], materials[i]
@@ -445,8 +445,8 @@ class KSU::Toiuuvan
     end
     bbox
   end
-  def _687e1def(arr, materials)
-    panels = arr.map { |s| s.definition.entities.to_a.select { |ent| KSU::Nesting._88f4d2bb(ent) } }
+  def apply_order(arr, materials)
+    panels = arr.map { |s| s.definition.entities.to_a.select { |ent| KSU::Nesting.nest_panel?(ent) } }
     arr2 = arr.map { |s| KSU::Sheet.bottom_for(s, @nesting) }
     pt = arr.map { |s| s.transformation.origin }
     materials.each_with_index do |src, inst2|
@@ -469,8 +469,8 @@ class KSU::Toiuuvan
     sheet_list
     KSU::View.clear_cache
   end
-  def sheets_in_rect(view, x217, _60000b16, x2, y2)
-    rect = KSU::Quet.rect([x217, _60000b16], [x2, y2])
+  def sheets_in_rect(view, x217, y1b, x2, y2)
+    rect = KSU::Quet.rect([x217, y1b], [x2, y2])
     strict = x2 >= x217
     @sheets.each_with_object([]) do |rec, out|
       pts = (0..7).map { |i| view.screen_coords(rec[:bbox].corner(i)) }
@@ -490,8 +490,8 @@ class KSU::Toiuuvan
   end
 end
 class KSU::Toiuuvan
-  def self._e899e740
-    KSU::Reorder._f9ff0de9[0] = nil
+  def self.drop_id_cache
+    KSU::Reorder.id_cache[0] = nil
   end
 end
 class KSU::Toiuuvan

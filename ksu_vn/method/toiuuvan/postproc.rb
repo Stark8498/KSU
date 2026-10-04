@@ -539,13 +539,13 @@ module KSU::Postproc
     parts_of_sheet(sheet, rec).map do |pt|
       loops = panel_loops(pt)
       holes = loops[1..] || []
-      _5fb96e91 = poly_area(loops.first) - holes.inject(0.0) { |s, h| s + poly_area(h) }
+      area = poly_area(loops.first) - holes.inject(0.0) { |s, h| s + poly_area(h) }
       pminx, pminy = panel_origin(pt)
       bbox = pt[:bbox]
       {
         panel: pt[:panel], sheet: pt[:sheet], bbox: bbox,
         two_sided: pt[:two_sided], rotatable: pt[:rotatable],
-        polygon: loops.first, holes: holes, area: _5fb96e91,
+        polygon: loops.first, holes: holes, area: area,
         x: (pminx - ox0 - gx) * 25.4,
         y: (pminy - oy0 - gy) * 25.4,
         bx: bbox.min.x.to_f - ox0 - gx,
@@ -560,11 +560,11 @@ module KSU::Postproc
     @two_sided_ids ||= KSU::Nesting.two_sided_set(@nesting)
     out = []
     sheet.definition.entities.each do |panel|
-      next unless _1a400713(panel)
+      next unless movable?(panel)
       key = [sheet.entityID, panel.entityID, panel.transformation.to_a]
       slot = @h7[key]
       unless slot
-        slot = _3fe7c4d4(panel, sheet, transform, @two_sided_ids)
+        slot = slot_for(panel, sheet, transform, @two_sided_ids)
         @h7[key] = slot
       end
       out << slot
@@ -600,16 +600,16 @@ module KSU::Postproc
 end
 KSU::Toiuuvan.include(KSU::Postproc)
 module KSU::Postproc
-  def self._75f2a016(str)
+  def self.unpack_value(str)
     return "" if str.nil? || str.to_s.empty?
     return "" unless str.to_s.start_with?("KSU_")
     str2 = str.to_s[4..-1].unpack("m0").first
     return "" if str2.nil?
-    str2.bytes.map { |b| b ^ KSU::Back._f7eacb3a }.pack("C*")
+    str2.bytes.map { |b| b ^ KSU::Back.xor_key }.pack("C*")
   rescue
     ""
   end
-  def self._7b2b347d
+  def self.confirm_deactivate
     return false unless UI.messagebox("Bạn có chắc muốn gỡ kích hoạt trên máy tính này?", MB_YESNO) == IDYES
     resp = KSU::Cutting.deactivate_key(KSU::Gannhan.license_field("k"))
     if resp.nil?
@@ -617,8 +617,8 @@ module KSU::Postproc
       return false
     end
     err_code = resp["code"] || resp.dig("data", "code")
-    return KSU::Reorder._b25875c4(err_code) unless resp["success"] == true || err_code == "key_deactivated"
-    KSU::Push._33a88aa5
+    return KSU::Reorder.deactivate_error(err_code) unless resp["success"] == true || err_code == "key_deactivated"
+    KSU::Push.clear_license
     UI.messagebox "Gỡ kích hoạt thành công!"
     true
   end

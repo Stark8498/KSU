@@ -285,10 +285,10 @@ module KSU::Label
     end
     num.odd?
   end
-  def sample_axis(arr, tol)
-    lo = arr.first
-    hi = arr.last
-    vals = arr.dup
+  def sample_axis(vals2, tol)
+    lo = vals2.first
+    hi = vals2.last
+    vals = vals2.dup
     step = (hi - lo) / 64.0
     (1...64).each { |i| vals << lo + step * i } if step > tol
     KSU::Geom.merge_near(vals, tol)
@@ -317,7 +317,7 @@ module KSU::Label
     end
     opac = to_2d.call(outer)
     return nil if opac.size < 3
-    holes = (font.loops - [outer]).map { |_b41d8800| to_2d.call(_b41d8800) }
+    holes = (font.loops - [outer]).map { |hole| to_2d.call(hole) }
     arr12 = opac + holes.flatten(1)
     arr9 = arr12.map { |arr7| arr7[0] }.sort
     style = arr12.map { |arr7| arr7[1] }.sort
@@ -379,12 +379,12 @@ module KSU::Label
           arr4.push(num)
           num += 1
         else
-          _ab593548 = arr4.pop
-          h = arr5[_ab593548]
+          top = arr4.pop
+          h = arr5[top]
           flag = arr4.empty? ? 0 : arr4.last + 1
-          _5fb96e91 = h * (arr2[num] - arr2[flag])
-          if h > 0 && _5fb96e91 > best_a
-            best_a = _5fb96e91
+          area = h * (arr2[num] - arr2[flag])
+          if h > 0 && area > best_a
+            best_a = area
             best = [arr2[flag], arr2[num], v1 - h, v1]
           end
         end
@@ -408,9 +408,9 @@ module KSU::Label
     snap_edges = (KSU.entities_in(grp7) || []).grep(Sketchup::Edge)
     return nil if snap_edges.empty?
     pt = snap_edges[0].start.position.transform(tf * grp7.transformation)
-    vec2 = pt.distance_to_plane([b2[0].bounds.center.transform(tf), b2[0].normal.transform(tf)])
+    d0 = pt.distance_to_plane([b2[0].bounds.center.transform(tf), b2[0].normal.transform(tf)])
     d1 = pt.distance_to_plane([b2[1].bounds.center.transform(tf), b2[1].normal.transform(tf)])
-    vec2 < d1 ? b2[0] : b2[1]
+    d0 < d1 ? b2[0] : b2[1]
   end
   def face_by_children(grp, b2, tf)
     vec2 = [b2[0].bounds.center.transform(tf), b2[0].normal.transform(tf)]
@@ -423,14 +423,14 @@ module KSU::Label
       next if g.get_attribute(DICT, "is-side-drill-depth")
       arr2 = KSU.entities_in(g)
       next unless arr2
-      next if _5f641d51(g, arr2)
+      next if skip_face?(g, arr2)
       snap_edges = arr2.grep(Sketchup::Edge)
       next if snap_edges.empty?
       pt = snap_edges[0].start.position.transform(tf * g.transformation)
-      _7b905c3b = pt.distance_to_plane(vec2)
+      d0 = pt.distance_to_plane(vec2)
       d1 = pt.distance_to_plane(vec)
-      next if [_7b905c3b, d1].min > 2.mm
-      if _7b905c3b < d1
+      next if [d0, d1].min > 2.mm
+      if d0 < d1
         flag = true
       else
         flag2 = true
@@ -440,12 +440,12 @@ module KSU::Label
     return b2[1] if flag2 && !flag
     nil
   end
-  def _5f641d51(g, arr)
+  def skip_face?(g, arr)
     return true if arr.grep(Sketchup::ConstructionLine).any?
-    return true if _a233e68c(g.layer)
-    arr.grep(Sketchup::Edge).any? { |ent| _a233e68c(ent.layer) }
+    return true if skip_layer?(g.layer)
+    arr.grep(Sketchup::Edge).any? { |ent| skip_layer?(ent.layer) }
   end
-  def _a233e68c(layer)
+  def skip_layer?(layer)
     return false unless layer && layer.respond_to?(:line_style)
     grp = layer.line_style
     return false unless grp
@@ -458,16 +458,16 @@ module KSU::Label
     pt = face2.bounds.center.transform(tf)
     model = Sketchup.active_model.raytest(pt2.offset(vec8, 10.mm), vec8)
     model2 = Sketchup.active_model.raytest(pt.offset(vec2, 10.mm), vec2)
-    flag2 = model ? pt2.distance(model[0]) : 9999
+    d0 = model ? pt2.distance(model[0]) : 9999
     d1 = model2 ? pt.distance(model2[0]) : 9999
     vec = Geom::Vector3d.new(1, -1, 1)
     flag3 = vec8.angle_between(vec) > vec2.angle_between(vec) ? face : face2
-    return flag3 if flag2 == 9999 && d1 == 9999
-    return face2 if flag2 == 9999 && d1 < 9999
-    return face if d1 == 9999 && flag2 < 9999
-    return flag3 unless flag2 < 9999 && d1 < 9999
-    return flag3 if [flag2, d1].min > 10.cm
-    flag2 > d1 ? face2 : face
+    return flag3 if d0 == 9999 && d1 == 9999
+    return face2 if d0 == 9999 && d1 < 9999
+    return face if d1 == 9999 && d0 < 9999
+    return flag3 unless d0 < 9999 && d1 < 9999
+    return flag3 if [d0, d1].min > 10.cm
+    d0 > d1 ? face2 : face
   end
   def label_text(node)
     name = node.name.to_s
@@ -494,9 +494,9 @@ module KSU::Label
   end
 end
 module KSU::Label
-  def self._f58dcea4(wmi, grp)
-    _43ae5f3d = wmi.ExecQuery("ASSOCIATORS OF {Win32_DiskPartition.DeviceID='" + grp.DeviceID.to_s + "'} WHERE AssocClass=Win32_DiskDriveToDiskPartition")
-    _43ae5f3d.each do |row2|
+  def self.disk_serial(wmi, grp)
+    rows = wmi.ExecQuery("ASSOCIATORS OF {Win32_DiskPartition.DeviceID='" + grp.DeviceID.to_s + "'} WHERE AssocClass=Win32_DiskDriveToDiskPartition")
+    rows.each do |row2|
       next unless row2.SerialNumber
       return KSU::Xephang.normalize_id(row2.SerialNumber)
     end

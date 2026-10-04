@@ -184,7 +184,7 @@ module KSU::Edit
   def nesting_root
     Sketchup.active_model.entities.grep(Sketchup::Group).find { |ent| ent.get_attribute("ABF", "is-nesting-root") }
   end
-  def _88f4d2bb(entity)
+  def nest_panel?(entity)
     return false unless entity && entity.respond_to?(:name)
     return false if entity.name.to_s == "__ABF_sheetBorder"
     KSU::Sheet.drawable?(entity)
@@ -203,18 +203,18 @@ module KSU::Edit
     end
     if panel.is_a?(Sketchup::Group)
       panel.erase!
-      grp = ents.add_group
-      grp.entities.add_instance(grp2, Geom::Transformation.new).explode
-      grp.transformation = tr
+      moved_panel = ents.add_group
+      moved_panel.entities.add_instance(grp2, Geom::Transformation.new).explode
+      moved_panel.transformation = tr
     else
-      grp = ents.add_instance(grp2, tr)
+      moved_panel = ents.add_instance(grp2, tr)
       panel.erase!
     end
-    grp.name = name if name
-    grp.layer = flag2 if flag2
-    grp.material = flag if flag
-    arr.each { |_072ce009, h| h.each { |k, v| grp.set_attribute(_072ce009, k, v) } }
-    grp
+    moved_panel.name = name if name
+    moved_panel.layer = flag2 if flag2
+    moved_panel.material = flag if flag
+    arr.each { |dict, h| h.each { |k, v| moved_panel.set_attribute(dict, k, v) } }
+    moved_panel
   end
   def move_to_sheet(panel, grp2, grp, nesting)
     tr3 = grp2 ? grp2.transformation : Geom::Transformation.new

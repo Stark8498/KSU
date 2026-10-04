@@ -27,7 +27,7 @@ module KSU::Chuanhoa
       f.back_material = mat unless f.back_material == mat
       [true, false].each { |side| f.clear_texture_position(side) if f.texture_positioned?(side) } if f.respond_to?(:texture_positioned?)
     end
-    _f341d1ac(board)
+    norm_board(board)
   end
   def self.edge_band_colors(board, ents)
     arr = board.get_attribute("ABF", "edge-band-types")
@@ -58,7 +58,7 @@ module KSU::Chuanhoa
     end
     mat
   end
-  def self._f341d1ac(node)
+  def self.norm_board(node)
     return nil unless node && node.respond_to?(:definition)
     grp4 = node.definition
     container = grp4.entities

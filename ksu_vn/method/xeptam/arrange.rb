@@ -24,8 +24,8 @@ module KSU::Arrange
     arr2 = top_corners.map(&:y)
     z = top_corners.map(&:z).max
     py = (arr2.min + arr2.max) / 2.0
-    num = 250.mm
-    side == :left ? Geom::Point3d.new(arr3.min - num, py, z) : Geom::Point3d.new(arr3.max + num, py, z)
+    isect_off = 250.mm
+    side == :left ? Geom::Point3d.new(arr3.min - isect_off, py, z) : Geom::Point3d.new(arr3.max + isect_off, py, z)
   end
   def draw_side_buttons(view, rec)
     [:left, :right].each do |side|
@@ -132,17 +132,17 @@ module KSU::Arrange
     arr2 = outer.map(&:x)
     arr3 = outer.map(&:y)
     cx = (arr2.min + arr2.max) / 2.0
-    _ab593548 = arr3.max + 2
+    ty2 = arr3.max + 2
     row_w = [rec[:instance].name.to_s.length * 7, 56].max
-    { left: cx - row_w / 2.0, right: cx + row_w / 2.0, top: _ab593548, bottom: _ab593548 + 20 }
+    { left: cx - row_w / 2.0, right: cx + row_w / 2.0, top: ty2, bottom: ty2 + 20 }
   end
   def near_outline?(view, x, y, rec)
     outer = rec[:top_corners].map { |pt| view.screen_coords(pt) }
     tol = 8
     outer.length.times do |i|
-      _9710d820 = outer[i]
+      a = outer[i]
       b = outer[(i + 1) % outer.length]
-      return true if KSU::View.near_seg?(x, y, _9710d820, b, tol)
+      return true if KSU::View.near_seg?(x, y, a, b, tol)
     end
     false
   end
@@ -201,8 +201,8 @@ module KSU::Arrange
     end
   end
   def swap_panels(grp, grp2)
-    ents2 = grp.definition.entities.to_a.select { |ent| KSU::Nesting._88f4d2bb(ent) }
-    ents = grp2.definition.entities.to_a.select { |ent| KSU::Nesting._88f4d2bb(ent) }
+    ents2 = grp.definition.entities.to_a.select { |ent| KSU::Nesting.nest_panel?(ent) }
+    ents = grp2.definition.entities.to_a.select { |ent| KSU::Nesting.nest_panel?(ent) }
     ents2.each { |vec| KSU::Nesting.clone_panel_into(vec, grp2) if vec.valid? }
     ents.each { |vec| KSU::Nesting.clone_panel_into(vec, grp) if vec.valid? }
   end
@@ -224,7 +224,7 @@ module KSU::Arrange
       grp.set_attribute("ABF", "sheet-id", str) if str
     end
   end
-  def _63b8ba0b(_435e9c11, pt2, pt3)
+  def push_back(rec5, pt2, pt3)
     num = pt3.length.to_f
     return if num < KSU::TOL || pt2.length.to_f < KSU::TOL
     tx = -pt3.y.to_f / num
@@ -234,7 +234,7 @@ module KSU::Arrange
     pt = Geom::Vector3d.new(tx * num2, ty * num2, 0)
     add_offset(pt)
     shift_cached_polys(pt)
-    arr = compute_push_back(_435e9c11, true)
+    arr = compute_push_back(rec5, true)
     num4 = arr.length.to_f
     return if num4 < KSU::TOL
     if num4 > num + KSU::TOL
@@ -262,7 +262,7 @@ module KSU::Arrange
     select_sheet_id(new_id)
   end
   def swap_part_type(forward)
-    target = KSU::Sheet._de0a88d4(@nesting, @flag37, forward)
+    target = KSU::Sheet.next_part_sheet(@nesting, @flag37, forward)
     return unless target && target.valid?
     swap_sheets(@flag37, target)
     @flag37 = target if target.valid?
@@ -282,7 +282,7 @@ end
 KSU::Xeptam.include(KSU::Arrange)
 require "digest"
 module KSU::Arrange
-  def self._9fcc1956(id_str)
+  def self.normalize_hw_id(id_str)
     return nil unless KSU::Detail.has_id?(id_str)
     Digest::SHA256.hexdigest(id_str.to_s).upcase[0, 16].scan(/.{4}/).join("-")
   end

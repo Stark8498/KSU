@@ -421,7 +421,7 @@ class KSU::Chongbay
     return nil unless @hien_so_thu_tu && @danh_so_thu_tu
     @parts.reverse_each do |arr|
       next unless arr[:rank]
-      next unless KSU::View._6ced5498(arr[:rank].to_s, arr[:center], x, y, size: size2(arr))
+      next unless KSU::View.label_hit?(arr[:rank].to_s, arr[:center], x, y, size: size2(arr))
       return arr
     end
     nil

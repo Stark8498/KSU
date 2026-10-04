@@ -10,7 +10,7 @@ module KSU::Xuatdxf
   }.freeze
   class PtEx < Geom::Point3d
     attr_accessor :bulge
-    def initialize(*_9710d820)
+    def initialize(*args)
       super
       @bulge = 0.0
     end
@@ -106,8 +106,8 @@ module KSU::Xuatdxf
     vec2 = p1.vector_to(center)
     vec5 = p2.vector_to(center)
     vec4 = box[end_i].vector_to(center)
-    _0f0ce717 = vec2.cross(vec5).z > 0
-    deg4 = _0f0ce717 ? vec_angle(vec2, vec4) : vec_angle(vec4, vec2)
+    ccw3 = vec2.cross(vec5).z > 0
+    deg4 = ccw3 ? vec_angle(vec2, vec4) : vec_angle(vec4, vec2)
     return nil if num == 6 && num15 == 5 && deg4.radians > 299
     return nil if num15 == 6 && deg4.radians > 359
     bulge = Math.tan(deg4 / 4)
@@ -165,35 +165,35 @@ module KSU::Xuatdxf
       arr2[i][j] = true
       arr2[j][i] = true
     end
-    arr4 = []
+    seen3 = []
     arr3 = Array.new(n, false)
     (0...n).each do |i|
       next if arr3[i]
       back = Array.new(n, i)
-      _4e8cbee3(i, i, arr2, arr3, back, n, arr, arr4)
+      walk_arc(i, i, arr2, arr3, back, n, arr, seen3)
     end
-    arr4
+    seen3
   end
-  def _4e8cbee3(start, i, arr2, arr, back, n, arr4, _c520310e)
+  def walk_arc(start, i, arr2, arr, back, n, arr4, seen3)
     arr[i] = true
     done = true
     (0...n).each do |j|
       next unless arr2[i][j] && !arr[j]
       done = false
       back[j] = i
-      _4e8cbee3(start, j, arr2, arr, back, n, arr4, _c520310e)
+      walk_arc(start, j, arr2, arr, back, n, arr4, seen3)
     end
     return unless done
     return unless arr2[start][i]
     path = []
-    _7e53f420 = i
+    last_i = i
     loop do
-      path << _7e53f420
-      _7e53f420 = back[_7e53f420]
-      break if _7e53f420 == start
+      path << last_i
+      last_i = back[last_i]
+      break if last_i == start
     end
     path << start
-    _c520310e << path.map { |ix| arr4[ix] }
+    seen3 << path.map { |ix| arr4[ix] }
   end
   def ascii_name(name)
     s = name.to_s.tr(
@@ -208,14 +208,14 @@ module KSU::Xuatdxf
   def layer_spec(str)
     str = str.to_s
     return ["0", 7, [128, 128, 128]] if str.empty? || str == "0" || str.casecmp("Layer0").zero?
-    _133ee34f = LAYER_STYLES[str]
-    return _133ee34f if _133ee34f
+    style2 = LAYER_STYLES[str]
+    return style2 if style2
     model = Sketchup.active_model.layers[str]
     rgb = model && model.color ? [model.color.red, model.color.green, model.color.blue] : [0, 0, 0]
     [ascii_name(str), 1, rgb]
   end
-  def dxf_color(_e64bdf77)
-    half, g, b = layer_spec(_e64bdf77)[2]
+  def dxf_color(lname)
+    half, g, b = layer_spec(lname)[2]
     format("#%02x%02x%02x", half, g, b)
   end
 end

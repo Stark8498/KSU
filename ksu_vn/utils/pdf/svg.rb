@@ -1,11 +1,11 @@
 module KSU::Svg
   module_function
-  def _3c7812cc(svg, font, font_bold, used, used_bold)
+  def svg_ops(svg, font, font_bold, used, used_bold)
     ops = ["0 0 0 rg", "0 0 0 RG", "2 J", "0 j"]
     arr2 = svg.scan(/<g\s[^>]*>|<\/g>|<rect\s[^>]*\/>|<line\s[^>]*\/>|<path\s[^>]*\/>|<polygon\s[^>]*\/>|<circle\s[^>]*\/>|<text\s[^>]*>.*?<\/text>/m)
     arr2.each do |str|
       if str.start_with?("<g")
-        ops.concat(_a846d664(str))
+        ops.concat(path_ops(str))
       elsif str.start_with?("</g")
         ops << "Q"
       elsif str.start_with?("<rect")
@@ -47,7 +47,7 @@ module KSU::Svg
     f = py - px * sin_a - py * cos_a
     ["#{n(cos_a)} #{n(sin_a)} #{n(-sin_a)} #{n(cos_a)} #{n(ent)} #{n(f)} cm"]
   end
-  def _a846d664(node)
+  def path_ops(node)
     ["q"] + transform_ops(attr(node, "transform").to_s)
   end
   def paint_ops(node)
@@ -69,8 +69,8 @@ module KSU::Svg
   def dash(node)
     dash = attr(node, "stroke-dasharray")
     return nil unless dash
-    arr = dash.split(/[ ,]+/).reject(&:empty?).map { |v| n(v) }.join(" ")
-    "[#{arr}] 0 d"
+    vals2 = dash.split(/[ ,]+/).reject(&:empty?).map { |v| n(v) }.join(" ")
+    "[#{vals2}] 0 d"
   end
   def rgb(color)
     return "0 0 0" unless color
@@ -95,13 +95,13 @@ module KSU::Svg
     return pre + ["#{n(x)} #{n(y)} #{n(w)} #{n(h)} re", opac] if half <= 0
     k = half * 0.5523
     x2 = x + w
-    _60000b16 = y + h
+    y_hi3 = y + h
     ops = ["#{n(x + half)} #{n(y)} m", "#{n(x2 - half)} #{n(y)} l"]
     ops << "#{n(x2 - half + k)} #{n(y)} #{n(x2)} #{n(y + half - k)} #{n(x2)} #{n(y + half)} c"
-    ops << "#{n(x2)} #{n(_60000b16 - half)} l"
-    ops << "#{n(x2)} #{n(_60000b16 - half + k)} #{n(x2 - half + k)} #{n(_60000b16)} #{n(x2 - half)} #{n(_60000b16)} c"
-    ops << "#{n(x + half)} #{n(_60000b16)} l"
-    ops << "#{n(x + half - k)} #{n(_60000b16)} #{n(x)} #{n(_60000b16 - half + k)} #{n(x)} #{n(_60000b16 - half)} c"
+    ops << "#{n(x2)} #{n(y_hi3 - half)} l"
+    ops << "#{n(x2)} #{n(y_hi3 - half + k)} #{n(x2 - half + k)} #{n(y_hi3)} #{n(x2 - half)} #{n(y_hi3)} c"
+    ops << "#{n(x + half)} #{n(y_hi3)} l"
+    ops << "#{n(x + half - k)} #{n(y_hi3)} #{n(x)} #{n(y_hi3 - half + k)} #{n(x)} #{n(y_hi3 - half)} c"
     ops << "#{n(x)} #{n(y + half)} l"
     ops << "#{n(x)} #{n(y + half - k)} #{n(x + half - k)} #{n(y)} #{n(x + half)} #{n(y)} c"
     ops << "h"
@@ -109,7 +109,7 @@ module KSU::Svg
   end
   def axis(node)
     x219 = attr(node, "x1")
-    _60000b16 = attr(node, "y1")
+    y_hi3 = attr(node, "y1")
     x2 = attr(node, "x2")
     y2 = attr(node, "y2")
     ops, = paint_ops(node)
@@ -119,17 +119,17 @@ module KSU::Svg
     len2d = dash(node)
     ops << "0 J" if len2d && !cap
     ops << len2d if len2d
-    ops.concat(["#{n(x219)} #{n(_60000b16)} m", "#{n(x2)} #{n(y2)} l", "S"])
+    ops.concat(["#{n(x219)} #{n(y_hi3)} m", "#{n(x2)} #{n(y2)} l", "S"])
     cap || len2d ? ["q"] + ops + ["Q"] : ops
   end
   def path(node)
     ops, opac = paint_ops(node)
     len2d = dash(node)
     ops << "0 J" << len2d if len2d
-    attr(node, "d").to_s.scan(/([MLZ])\s*(-?[\d.]+)?\s*(-?[\d.]+)?/).each do |cmd, _9710d820, b|
+    attr(node, "d").to_s.scan(/([MLZ])\s*(-?[\d.]+)?\s*(-?[\d.]+)?/).each do |cmd, sx2, b|
       case cmd
-      when "M" then ops << "#{n(_9710d820)} #{n(b)} m"
-      when "L" then ops << "#{n(_9710d820)} #{n(b)} l"
+      when "M" then ops << "#{n(sx2)} #{n(b)} m"
+      when "L" then ops << "#{n(sx2)} #{n(b)} l"
       when "Z" then ops << "h"
       end
     end

@@ -136,8 +136,8 @@ module KSU::Pack
     dx2 = lx - cx0
     dy = ly - cy0
     vec = Geom::Transformation.translation(Geom::Vector3d.new(dx2, dy, 0))
-    _1233c2de = vec * rot_tf
-    tr = tr3.inverse * _1233c2de * tr2 * panel.transformation
+    rvec = vec * rot_tf
+    tr = tr3.inverse * rvec * tr2 * panel.transformation
     pair = back_of(panel)
     if source_sheet == grp
       panel.transformation = tr

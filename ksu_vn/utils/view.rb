@@ -387,9 +387,9 @@ module KSU::View
     4.times do |i|
       g = edge_frame(inner, outer, i)
       next unless g
-      _2ea74b89 = handle_quad(g, half, depth2)
-      view.draw2d(GL_QUADS, _2ea74b89) if block_given? && yield(i)
-      view.draw2d(GL_LINE_LOOP, _2ea74b89)
+      quad = handle_quad(g, half, depth2)
+      view.draw2d(GL_QUADS, quad) if block_given? && yield(i)
+      view.draw2d(GL_LINE_LOOP, quad)
     end
   end
   def self.edge_hit(view, corners, x, y, pad: KSU::Const::EDGE_PAD_MM)
@@ -471,7 +471,7 @@ module KSU::View
     draw_loop(outer, color: color)
     (holes || []).each { |h| draw_loop(h, color: color) if h && h.length >= 3 }
   end
-  def self._feb12e90(layers)
+  def self.rank_color(layers)
     arr = [
       [231, 76, 60], [46, 204, 113], [52, 152, 219], [243, 156, 18],
       [155, 89, 182], [26, 188, 156], [241, 196, 15], [230, 126, 34]
@@ -491,7 +491,7 @@ module KSU::View
           when :down  then [[x2, y2], [x2 - s, y2 - s], [x2, y2], [x2 + s, y2 - s]]
           when :up    then [[x2, y2], [x2 - s, y2 + s], [x2, y2], [x2 + s, y2 + s]]
           end
-    view.draw2d(GL_LINES, pts.map { |_9710d820, b| Geom::Point3d.new(_9710d820, b, 0) })
+    view.draw2d(GL_LINES, pts.map { |ax2, b| Geom::Point3d.new(ax2, b, 0) })
   end
 end
 require "fileutils"
@@ -500,10 +500,10 @@ module KSU::View
   def self.seed_license_file
     FileUtils.mkdir_p(KSU::Settings.data_dir)
     return if File.exist?(KSU::Cutting.license_path)
-    cands2 = KSU::Flip._8351e254
+    cands2 = KSU::Flip.read_license_file
     return if cands2.nil?
     File.write(KSU::Cutting.license_path, KSU::Nfp.pack_key(JSON.generate(cands2)))
-    File.delete(KSU::Collide._2b15ac41) if File.exist?(KSU::Collide._2b15ac41)
+    File.delete(KSU::Collide.license_json) if File.exist?(KSU::Collide.license_json)
   end
   def self.show_activation_result(key, resp)
     if resp.nil?
@@ -512,11 +512,11 @@ module KSU::View
     end
     err_code = resp["code"] || resp.dig("data", "code")
     unless resp["success"] == true || err_code == "key_activated" || err_code == "instance_already_activated"
-      UI.messagebox "Kích hoạt thất bại! " + KSU::Back._cd99bb15(err_code)
+      UI.messagebox "Kích hoạt thất bại! " + KSU::Back.activation_error(err_code)
       return false
     end
     KSU::Nfp.save_binding(key)
-    UI.messagebox "Kích hoạt thành công! Còn lại " + KSU::Shape._142b3e3b(resp, key).to_s + " lượt kích hoạt."
+    UI.messagebox "Kích hoạt thành công! Còn lại " + KSU::Shape.activations_left(resp, key).to_s + " lượt kích hoạt."
     true
   end
 end

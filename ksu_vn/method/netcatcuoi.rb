@@ -214,13 +214,13 @@ class KSU::Netcatcuoi
     return unless rec
     @limits = limits_of(rec)
     @arr26 = panel_boxes(rec[:instance], rec[:transform])
-    _d41bb15d = KSU::View.pick_on_plane(view, x, y, @plane_z)
-    _d41bb15d = snap_point(_d41bb15d, @limits, view)
-    return unless _d41bb15d
+    pt = KSU::View.pick_on_plane(view, x, y, @plane_z)
+    pt = snap_point(pt, @limits, view)
+    return unless pt
     @flag56 = true
     @inst3 = rec[:instance]
-    @pt9 = _d41bb15d
-    @pt = _d41bb15d
+    @pt9 = pt
+    @pt = pt
     @arr65 = nil
     view.invalidate
   end
@@ -284,15 +284,15 @@ class KSU::Netcatcuoi
   def build_limits(rec)
     bbox = rec[:bbox]
     gap2 = @tam_cach_nhau.to_f
-    num2, num, _7ebf0e82, _b51d21a5 = usable_rect(rec)
-    if num2 > _7ebf0e82
-      num2 = _7ebf0e82 = (bbox.min.x.to_f + bbox.max.x.to_f) / 2.0
+    num2, num, x_hi2, y_hi2 = usable_rect(rec)
+    if num2 > x_hi2
+      num2 = x_hi2 = (bbox.min.x.to_f + bbox.max.x.to_f) / 2.0
     end
-    if num > _b51d21a5
-      num = _b51d21a5 = (bbox.min.y.to_f + bbox.max.y.to_f) / 2.0
+    if num > y_hi2
+      num = y_hi2 = (bbox.min.y.to_f + bbox.max.y.to_f) / 2.0
     end
-    x = [{ v: num2, lo: num, hi: _b51d21a5 }, { v: _7ebf0e82, lo: num, hi: _b51d21a5 }]
-    y = [{ v: num, lo: num2, hi: _7ebf0e82 }, { v: _b51d21a5, lo: num2, hi: _7ebf0e82 }]
+    x = [{ v: num2, lo: num, hi: y_hi2 }, { v: x_hi2, lo: num, hi: y_hi2 }]
+    y = [{ v: num, lo: num2, hi: x_hi2 }, { v: y_hi2, lo: num2, hi: x_hi2 }]
     panel_guides(rec, gap2).each do |arr|
       n = arr.length
       n.times do |i|
@@ -306,9 +306,9 @@ class KSU::Netcatcuoi
       end
     end
     {
-      x: x.select { |s| s[:v] >= num2 - 1e-6 && s[:v] <= _7ebf0e82 + 1e-6 },
-      y: y.select { |s| s[:v] >= num - 1e-6 && s[:v] <= _b51d21a5 + 1e-6 },
-      xs: num2, xe: _7ebf0e82, ys: num, ye: _b51d21a5
+      x: x.select { |s| s[:v] >= num2 - 1e-6 && s[:v] <= x_hi2 + 1e-6 },
+      y: y.select { |s| s[:v] >= num - 1e-6 && s[:v] <= y_hi2 + 1e-6 },
+      xs: num2, xe: x_hi2, ys: num, ye: y_hi2
     }
   end
   def panel_guides(rec, gap2)
@@ -329,8 +329,8 @@ class KSU::Netcatcuoi
     y = ny if ny && (ny - y).abs <= tol
     Geom::Point3d.new(x, y, @plane_z)
   end
-  def snap_tol(view, _d41bb15d)
-    view.pixels_to_model(12, _d41bb15d).to_f
+  def snap_tol(view, pt)
+    view.pixels_to_model(12, pt).to_f
   rescue StandardError
     @tam_cach_le.to_f
   end
@@ -427,12 +427,12 @@ class KSU::Netcatcuoi
     key = KSU::Gannhan.license_field("k").to_s
     str2 = KSU::Xephang.normalize_id(KSU::Gannhan.license_field("i")).to_s
     return if key.empty? || str2.empty?
-    new_id = KSU::Mirror._4b6ac4b0.to_s
+    new_id = KSU::Mirror.machine_id.to_s
     return if new_id.empty? || KSU::Xephang.normalize_id(new_id) == str2
-    return unless KSU::Field.activation_ok?(KSU::Corner._4ac4c12f(key))
+    return unless KSU::Field.activation_ok?(KSU::Corner.deactivate_now(key))
     KSU::Store.set_binding("i", new_id)
     KSU::Store.set_binding("t", Time.now.iso8601)
-    KSU::Toiuuvan._e899e740
+    KSU::Toiuuvan.drop_id_cache
     true
   rescue
     nil
