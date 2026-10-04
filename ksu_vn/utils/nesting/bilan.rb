@@ -81,7 +81,7 @@ module KSU::Bilan
         next unless KSU::Geom.boxes_overlap?(fld_bbox, panel4[:bbox], num)
         _33f52d3e = _d090233d([_2e113abe], panel4[:holes])
         if _33f52d3e
-          if KSU::Geom._0c91518b(_2e113abe, _33f52d3e, num)
+          if KSU::Geom.polys_overlap?(_2e113abe, _33f52d3e, num)
             h[i] = true
             h[j] = true
           end
@@ -90,7 +90,7 @@ module KSU::Bilan
         _3e1d5f51 = _d090233d([panel4[:poly]], fld[:holes])
         if _3e1d5f51
           _982c8eb9 = (h2[j] ||= _4bed79e1(panel4[:poly], num4))
-          if KSU::Geom._0c91518b(_982c8eb9, _3e1d5f51, num)
+          if KSU::Geom.polys_overlap?(_982c8eb9, _3e1d5f51, num)
             h[i] = true
             h[j] = true
           end

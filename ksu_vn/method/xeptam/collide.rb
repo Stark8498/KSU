@@ -362,7 +362,7 @@ module KSU::Collide
     h = bbox[:max_y] - bbox[:min_y]
     w > h ? w : h
   end
-  def _25080947(arr, pt2)
+  def shift_nfp(arr, pt2)
     return unless @anchor_pt && @drag_offset
     return if arr[:rings].nil? || arr[:rings].empty?
     num6 = @anchor_pt.x.to_f
@@ -420,14 +420,14 @@ module KSU::Collide
     end
     false
   end
-  def _11075c77(arr)
+  def hits_border?(arr)
     return false unless @sel_polys && arr && arr[:instance]
     arr2 = obstacles_of(arr[:instance])
     return false unless arr2 && !arr2[:borders].empty?
     @sel_polys.each do |poly|
       next if poly.nil? || poly.length < 3
       arr2[:borders].each do |fld|
-        return true if KSU::Geom._0c91518b(poly, fld[:poly], 0.0)
+        return true if KSU::Geom.polys_overlap?(poly, fld[:poly], 0.0)
       end
     end
     false
@@ -460,7 +460,7 @@ module KSU::Collide
           arr
         end
       borders.each do |fld|
-        pt = KSU::Geom._0c91518b(bbox, fld[:poly], min_margin)
+        pt = KSU::Geom.polys_overlap?(bbox, fld[:poly], min_margin)
         next unless pt
         _0b24b753 = Math.sqrt(pt.x * pt.x + pt.y * pt.y)
         if _0b24b753 > num
@@ -473,7 +473,7 @@ module KSU::Collide
         next if h[fld[:panel].object_id]
         _33f52d3e = hole_around([bbox], fld[:holes])
         if _33f52d3e
-          pt = KSU::Geom._0c91518b(bbox, _33f52d3e, @tam_cach_nhau)
+          pt = KSU::Geom.polys_overlap?(bbox, _33f52d3e, @tam_cach_nhau)
           if pt
             _0b24b753 = Math.sqrt(pt.x * pt.x + pt.y * pt.y)
             if _0b24b753 > num

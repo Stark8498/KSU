@@ -140,7 +140,7 @@ module KSU::Geom
     len2d = d4 if d4 < len2d
     len2d
   end
-  def self._0c91518b(arr2, arr, gap2)
+  def self.polys_overlap?(arr2, arr, gap2)
     g = gap2.to_f
     num = 0.0
     _a9cb01d0 = _7150030a = 0.0

@@ -266,14 +266,14 @@ module KSU::Font
     end
     @_004b3534
   end
-  def _1589cfd8(text)
+  def text_extent(text)
     import
     lo = nil
     hi = nil
     text.to_s.unicode_normalize.each_char do |color|
-      _65570dfe = color.ord
-      next if _65570dfe == 32 || _65570dfe == 9
-      ent = strokes_for(_65570dfe) || strokes_for(0)
+      code = color.ord
+      next if code == 32 || code == 9
+      ent = strokes_for(code) || strokes_for(0)
       next unless ent
       ent.each do |g|
         [g[1], g[3]].each do |y|
@@ -285,51 +285,51 @@ module KSU::Font
     return [0.0, HEIGHT] if lo.nil?
     [lo, hi]
   end
-  def half_width(text, flag2 = false, _48cc9611 = nil)
+  def half_width(text, flag2 = false, gap3 = nil)
     import
     return 0.0 unless ready?
     stream = text.to_s.unicode_normalize
-    gap2 = _48cc9611 || (flag2 ? TIGHT_GAP : CHAR_PADDING)
+    gap2 = gap3 || (flag2 ? TIGHT_GAP : CHAR_PADDING)
     w = 0.0
     stream.each_char do |color|
-      _65570dfe = color.ord
-      if _65570dfe == 32 || _65570dfe == 9
+      code = color.ord
+      if code == 32 || code == 9
         w += SPACE
         next
       end
       if flag2
-        entity = bounds_of(_65570dfe)
+        entity = bounds_of(code)
         w += (entity[1] - entity[0]) + gap2
       else
-        flag = width_of(_65570dfe)
-        flag = width_of(0) if @snap_edges[_65570dfe].nil?
+        flag = width_of(code)
+        flag = width_of(0) if @snap_edges[code].nil?
         w += flag + gap2
       end
     end
     w > gap2 ? w - gap2 : 0.0
   end
-  def _1ff4cc8f(text, box, upm, flag = false, _48cc9611 = nil, xf = 1.0)
+  def text_strokes(text, box, upm, flag = false, gap3 = nil, xf = 1.0)
     import
     return [] unless ready?
     arr2 = []
     stream = text.to_s.unicode_normalize
     x = 0.0
-    pad_x = (_48cc9611 || (flag ? TIGHT_GAP : CHAR_PADDING)) * upm
+    pad_x = (gap3 || (flag ? TIGHT_GAP : CHAR_PADDING)) * upm
     _738ce77b = SPACE * upm
     stream.each_char do |color|
-      _65570dfe = color.ord
-      if _65570dfe == 32 || _65570dfe == 9
+      code = color.ord
+      if code == 32 || code == 9
         x += _738ce77b
         next
       end
-      snap_edges = strokes_for(_65570dfe)
+      snap_edges = strokes_for(code)
       snap_edges = strokes_for(0) if snap_edges.nil?
-      entity = bounds_of(_65570dfe)
+      entity = bounds_of(code)
       if flag
         _4bcb6213 = -entity[0]
         _68cbfb72 = entity[1] - entity[0]
       else
-        _68cbfb72 = width_of(_65570dfe)
+        _68cbfb72 = width_of(code)
         _4bcb6213 = (_68cbfb72 - entity[0] - entity[1]) / 2.0
       end
       if snap_edges
@@ -344,8 +344,8 @@ module KSU::Font
     end
     arr2
   end
-  def _068ebc81(ents, text, box, upm, flag = false, _48cc9611 = nil, xf = 1.0)
-    _1ff4cc8f(text, box, upm, flag, _48cc9611, xf).each do |s|
+  def draw_text_edges(ents, text, box, upm, flag = false, gap3 = nil, xf = 1.0)
+    text_strokes(text, box, upm, flag, gap3, xf).each do |s|
       ents.add_edges([s[0][0], s[0][1], 0], [s[1][0], s[1][1], 0])
     end
     nil

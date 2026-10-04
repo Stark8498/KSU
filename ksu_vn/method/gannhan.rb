@@ -309,7 +309,7 @@ class KSU::Gannhan
     relabel_each do |board, src, _7e53f420, rot|
       font = src[0] == _7e53f420 ? src[1] : src[0]
       clear_cnc_marks(board)
-      KSU::Label._f612f2b9(board, font)
+      KSU::Label.mark_labeled_face(board, font)
       [font, rot]
     end
   end

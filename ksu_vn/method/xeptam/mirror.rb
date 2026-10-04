@@ -231,7 +231,7 @@ module KSU::Mirror
   end
   def _9b91a3d7(view)
     return unless @nesting && @nesting.valid?
-    arr = _101ef2e3(view, @down_x, @down_y, @drag_x, @drag_y)
+    arr = panels_in_box(view, @down_x, @down_y, @drag_x, @drag_y)
     return if arr.empty?
     _33c34f08 = KSU::View.face_color
     edge = KSU::View.edge_color
@@ -286,7 +286,7 @@ module KSU::Mirror
     end
     best
   end
-  def _101ef2e3(view, x218, _60000b16, x2, y2)
+  def panels_in_box(view, x218, _60000b16, x2, y2)
     _2cf18878, _d6439c88 = [x218, x2].minmax
     _ab593548, bot = [_60000b16, y2].minmax
     _3b0d8ae2 = x2 < x218
@@ -346,7 +346,7 @@ module KSU::Mirror
     return nil if sheet && !sheet.valid?
     KSU::Cutting.outline(panel, panel_tf(panel, sheet))
   end
-  def _83ee7e20(loops, color)
+  def stroke_loops(loops, color)
     arr2 = []
     loops.each do |arr|
       next unless arr && arr.length >= 3
@@ -375,20 +375,20 @@ module KSU::Mirror
     KSU::View.draw_loops(fill[:outer], fill[:holes], _4a7d3cee)
     true
   end
-  def _b5e0ad4b
+  def rebuild_geom
     build_pairs
-    _a70d673b
+    clear_poly_cache
     reset_caches
     rebuild_outlines
   end
-  def _1817fa46
-    _b5e0ad4b
+  def refresh_state
+    rebuild_geom
     @overlap_fills = KSU::Nesting.overlap_polys(@nesting)
     @err_pts = KSU::Nesting.error_points(@nesting)
     KSU::Sheet.invalidate_cache
     KSU::View.clear_cache
   end
-  def _a70d673b
+  def clear_poly_cache
     @poly_cache = {}
     @h24 = {}
     return unless @nesting && @nesting.valid?

@@ -277,7 +277,7 @@ class KSU::Toiuuvan
       rec = @sheets.find { |s| s[:instance] == sheet }
       next unless rec
       KSU::View.draw_brackets(view, rec[:top_corners]) { |i| handle_color(sheet, i, @hover_corner, @pressed) }
-      KSU::View._2873a79b(view, rec[:top_corners]) { |i| handle_color(sheet, i, @hover_edge, @pressed) }
+      KSU::View.draw_corner_handles(view, rec[:top_corners]) { |i| handle_color(sheet, i, @hover_edge, @pressed) }
     end
     draw_rect2d(view) if @banding
     _a42dd0f4(view)
@@ -416,12 +416,12 @@ class KSU::Toiuuvan
     _9535dc0b = Array.new(n, false)
     arr.each { |i| _9535dc0b[i] = true }
     flag = (dir == :prev || dir == :first) ? :prev : :next
-    _4ce596b6 = dir == :first || dir == :last
+    repeat = dir == :first || dir == :last
     bbox = false
     loop do
       _8bb0188d = _44a5d1aa(materials, _9535dc0b, flag)
       bbox ||= _8bb0188d
-      break if !_8bb0188d || !_4ce596b6
+      break if !_8bb0188d || !repeat
     end
     bbox ? materials : nil
   end

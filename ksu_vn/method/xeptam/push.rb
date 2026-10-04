@@ -58,7 +58,7 @@ module KSU::Push
     end
     Geom::Vector3d.new(ax, ay, 0)
   end
-  def _7f17a5c5(arr3)
+  def fits_on?(arr3)
     inst5 = arr3[:instance]
     arr2 = obstacles_of(inst5)
     return true unless arr2
@@ -75,14 +75,14 @@ module KSU::Push
                     KSU::Geom.bounds(arr)
       _6a5c7d09 = (@sel_hulls && @sel_hulls[ix]) || arr
       borders.each do |fld|
-        return false if KSU::Geom._0c91518b(arr, fld[:poly], min_margin)
+        return false if KSU::Geom.polys_overlap?(arr, fld[:poly], min_margin)
       end
       KSU::Nfp.grid_query(grid, _f38e85e6, @tam_cach_nhau).each do |i|
         fld = items[i]
         next if h[fld[:panel].object_id]
         _33f52d3e = hole_around([arr], fld[:holes])
         if _33f52d3e
-          return false if KSU::Geom._0c91518b(arr, _33f52d3e, @tam_cach_nhau)
+          return false if KSU::Geom.polys_overlap?(arr, _33f52d3e, @tam_cach_nhau)
           next
         end
         next unless KSU::Geom.boxes_overlap?(_f38e85e6, fld[:bbox], @tam_cach_nhau)
@@ -102,11 +102,11 @@ module KSU::Push
       @grid_cache.delete(s.object_id)
     end
   end
-  def _0b16f3d7
+  def refresh_avail
     key = [@xep_tam_tu_do, @tam_cach_nhau.to_f, KSU::Avail.sides(@tam_cach_le.to_f)]
-    if key != @_02765833
+    if key != @avail_key
       @grid_cache = {}
-      @_02765833 = key
+      @avail_key = key
     end
     if @xep_tam_tu_do
       @arr18 = []
@@ -177,7 +177,7 @@ module KSU::Push
           panel = items[j]
           _33f52d3e = hole_around([_2e113abe], panel[:holes])
           if _33f52d3e
-            if KSU::Geom._0c91518b(_2e113abe, _33f52d3e, num)
+            if KSU::Geom.polys_overlap?(_2e113abe, _33f52d3e, num)
               h[i] = true
               h[j] = true
             end
@@ -186,7 +186,7 @@ module KSU::Push
           _3e1d5f51 = hole_around([panel[:poly]], fld[:holes])
           if _3e1d5f51
             _982c8eb9 = (h3[j] ||= _5dc6e713(panel[:poly], num3))
-            if KSU::Geom._0c91518b(_982c8eb9, _3e1d5f51, num)
+            if KSU::Geom.polys_overlap?(_982c8eb9, _3e1d5f51, num)
               h[i] = true
               h[j] = true
             end
@@ -220,14 +220,14 @@ module KSU::Push
   rescue StandardError
     poly
   end
-  def _3ea06bed(_f222cc53)
+  def rotate_sel(rad)
     return if @sel.empty?
     apply_offset if @flag56
     KSU.start unless @flag56
     bb = Geom::BoundingBox.new
-    @sel.each { |grp| bb.add(KSU::View._fa674c93(grp)) }
-    _32310dba = bb.center
-    tr2 = Geom::Transformation.rotation(_32310dba, [0, 0, 1], _f222cc53)
+    @sel.each { |grp| bb.add(KSU::View.panel_bbox(grp)) }
+    pivot = bb.center
+    tr2 = Geom::Transformation.rotation(pivot, [0, 0, 1], rad)
     @sel.each do |panel|
       next unless panel.valid?
       panel.transform!(tr2)

@@ -100,7 +100,7 @@ module KSU::Label
     end
     grp.delete_attribute(DICT, K_LABEL_ROTATION)
   end
-  def draw_label_on(grp, idx, _2cb52d46, topts)
+  def draw_label_on(grp, idx, layer, topts)
     grp.make_unique
     ents = KSU.entities_in(grp)
     return false unless ents
@@ -113,8 +113,8 @@ module KSU::Label
     b2 = KSU::Cutting.board_faces(grp, tf)
     return false unless b2
     font = keep_existing ? b2.find { |f| f.get_attribute(DICT, K_IS_LABELED_FACE) } : nil
-    font ||= _681febe3(grp, b2, tf)
-    font ||= _89cdc81b(grp, b2, tf)
+    font ||= face_by_cutting(grp, b2, tf)
+    font ||= face_by_children(grp, b2, tf)
     font ||= b2.find { |f| f.get_attribute(DICT, K_IS_CNCED_FACE) }
     font ||= b2.find { |f| f.get_attribute(DICT, K_IS_LABELED_FACE) }
     font ||= pick_face(b2[0], b2[1], tf)
@@ -131,8 +131,8 @@ module KSU::Label
     draw_badge(grp2, grp2.entities, disp, idx, topts)
     rot = grp.get_attribute(DICT, K_LABEL_ROTATION) || 0
     label_box(grp2, font, tf, rot, topts[:max_size], topts.fetch(:center, true))
-    KSU::Cutting.set_layer(grp2, _2cb52d46)
-    _f612f2b9(grp, font)
+    KSU::Cutting.set_layer(grp2, layer)
+    mark_labeled_face(grp, font)
     grp.set_attribute(DICT, K_LABEL_ROTATION, rot)
     grp2.definition.invalidate_bounds if grp2.respond_to?(:definition) && grp2.definition
     grp.definition.invalidate_bounds if grp.respond_to?(:definition) && grp.definition
@@ -148,22 +148,22 @@ module KSU::Label
     num = 0.001 if num <= 0
     upm = [(1.5 / num), NAME_SCALE].min
     num_w = num * upm
-    arr = KSU::Font._1589cfd8(text)
+    arr = KSU::Font.text_extent(text)
     py = (arr[0] + arr[1]) / 2.0 * upm
     num2 = 1 - py
-    KSU::Font._068ebc81(ents, text, [1.1 - (num_w / 2.0), num2], upm, true)
+    KSU::Font.draw_text_edges(ents, text, [1.1 - (num_w / 2.0), num2], upm, true)
     x += 2.2
     name_w = KSU::Font.half_width(badge_text, false, gap2) * NAME_SCALE * xf
     box_w = name_w + TEXT_H_PADDING_X2
     y = num2
-    KSU::Font._068ebc81(ents, badge_text, [x + ((box_w - name_w) / 2), y], NAME_SCALE, false, gap2, xf)
+    KSU::Font.draw_text_edges(ents, badge_text, [x + ((box_w - name_w) / 2), y], NAME_SCALE, false, gap2, xf)
     x2 = x + box_w
     w2 = name_w
     if w2 > 0
-      _d38e1814 = x + ((box_w - w2) / 2)
-      _5b73324a = _d38e1814 + w2
-      ents.add_edges([x, 1, 0], [_d38e1814, 1, 0])
-      ents.add_edges([_5b73324a, 1, 0], [x2, 1, 0])
+      gx1 = x + ((box_w - w2) / 2)
+      gx2 = gx1 + w2
+      ents.add_edges([x, 1, 0], [gx1, 1, 0])
+      ents.add_edges([gx2, 1, 0], [x2, 1, 0])
     else
       ents.add_edges([x, 1, 0], [x2, 1, 0])
     end
@@ -176,7 +176,7 @@ module KSU::Label
     gr.set_attribute(DICT, K_LABEL_WIDTH, (row_w * flag).to_f)
     gr.set_attribute(DICT, K_LABEL_HEIGHT, LABEL_H_REF.to_f)
   end
-  def label_box(_42782d97, font, tf, rot, max_h, center = true)
+  def label_box(lbl, font, tf, rot, max_h, center = true)
     h = face_axes(font, tf)
     unless center
       rect = inner_rect(font, tf, h)
@@ -199,56 +199,56 @@ module KSU::Label
       num = 4.mm if h[:small_size] < 20.cm
       num = 2.mm if h[:small_size] < 10.cm
     end
-    _8010294b(_42782d97, h, tf, rot, max_h, num)
+    place_label(lbl, h, tf, rot, max_h, num)
   end
-  def _8010294b(_42782d97, arr, tf, rot, max_h, _5ec460ae)
-    bb2 = _42782d97.local_bounds.width
-    bb = _42782d97.local_bounds.height
+  def place_label(lbl, arr, tf, rot, max_h, margin)
+    bb2 = lbl.local_bounds.width
+    bb = lbl.local_bounds.height
     return unless bb2 && bb && bb2 > 0 && bb > 0
     pt2 = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), rot.degrees)
     if rot == 0 || rot == 180
-      stroke_w = (arr[:large_size] - _5ec460ae) / bb2
-      sheet_h = [(arr[:small_size] - _5ec460ae), max_h].min / bb
+      stroke_w = (arr[:large_size] - margin) / bb2
+      sheet_h = [(arr[:small_size] - margin), max_h].min / bb
     else
-      stroke_w = (arr[:small_size] - _5ec460ae) / bb2
-      sheet_h = [(arr[:large_size] - _5ec460ae), max_h].min / bb
+      stroke_w = (arr[:small_size] - margin) / bb2
+      sheet_h = [(arr[:large_size] - margin), max_h].min / bb
     end
     num = [stroke_w, sheet_h].min
     num = 0.001 if num <= 0
     tr2 = Geom::Transformation.scaling(num, num, 1.0)
     tr = Geom::Transformation.new(tf.inverse)
     tr = tr * arr[:tf_axes]
-    _c8bde48c = tr.xaxis.transform(tf).angle_between(arr[:line_vec])
-    pt = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), _c8bde48c)
+    ang = tr.xaxis.transform(tf).angle_between(arr[:line_vec])
+    pt = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), ang)
     tr = tr * pt
     unless tr.xaxis.transform(tf).parallel?(arr[:line_vec])
       tr = tr * pt.inverse
-      _c8bde48c = Math::PI - _c8bde48c
-      pt = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), _c8bde48c)
+      ang = Math::PI - ang
+      pt = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), ang)
       tr = tr * pt
     end
     if tr.yaxis.transform(tf).z < 0
       tr = tr * pt.inverse
-      _c8bde48c = _c8bde48c + Math::PI
-      pt = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), _c8bde48c)
+      ang = ang + Math::PI
+      pt = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), ang)
       tr = tr * pt
     end
     tr = tr * pt2
     tr = tr * tr2
-    _42782d97.transformation = tr
-    _42782d97.set_attribute(DICT, K_LABEL_SCALE, (num * bb / LABEL_H_REF).to_f)
-    _42782d97.definition.invalidate_bounds if _42782d97.respond_to?(:definition) && _42782d97.definition
+    lbl.transformation = tr
+    lbl.set_attribute(DICT, K_LABEL_SCALE, (num * bb / LABEL_H_REF).to_f)
+    lbl.definition.invalidate_bounds if lbl.respond_to?(:definition) && lbl.definition
   end
   def face_axes(font, tf)
-    _32998202 = KSU::Cutting.box_axes(font.bounds, tf)
-    large_size = _32998202[2][0]
-    small_size = _32998202[1][0]
-    line_vec = _32998202[2][1]
+    axes = KSU::Cutting.box_axes(font.bounds, tf)
+    large_size = axes[2][0]
+    small_size = axes[1][0]
+    line_vec = axes[2][1]
     snap_edges = font.edges.map { |ent| [ent, ent.length(tf)] }.sort_by { |arr2| arr2[1] }
     if snap_edges.length >= 2
       vec = snap_edges[-1][0].line[1].transform(tf)
-      _298717ec = snap_edges[-2][0].line[1].transform(tf)
-      if snap_edges[-1][1] > (large_size / 1.414) && vec.parallel?(_298717ec) && (snap_edges[-1][0].length(tf) - snap_edges[-2][0].length(tf)).abs < 0.001
+      prev_dir = snap_edges[-2][0].line[1].transform(tf)
+      if snap_edges[-1][1] > (large_size / 1.414) && vec.parallel?(prev_dir) && (snap_edges[-1][0].length(tf) - snap_edges[-2][0].length(tf)).abs < 0.001
         line_vec = vec
       end
     end
@@ -261,44 +261,44 @@ module KSU::Label
     { large_size: large_size, small_size: small_size, line_vec: line_vec, tf_axes: tf_axes,
       center: center, ax: ax, ay: ay, az: az }
   end
-  def _9f608530(_bc71159c, poly)
+  def x_crossings(y, poly)
     arr = []
     j = poly.size - 1
     poly.each_index do |i|
       yi = poly[i][1]
       yj = poly[j][1]
-      if (yi > _bc71159c) != (yj > _bc71159c)
+      if (yi > y) != (yj > y)
         xi = poly[i][0]
         xj = poly[j][0]
-        arr << (xj - xi) * (_bc71159c - yi) / (yj - yi) + xi
+        arr << (xj - xi) * (y - yi) / (yj - yi) + xi
       end
       j = i
     end
     arr.sort!
     arr
   end
-  def _efa8b7d4(arr, _fbc30e40)
+  def inside_at?(arr, xq)
     num = 0
     arr.each do |x|
-      break if x >= _fbc30e40
+      break if x >= xq
       num += 1
     end
     num.odd?
   end
-  def _8cfbee10(arr, tol)
-    _e8649a72 = arr.first
-    _e25dbacd = arr.last
-    _972803c5 = arr.dup
-    _89bad203 = (_e25dbacd - _e8649a72) / 64.0
-    (1...64).each { |i| _972803c5 << _e8649a72 + _89bad203 * i } if _89bad203 > tol
-    KSU::Geom._a404e7b6(_972803c5, tol)
+  def sample_axis(arr, tol)
+    lo = arr.first
+    hi = arr.last
+    vals = arr.dup
+    step = (hi - lo) / 64.0
+    (1...64).each { |i| vals << lo + step * i } if step > tol
+    KSU::Geom._a404e7b6(vals, tol)
   end
   def inner_rect(font, tf, arr6)
     color = arr6[:center]
     n = arr6[:az]
     line_vec = arr6[:line_vec]
-    _4664cd3f = line_vec.dot(n)
-    ax = Geom::Vector3d.new(line_vec.x - n.x * _4664cd3f, line_vec.y - n.y * _4664cd3f, line_vec.z - n.z * _4664cd3f)
+    dot = line_vec.dot(n)
+    ax = Geom::Vector3d.new(line_vec.x - n.x * dot, line_vec.y - n.y * dot, line_vec.z - n.z * dot)
     if ax.length > 1e-6
       ax.normalize!
     else
@@ -309,48 +309,48 @@ module KSU::Label
     pt.normalize!
     outer = font.outer_loop
     return nil unless outer
-    _1431d16b = lambda do |face|
+    to_2d = lambda do |face|
       face.vertices.map do |v|
         len2d = v.position.transform(tf) - color
         [len2d.dot(ax), len2d.dot(pt)]
       end
     end
-    opac = _1431d16b.call(outer)
+    opac = to_2d.call(outer)
     return nil if opac.size < 3
-    holes = (font.loops - [outer]).map { |_b41d8800| _1431d16b.call(_b41d8800) }
+    holes = (font.loops - [outer]).map { |_b41d8800| to_2d.call(_b41d8800) }
     arr12 = opac + holes.flatten(1)
     arr9 = arr12.map { |arr7| arr7[0] }.sort
     style = arr12.map { |arr7| arr7[1] }.sort
-    _e0c27e7f = arr9.last - arr9.first
-    _5a14088d = style.last - style.first
-    return nil if _e0c27e7f <= 0 || _5a14088d <= 0
-    tol = [_e0c27e7f, _5a14088d].max / 192.0
-    arr2 = _8cfbee10(arr9, tol)
-    arr3 = _8cfbee10(style, tol)
+    span_u = arr9.last - arr9.first
+    span_v = style.last - style.first
+    return nil if span_u <= 0 || span_v <= 0
+    tol = [span_u, span_v].max / 192.0
+    arr2 = sample_axis(arr9, tol)
+    arr3 = sample_axis(style, tol)
     return nil if arr2.size < 2 || arr3.size < 2
     num2 = arr2.size - 1
     rows = arr3.size - 1
     grid = Array.new(rows) { Array.new(num2, false) }
     rows.times do |half|
-      _6e2cbaa3 = arr3[half]
-      _57f116a2 = arr3[half + 1]
-      _b6d1d40c = (_57f116a2 - _6e2cbaa3) * 1e-6
-      arr10 = _9f608530(_6e2cbaa3 + _b6d1d40c, opac)
-      arr8 = _9f608530(_57f116a2 - _b6d1d40c, opac)
+      v0 = arr3[half]
+      v1 = arr3[half + 1]
+      eps = (v1 - v0) * 1e-6
+      arr10 = x_crossings(v0 + eps, opac)
+      arr8 = x_crossings(v1 - eps, opac)
       next if arr10.size < 2 || arr8.size < 2
-      arr15 = holes.map { |h| _9f608530(_6e2cbaa3 + _b6d1d40c, h) }
-      arr14 = holes.map { |h| _9f608530(_57f116a2 - _b6d1d40c, h) }
+      arr15 = holes.map { |h| x_crossings(v0 + eps, h) }
+      arr14 = holes.map { |h| x_crossings(v1 - eps, h) }
       arr16 = grid[half]
       num2.times do |num|
-        _296d32cf = arr2[num]
-        _20e46575 = arr2[num + 1]
-        _5353a747 = (_20e46575 - _296d32cf) * 1e-6
-        _a5d8aa8c = _296d32cf + _5353a747
-        _c05963ef = _20e46575 - _5353a747
-        next unless _efa8b7d4(arr10, _a5d8aa8c) && _efa8b7d4(arr10, _c05963ef) &&
-                    _efa8b7d4(arr8, _a5d8aa8c) && _efa8b7d4(arr8, _c05963ef)
-        next if arr15.any? { |x2| _efa8b7d4(x2, _a5d8aa8c) || _efa8b7d4(x2, _c05963ef) }
-        next if arr14.any? { |x2| _efa8b7d4(x2, _a5d8aa8c) || _efa8b7d4(x2, _c05963ef) }
+        u0 = arr2[num]
+        u1 = arr2[num + 1]
+        eps_u = (u1 - u0) * 1e-6
+        ua = u0 + eps_u
+        ub = u1 - eps_u
+        next unless inside_at?(arr10, ua) && inside_at?(arr10, ub) &&
+                    inside_at?(arr8, ua) && inside_at?(arr8, ub)
+        next if arr15.any? { |x2| inside_at?(x2, ua) || inside_at?(x2, ub) }
+        next if arr14.any? { |x2| inside_at?(x2, ua) || inside_at?(x2, ub) }
         arr16[num] = true
       end
     end
@@ -360,12 +360,12 @@ module KSU::Label
     best = nil
     best_a = 0.0
     rows.times do |half|
-      _57f116a2 = arr3[half + 1]
+      v1 = arr3[half + 1]
       num2.times do |num|
         if grid[half][num]
           start2[num] = arr3[half] unless active_ix[num]
           active_ix[num] = true
-          arr5[num] = _57f116a2 - start2[num]
+          arr5[num] = v1 - start2[num]
         else
           active_ix[num] = false
           arr5[num] = 0.0
@@ -385,24 +385,24 @@ module KSU::Label
           _5fb96e91 = h * (arr2[num] - arr2[flag])
           if h > 0 && _5fb96e91 > best_a
             best_a = _5fb96e91
-            best = [arr2[flag], arr2[num], _57f116a2 - h, _57f116a2]
+            best = [arr2[flag], arr2[num], v1 - h, v1]
           end
         end
       end
     end
     return nil unless best
-    _b0f47b06 = (best[0] + best[1]) / 2.0
-    _f79423d2 = (best[2] + best[3]) / 2.0
+    cu = (best[0] + best[1]) / 2.0
+    cv = (best[2] + best[3]) / 2.0
     large = best[1] - best[0]
     small = best[3] - best[2]
     mid = color + Geom::Vector3d.new(
-      ax.x * _b0f47b06 + pt.x * _f79423d2,
-      ax.y * _b0f47b06 + pt.y * _f79423d2,
-      ax.z * _b0f47b06 + pt.z * _f79423d2
+      ax.x * cu + pt.x * cv,
+      ax.y * cu + pt.y * cv,
+      ax.z * cu + pt.z * cv
     )
     { large: large, small: small, center: mid }
   end
-  def _681febe3(grp, b2, tf)
+  def face_by_cutting(grp, b2, tf)
     grp7 = KSU::Cutting.cutting_group(grp)
     return nil unless grp7 && grp7.valid? && grp7.visible?
     snap_edges = (KSU.entities_in(grp7) || []).grep(Sketchup::Edge)
@@ -412,7 +412,7 @@ module KSU::Label
     d1 = pt.distance_to_plane([b2[1].bounds.center.transform(tf), b2[1].normal.transform(tf)])
     vec2 < d1 ? b2[0] : b2[1]
   end
-  def _89cdc81b(grp, b2, tf)
+  def face_by_children(grp, b2, tf)
     vec2 = [b2[0].bounds.center.transform(tf), b2[0].normal.transform(tf)]
     vec = [b2[1].bounds.center.transform(tf), b2[1].normal.transform(tf)]
     flag = false
@@ -445,9 +445,9 @@ module KSU::Label
     return true if _a233e68c(g.layer)
     arr.grep(Sketchup::Edge).any? { |ent| _a233e68c(ent.layer) }
   end
-  def _a233e68c(_2cb52d46)
-    return false unless _2cb52d46 && _2cb52d46.respond_to?(:line_style)
-    grp = _2cb52d46.line_style
+  def _a233e68c(layer)
+    return false unless layer && layer.respond_to?(:line_style)
+    grp = layer.line_style
     return false unless grp
     grp.name.to_s != "Solid Basic"
   end
@@ -483,7 +483,7 @@ module KSU::Label
     str = str[1..-1].to_s if str.start_with?(" ")
     str
   end
-  def _f612f2b9(gr, font)
+  def mark_labeled_face(gr, font)
     (KSU.entities_in(gr) || []).grep(Sketchup::Face).each do |f|
       f.delete_attribute(DICT, K_IS_LABELED_FACE)
     end

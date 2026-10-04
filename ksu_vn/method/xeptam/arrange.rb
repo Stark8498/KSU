@@ -60,7 +60,7 @@ module KSU::Arrange
     KSU.commit
     return unless ok
     @flag12 = false
-    _4daa2bb0(nil)
+    select_sheet_id(nil)
   end
   def move_sheet(side)
     return unless @flag37 && @flag37.valid?
@@ -125,7 +125,7 @@ module KSU::Arrange
     KSU.commit
     @flag37 = grp2 if grp2 && grp2.valid?
     sheet_list(@nesting)
-    _b5e0ad4b
+    rebuild_geom
   end
   def name_rect(view, rec)
     outer = rec[:top_corners].map { |_23505ef9| view.screen_coords(_23505ef9) }
@@ -146,18 +146,18 @@ module KSU::Arrange
     end
     false
   end
-  def _ce446adc(dir)
+  def reorder_sheet(dir)
     return unless @flag37 && @flag37.valid?
     bbox = false
     case dir
-    when :first then bbox = true while _e1a83eaf(:prev)
-    when :last then bbox = true while _e1a83eaf(:next)
-    else bbox = _e1a83eaf(dir)
+    when :first then bbox = true while reorder_step(:prev)
+    when :last then bbox = true while reorder_step(:next)
+    else bbox = reorder_step(dir)
     end
     return unless bbox
-    _1817fa46
+    refresh_state
   end
-  def _e1a83eaf(dir)
+  def reorder_step(dir)
     sheets = KSU::Sheet.row_of(@flag37, @arr23)
     ix = sheets.index(@flag37)
     return false unless ix
@@ -245,12 +245,12 @@ module KSU::Arrange
       shift_cached_polys(arr)
     end
   end
-  def _c574b8db(dir)
+  def swap_sheet_type(dir)
     return unless @flag37 && @flag37.valid?
     return if KSU::Sheet.hidden?(@flag37)
     forward = dir == :up
     unless @flag37.get_attribute("KSU", "phan").nil?
-      _3d652c2e(forward)
+      swap_part_type(forward)
       return
     end
     sheet_ix = @flag37.get_attribute("ABF", "sheet-id")
@@ -259,24 +259,24 @@ module KSU::Arrange
     KSU.start
     new_id = KSU::Sheet.swap_type_block(@nesting, forward, sheet_ix)
     KSU.commit
-    _4daa2bb0(new_id)
+    select_sheet_id(new_id)
   end
-  def _3d652c2e(forward)
+  def swap_part_type(forward)
     target = KSU::Sheet._de0a88d4(@nesting, @flag37, forward)
     return unless target && target.valid?
     _35f2e047(@flag37, target)
     @flag37 = target if target.valid?
     sheet_list(@nesting)
-    _1817fa46
+    refresh_state
   end
-  def _4daa2bb0(new_id)
+  def select_sheet_id(new_id)
     sheet_list(@nesting)
     @flag37 = nil
     if new_id
       arr, = KSU::Sheet.sheet_maps(@nesting)
       @flag37 = arr[new_id] if arr[new_id] && arr[new_id].valid?
     end
-    _1817fa46
+    refresh_state
   end
 end
 KSU::Xeptam.include(KSU::Arrange)

@@ -376,7 +376,7 @@ module KSU::View
     outer = expand_corners(corners).map { |_23505ef9| view.screen_coords(_23505ef9) }
     [pt, outer]
   end
-  def self._2873a79b(view, corners, color: nil)
+  def self.draw_corner_handles(view, corners, color: nil)
     _1d34ab11, outer = _49bdeaba(view, corners)
     scale = screen_scale(view, corners[0])
     _fe2b89ec = KSU::Const::EDGE_HALF_MM * scale
@@ -419,7 +419,7 @@ module KSU::View
     end
     KSU::Geom._c7b0bc62(bb, world_tr)
   end
-  def self._fa674c93(panel)
+  def self.panel_bbox(panel)
     return Geom::BoundingBox.new unless panel && panel.valid?
     KSU::Geom._c7b0bc62(panel.definition.bounds, panel.transformation)
   end

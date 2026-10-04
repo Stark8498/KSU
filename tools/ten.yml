@@ -608,7 +608,9 @@ ten:
   _412a8a82: stream_obj
   _5f966f9e: serialize        # ghep thanh file PDF, ke ca bang xref
   _22707eb1: xref_at
-  _65570dfe: off
+  _65570dfe:
+    ksu_vn/utils/pdf/build.rb: off
+    ksu_vn/utils/font.rb: code
   _c14c1dc9:
     "*": file
     "ksu_vn/utils/pdf/build.rb#_5b6279e8": file_id
@@ -2280,6 +2282,7 @@ ten:
     "ksu_vn/method/netcatcuoi/resize.rb#_b6a93f39": loop_pts
   _5ec460ae:
     "ksu_vn/utils/cutting/detail.rb#_5edc6938": pad_total
+    ksu_vn/utils/label.rb: margin
   _c1f843df:
     ksu_vn/utils/cutting/detail.rb: far_pt
   _0c01b674:
@@ -2296,6 +2299,7 @@ ten:
     ksu_vn/utils/cutting/detail.rb: flip
   _b41d8800:
     ksu_vn/utils/cutting/detail.rb: value
+    "ksu_vn/utils/label.rb#inner_rect": hole
 
   # ----- ME 61: method/xeptam/nfp.rb -- no-fit polygon va luoi bam -----
   # NFP cua mot cap hinh la tap vi tri ma hinh dong cham hinh dung; dat goc
@@ -2398,6 +2402,155 @@ ten:
   _3b981bf6:
     ksu_vn/method/netcatcuoi/resize.rb: sheet
 
+  # ----- ME 63: utils/label.rb -- cho nhan vao cho trong lon nhat tren mat -----
+  # Tim o trong lon nhat trong duong vien mat (tru cac lo): rasterise vien
+  # thanh luoi o chu nhat, danh dau o nao nam trong, roi quet tung hang bang
+  # thuat toan "hinh chu nhat lon nhat trong bieu do cot".
+  _9f608530: x_crossings         # giao diem cua duong y = const voi da giac
+  _efa8b7d4: inside_at?          # le so giao diem ben trai thi diem nam trong
+  _8cfbee10: sample_axis         # chia truc 64 doan roi gop cac gia tri sat nhau
+  _8010294b: place_label
+  _681febe3: face_by_cutting     # mat nao gan hinh cua cutting group hon
+  _89cdc81b: face_by_children    # mat nao co chi tiet con nam ve phia no
+  _f612f2b9: mark_labeled_face
+
+  # ----- ME 63b: utils/font.rb -- ve chu bang net -----
+  _1589cfd8: text_extent
+  _068ebc81: draw_text_edges
+  _1ff4cc8f: text_strokes
+  _48cc9611: gap3
+
+  _bc71159c:
+    ksu_vn/utils/label.rb: y
+  _fbc30e40:
+    ksu_vn/utils/label.rb: xq
+  _e8649a72:
+    ksu_vn/utils/label.rb: lo
+  _e25dbacd:
+    ksu_vn/utils/label.rb: hi
+  _972803c5:
+    ksu_vn/utils/label.rb: vals
+  _89bad203:
+    ksu_vn/utils/label.rb: step
+  _1431d16b:
+    ksu_vn/utils/label.rb: to_2d
+  _4664cd3f:
+    ksu_vn/utils/label.rb: dot
+  _e0c27e7f:
+    ksu_vn/utils/label.rb: span_u
+  _5a14088d:
+    ksu_vn/utils/label.rb: span_v
+  _6e2cbaa3:
+    ksu_vn/utils/label.rb: v0
+  _57f116a2:
+    ksu_vn/utils/label.rb: v1
+  _b6d1d40c:
+    ksu_vn/utils/label.rb: eps
+  _296d32cf:
+    ksu_vn/utils/label.rb: u0
+  _20e46575:
+    ksu_vn/utils/label.rb: u1
+  _5353a747:
+    ksu_vn/utils/label.rb: eps_u
+  _a5d8aa8c:
+    ksu_vn/utils/label.rb: ua
+  _c05963ef:
+    ksu_vn/utils/label.rb: ub
+  _b0f47b06:
+    ksu_vn/utils/label.rb: cu
+  _f79423d2:
+    ksu_vn/utils/label.rb: cv
+  _32998202:
+    ksu_vn/utils/label.rb: axes
+  _298717ec:
+    ksu_vn/utils/label.rb: prev_dir
+  _c8bde48c:
+    ksu_vn/utils/label.rb: ang
+  _d38e1814:
+    ksu_vn/utils/label.rb: gx1
+  _5b73324a:
+    ksu_vn/utils/label.rb: gx2
+  _42782d97:
+    ksu_vn/utils/label.rb: lbl
+  _2cb52d46:
+    ksu_vn/utils/label.rb: layer
+  _ab593548:
+    "ksu_vn/utils/label.rb#inner_rect": top
+  _5fb96e91:
+    "ksu_vn/utils/label.rb#inner_rect": area
+
+  # ----- ME 64: method/xeptam.rb va ho xeptam/* -- keo tam tren van -----
+  # Keo mot nhom tam: moi lan chuot di, tim van dich, thu xem co vua khong,
+  # neu cham thi day lui theo NFP. Giu Alt thi tam thoi bo che do tu do.
+  _de5cc9a8: apply_gaps          # tinh lai tam_cach_nhau / tam_cach_le roi day sang Avail
+  _1817fa46: refresh_state
+  _b5e0ad4b: rebuild_geom
+  _a70d673b: clear_poly_cache
+  _ce446adc: reorder_sheet       # :first/:last lap den khi khong doi duoc nua
+  _e1a83eaf: reorder_step
+  _c574b8db: swap_sheet_type
+  _3d652c2e: swap_part_type      # van co thuoc tinh KSU "phan"
+  _4daa2bb0: select_sheet_id
+  _3ea06bed: rotate_sel
+  _7f17a5c5: fits_on?
+  _0b16f3d7: refresh_avail
+  _25080947: shift_nfp
+  _11075c77: hits_border?
+  _83ee7e20: stroke_loops
+  _101ef2e3: panels_in_box
+  _0c91518b: polys_overlap?
+  _fa674c93: panel_bbox
+  _2873a79b: draw_corner_handles # khoi yield cho biet goc nao dang ro
+  _4ce596b6: repeat              # onKeyDown(key, repeat, flags, view)
+  _02765833: avail_key           # @avail_key: cai dat sinh ra @arr18 dang co
+  _f222cc53:
+    ksu_vn/method/xeptam/push.rb: rad   #  toan cuc la cua _e4c576df
+  _32310dba: pivot
+
+  _b5af8dbf:
+    ksu_vn/method/xeptam.rb: jump
+  _f0301936:
+    ksu_vn/method/xeptam.rb: was_drag
+  _7a82534c:
+    ksu_vn/method/xeptam.rb: panel
+  _11dde2f2:
+    ksu_vn/method/xeptam.rb: side
+  _3b0598af:
+    ksu_vn/method/xeptam.rb: corner
+  _b51e23e4:
+    ksu_vn/method/xeptam.rb: sheet
+  _38196f56:
+    ksu_vn/method/xeptam.rb: pt
+  _af333274:
+    ksu_vn/method/xeptam.rb: prev_pt
+  _1f2cf874:
+    ksu_vn/method/xeptam.rb: was_free
+  _b4ce762b:
+    ksu_vn/method/xeptam.rb: near
+  _8eedd0f1:
+    ksu_vn/method/xeptam.rb: dist
+  _5a7c1be3:
+    ksu_vn/method/xeptam.rb: went_free
+  _d8a427f3:
+    ksu_vn/method/xeptam.rb: dest
+  _290b52bf:
+    ksu_vn/method/xeptam.rb: crossed
+  _33b33533:
+    ksu_vn/method/xeptam.rb: esc
+  _03d703fa:
+    ksu_vn/method/xeptam.rb: on_border
+  _4e78f5d5:
+    ksu_vn/method/xeptam.rb: warn_on
+  _ce2de26a:
+    ksu_vn/method/xeptam.rb: warn_bot
+  _d5f2cd75:
+    ksu_vn/method/xeptam.rb: sheet_rec
+  _955ee93a:
+    ksu_vn/method/xeptam.rb: under
+  _75ce293c:
+    ksu_vn/method/xeptam.rb: free_saved
+  _b4ae88a5:
+    ksu_vn/method/xeptam.rb: mm
 
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.
@@ -2545,7 +2698,7 @@ bo:
   - _5e0c1b8d   # blk: 2 lan, ban tay giu _5d690575 (9 lan)
   - _6796ef4d   # cfg: 18 lan, ban tay giu _b09af5f8 (77 lan)
   - _0dc41cf2   # dlg: 13 lan, ban tay giu _a72a3dce (50 lan)
-  - _42782d97   # grp: tenauto doan kieu, _d533ec26 dung 144 lan
+   # grp: tenauto doan kieu, _d533ec26 dung 144 lan
   - _fab4f06f   # job: 12 lan, ban tay giu _fea16e8e (48 lan)
   - _3cc0311c   # num: tenauto doan kieu, _5e86883a la mot method
   - _538a3d28   # pname: 6 lan, cay sinh doi cung goi _2bcd29a8 (27 lan) la pname

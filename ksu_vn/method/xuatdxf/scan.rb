@@ -224,14 +224,14 @@ module KSU::Xuatdxf
     _6b31f7ce = KSU::Font.half_width(_5cb20db4)
     num = [num, (_8ddd8c6f - 0.123 * _8ddd8c6f) / _6b31f7ce].min if _6b31f7ce > 0
     _60000b16 = _68165b06 * 0.5 - (KSU::Font::HEIGHT * num / 2)
-    KSU::Font._1ff4cc8f(_5cb20db4, [_8ddd8c6f * 0.5 - (_6b31f7ce * num / 2), _60000b16], num).each do |poly|
+    KSU::Font.text_strokes(_5cb20db4, [_8ddd8c6f * 0.5 - (_6b31f7ce * num / 2), _60000b16], num).each do |poly|
       out << { layer: "ABF_sheetId", pts: poly, closed: false, via_module: false, bulge: false }
     end
     str = mat.to_s
     unless str.empty?
       _4c541df4 = KSU::Font.half_width(str)
       flag = _4c541df4 > 0 ? [8.0, (_8ddd8c6f - 0.123 * _8ddd8c6f) / _4c541df4].min : 8.0
-      KSU::Font._1ff4cc8f(str, [_8ddd8c6f * 0.5 - (_4c541df4 * flag / 2), _60000b16 + 0.45 * _68165b06], flag).each do |poly|
+      KSU::Font.text_strokes(str, [_8ddd8c6f * 0.5 - (_4c541df4 * flag / 2), _60000b16 + 0.45 * _68165b06], flag).each do |poly|
         out << { layer: "ABF_sheetMaterial", pts: poly, closed: false, via_module: false, bulge: false }
       end
     end

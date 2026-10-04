@@ -291,7 +291,7 @@ module KSU::Drag
     reset_anchor
     _ddbd086b = record_for(@sel_sheets.first)
     @flag33 = !@flag45 && _ddbd086b &&
-                               !_7f17a5c5(_ddbd086b)
+                               !fits_on?(_ddbd086b)
     save_drag_state
   end
   def save_drag_state
