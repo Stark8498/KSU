@@ -23,12 +23,12 @@ module KSU::Label
     else thick
     end
   end
-  def plan(container)
+  def label_plan(container)
     KSU::Font.import
     return nil unless KSU::Font.ready?
     renumber = Array(container).compact.empty?
     parts = renumber ? every_board : boards_in(container)
-    { jobs: jobs(parts, renumber), layer: KSU::Cutting.layer(LAYER_LABEL), renumber: renumber }
+    { jobs: build_jobs(parts, renumber), layer: KSU::Cutting.layer(LAYER_LABEL), renumber: renumber }
   end
   def board?(ent)
     return false unless ent && ent.valid? && KSU.container?(ent)
@@ -65,7 +65,7 @@ module KSU::Label
       end
     end
   end
-  def jobs(parts, renumber = false)
+  def build_jobs(parts, renumber = false)
     arr2 = parts.select { |grp| grp && grp.valid? }
     ordered = arr2.each_with_index
                         .sort_by { |grp, i| [KSU::Nesting.sort_key(grp.name), i] }
@@ -87,9 +87,9 @@ module KSU::Label
   def label?(ent)
     return false unless ent && ent.valid? && KSU.container?(ent)
     return true if ent.get_attribute(DICT, K_IS_LABEL)
-    name = ent.name.to_s
+    str = ent.name.to_s
     def_name = (ent.respond_to?(:definition) && ent.definition) ? ent.definition.name.to_s : ""
-    return true if name.include?(LAYER_LABEL) || def_name.include?(LAYER_LABEL)
+    return true if str.include?(LAYER_LABEL) || def_name.include?(LAYER_LABEL)
     grp2 = ent.layer
     !grp2.nil? && grp2.name.to_s == LAYER_LABEL
   end
@@ -138,7 +138,7 @@ module KSU::Label
     grp.definition.invalidate_bounds if grp.respond_to?(:definition) && grp.definition
     true
   end
-  def draw_badge(gr, ents, name, str, topts)
+  def draw_badge(gr, ents, badge_text, str, topts)
     gap2 = topts[:gap]
     xf = topts[:xf]
     x = 0
@@ -153,10 +153,10 @@ module KSU::Label
     num2 = 1 - py
     KSU::Font._068ebc81(ents, text, [1.1 - (num_w / 2.0), num2], upm, true)
     x += 2.2
-    name_w = KSU::Font.half_width(name, false, gap2) * NAME_SCALE * xf
+    name_w = KSU::Font.half_width(badge_text, false, gap2) * NAME_SCALE * xf
     box_w = name_w + TEXT_H_PADDING_X2
     y = num2
-    KSU::Font._068ebc81(ents, name, [x + ((box_w - name_w) / 2), y], NAME_SCALE, false, gap2, xf)
+    KSU::Font._068ebc81(ents, badge_text, [x + ((box_w - name_w) / 2), y], NAME_SCALE, false, gap2, xf)
     x2 = x + box_w
     w2 = name_w
     if w2 > 0
@@ -358,7 +358,7 @@ module KSU::Label
     arr5 = Array.new(num2, 0.0)
     active_ix = Array.new(num2, false)
     best = nil
-    area = 0.0
+    best_a = 0.0
     rows.times do |half|
       _57f116a2 = arr3[half + 1]
       num2.times do |num|
@@ -383,8 +383,8 @@ module KSU::Label
           h = arr5[_ab593548]
           flag = arr4.empty? ? 0 : arr4.last + 1
           _5fb96e91 = h * (arr2[num] - arr2[flag])
-          if h > 0 && _5fb96e91 > area
-            area = _5fb96e91
+          if h > 0 && _5fb96e91 > best_a
+            best_a = _5fb96e91
             best = [arr2[flag], arr2[num], _57f116a2 - h, _57f116a2]
           end
         end
@@ -395,12 +395,12 @@ module KSU::Label
     _f79423d2 = (best[2] + best[3]) / 2.0
     large = best[1] - best[0]
     small = best[3] - best[2]
-    center = color + Geom::Vector3d.new(
+    mid = color + Geom::Vector3d.new(
       ax.x * _b0f47b06 + pt.x * _f79423d2,
       ax.y * _b0f47b06 + pt.y * _f79423d2,
       ax.z * _b0f47b06 + pt.z * _f79423d2
     )
-    { large: large, small: small, center: center }
+    { large: large, small: small, center: mid }
   end
   def _681febe3(grp, b2, tf)
     grp7 = KSU::Cutting.cutting_group(grp)

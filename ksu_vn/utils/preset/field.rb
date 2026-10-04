@@ -1,7 +1,7 @@
 module KSU::Field
   def setup_fields(defs)
     @field_defs = defs
-    @hover_field = nil
+    @hover_ix = nil
     @hover_part = nil
     @edit_field = nil
     @_a8835766 = nil
@@ -23,7 +23,7 @@ module KSU::Field
     draw_panel_bg(view, items, layout, pad, opac)
     items.each_with_index do |fld, i|
       box2 = layout[i]
-      hovered = @hover_field == i
+      hovered = @hover_ix == i
       is_sel = @_a8835766 == i
       border = is_sel ? palette[:ctrl_sel] : (hovered ? palette[:ctrl_hover] : nil)
       if i > 0 && !fld[:group_start]
@@ -70,17 +70,17 @@ module KSU::Field
           arr[:x] + arr[:width] / 2.0, _5704b6f3, 0
         )
         flag2 = is_sel && @input_buf && !@input_buf.empty?
-        label = flag2 ? @input_buf : fld[:label]
-        view.draw_text(pt, label,
+        text = flag2 ? @input_buf : fld[:label]
+        view.draw_text(pt, text,
                        size: size, font: font_name,
                        color: Sketchup::Color.new(*flag),
                        align: TextAlignCenter)
         if flag2 && @caret_on
           topts = { size: size, font: font_name }
           anchor = Geom::Point3d.new(0, 0, 0)
-          _f02ec4af = view.text_bounds(anchor, label, topts).width
+          _f02ec4af = view.text_bounds(anchor, text, topts).width
           ch = view.text_bounds(anchor, "0", topts).height
-          kids = label[0...(@caret || label.length)]
+          kids = text[0...(@caret || text.length)]
           stroke_w = kids.nil? || kids.empty? ? 0 : view.text_bounds(anchor, kids, topts).width
           px = arr[:x] + arr[:width] / 2.0 - _f02ec4af / 2.0 + stroke_w
           py = arr[:y] + arr[:height] / 2.0
@@ -97,31 +97,31 @@ module KSU::Field
     return false unless KSU::Preset.cfg[:hien_setting]
     return false unless @field_defs
     @view_ref = view
-    prev_field = @hover_field
+    prev_field = @hover_ix
     prev_part = @hover_part
-    @hover_field = nil
+    @hover_ix = nil
     @hover_part = nil
     items = visible_fields
     layout = field_layout(items, view)
     items.each_with_index do |fld, i|
       if in_rect?(x, y, layout[i])
-        @hover_field = i
+        @hover_ix = i
         if fld[:lock] && in_rect?(x, y, _a4a34f6b(view, fld, layout[i]))
           @hover_part = i
         end
         break
       end
     end
-    view.invalidate if prev_field != @hover_field || prev_part != @hover_part
-    !@hover_field.nil?
+    view.invalidate if prev_field != @hover_ix || prev_part != @hover_part
+    !@hover_ix.nil?
   end
   def busy?
-    !@hover_field.nil? || !@hover_mode_ix.nil? ||
+    !@hover_ix.nil? || !@hover_mode_ix.nil? ||
       !@hover_flat.nil? || !@hover_toggle.nil? || !@hover_sec.nil?
   end
   def click_field(x, y, view = nil)
     if @state && @state[:sections]&.any?
-      slots.each do |slot|
+      slot_rects.each do |slot|
         next unless slot[:type] == :header
         if in_rect?(x, y, slot[:rect])
           name = slot[:name]
@@ -298,8 +298,8 @@ module KSU::Field
     cfg = KSU::Preset.cfg
     cfg[:text_y] ||= begin
       topts = { size: cfg[:font_size], font: cfg[:font] }
-      bounds = view.text_bounds(Geom::Point3d.new(0, 0, 0), "Ag", topts)
-      bounds.height / 2.0
+      bnds = view.text_bounds(Geom::Point3d.new(0, 0, 0), "Ag", topts)
+      bnds.height / 2.0
     end
   end
   def gap

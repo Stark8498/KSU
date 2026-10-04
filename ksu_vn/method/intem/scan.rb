@@ -14,16 +14,16 @@ module KSU::Intem
     h3 = {}
     h2 = {}
     index_boards(model.entities, h3, {}, 0, h2)
-    h19 = {}
+    h16 = {}
     src.grep(Sketchup::Group).each do |sheet|
       next unless sheet.get_attribute("ABF", "sheet-id")
       next unless KSU::Sheet.hidden?(sheet)
       sheet.entities.grep(Sketchup::Group).each do |grp|
         board_index = grp.get_attribute("ABF", "board-index")
         next unless board_index
-        next if h19[board_index]
+        next if h16[board_index]
         _14954c73 = hinge(grp)
-        h19[board_index] = _14954c73 if _14954c73
+        h16[board_index] = _14954c73 if _14954c73
       end
     end
     src.grep(Sketchup::Group).each do |sheet|
@@ -36,7 +36,7 @@ module KSU::Intem
       w, h = sheet_dims(sheet)
       parts = []
       sheet.entities.grep(Sketchup::Group).each do |grp|
-        rec = part_record(grp, sheet_id, mat, h3, h19, h2)
+        rec = part_record(grp, sheet_id, mat, h3, h16, h2)
         next unless rec
         parts2 << rec
         parts << parts2.length - 1
@@ -136,8 +136,8 @@ module KSU::Intem
     lo = ents && ents.bounds.valid? ? ents.bounds.min : nil
     [(lo ? lo.x.to_f : 0.0) + arr[0], (lo ? lo.y.to_f : 0.0) + arr[1]]
   end
-  def self.index_boards(ents, arr4, seen, depth, arr)
-    return if depth > 8
+  def self.index_boards(ents, arr4, seen, lvl, arr)
+    return if lvl > 8
     ents.each do |ent|
       next unless KSU.container?(ent)
       next if seen[ent.entityID]
@@ -157,7 +157,7 @@ module KSU::Intem
         next
       end
       kids = KSU.entities_in(ent)
-      index_boards(kids, arr4, seen, depth + 1, arr) if kids
+      index_boards(kids, arr4, seen, lvl + 1, arr) if kids
     end
   end
   def self.part_record(grp, sheet_id, mat, arr, arr4, arr3)
@@ -194,17 +194,17 @@ module KSU::Intem
       code3: _93188890[2]
     }
   end
-  def self.hinge(entity, depth = 0)
-    return nil if depth > 3
+  def self.hinge(entity, num = 0)
+    return nil if num > 3
     ents = KSU.entities_in(entity)
     return nil unless ents
     ents.each do |ent|
       next unless KSU.container?(ent)
       if ent.get_attribute("ABF", "is-hinge-part-a") || ent.get_attribute("ABF", "is-hinge-part-b")
-        name = ent.get_attribute("ABF", "setting-name").to_s
-        return name unless name.empty?
+        str = ent.get_attribute("ABF", "setting-name").to_s
+        return str unless str.empty?
       end
-      half = hinge(ent, depth + 1)
+      half = hinge(ent, num + 1)
       return half if half
     end
     nil
@@ -228,8 +228,8 @@ module KSU::Intem
     end
     arr
   end
-  def self.cups(entity, tf, depth = 0, out = [])
-    return out if depth > 3
+  def self.cups(entity, tf, num = 0, out = [])
+    return out if num > 3
     ents = KSU.entities_in(entity)
     return out unless ents
     ents.each do |ent|
@@ -247,25 +247,25 @@ module KSU::Intem
         end
         out << best if best
       else
-        cups(ent, tr, depth + 1, out)
+        cups(ent, tr, num + 1, out)
       end
     end
     out
   end
-  def self._503b4f27(entity, tf, depth = 0, out = { names: [], paths: [] })
-    return out if depth > 3
+  def self._503b4f27(entity, tf, num = 0, out = { names: [], paths: [] })
+    return out if num > 3
     ents = KSU.entities_in(entity)
     return out unless ents
     ents.each do |ent|
       next unless KSU.container?(ent)
       tr = tf * ent.transformation
       if ent.get_attribute("ZSU", "bao_ranh")
-        name = ent.get_attribute("ABF", "statistical-name").to_s
-        next if name.empty?
-        out[:names] << name unless out[:names].include?(name)
+        str = ent.get_attribute("ABF", "statistical-name").to_s
+        next if str.empty?
+        out[:names] << str unless out[:names].include?(str)
         out[:paths].concat(_f0ab79c9(ent, tr))
       else
-        _503b4f27(ent, tr, depth + 1, out)
+        _503b4f27(ent, tr, num + 1, out)
       end
     end
     out

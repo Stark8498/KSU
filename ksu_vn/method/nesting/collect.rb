@@ -154,13 +154,13 @@ module KSU::Collect
     arr3 = KSU::Cutting.arrow_sizes(small_size)
     rec = KSU::Cutting.cut_loops(g, face, _984e016d, max_eb[0], arr3[0], arr3[1])
     return [nil, _c348cdef] if rec[:loops].empty?
-    bounds = rec[:loops].map do |arr|
+    bnds = rec[:loops].map do |arr|
       KSU::Simplify._c71fe5d3(arr[:pts].map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }, arr[:outer])
     end
     lx = nil
     flag = nil
     ly = nil
-    bounds.each do |arr|
+    bnds.each do |arr|
       arr.each do |_23505ef9|
         lx = _23505ef9[0] if lx.nil? || _23505ef9[0] < lx
         flag = _23505ef9[0] if flag.nil? || _23505ef9[0] > flag
@@ -173,26 +173,26 @@ module KSU::Collect
     _c348cdef -= (flag - lx + 1)
     tr = Geom::Transformation.translation([ax, ay, 0])
     part_tf = tr3 * tr * tr2 * tf_axes * tf
-    drills = KSU::Cutting.side_drills(g, face, _984e016d)
-    drills[1].each do |len2d|
+    found = KSU::Cutting.side_drills(g, face, _984e016d)
+    found[1].each do |len2d|
       if len2d[:depth] > 0 && len2d[:poly]
         len2d[:poly].map! { |_23505ef9| _23505ef9.transform(tr) }
       else
         len2d[:pos] = len2d[:pos].transform(tr)
       end
     end
-    bottom = KSU::Cutting.split_by_face(g, face, tf)
+    faces = KSU::Cutting.split_by_face(g, face, tf)
     grp = {
       group: g, up_face: face, tf: tf, part_tf: part_tf,
-      two_sided: !bottom[:bottom].empty?,
+      two_sided: !faces[:bottom].empty?,
       outer_index: rec[:loops].find_index { |arr| arr[:outer] } || 0,
-      bounds_mm: bounds.map { |arr| arr.map { |_23505ef9| [(_23505ef9[0] + ax) * 25.4, (_23505ef9[1] + ay) * 25.4] } },
+      bounds_mm: bnds.map { |arr| arr.map { |_23505ef9| [(_23505ef9[0] + ax) * 25.4, (_23505ef9[1] + ay) * 25.4] } },
       cutting_lines: rec[:loops].map { |arr| arr[:pts].map { |_23505ef9| _23505ef9.transform(tr) } },
       edge_band_lines: rec[:edge_band_lines].map { |arr| arr.map { |_23505ef9| _23505ef9.transform(tr) } },
       edge_band_desc: rec[:edge_band_desc].map do |len2d|
         { p0: len2d[:p0].transform(tr), p1: len2d[:p1].transform(tr), name: len2d[:name], kind: len2d[:kind] }
       end,
-      drills: drills, arrow: arr3, max_eb: max_eb[1],
+      drills: found, arrow: arr3, max_eb: max_eb[1],
       material: mat,
       thickness_mm: thickness_mm,
       rotatable: rotatable(g, cfg, mat, thickness_mm)

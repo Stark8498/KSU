@@ -9,7 +9,7 @@ module KSU::Bottom
       next unless id && id >= from_id
       _9d031de6 << {
         instance: ent, id: id,
-        bottom: bottom(ent, nesting),
+        bottom: bottom_of(ent, nesting),
         labels: sheet_labels(ent, nesting),
       }
     end
@@ -17,22 +17,22 @@ module KSU::Bottom
     arr.sort_by! { |len2d| len2d[:id] } if sort
     arr.each do |len2d|
       inst = len2d[:instance]
-      bottom4 = len2d[:bottom]
+      bottom = len2d[:bottom]
       inst.name = "__sheet_tmp_#{inst.entityID}__" if inst && inst.valid?
-      bottom4.name = "__sheet_tmp_#{bottom4.entityID}__-bottom" if bottom4 && bottom4.valid?
+      bottom.name = "__sheet_tmp_#{bottom.entityID}__-bottom" if bottom && bottom.valid?
     end
     arr.each do |len2d|
       new_id = len2d[:id] + delta
       str = "sheet-#{new_id}"
       inst = len2d[:instance]
-      bottom4 = len2d[:bottom]
+      bottom = len2d[:bottom]
       if inst && inst.valid?
         inst.name = str
         inst.set_attribute("ABF", "sheet-id", new_id)
       end
-      if bottom4 && bottom4.valid?
-        bottom4.name = "#{str}-bottom"
-        bottom4.set_attribute("ABF", "sheet-id", new_id)
+      if bottom && bottom.valid?
+        bottom.name = "#{str}-bottom"
+        bottom.set_attribute("ABF", "sheet-id", new_id)
       end
       len2d[:labels].each { |slot| set_dim_text(slot[:dim], str) }
     end
@@ -52,7 +52,7 @@ module KSU::Bottom
     arr3 = arr2.each_with_object({}) do |s, h|
       h[s] = sheet_labels(s, nesting) if s && s.valid?
     end
-    grp2 = bottom(sheet, nesting)
+    grp2 = bottom_of(sheet, nesting)
     KSU.start
     arr4.each { |slot| slot[:dim].erase! if slot[:dim]&.valid? }
     sheet.erase! if sheet.valid?
@@ -61,8 +61,8 @@ module KSU::Bottom
       next unless s && s.valid?
       s.transformation = Geom::Transformation.translation(vec) * s.transformation
       shift_dims(arr3[s] || [], vec, nesting)
-      bottom5 = bottom(s, nesting)
-      bottom5.transformation = Geom::Transformation.translation(vec) * bottom5.transformation if bottom5&.valid?
+      bottom = bottom_of(s, nesting)
+      bottom.transformation = Geom::Transformation.translation(vec) * bottom.transformation if bottom&.valid?
     end
     shift_sheets(nesting, sheet_ix + 1, -1, sort: true) if sheet_ix
     KSU.commit
@@ -75,7 +75,7 @@ module KSU::Bottom
     meta = name.to_s.match(/sheet-(\d+)/i)
     meta ? meta[1].to_i : nil
   end
-  def bottom(sheet, nesting)
+  def bottom_of(sheet, nesting)
     return nil unless sheet && sheet.valid? && nesting && nesting.valid?
     str = sheet.name.to_s + "-bottom"
     nesting.definition.entities.find do |ent|
@@ -84,7 +84,7 @@ module KSU::Bottom
   end
   def bottom_for(sheet, nesting)
     return nil unless sheet && sheet.valid?
-    vec2 = bottom(sheet, nesting)
+    vec2 = bottom_of(sheet, nesting)
     return vec2 if vec2 && vec2.valid?
     match_hidden(sheet, nesting)
   end

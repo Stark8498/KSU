@@ -98,10 +98,10 @@ module KSU::Edit
     return unless ents
     ents.each do |ent|
       next unless ent.valid? && KSU.container?(ent)
-      name = ent.name.to_s
+      str = ent.name.to_s
       def_name = (ent.respond_to?(:definition) && ent.definition) ? ent.definition.name.to_s : ""
       transform = transform3 * ent.transformation
-      if name.include?("_ABF_Label") || def_name.include?("_ABF_Label")
+      if str.include?("_ABF_Label") || def_name.include?("_ABF_Label")
         kids = KSU.entities_in(ent)
         next unless kids
         seen = {}

@@ -476,7 +476,7 @@
   },
   {
    "ns": "KSU::View",
-   "m": "top_corners",
+   "m": "bbox_top",
    "f": "ksu_vn/method/chongbay.rb",
    "l": 850
   },
@@ -806,7 +806,7 @@
   },
   {
    "ns": "KSU::Label",
-   "m": "plan",
+   "m": "label_plan",
    "f": "ksu_vn/method/gannhan.rb",
    "l": 324
   },
@@ -1112,6 +1112,12 @@
   },
   {
    "ns": "KSU::Nest",
+   "m": "type_name",
+   "f": "ksu_vn/method/nesting.rb",
+   "l": 23
+  },
+  {
+   "ns": "KSU::Nest",
    "m": "str",
    "f": "ksu_vn/method/nesting.rb",
    "l": 24
@@ -1352,7 +1358,7 @@
   },
   {
    "ns": "KSU::Cutting",
-   "m": "board_index",
+   "m": "index_of",
    "f": "ksu_vn/method/themtam.rb",
    "l": 265
   },
@@ -1418,7 +1424,7 @@
   },
   {
    "ns": "KSU::Sheet",
-   "m": "bottom",
+   "m": "bottom_of",
    "f": "ksu_vn/method/themtam.rb",
    "l": 539
   },
@@ -2156,7 +2162,7 @@
   },
   {
    "ns": "KSU::View",
-   "m": "tris",
+   "m": "poly_tris",
    "f": "ksu_vn/method/xeptam/mirror.rb",
    "l": 368
   },

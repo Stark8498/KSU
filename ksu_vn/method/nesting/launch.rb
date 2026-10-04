@@ -96,11 +96,11 @@ module KSU::Launch
   def _e3264765(str2)
     arr2 = str2.to_s.split(/[,\n]/).map { |thick| thick.strip }.reject(&:empty?)
     return if arr2.empty?
-    keys = {}
+    h = {}
     arr = []
     arr2.each do |thick|
       if thick =~ /\A\d+\z/
-        keys[thick] = true
+        h[thick] = true
       else
         arr << thick.downcase
       end
@@ -108,7 +108,7 @@ module KSU::Launch
     arr3 = []
     gather_boards(Sketchup.active_model.entities, arr3, {})
     arr5 = arr3.select do |g|
-      if !keys.empty? && keys[g.get_attribute("ABF", "board-index").to_s]
+      if !h.empty? && h[g.get_attribute("ABF", "board-index").to_s]
         true
       elsif arr.empty?
         false
@@ -124,14 +124,14 @@ module KSU::Launch
     nil
   end
   def _1582b880(resp)
-    keys = begin
+    arr = begin
       JSON.parse(resp.to_s)
     rescue StandardError
       []
     end
-    return unless keys.is_a?(Array) && !keys.empty?
+    return unless arr.is_a?(Array) && !arr.empty?
     model = Sketchup.active_model
-    ents = Array(model.find_entity_by_id(*keys.map(&:to_i)))
+    ents = Array(model.find_entity_by_id(*arr.map(&:to_i)))
     ents = ents.compact.select { |ent| ent.respond_to?(:valid?) && ent.valid? }
     KSU.select_only(ents)
     model.active_view.invalidate

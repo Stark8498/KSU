@@ -11,19 +11,14 @@ ten:
     ksu_vn/method/nesting/draw.rb#_2827207b: color3
     ksu_vn/method/nesting/draw.rb#_e3d864eb: color2
     ksu_vn/utils/view.rb#_47eba6dd: color4
-  _179db7c2:
-    ksu_vn/utils/preset/store.rb#_a5c0536b: rect3
   _1a4249c1:
-    ksu_vn/method/xuatdxf/geom.rb#_826c9296: num13
+    ksu_vn/method/xuatdxf/geom.rb#_826c9296: num11
   _1add3f22:
     ksu_vn/utils/nesting/pack.rb#_311385c4: bbox3
   _1b474acd:
     ksu_vn/utils/view.rb#_b80737a7: panels2
-  _1d5e7795:
-    ksu_vn/method/chongbay/shape.rb#_d01131b1: pts2
-    ksu_vn/utils/cutting/loop.rb#_58ea2028: pts3
   _1d78e444:
-    ksu_vn/utils/cutting/loop.rb#_93cdf1dd: h29
+    ksu_vn/utils/cutting/loop.rb#_93cdf1dd: h21
   _223cc36c:
     ksu_vn/method/xeptam/mirror.rb#_43486b4a: tr5
   _262dad3d:
@@ -57,10 +52,8 @@ ten:
     ksu_vn/utils/label.rb#_681febe3: grp7
   _4dab96a3:
     ksu_vn/method/xeptam/push.rb#_2bff4638: umin3
-  _4fcf5547:
-    ksu_vn/utils/cutting/detail.rb#_0f0ed6ac: depth2
   _502cd779:
-    ksu_vn/utils/sheet/reorder.rb#_bb66defe: num15
+    ksu_vn/utils/sheet/reorder.rb#_bb66defe: num13
   _529cefc7:
     ksu_vn/method/xeptam.rb#draw: panel3
   _52f912ed:
@@ -81,8 +74,8 @@ ten:
   _63629225:
     ksu_vn/method/chongbay/shape.rb#_9707d4ab: pt6
     ksu_vn/method/toiuuvan/engine.rb#_9f684ec0: pt8
-    ksu_vn/method/toiuuvan/postproc.rb#_0579a704: pt11
-    ksu_vn/method/toiuuvan/postproc.rb#_1998c7d5: pt12
+    ksu_vn/method/toiuuvan/postproc.rb#_0579a704: pt10
+    ksu_vn/method/toiuuvan/postproc.rb#_1998c7d5: pt11
   _7043876e:
     ksu_vn/method/chongbay/shape.rb#_9608e031: x25
     ksu_vn/method/chongbay/shape.rb#_d5735c13: x23
@@ -110,43 +103,25 @@ ten:
     ksu_vn/utils/view.rb#_0b8e9c29: x221
   _77db59ee:
     ksu_vn/utils/sheet.rb#_6036fd14: tr6
-  _7b079005:
-    ksu_vn/method/nesting.rb#draw: progress2
   _8a52ae64:
     ksu_vn/method/chontam/pick.rb#_68d73ae7: h9
-    ksu_vn/method/chontam/pick.rb#_9277e941: h18
+    ksu_vn/method/chontam/pick.rb#_9277e941: h15
   _9289490a:
-    ksu_vn/method/intem/scan.rb#_9e1d7ab3: h19
-  _9aa9564d:
-    ksu_vn/utils/preset/store.rb#_b0335cae: slots2
+    ksu_vn/method/intem/scan.rb#_9e1d7ab3: h16
   _9b84c914:
     ksu_vn/method/netcatcuoi/resize.rb#_fec87097: y24
   _9d8b43d7:
-    ksu_vn/method/thongke/xuat.rb#_a105a0f4: num11
-  _9dcc2bb2:
-    ksu_vn/method/xeptam.rb#draw: edge_color2
-    ksu_vn/method/xeptam/mirror.rb#_9b91a3d7: edge_color4
-    ksu_vn/method/xeptam/mirror.rb#_f42544d1: edge_color3
+    ksu_vn/method/thongke/xuat.rb#_a105a0f4: num9
   _a6d5a081:
-    ksu_vn/method/xeptam/mirror.rb#_951e1123: h26
+    ksu_vn/method/xeptam/mirror.rb#_951e1123: h19
   _b7e9acbc:
     ksu_vn/method/nesting/draw.rb#_e85e6194: grp5
-  _c279ca2b:
-    ksu_vn/method/xeptam/mirror.rb#_9a1f1a22: tris2
-    ksu_vn/utils/view/query.rb#_e66c6a7a: tris3
   _c477bd6e:
     ksu_vn/method/xeptam/collide.rb#_25080947: dy2
     ksu_vn/utils/nesting/avail.rb#_128f4b25: dy3
     ksu_vn/utils/nesting/pack.rb#_311385c4: dy4
-  _c8636cca:
-    ksu_vn/method/themtam.rb#_5c6a1c61: bottom2
-    ksu_vn/method/xeptam/arrange.rb#_6d5f8614: bottom3
-    ksu_vn/utils/sheet/bottom.rb#_b86cee12: bottom5
-    ksu_vn/utils/sheet/bottom.rb#_c7decd32: bottom4
   _cefe7468:
-    ksu_vn/method/xeptam/collide.rb#_9b1924b8: h23
-    ksu_vn/utils/nesting/pack.rb#_26b5a6fd: h30
-  _dfa78933:
-    ksu_vn/method/nesting.rb#draw: name2
+    ksu_vn/method/xeptam/collide.rb#_9b1924b8: h18
+    ksu_vn/utils/nesting/pack.rb#_26b5a6fd: h23
   _fae1d475:
     ksu_vn/method/xeptam/drag.rb#_98834989: vec7

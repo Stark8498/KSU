@@ -158,21 +158,21 @@ module KSU::Draw
     KSU::Cutting.save_drills_desc(gr, grp[:drills], part_tf.inverse)
     KSU::Cutting.save_edgeband_desc(gr, grp[:edge_band_desc], part_tf.inverse)
     _fc78e970(grp[:group])
-    bottom = KSU::Cutting.split_by_face(grp[:group], grp[:up_face], grp[:tf])
-    bottom[:up].each do |grp5|
+    faces = KSU::Cutting.split_by_face(grp[:group], grp[:up_face], grp[:tf])
+    faces[:up].each do |grp5|
       next unless grp5.respond_to?(:definition) && grp5.definition
       KSU::Cutting.copy_and_flatten(gr.entities.add_instance(grp5.definition, grp5.transformation), grp5)
     end
     label_gr = nil
-    if bottom[:label] && bottom[:label].respond_to?(:definition) && bottom[:label].definition
-      label_gr = gr.entities.add_instance(bottom[:label].definition, bottom[:label].transformation)
-      KSU::Cutting.copy_attrs(label_gr, bottom[:label])
-      KSU::Cutting.copy_and_flatten(label_gr, bottom[:label])
+    if faces[:label] && faces[:label].respond_to?(:definition) && faces[:label].definition
+      label_gr = gr.entities.add_instance(faces[:label].definition, faces[:label].transformation)
+      KSU::Cutting.copy_attrs(label_gr, faces[:label])
+      KSU::Cutting.copy_and_flatten(label_gr, faces[:label])
     end
     board_index = nil
-    unless bottom[:bottom].empty?
+    unless faces[:bottom].empty?
       board_index = { part_id: grp[:group].get_attribute("ABF", "board-index"), name: gr.name,
-                label_gr: label_gr, cutting_gr: cutting_gr, bottom: bottom[:bottom], tf: gr.transformation }
+                label_gr: label_gr, cutting_gr: cutting_gr, bottom: faces[:bottom], tf: gr.transformation }
     end
     [gr, board_index]
   end

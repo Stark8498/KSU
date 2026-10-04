@@ -33,10 +33,10 @@ module KSU::Mark
     return nil if w < 1e-6 || h < 1e-6
     z = pts.first.z.to_f
     scr = [[min_x, min_y], [arr, min_y], [arr, arr2], [min_x, arr2]]
-    pad = w * 0.25
+    tol_x = w * 0.25
     _0cd9b30a = h * 0.25
     arr4 = scr.map do |px, py|
-      pts.any? { |pt| (pt.x - px).abs < pad && (pt.y - py).abs < _0cd9b30a }
+      pts.any? { |pt| (pt.x - px).abs < tol_x && (pt.y - py).abs < _0cd9b30a }
     end
     _a14aed83 = arr4.index(false)
     return nil unless _a14aed83
@@ -51,11 +51,11 @@ module KSU::Mark
       bbox = world_bbox(sheet, nesting)
       return nil unless bbox
       ccw = color.transform(nesting.transformation * sheet.transformation)
-      center = bbox.center
-      return [ccw.x < center.x ? :left : :right, ccw.y < center.y ? :bottom : :top]
+      mid = bbox.center
+      return [ccw.x < mid.x ? :left : :right, ccw.y < mid.y ? :bottom : :top]
     end
-    center = bd2.bounds.center
-    [color.x < center.x ? :left : :right, color.y < center.y ? :bottom : :top]
+    mid = bd2.bounds.center
+    [color.x < mid.x ? :left : :right, color.y < mid.y ? :bottom : :top]
   end
   def corner_index(sheet, nesting = nil)
     start_x, ly0 = mark_corner(sheet, nesting)
@@ -66,7 +66,7 @@ module KSU::Mark
     0
   end
   def offset_for(sheet, nesting)
-    bot = bottom(sheet, nesting)
+    bot = bottom_of(sheet, nesting)
     return nil unless bot && marks_of(bot).any?
     _3e7613f3, arr = inset_of(bot)
     return nil if _3e7613f3 <= 0 && arr <= 0
@@ -104,7 +104,7 @@ module KSU::Mark
     _1c44e717(panel.transformation, sheet, tr)
   end
   def offset_polys(sheet, nesting)
-    bot = bottom(sheet, nesting)
+    bot = bottom_of(sheet, nesting)
     return [] unless bot
     _bd796177 = border_of(sheet)
     _7e85d3e0 = border_of(bot)

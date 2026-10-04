@@ -234,13 +234,13 @@ class KSU::Themtam
     return if visible_chosen.empty? || @sheets.empty?
     keys = visible_chosen.map { |s| KSU::Sheet.stock_key(s) }.uniq
     sheet_rows.each do |arr|
-      rect = arr.last
-      rec = @sheets.find { |s| s[:instance] == rect }
+      last = arr.last
+      rec = @sheets.find { |s| s[:instance] == last }
       next unless rec
       unless @them_tam_tu_do
-        next unless keys.length == 1 && KSU::Sheet.stock_key(rect) == keys.first
+        next unless keys.length == 1 && KSU::Sheet.stock_key(last) == keys.first
       end
-      ix = arr.index(rect)
+      ix = arr.index(last)
       offset = KSU::Sheet.row_offset(rec, arr, ix, @sheets)
       bbox = KSU::View.offset_bbox(rec[:bbox], offset)
       @add_buttons << { row: arr, bbox: bbox, center: Geom::Point3d.new((bbox.min.x + bbox.max.x) / 2.0, (bbox.min.y + bbox.max.y) / 2.0, bbox.max.z) }
@@ -262,7 +262,7 @@ class KSU::Themtam
     arr2 = slot_map
     arr.each do |sheet|
       panels_of(sheet).each do |panel|
-        ix = KSU::Cutting.board_index(panel)
+        ix = KSU::Cutting.index_of(panel)
         next if ix.nil?
         slot = arr2[[ix, KSU::Cutting.bottom_face?(panel)]]
         next unless slot
@@ -288,7 +288,7 @@ class KSU::Themtam
       sheet.definition.entities.each do |panel|
         next unless KSU.container?(panel)
         next unless KSU::Sheet.cut_panel?(panel)
-        ix = KSU::Cutting.board_index(panel)
+        ix = KSU::Cutting.index_of(panel)
         next if ix.nil?
         key = [ix, KSU::Cutting.bottom_face?(panel)]
         h[key] ||= { panel: panel, sheet: sheet }
@@ -309,7 +309,7 @@ class KSU::Themtam
   end
   def draw_add_buttons(view)
     @add_buttons.each do |prev|
-      KSU::View.draw_loop(KSU::View.top_corners(prev[:bbox]), guide: true)
+      KSU::View.draw_loop(KSU::View.bbox_top(prev[:bbox]), guide: true)
       KSU::View.draw_button(view, prev[:center], hover: @hover_side == prev)
     end
   end
@@ -416,8 +416,8 @@ class KSU::Themtam
     KSU.abort_op
     nil
   end
-  def place_pair(vec2, top, bottom)
-    return place_one(vec2, top) unless bottom && bottom.valid?
+  def place_pair(vec2, top, bot)
+    return place_one(vec2, top) unless bot && bot.valid?
     return nil unless vec2 && vec2.valid? && top && top.valid?
     KSU.start
     vec, new_id = insert_sheet_after(vec2)
@@ -425,12 +425,12 @@ class KSU::Themtam
       KSU.abort_op
       return nil
     end
-    index_map = reindex_map(top, bottom)
+    index_map = reindex_map(top, bot)
     copy_panels_into(top, vec, index_map: index_map)
-    vec3 = clone_bottom_sheet(top, bottom, vec, new_id)
-    copy_panels_into(bottom, vec3, index_map: index_map, back: true) if vec3 && vec3.valid?
+    vec3 = clone_bottom_sheet(top, bot, vec, new_id)
+    copy_panels_into(bot, vec3, index_map: index_map, back: true) if vec3 && vec3.valid?
     top.erase! if top.valid?
-    bottom.erase! if bottom.valid?
+    bot.erase! if bot.valid?
     KSU.commit
     vec
   rescue StandardError
@@ -439,42 +439,42 @@ class KSU::Themtam
   end
   def place_overwrite(anchor, arr)
     top = arr[:top]
-    bottom = arr[:bottom]
+    bot = arr[:bottom]
     return nil unless top && top.valid?
     KSU.start
     slots = slot_map
-    ixs = overwritable_indices(top, bottom, slots)
+    ixs = overwritable_indices(top, bot, slots)
     overwrite_panels(top, ixs, slots)
-    overwrite_panels(bottom, ixs, slots) if bottom && bottom.valid?
+    overwrite_panels(bot, ixs, slots) if bot && bot.valid?
     flag = top.valid? && panels_of(top).any?
-    flag2 = bottom && bottom.valid? && panels_of(bottom).any?
+    flag2 = bot && bot.valid? && panels_of(bot).any?
     vec = nil
     if flag && flag2
       vec, new_id = insert_sheet_after(anchor)
       if vec && vec.valid?
-        index_map = reindex_map(top, bottom)
+        index_map = reindex_map(top, bot)
         copy_panels_into(top, vec, index_map: index_map)
-        vec2 = clone_bottom_sheet(top, bottom, vec, new_id)
-        copy_panels_into(bottom, vec2, index_map: index_map, back: true) if vec2 && vec2.valid?
+        vec2 = clone_bottom_sheet(top, bot, vec, new_id)
+        copy_panels_into(bot, vec2, index_map: index_map, back: true) if vec2 && vec2.valid?
       end
     elsif flag
       vec, = insert_sheet_after(anchor)
       copy_panels_into(top, vec) if vec && vec.valid?
     end
     top.erase! if top.valid?
-    bottom.erase! if bottom && bottom.valid?
+    bot.erase! if bot && bot.valid?
     KSU.commit
     vec
   rescue StandardError
     KSU.abort_op
     nil
   end
-  def face_presence(top, bottom)
+  def face_presence(top, bot)
     src = Hash.new { |h, k| h[k] = { top: false, bottom: false } }
-    [top, bottom].each do |sheet|
+    [top, bot].each do |sheet|
       next unless sheet && sheet.valid?
       panels_of(sheet).each do |panel|
-        ix = KSU::Cutting.board_index(panel)
+        ix = KSU::Cutting.index_of(panel)
         next if ix.nil?
         if KSU::Cutting.bottom_face?(panel)
           src[ix][:bottom] = true
@@ -485,9 +485,9 @@ class KSU::Themtam
     end
     src
   end
-  def overwritable_indices(top, bottom, h)
+  def overwritable_indices(top, bot, h)
     out = []
-    face_presence(top, bottom).each do |ix, f|
+    face_presence(top, bot).each do |ix, f|
       flag = h.key?([ix, false])
       flag2 = h.key?([ix, true])
       next unless flag || flag2
@@ -501,7 +501,7 @@ class KSU::Themtam
     return unless grp2 && grp2.valid?
     panels_of(grp2).each do |panel|
       next unless panel.valid?
-      ix = KSU::Cutting.board_index(panel)
+      ix = KSU::Cutting.index_of(panel)
       next if ix.nil? || !arr.include?(ix)
       slot = arr2[[ix, KSU::Cutting.bottom_face?(panel)]]
       next unless slot
@@ -536,8 +536,8 @@ class KSU::Themtam
       next unless s && s.valid?
       s.transformation = Geom::Transformation.translation(offset) * s.transformation
       KSU::Sheet.shift_dims(arr4[s] || [], offset, @nesting)
-      bottom2 = KSU::Sheet.bottom(s, @nesting)
-      bottom2.transformation = Geom::Transformation.translation(offset) * bottom2.transformation if bottom2 && bottom2.valid?
+      bottom = KSU::Sheet.bottom_of(s, @nesting)
+      bottom.transformation = Geom::Transformation.translation(offset) * bottom.transformation if bottom && bottom.valid?
     end
     str = KSU::Sheet.sheet_no(grp.name.to_s)
     new_id = str ? str + 1 : nil
@@ -553,14 +553,14 @@ class KSU::Themtam
     end
     [grp2, new_id]
   end
-  def clone_bottom_sheet(top, bottom, grp2, new_id)
-    return nil unless bottom && bottom.valid? && grp2 && grp2.valid?
-    tr = @nesting.transformation.inverse * bottom.transformation
-    grp = KSU::Sheet.clone_sheet_shell(bottom, tr, @nesting)
+  def clone_bottom_sheet(top, bot, grp2, new_id)
+    return nil unless bot && bot.valid? && grp2 && grp2.valid?
+    tr = @nesting.transformation.inverse * bot.transformation
+    grp = KSU::Sheet.clone_sheet_shell(bot, tr, @nesting)
     return nil unless grp && grp.valid?
     bb2 = KSU::Sheet.world_bbox(grp2, @nesting)
     bbox = record_of(top)[:bbox]
-    bbox2 = record_of(bottom)[:bbox]
+    bbox2 = record_of(bot)[:bbox]
     bb = KSU::Sheet.world_bbox(grp, @nesting)
     if bb2 && bbox && bbox2 && bb
       pt = Geom::Point3d.new(
@@ -585,9 +585,9 @@ class KSU::Themtam
     end
     grp
   end
-  def reindex_map(top, bottom)
+  def reindex_map(top, bot)
     h = {}
-    (panels_of(top) + panels_of(bottom)).each do |panel|
+    (panels_of(top) + panels_of(bot)).each do |panel|
       prev_key = panel.get_attribute("ABF", "board-index")
       next if prev_key.nil? || h.key?(prev_key)
       h[prev_key] = @next_index

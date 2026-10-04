@@ -25,7 +25,7 @@ class KSU::Netcatcuoi
     @presets = get("presets", nil)
     @label_section_hidden = []
     @mode = get("che_do", 0).to_i
-    @slots = []
+    @rects = []
     @free_rects = {}
     @nesting = nil
     @sheets = []
@@ -188,11 +188,11 @@ class KSU::Netcatcuoi
       if arr
         ctrl = (rot & MK_SHIFT) != 0
         if arr[:kind] == :remove
-          ctrl ? @slots.clear : @slots.delete(arr[:entry])
+          ctrl ? @rects.clear : @rects.delete(arr[:entry])
         elsif ctrl
           add_all
         else
-          @slots << { sheet: arr[:sheet], points: arr[:points] }
+          @rects << { sheet: arr[:sheet], points: arr[:points] }
         end
         find_free_rects
         view.invalidate
@@ -206,7 +206,7 @@ class KSU::Netcatcuoi
     end
     arr = button_hit(view, x, y)
     if arr && arr[:kind] == :remove
-      @slots.delete(arr[:entry])
+      @rects.delete(arr[:entry])
       view.invalidate
       return
     end
@@ -343,7 +343,7 @@ class KSU::Netcatcuoi
   def commit_rect
     rect = drag_rect
     return unless rect && big_enough?(rect)
-    @slots << { sheet: @inst3, points: rect }
+    @rects << { sheet: @inst3, points: rect }
     @flag56 = false
     @inst3 = nil
     @pt9 = nil
@@ -368,7 +368,7 @@ class KSU::Netcatcuoi
     bbox.width > lo && bbox.height > lo
   end
   def load_slots
-    @slots = []
+    @rects = []
     @sheets.each do |rec|
       sheet = rec[:instance]
       next unless sheet && sheet.valid?
@@ -380,7 +380,7 @@ class KSU::Netcatcuoi
       end
     end
   rescue
-    @slots = []
+    @rects = []
   end
   def load_slots_json(sheet, rec, id_str)
     data = begin
@@ -400,7 +400,7 @@ class KSU::Netcatcuoi
       w = half[2].to_f
       h = half[3].to_f
       next if w <= 0 || h <= 0
-      @slots << { sheet: sheet, points: points({ x1: x, y1: y, x2: x + w, y2: y + h }) }
+      @rects << { sheet: sheet, points: points({ x1: x, y1: y, x2: x + w, y2: y + h }) }
     end
   end
   def load_slots_geom(sheet, rec)
@@ -415,7 +415,7 @@ class KSU::Netcatcuoi
       next if out.empty?
       bbox = Geom::BoundingBox.new
       out.each { |_23505ef9| bbox.add(_23505ef9) }
-      @slots << {
+      @rects << {
         sheet: sheet,
         points: points({ x1: bbox.min.x, y1: bbox.min.y, x2: bbox.max.x, y2: bbox.max.y })
       }

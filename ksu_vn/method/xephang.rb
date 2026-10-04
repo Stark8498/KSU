@@ -140,12 +140,12 @@ class KSU::Xephang
     return groups unless per_row > 0
     arr, = KSU::Sheet.sheet_maps(@nesting)
     return groups if arr.empty?
-    keys = arr.keys.sort
+    arr5 = arr.keys.sort
     suffix = KSU::Sheet.part_suffix
     part_re2 = KSU::Sheet.part_re
     h = {}
     materials = []
-    keys.each do |id|
+    arr5.each do |id|
       normal = KSU::Sheet.base_type(arr[id], part_re2)
       unless h[normal]
         h[normal] = []
@@ -175,7 +175,7 @@ class KSU::Xephang
             box.add(bbox) if bbox
           end
           next if box.empty?
-          _2ea74b89 = KSU::View.top_corners(box)
+          _2ea74b89 = KSU::View.bbox_top(box)
           groups << { corners: KSU::View.expand_corners(_2ea74b89), label: name, center: KSU::View.center_of(_2ea74b89) }
         end
       end

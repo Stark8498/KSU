@@ -25,9 +25,9 @@ module KSU::Thongke::Quet
   def self.all_boards(scope)
     walk_boards(scope, [], nil, [], {}).map(&:first)
   end
-  def self.boards_by_index(keys)
+  def self.boards_by_index(arr)
     ids = {}
-    keys.each { |id| ids[id.to_i] = true }
+    arr.each { |id| ids[id.to_i] = true }
     walk_boards(Sketchup.active_model.entities, [], ids, [], {})
   end
   def self.expand_roots(scope)

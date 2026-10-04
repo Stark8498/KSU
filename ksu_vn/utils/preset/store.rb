@@ -108,10 +108,10 @@ module KSU::Store
   def draw_presets(view)
     return unless KSU::Preset.cfg[:hien_preset]
     return unless @state && @state[:sections]&.any?
-    slots2 = slots
+    slots = slot_rects
     opac = opacity
     prev = nil
-    slots2.each do |slot|
+    slots.each do |slot|
       if slot[:type] == :card
         draw_round_rect(view, slot[:rect], radius, border: nil, fill: palette[:card] + [opac[:normal]], line_width: 1)
         prev = nil
@@ -136,7 +136,7 @@ module KSU::Store
     @hover_flat = nil
     @hover_sec = nil
     @hover_toggle = nil
-    slots.each do |slot|
+    slot_rects.each do |slot|
       if slot[:type] == :header
         if in_rect?(x, y, slot[:rect])
           @hover_sec = slot[:name]
@@ -158,7 +158,7 @@ module KSU::Store
   def hit_preset(x, y)
     return unless KSU::Preset.cfg[:hien_preset]
     return unless @state
-    slots.each do |slot|
+    slot_rects.each do |slot|
       next unless slot[:type] == :button
       if in_rect?(x, y, toggle_rect(slot[:rect]))
         choice = slot[:choice]
@@ -202,7 +202,7 @@ module KSU::Store
     end
     apply_preset(@presets[idx]["settings"])
   end
-  def slots
+  def slot_rects
     @layout_memo ||= build_layout
   end
   def build_layout
@@ -231,12 +231,12 @@ module KSU::Store
         flat_index += key[:choices].size
       end
       arr3 = arr.first[:rect]
-      rect3 = arr.last[:rect]
+      box = arr.last[:rect]
       entries << { type: :card, rect: {
         x: color[:x],
         y: arr3[:y] - pad,
         width: rsz[:width],
-        height: (rect3[:y] + rect3[:height]) - arr3[:y] + 2 * pad
+        height: (box[:y] + box[:height]) - arr3[:y] + 2 * pad
       } }
       entries.concat(arr)
     end

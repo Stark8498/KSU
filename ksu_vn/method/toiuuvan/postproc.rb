@@ -172,8 +172,8 @@ module KSU::Postproc
       next_src
       return :round
     end
-    rect = node[(@src_ix + 1)..].to_a.none? { |s| s && s.valid? }
-    if rect
+    last = node[(@src_ix + 1)..].to_a.none? { |s| s && s.valid? }
+    if last
       repack_sheet(target, node)
       next_src
       return :round
@@ -321,7 +321,7 @@ module KSU::Postproc
     arr2.each do |s|
       next unless s && s.valid?
       next if KSU::Sheet.hidden?(s)
-      next if KSU::Sheet.bottom(s, @nesting)
+      next if KSU::Sheet.bottom_of(s, @nesting)
       rec = sheet_recs.find { |i| i[:instance] == s }
       next unless rec
       plan = best_plan(s, rec, ix, gap_for, gap2, node)
@@ -571,11 +571,11 @@ module KSU::Postproc
     end
     out
   end
-  def _0579a704(pt11)
-    outer = pt11[:outer]
+  def _0579a704(pt10)
+    outer = pt10[:outer]
     unless outer && outer.length >= 3
-      w = pt11[:w] * 25.4
-      h = pt11[:h] * 25.4
+      w = pt10[:w] * 25.4
+      h = pt10[:h] * 25.4
       return [[[0.0, 0.0], [w, 0.0], [w, h], [0.0, h]]]
     end
     arr2 = outer.map { |pt| [pt.x.to_f, pt.y.to_f] }
@@ -583,18 +583,18 @@ module KSU::Postproc
     min_y = arr2.map { |pt| pt[1] }.min
     conv2 = ->(arr5) { arr5.map { |pt| [(pt[0] - min_x) * 25.4, (pt[1] - min_y) * 25.4] } }
     loops = [conv2.call(arr2)]
-    (pt11[:holes] || []).each do |h|
+    (pt10[:holes] || []).each do |h|
       next unless h && h.length >= 3
       loops << conv2.call(h.map { |pt| [pt.x.to_f, pt.y.to_f] })
     end
     loops
   end
-  def _1998c7d5(pt12)
-    outer = pt12[:outer]
+  def _1998c7d5(pt11)
+    outer = pt11[:outer]
     if outer && outer.length >= 3
       [outer.map { |pt| pt.x.to_f }.min, outer.map { |pt| pt.y.to_f }.min]
     else
-      [pt12[:bbox].min.x.to_f, pt12[:bbox].min.y.to_f]
+      [pt11[:bbox].min.x.to_f, pt11[:bbox].min.y.to_f]
     end
   end
 end

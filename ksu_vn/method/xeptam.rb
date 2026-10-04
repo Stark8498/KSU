@@ -600,7 +600,7 @@ class KSU::Xeptam
     end
     KSU::Sheet.draw_borders(view, @nesting)
     draw_rect2d(view) if @banding
-    edge_color2 = KSU::View.edge_color
+    edge = KSU::View.edge_color
     mat = KSU::View.face_color
     warn = KSU::View.warning_color
     warning_face_color = KSU::View.warn_color
@@ -621,7 +621,7 @@ class KSU::Xeptam
     end
     if @sel.any?
       _4e78f5d5 = @flag56 && @flag21
-      flag = _4e78f5d5 ? warn : edge_color2
+      flag = _4e78f5d5 ? warn : edge
       color = _4e78f5d5 ? warning_face_color : mat
       if @sel_polys
         _83ee7e20(@sel_polys, flag)
@@ -661,7 +661,7 @@ class KSU::Xeptam
     unless @sel.empty? || @arr28.empty?
       _ce2de26a = @flag56 && @flag21
       flag3 = _ce2de26a ? warning_face_color : mat
-      flag2 = _ce2de26a ? warn : edge_color2
+      flag2 = _ce2de26a ? warn : edge
       if @flag56
         arr4 = []
         @sel.each do |panel|

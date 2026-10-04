@@ -26,7 +26,7 @@ module KSU::Lastcut
     sheets = sheets.compact.uniq
     return if sheets.empty?
     tag = KSU::Cutting.layer("ABF_lastCut")
-    h = @slots.group_by { |ent| ent[:sheet] }
+    h = @rects.group_by { |ent| ent[:sheet] }
     KSU.start
     sheets.each do |sheet|
       next unless sheet && sheet.valid?

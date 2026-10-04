@@ -169,14 +169,14 @@ module KSU::Geom
     return nil if num < 1e-9
     Geom::Vector3d.new(_a9cb01d0 * num, _7150030a * num, 0)
   end
-  def self._3f61ee64(bounds, _9a88c1a2 = nil)
-    return [] unless bounds
-    return (0..7).map { |i| bounds.corner(i) } unless _9a88c1a2
-    (0..7).map { |i| bounds.corner(i).transform(_9a88c1a2) }
+  def self._3f61ee64(bnds, _9a88c1a2 = nil)
+    return [] unless bnds
+    return (0..7).map { |i| bnds.corner(i) } unless _9a88c1a2
+    (0..7).map { |i| bnds.corner(i).transform(_9a88c1a2) }
   end
-  def self._c7b0bc62(bounds, _9a88c1a2 = nil)
+  def self._c7b0bc62(bnds, _9a88c1a2 = nil)
     bbox = Geom::BoundingBox.new
-    _3f61ee64(bounds, _9a88c1a2).each { |_23505ef9| bbox.add(_23505ef9) }
+    _3f61ee64(bnds, _9a88c1a2).each { |_23505ef9| bbox.add(_23505ef9) }
     bbox
   end
   def self._a404e7b6(_405c3f80, tol = 1e-6)

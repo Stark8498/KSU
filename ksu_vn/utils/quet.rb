@@ -66,7 +66,7 @@ module KSU::Quet
     end
     [arr2.min, arr.min, arr2.max, arr.max]
   end
-  def self.collect_in_rect(view, rect, strict, ents = nil, tf = nil, depth = 3, &match)
+  def self.collect_in_rect(view, rect, strict, ents = nil, tf = nil, lvl = 3, &match)
     out = []
     (ents || Sketchup.active_model.active_entities).each do |ent|
       next unless ent.valid? && KSU.container?(ent)
@@ -78,9 +78,9 @@ module KSU::Quet
         out << ent if rect_hit?(bx2, rect, strict)
         next
       end
-      next if depth <= 0
+      next if lvl <= 0
       kids = KSU.entities_in(ent)
-      out.concat(collect_in_rect(view, rect, strict, kids, tr, depth - 1, &match)) if kids
+      out.concat(collect_in_rect(view, rect, strict, kids, tr, lvl - 1, &match)) if kids
     end
     out
   end

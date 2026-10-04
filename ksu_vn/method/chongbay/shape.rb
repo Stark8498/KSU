@@ -360,13 +360,13 @@ module KSU::Shape
     pts << @rank_b if @rank_b && pts.any? && pts.last != @rank_b
     pts
   end
-  def parts_along(pts2)
+  def parts_along(pts)
     arr = []
-    (pts2.length - 1).times do |i|
-      _9710d820 = pts2[i]
-      b = pts2[i + 1]
-      pts = parts_between(_9710d820, b).sort_by { |_23505ef9| band_key(_9710d820, b, _23505ef9) }
-      pts.each { |_23505ef9| arr << _23505ef9 unless arr.include?(_23505ef9) }
+    (pts.length - 1).times do |i|
+      _9710d820 = pts[i]
+      b = pts[i + 1]
+      poly = parts_between(_9710d820, b).sort_by { |_23505ef9| band_key(_9710d820, b, _23505ef9) }
+      poly.each { |_23505ef9| arr << _23505ef9 unless arr.include?(_23505ef9) }
     end
     arr
   end

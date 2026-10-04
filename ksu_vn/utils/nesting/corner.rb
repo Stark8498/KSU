@@ -591,10 +591,10 @@ module KSU::Corner
         end
       end
     end
-    name = arr.length
-    name.times do |i|
+    num2 = arr.length
+    num2.times do |i|
       _9710d820 = arr[i]
-      b = arr[(i + 1) % name]
+      b = arr[(i + 1) % num2]
       panel.each do |_23505ef9|
         thick = _ebae3e53(_23505ef9, _a1abb318, _9710d820, b)
         if thick && thick < best

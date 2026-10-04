@@ -30,7 +30,7 @@ module KSU::Pdf
   def write_font(add, font_full, h, name, arr)
     type0_id = add.call(nil)
     cid_id = add.call(nil)
-    desc_id = add.call(nil)
+    descent = add.call(nil)
     file_id = add.call(nil)
     tounicode_id = add.call(nil)
     arr2 = h.keys.sort
@@ -43,7 +43,7 @@ module KSU::Pdf
       "#{(font_full[:xmax] * upm).round} #{(font_full[:ymax] * upm).round}]"
     str2 = "<< /Type /Font /Subtype /CIDFontType2 /BaseFont /#{name} " \
       "/CIDSystemInfo << /Registry (Adobe) /Ordering (Identity) /Supplement 0 >> " \
-      "/FontDescriptor #{desc_id} 0 R /CIDToGIDMap /Identity /DW 500 /W [#{w}] >>"
+      "/FontDescriptor #{descent} 0 R /CIDToGIDMap /Identity /DW 500 /W [#{w}] >>"
     str3 = "<< /Type /FontDescriptor /FontName /#{name} /Flags 4 /FontBBox #{box} " \
       "/ItalicAngle 0 /Ascent #{(font_full[:ascent] * upm).round} /Descent #{(font_full[:descent] * upm).round} " \
       "/CapHeight #{(font_full[:ascent] * upm).round} /StemV 80 /FontFile2 #{file_id} 0 R >>"
@@ -51,7 +51,7 @@ module KSU::Pdf
     tounicode_obj = stream_obj(cmap_stream(h))
     arr[type0_id - 1] = str
     arr[cid_id - 1] = str2
-    arr[desc_id - 1] = str3
+    arr[descent - 1] = str3
     arr[file_id - 1] = file_obj
     arr[tounicode_id - 1] = tounicode_obj
     type0_id

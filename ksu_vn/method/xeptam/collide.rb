@@ -21,10 +21,10 @@ module KSU::Collide
   end
   def drop_sheet_cache(sheets)
     @obstacle_cache ||= {}
-    keys = {}
-    Array(sheets).each { |s| keys[s.entityID] = true if s && s.valid? }
-    return if keys.empty?
-    @obstacle_cache.delete_if { |k, v| !(k && k.valid?) || keys[k.entityID] }
+    h = {}
+    Array(sheets).each { |s| h[s.entityID] = true if s && s.valid? }
+    return if h.empty?
+    @obstacle_cache.delete_if { |k, v| !(k && k.valid?) || h[k.entityID] }
   end
   def refresh_after_move(panels, sheets)
     drop_sheet_cache(sheets)
@@ -56,11 +56,11 @@ module KSU::Collide
   def refresh_hits(panels)
     @grid = nil
     return unless @hit_list
-    keys = {}
-    Array(panels).each { |_23505ef9| keys[_23505ef9.entityID] = true if _23505ef9 && _23505ef9.valid? }
+    h = {}
+    Array(panels).each { |_23505ef9| h[_23505ef9.entityID] = true if _23505ef9 && _23505ef9.valid? }
     @hit_list.reject! do |bf|
       panel = bf[:panel]
-      !(panel && panel.valid?) || keys[panel.entityID]
+      !(panel && panel.valid?) || h[panel.entityID]
     end
     Array(panels).each do |_23505ef9|
       next unless _23505ef9 && _23505ef9.valid? && KSU::Cutting.bottom_face?(_23505ef9)
@@ -151,7 +151,7 @@ module KSU::Collide
     fill = KSU::Cutting.outline(h[:panel], h[:world_tr])
     outer = fill[:outer]
     h[:outer] = (outer && outer.length >= 3) ? outer.map { |_23505ef9| view.screen_coords(_23505ef9) } : nil
-    h[:holes] = (fill[:holes] || []).map { |h23| h23.map { |_23505ef9| view.screen_coords(_23505ef9) } }
+    h[:holes] = (fill[:holes] || []).map { |h18| h18.map { |_23505ef9| view.screen_coords(_23505ef9) } }
   end
   def min_margin
     KSU::Avail.sides(@tam_cach_le.to_f).min

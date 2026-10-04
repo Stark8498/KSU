@@ -321,7 +321,7 @@ class KSU::Gannhan
   def run_attach(flag = false)
     return if @labelling
     _9535dc0b = flag ? [] : KSU.selection
-    renumber = KSU::Label.plan(_9535dc0b)
+    renumber = KSU::Label.label_plan(_9535dc0b)
     if renumber.nil?
       UI.messagebox("Không tải được font ksu.shx.")
       return

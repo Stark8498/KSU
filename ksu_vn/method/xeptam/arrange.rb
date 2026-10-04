@@ -71,7 +71,7 @@ module KSU::Arrange
     ix = arr.index(sheet) || 0
     offset = KSU::Sheet.row_offset(rec, arr, ix, @arr23)
     tr2 = sheet.transformation
-    grp4 = KSU::Sheet.bottom(sheet, @nesting)
+    grp4 = KSU::Sheet.bottom_of(sheet, @nesting)
     tr = (grp4&.valid?) ? grp4.transformation : nil
     load_data = if side == :right
         [
@@ -94,8 +94,8 @@ module KSU::Arrange
       next unless s && s.valid?
       s.transformation = Geom::Transformation.translation(offset) * s.transformation
       KSU::Sheet.shift_dims(arr4[s] || [], offset, @nesting)
-      bottom3 = KSU::Sheet.bottom(s, @nesting)
-      bottom3.transformation = Geom::Transformation.translation(offset) * bottom3.transformation if bottom3&.valid?
+      bottom = KSU::Sheet.bottom_of(s, @nesting)
+      bottom.transformation = Geom::Transformation.translation(offset) * bottom.transformation if bottom&.valid?
     end
     str2 = KSU::Sheet.sheet_no(sheet.name.to_s)
     new_id = str2 ? (side == :left ? str2 : str2 + 1) : nil

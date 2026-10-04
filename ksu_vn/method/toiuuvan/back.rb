@@ -14,17 +14,17 @@ module KSU::Back
   end
   def front_panel?(panel)
     return false unless panel && panel.valid?
-    !KSU::Cutting.board_index(panel).nil? && !back_face2?(panel)
+    !KSU::Cutting.index_of(panel).nil? && !back_face2?(panel)
   end
   def back_of(panel)
     return nil unless panel && panel.valid? && front_panel?(panel)
-    ix = KSU::Cutting.board_index(panel)
+    ix = KSU::Cutting.index_of(panel)
     return nil if ix.nil?
     @nesting.definition.entities.each do |sheet|
       next unless KSU.container?(sheet) && sheet.name.to_s.downcase.include?("sheet")
       back = sheet.definition.entities.find do |ent|
         KSU.container?(ent) && ent != panel &&
-          KSU::Cutting.board_index(ent) == ix && back_face2?(ent)
+          KSU::Cutting.index_of(ent) == ix && back_face2?(ent)
       end
       return [back, sheet] if back
     end
@@ -53,7 +53,7 @@ module KSU::Back
     return back_sheet unless sheet3 && sheet3.valid?
     partner = @pack_cache && @pack_cache[sheet3.entityID]
     return partner if partner && partner.valid?
-    vec2 = KSU::Sheet.bottom(sheet3, @nesting)
+    vec2 = KSU::Sheet.bottom_of(sheet3, @nesting)
     if vec2 && vec2.valid?
       _3fccea3f(vec2, sheet3)
       return _76d37ecf(sheet3, vec2)

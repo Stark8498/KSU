@@ -52,11 +52,11 @@ module KSU::Thongke::Xuat
     rows = [{ cells: CHI_PHI_HEAD.map { |h| [h, ST_HEAD] } }]
     arr2 = []
     (cls2["sections"] || []).each do |arr3|
-      num11 = rows.size + 1
-      arr2 << "H#{num11}"
+      num9 = rows.size + 1
+      arr2 << "H#{num9}"
       items = arr3["items"] || []
-      _a925e834 = num11 + 1
-      formula = items.empty? ? nil : "SUM(H#{_a925e834}:H#{num11 + items.size})"
+      _a925e834 = num9 + 1
+      formula = items.empty? ? nil : "SUM(H#{_a925e834}:H#{num9 + items.size})"
       rows << { cells: build_cells(arr3["title"], arr3["tong"], formula) }
       items.each_with_index do |arr, i|
         half = _a925e834 + i

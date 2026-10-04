@@ -3,12 +3,12 @@ module KSU::Reorder
     return nil unless nesting && nesting.valid?
     h, = sheet_maps(nesting)
     return nil unless h[sheet_ix]
-    keys = h.keys.sort
+    arr = h.keys.sort
     cur_type = h[sheet_ix].get_attribute("ABF", "sheet-type")
-    box = keys.index(sheet_ix)
-    random = forward ? (box + 1...keys.size).to_a : (box - 1).downto(0).to_a
+    box = arr.index(sheet_ix)
+    random = forward ? (box + 1...arr.size).to_a : (box - 1).downto(0).to_a
     random.each do |i|
-      thick = h[keys[i]].get_attribute("ABF", "sheet-type")
+      thick = h[arr[i]].get_attribute("ABF", "sheet-type")
       return thick if thick != cur_type
     end
     nil
@@ -17,14 +17,14 @@ module KSU::Reorder
     return nil unless nesting && nesting.valid?
     h2, bot = sheet_maps(nesting)
     return nil unless h2[sheet_ix]
-    keys = h2.keys.sort
+    arr3 = h2.keys.sort
     h = {}
-    keys.each { |id| h[id] = h2[id].get_attribute("ABF", "sheet-type") }
+    arr3.each { |id| h[id] = h2[id].get_attribute("ABF", "sheet-type") }
     cur_type = h[sheet_ix]
     other_type = next_type(nesting, forward, sheet_ix)
     return nil unless other_type
-    arr = keys.select { |id| h[id] == cur_type }
-    arr2 = keys.select { |id| h[id] == other_type }
+    arr = arr3.select { |id| h[id] == cur_type }
+    arr2 = arr3.select { |id| h[id] == other_type }
     flag = forward ? arr.first : arr2.first
     _bdf6b67b = arr.index(sheet_ix)
     materials = forward ? (arr2 + arr) : (arr + arr2)
@@ -77,9 +77,9 @@ module KSU::Reorder
     return 0 unless nesting && nesting.valid?
     arr, bot = sheet_maps(nesting)
     return 0 if arr.empty?
-    keys = arr.keys.sort
+    arr4 = arr.keys.sort
     part_re2 = part_re
-    rows = keys.group_by { |id| arr[id].get_attribute("ABF", "sheet-type").to_s }
+    rows = arr4.group_by { |id| arr[id].get_attribute("ABF", "sheet-type").to_s }
     seen = rows.keys
     ordered = seen.sort_by do |thick|
       normal = thick.sub(part_re2, "")
@@ -92,7 +92,7 @@ module KSU::Reorder
       end
     end
     flag = bottom_up ? ordered : ordered.reverse
-    _02493448 = keys.min
+    _02493448 = arr4.min
     flag.each do |thick|
       rows[thick].each do |_c7528123|
         arr[_c7528123].set_attribute("ABF", "sheet-id", _02493448)
@@ -108,10 +108,10 @@ module KSU::Reorder
     return 0 unless per_row && per_row > 0
     arr, bot = sheet_maps(nesting)
     return 0 if arr.empty?
-    keys = arr.keys.sort
+    arr5 = arr.keys.sort
     part_re2 = part_re
     suffix = part_suffix
-    groups = keys.group_by { |id| base_type(arr[id], part_re2) }
+    groups = arr5.group_by { |id| base_type(arr[id], part_re2) }
     materials = groups.keys
     num = 0
     materials.each do |normal|
@@ -150,7 +150,7 @@ module KSU::Reorder
     ents = nesting.definition.entities
     prefix = nesting.get_attribute("KSU", "sheet-id-prefix", nil)
     suffix2 = nesting.get_attribute("KSU", "sheet-id-suffix", "")
-    pad = nesting.get_attribute("KSU", "sheet-id-pad", false)
+    zero_pad = nesting.get_attribute("KSU", "sheet-id-pad", false)
     part_re3 = part_re
     type_set = {}
     ents.each do |g|
@@ -176,10 +176,10 @@ module KSU::Reorder
     ents.erase_entities(arr4) unless arr4.empty?
     arr, bot = sheet_maps(nesting)
     return if arr.empty?
-    keys = arr.keys.sort
-    sheet_w, _dcd13e53 = sheet_dim(arr[keys.first], nesting)
+    arr5 = arr.keys.sort
+    sheet_w, _dcd13e53 = sheet_dim(arr[arr5.first], nesting)
     pt2 = nesting.transformation.origin
-    h = keys.group_by { |id| arr[id].get_attribute("ABF", "sheet-type") }
+    h = arr5.group_by { |id| arr[id].get_attribute("ABF", "sheet-type") }
     arr6 = h.keys
     _c9b1448a = KSU::Settings.get("tuy_chinh_khoang_cach", true, "xep_hang")
     if _c9b1448a
@@ -191,24 +191,24 @@ module KSU::Reorder
       _3a4c25ca = KSU::Const::SHEET_V_PADDING / 2.0
       _88097773 = KSU::Const::SHEET_V_PADDING
     end
-    num15 = 0.0
+    num13 = 0.0
     num2 = 0
     box = {}
     _ab80cc5b = nil
     arr6.each do |sheet_type|
       normal = sheet_type.to_s.sub(part_re3, "")
-      num15 += (normal == _ab80cc5b ? _88097773 : _6baff1da) unless _ab80cc5b.nil?
+      num13 += (normal == _ab80cc5b ? _88097773 : _6baff1da) unless _ab80cc5b.nil?
       arr2 = h[sheet_type]
       num2 = [num2, arr2.size].max
       flag = false
-      oy = num15
+      oy = num13
       arr2.each_with_index do |id, fill|
         ox = fill * (sheet_w + KSU::Const::SHEET_H_PADDING)
         arr[id].transformation = Geom::Transformation.translation([ox, oy, 0])
         box[id] = [ox, oy]
         flag = true if bot[id]
       end
-      num15 += _dcd13e53
+      num13 += _dcd13e53
       if flag
         by2 = oy + _dcd13e53 + _3a4c25ca
         arr2.each do |id|
@@ -216,11 +216,11 @@ module KSU::Reorder
           bx2 = box[id][0]
           bot[id].transformation = Geom::Transformation.translation([bx2, by2, 0])
         end
-        num15 = by2 + _dcd13e53
+        num13 = by2 + _dcd13e53
       end
       _ab80cc5b = normal
     end
-    _7bc2ff7d = num15
+    _7bc2ff7d = num13
     _865b7251 = KSU::Settings.get("hien_do_day", false, "xep_hang")
     _620ee4af = KSU::Settings.get("hien_so_van", false, "xep_hang")
     _8be1afcd = KSU::Settings.get("cho_phep_xuong_dong", true, "xep_hang")
@@ -233,7 +233,7 @@ module KSU::Reorder
       lbl = _06da7172(grp, sheet_type.to_s, thickness_mm, arr2.size, _865b7251, _620ee4af, _8be1afcd)
       _edd17adf(ents, lbl, pt3, _dcd13e53)
       arr2.each do |id|
-        num = _ef09a8a7(id, keys.max, pad)
+        num = _ef09a8a7(id, arr5.max, zero_pad)
         flag2 = prefix.nil? ? nil : label(num, prefix, suffix2)
         _babc606e(ents, arr[id], id, sheet_w, flag2)
         arr[id].name = "__#{sheet_type}-sheet-#{id}"

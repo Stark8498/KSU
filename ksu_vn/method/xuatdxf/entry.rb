@@ -52,8 +52,8 @@ module KSU::Xuatdxf
   def _984ee8f3(pts, _8ddd8c6f, _68165b06)
     _bb40b229(KSU::Nesting.poly_bounds(pts), _8ddd8c6f, _68165b06)
   end
-  def _bb40b229(bounds, _8ddd8c6f, _68165b06)
-    min_x, min_y, _a4beb817, _9deb3cee = bounds
+  def _bb40b229(bnds, _8ddd8c6f, _68165b06)
+    min_x, min_y, _a4beb817, _9deb3cee = bnds
     w = _a4beb817 - min_x
     h = _9deb3cee - min_y
     if w > 1.5 * h && h < 200 / 25.4
@@ -89,11 +89,11 @@ module KSU::Xuatdxf
     end
   end
   def _de556708(pts, _9535dc0b, _8ddd8c6f, _68165b06, len2d, seed = nil)
-    bounds = KSU::Nesting.poly_bounds(pts)
-    min_x, min_y, _a4beb817, _9deb3cee = bounds
+    bnds = KSU::Nesting.poly_bounds(pts)
+    min_x, min_y, _a4beb817, _9deb3cee = bnds
     w = _a4beb817 - min_x
     h = _9deb3cee - min_y
-    x2, dy = seed || _bb40b229(bounds, _8ddd8c6f, _68165b06)
+    x2, dy = seed || _bb40b229(bnds, _8ddd8c6f, _68165b06)
     if w > 1.5 * h && h < 200 / 25.4
       ry = dy > 0 ? _9deb3cee : min_y
       rx = x2 > 0 ? _a4beb817 - [len2d, w].min : min_x + [len2d, w].min
@@ -114,10 +114,10 @@ module KSU::Xuatdxf
       b = _9535dc0b[(i + 1) % n]
       dx = b.x - pt.x
       dy = b.y - pt.y
-      len = Math.sqrt(dx * dx + dy * dy)
-      next if len <= len2d * 2
+      len2 = Math.sqrt(dx * dx + dy * dy)
+      next if len2 <= len2d * 2
       next if pt.bulge.to_f.abs > 1e-9
-      thick = ((tx - pt.x) * dx + (_51d53976 - pt.y) * dy) / (len * len)
+      thick = ((tx - pt.x) * dx + (_51d53976 - pt.y) * dy) / (len2 * len2)
       thick = 0.0 if thick < 0
       thick = 1.0 if thick > 1
       trai = pt.x + thick * dx
@@ -125,11 +125,11 @@ module KSU::Xuatdxf
       _fa09db7b = (trai - tx)**2 + (duoi - _51d53976)**2
       next unless _892e5ea9.nil? || _fa09db7b < _892e5ea9
       _892e5ea9 = _fa09db7b
-      _080e1e07 = [pt, dx, dy, len, thick]
+      _080e1e07 = [pt, dx, dy, len2, thick]
     end
     return nil unless _080e1e07
-    pt, dx, dy, len, thick = _080e1e07
-    pad_x = len2d / len
+    pt, dx, dy, len2, thick = _080e1e07
+    pad_x = len2d / len2
     thick = pad_x if thick < pad_x
     thick = 1.0 - pad_x if thick > 1.0 - pad_x
     [pt.x + thick * dx, pt.y + thick * dy]

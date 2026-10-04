@@ -27,7 +27,7 @@ class KSU::Chontam
       @build = nil
     end
     def parse_indices(text)
-      keys = []
+      arr = []
       text.to_s.split(",").each do |grp|
         grp = grp.strip
         next if grp.empty?
@@ -35,15 +35,15 @@ class KSU::Chontam
           num2 = $1.to_i
           b = $2.to_i
           num2, b = b, num2 if num2 > b
-          (num2..b).each { |n| keys << n }
+          (num2..b).each { |n| arr << n }
         elsif grp =~ /\A\d+\z/
-          keys << grp.to_i
+          arr << grp.to_i
         end
       end
-      keys.uniq
+      arr.uniq
     end
-    def panels_by_index(keys)
-      return [] if keys.nil? || keys.empty?
+    def panels_by_index(arr)
+      return [] if arr.nil? || arr.empty?
       nesting = KSU::Nesting.find_nesting(notify: false)
       return [] unless nesting
       arr2 = []
@@ -59,35 +59,35 @@ class KSU::Chontam
           next unless panel_at_depth?(entity, 2)
           ix = entity.get_attribute("ABF", "board-index")
           next if ix.nil?
-          next unless keys.include?(ix.to_i)
+          next unless arr.include?(ix.to_i)
           arr2.concat(twins_of(entity))
         end
       end
       arr2.compact.select(&:valid?).uniq
     end
     def keep_non_containers(model)
-      keys = container_ids(KSU::Nesting.find_nesting(notify: false))
+      h = container_ids(KSU::Nesting.find_nesting(notify: false))
       keep_existing = model.selection.to_a.reject do |ent|
-        !root_of(ent).nil? || keys.key?(ent.entityID)
+        !root_of(ent).nil? || h.key?(ent.entityID)
       end
       KSU.select_only(keep_existing)
     end
     def container_ids(nesting)
-      keys = {}
-      return keys unless nesting && nesting.valid?
-      keys[nesting.entityID] = true
+      h = {}
+      return h unless nesting && nesting.valid?
+      h[nesting.entityID] = true
       arr = [[nesting, 0]]
       until arr.empty?
-        ents3, depth = arr.shift
+        ents3, lvl = arr.shift
         arr2 = KSU.entities_in(ents3)
         next unless arr2
         arr2.each do |entity|
           next unless KSU.container?(entity)
-          keys[entity.entityID] = true
-          arr << [entity, depth + 1] if depth + 1 < 3
+          h[entity.entityID] = true
+          arr << [entity, lvl + 1] if lvl + 1 < 3
         end
       end
-      keys
+      h
     end
     def set_selection(model, arr, additive:, clear_on_empty:)
       arr = Array(arr).compact.select(&:valid?).uniq
@@ -161,9 +161,9 @@ class KSU::Chontam
       nil
     end
     def label_group?(grp)
-      name = grp.respond_to?(:name) ? grp.name.to_s : ""
+      str = grp.respond_to?(:name) ? grp.name.to_s : ""
       def_name = (grp.respond_to?(:definition) && grp.definition) ? grp.definition.name.to_s : ""
-      name.include?("_ABF_Label") || def_name.include?("_ABF_Label")
+      str.include?("_ABF_Label") || def_name.include?("_ABF_Label")
     end
     def smallest_at(view, x, y)
       pt = KSU::View.pick_on_plane(view, x, y, 0)
@@ -171,7 +171,7 @@ class KSU::Chontam
       num2 = pt.x.to_f
       num = pt.y.to_f
       best = nil
-      area = Float::INFINITY
+      best_a = Float::INFINITY
       candidates.each do |color|
         next unless color[:external]
         entity = color[:entity]
@@ -181,8 +181,8 @@ class KSU::Chontam
         y1, y2 = pts.map { |pt2| pt2.y.to_f }.minmax
         next unless num2.between?(x1, x2) && num.between?(y1, y2)
         _5fb96e91 = (x2 - x1) * (y2 - y1)
-        next unless _5fb96e91 < area
-        area = _5fb96e91
+        next unless _5fb96e91 < best_a
+        best_a = _5fb96e91
         best = entity
       end
       best
@@ -199,9 +199,9 @@ class KSU::Chontam
     def cutting_lines?(grp)
       return false unless grp.respond_to?(:get_attribute)
       return true if grp.get_attribute("ABF", "is-cutting-lines")
-      name = grp.respond_to?(:name) ? grp.name.to_s : ""
+      str = grp.respond_to?(:name) ? grp.name.to_s : ""
       def_name = (grp.respond_to?(:definition) && grp.definition) ? grp.definition.name.to_s : ""
-      name.include?("_ABF_cuttingLines") || def_name.include?("_ABF_cuttingLines")
+      str.include?("_ABF_cuttingLines") || def_name.include?("_ABF_cuttingLines")
     end
     def panels_in_rect(view, rect, strict)
       arr = []
@@ -391,17 +391,17 @@ class KSU::Chontam
               arr[:stage] = :nesting
               next
             end
-            entity, transform, depth = arr[:ext_queue].shift
+            entity, transform, lvl = arr[:ext_queue].shift
             num -= 1
-            scan_external(arr, entity, transform, depth)
+            scan_external(arr, entity, transform, lvl)
           when :nesting
             if arr[:queue].empty?
               cache_finish(arr)
               return
             end
-            ents3, _9a88c1a2, depth = arr[:queue].shift
+            ents3, _9a88c1a2, lvl = arr[:queue].shift
             num -= 1
-            scan_nesting(arr, ents3, _9a88c1a2, depth)
+            scan_nesting(arr, ents3, _9a88c1a2, lvl)
           end
         end
       rescue => ent
@@ -414,14 +414,14 @@ class KSU::Chontam
       end
       cache_next_tick if @build
     end
-    def scan_external(arr, entity, transform, depth)
+    def scan_external(arr, entity, transform, num)
       return unless KSU.container?(entity)
       return unless entity.valid?
       return if nesting_root?(entity)
       transform2 = transform ? transform * entity.transformation : entity.transformation
       name = name_of(entity)
       ix = entity.get_attribute("ABF", "board-index")
-      if (depth.zero? || !ix.nil?) && !(name.empty? && ix.nil?)
+      if (num.zero? || !ix.nil?) && !(name.empty? && ix.nil?)
         arr[:candidates] << { entity: entity, transform: transform2, external: true }
         arr[:external_map][name] << entity unless name.empty?
       end
@@ -430,10 +430,10 @@ class KSU::Chontam
       return unless arr2
       arr2.each do |entity3|
         next unless KSU.container?(entity3)
-        arr[:ext_queue] << [entity3, transform2, depth + 1]
+        arr[:ext_queue] << [entity3, transform2, num + 1]
       end
     end
-    def scan_nesting(arr, ents3, _9a88c1a2, depth)
+    def scan_nesting(arr, ents3, _9a88c1a2, lvl)
       arr2 = KSU.entities_in(ents3)
       return unless arr2
       nesting = arr[:nesting]
@@ -442,18 +442,18 @@ class KSU::Chontam
         next if KSU::Sheet.bottom_sheet?(entity) || KSU::Cutting.bottom_face?(entity)
         transform = _9a88c1a2 * entity.transformation
         arr[:roots_map][entity.entityID] = nesting
-        if panel_at_depth?(entity, depth + 1)
+        if panel_at_depth?(entity, lvl + 1)
           name = name_of(entity)
           unless name.empty?
             arr[:candidates] << { entity: entity, transform: transform, external: false }
             arr[:nesting_map][name] << entity
           end
         end
-        arr[:queue] << [entity, transform, depth + 1] if depth + 1 < 2
+        arr[:queue] << [entity, transform, lvl + 1] if lvl + 1 < 2
       end
     end
-    def panel_at_depth?(entity, depth)
-      depth == 2 && pickable?(entity)
+    def panel_at_depth?(entity, lvl)
+      lvl == 2 && pickable?(entity)
     end
     def cache_finish(arr)
       @cache = {
@@ -497,15 +497,15 @@ class KSU::Chontam
       h9
     end
     def external_index_map(arr)
-      h18 = Hash.new { |h, k| h[k] = [] }
+      h15 = Hash.new { |h, k| h[k] = [] }
       arr[:candidates].each do |fld|
         next unless fld[:external]
         ent = fld[:entity]
         next unless ent && ent.valid?
         board_index = ent.get_attribute("ABF", "board-index")
-        h18[board_index.to_i] << ent unless board_index.nil?
+        h15[board_index.to_i] << ent unless board_index.nil?
       end
-      h18
+      h15
     end
     def external_by_index(ix)
       return [] if ix.nil? || @cache.nil?

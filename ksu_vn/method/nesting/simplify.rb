@@ -20,7 +20,7 @@ module KSU::Simplify
     num5 = 20.0 * Math::PI / 180.0
     num3 = 10.0 * Math::PI / 180.0
     num4 = 40.0 * Math::PI / 180.0
-    bounds = []
+    bnds = []
     idx = 0
     while idx <= n - 1
       if idx < n - 2
@@ -38,27 +38,27 @@ module KSU::Simplify
             j += 1
           end
           if _474c31eb > idx
-            bounds << box[idx]
+            bnds << box[idx]
             if flag * flag2 > 0
               _76ee3d2c = _03ea1bb7(box[idx], vec[idx], box[_474c31eb], vec[_474c31eb])
-              bounds << _76ee3d2c if _76ee3d2c
+              bnds << _76ee3d2c if _76ee3d2c
             end
-            bounds << box[_474c31eb]
+            bnds << box[_474c31eb]
             idx = _474c31eb + 1
             next
           end
         end
-        bounds << box[idx]
+        bnds << box[idx]
         idx += 1
       else
-        bounds << box[idx]
+        bnds << box[idx]
         idx += 1
       end
     end
     arr = []
-    bounds.each do |b|
-      rect = arr.last
-      next if rect && (b[0] - rect[0]).abs < 1e-9 && (b[1] - rect[1]).abs < 1e-9
+    bnds.each do |b|
+      last = arr.last
+      next if last && (b[0] - last[0]).abs < 1e-9 && (b[1] - last[1]).abs < 1e-9
       arr << b
     end
     arr.pop if arr.length > 2 && (arr.first[0] - arr.last[0]).abs < 1e-9 && (arr.first[1] - arr.last[1]).abs < 1e-9

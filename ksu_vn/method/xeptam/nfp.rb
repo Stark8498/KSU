@@ -185,8 +185,8 @@ module KSU::Nfp
   def self.nearest_on_edges(arr3, trai, duoi, pt)
     best = nil
     best_d2 = nil
-    arr3[:snap_edges].each do |pts|
-      arr2 = closest_on_seg(trai, duoi, pts[0], pts[1])
+    arr3[:snap_edges].each do |poly|
+      arr2 = closest_on_seg(trai, duoi, poly[0], poly[1])
       d2 = (arr2[0] - trai) ** 2 + (arr2[1] - duoi) ** 2
       if best_d2.nil? || d2 < best_d2
         best_d2 = d2

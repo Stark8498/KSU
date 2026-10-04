@@ -119,9 +119,9 @@ module KSU::Nesting
         close_later
         cb.call(data, @arr24) if cb
       end
-      @dlg2.add_action_callback("on_progress") do |dlg, progress|
+      @dlg2.add_action_callback("on_progress") do |dlg, num3|
         cb = @on_progress
-        cb.call(progress.to_i) if cb
+        cb.call(num3.to_i) if cb
       end
       @dlg2.add_action_callback("on_place_progress") do |dlg, done, total|
         cb = @on_place_progress
@@ -141,9 +141,9 @@ module KSU::Nesting
         end
         cb.call(j.to_i, data, @h10.delete(j.to_i)) if cb
       end
-      @dlg2.add_action_callback("on_job_progress") do |dlg, j, progress|
+      @dlg2.add_action_callback("on_job_progress") do |dlg, j, num3|
         cb = @on_job_progress
-        cb.call(j.to_i, progress.to_i) if cb
+        cb.call(j.to_i, num3.to_i) if cb
       end
       @dlg2.add_action_callback("on_job_place_progress") do |dlg, j, done, total|
         cb = @on_job_place_progress

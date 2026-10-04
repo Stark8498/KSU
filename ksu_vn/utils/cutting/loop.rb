@@ -30,10 +30,10 @@ module KSU::Loop
   end
   def hull_of(ents, tf)
     return nil unless defined?(KSU::Geom) && KSU::Geom.respond_to?(:convex_hull)
-    pts3 = []
-    collect_segments(ents, tf, []).each { |pts| pts3 << pts[0] << pts[1] }
-    return nil if pts3.length < 3
-    arr = KSU::Geom.convex_hull(pts3)
+    pts = []
+    collect_segments(ents, tf, []).each { |poly| pts << poly[0] << poly[1] }
+    return nil if pts.length < 3
+    arr = KSU::Geom.convex_hull(pts)
     return nil unless arr && arr.length >= 3
     area(arr).abs >= KSU::Const::LOOP_AREA_MIN ? arr : nil
   rescue StandardError
@@ -177,20 +177,20 @@ module KSU::Loop
   def build_loops(segments)
     return [] if segments.empty?
     return KSU::Method.build_loops(segments) if defined?(KSU::Method) && KSU::Method.respond_to?(:build_loops)
-    h29 = {}
+    h21 = {}
     h2 = Hash.new { |h, k| h[k] = [] }
     h3 = {}
-    segments.each_with_index do |pts, ix|
-      _c0467335 = _be46bc4b(pts[0])
-      _1544f6a8 = _be46bc4b(pts[1])
+    segments.each_with_index do |poly, ix|
+      _c0467335 = _be46bc4b(poly[0])
+      _1544f6a8 = _be46bc4b(poly[1])
       next if _c0467335 == _1544f6a8
-      h29[_c0467335] ||= pts[0]
-      h29[_1544f6a8] ||= pts[1]
+      h21[_c0467335] ||= poly[0]
+      h21[_1544f6a8] ||= poly[1]
       h2[_c0467335] << [_1544f6a8, ix]
       h2[_1544f6a8] << [_c0467335, ix]
       h3[ix] = [_c0467335, _1544f6a8]
     end
-    _3a1d2466(h29, h2, h3)
+    _3a1d2466(h21, h2, h3)
   end
   def collect_segments(container, gtr, segments)
     container.each do |entity|
@@ -284,20 +284,20 @@ module KSU::Loop
     node.layer = tag if tag
     node
   end
-  def board_index(panel)
+  def index_of(panel)
     return nil unless panel && panel.valid? && panel.respond_to?(:get_attribute)
     panel.get_attribute("ABF", "board-index")
   end
   def partner_panel(nesting, panel)
     return nil unless nesting && nesting.valid? && panel && panel.valid?
-    ix = board_index(panel)
+    ix = index_of(panel)
     return nil if ix.nil?
     want_back = !bottom_face?(panel)
     nesting.definition.entities.each do |sheet|
       next unless KSU::Sheet.sheet?(sheet)
       partner = sheet.definition.entities.find do |ent|
         KSU.container?(ent) && ent != panel &&
-          board_index(ent) == ix && (bottom_face?(ent) == want_back)
+          index_of(ent) == ix && (bottom_face?(ent) == want_back)
       end
       return partner if partner
     end

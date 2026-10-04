@@ -59,13 +59,13 @@ module KSU::Ttf
   end
   def _31c28be0(data, _4bcb6213)
     _cd2f261c = data[_4bcb6213 + 6, 2].unpack1("n")
-    pts = _cd2f261c / 2
+    n_pts = _cd2f261c / 2
     _b44355cf = _4bcb6213 + 14
     _cd0dfa0c = _b44355cf + _cd2f261c + 2
     _1ef61ee4 = _cd0dfa0c + _cd2f261c
     _774060b6 = _1ef61ee4 + _cd2f261c
     h = {}
-    pts.times do |i|
+    n_pts.times do |i|
       _781628f9 = data[_b44355cf + i * 2, 2].unpack1("n")
       start = data[_cd0dfa0c + i * 2, 2].unpack1("n")
       delta = data[_1ef61ee4 + i * 2, 2].unpack1("n")
@@ -90,9 +90,9 @@ module KSU::Ttf
     num.times do |i|
       normal = _4bcb6213 + 16 + i * 12
       screen = data[normal, 4].unpack1("N")
-      edge_color = data[normal + 4, 4].unpack1("N")
+      end_char = data[normal + 4, 4].unpack1("N")
       _6048e0bb = data[normal + 8, 4].unpack1("N")
-      (screen..edge_color).each { |color| h[color] = _6048e0bb + (color - screen) }
+      (screen..end_char).each { |color| h[color] = _6048e0bb + (color - screen) }
     end
     h
   end

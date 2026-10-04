@@ -14,14 +14,14 @@ module KSU::Mirror
     partner
   end
   def find_partner(panel)
-    ix = KSU::Cutting.board_index(panel)
+    ix = KSU::Cutting.index_of(panel)
     return nil if ix.nil?
     want_back = !back_face2?(panel)
     @nesting.definition.entities.each do |sheet|
       next unless KSU.container?(sheet) && sheet.name.to_s.downcase.include?("sheet")
       partner = sheet.definition.entities.find do |ent|
         KSU.container?(ent) && ent != panel &&
-          KSU::Cutting.board_index(ent) == ix && (back_face2?(ent) == want_back)
+          KSU::Cutting.index_of(ent) == ix && (back_face2?(ent) == want_back)
       end
       return partner if partner
     end
@@ -31,17 +31,17 @@ module KSU::Mirror
     @h11 = {}
     @arr28 = []
     return unless @nesting
-    h26 = Hash.new { |h, k| h[k] = [] }
+    h19 = Hash.new { |h, k| h[k] = [] }
     @nesting.definition.entities.each do |sheet|
       next unless KSU.container?(sheet) && sheet.name.to_s.downcase.include?("sheet")
       sheet.definition.entities.each do |grp|
         next unless KSU.container?(grp)
-        ix = KSU::Cutting.board_index(grp)
+        ix = KSU::Cutting.index_of(grp)
         next if ix.nil?
-        h26[ix] << grp
+        h19[ix] << grp
       end
     end
-    h26.each_value do |parts|
+    h19.each_value do |parts|
       arr2 = parts.reject { |_23505ef9| back_face2?(_23505ef9) }
       arr = parts.select { |_23505ef9| back_face2?(_23505ef9) }
       next if arr2.empty? || arr.empty?
@@ -69,7 +69,7 @@ module KSU::Mirror
   end
   def front_panel?(panel)
     return false unless panel && panel.valid?
-    !KSU::Cutting.board_index(panel).nil? && !back_face2?(panel)
+    !KSU::Cutting.index_of(panel).nil? && !back_face2?(panel)
   end
   def back_of(panel)
     return nil unless panel && panel.valid? && front_panel?(panel)
@@ -93,7 +93,7 @@ module KSU::Mirror
   end
   def bottom_target(sheet2, back_sheet, sheet3)
     return back_sheet unless sheet3 && sheet3.valid?
-    vec2 = KSU::Sheet.bottom(sheet3, @nesting)
+    vec2 = KSU::Sheet.bottom_of(sheet3, @nesting)
     return vec2 if vec2 && vec2.valid?
     flag = (back_sheet && back_sheet.valid?) ? back_sheet : KSU::Sheet.first_bottom(@nesting)
     return back_sheet unless flag && flag.valid?
@@ -169,14 +169,14 @@ module KSU::Mirror
       @arr57 << {
         front: vec,
         partner: partner,
-        frame: (_1b6c344e ? KSU::View.top_corners(bb2) : nil),
+        frame: (_1b6c344e ? KSU::View.bbox_top(bb2) : nil),
         polygon: KSU::Geom.translate(poly, dx, dy),
         holes: holes.map { |_c9fa72f2| KSU::Geom.translate(_c9fa72f2, dx, dy) },
       }
     end
   end
   def target_box(sheet2, back_sheet, sheet3, bb3)
-    found = KSU::Sheet.bottom(sheet3, @nesting)
+    found = KSU::Sheet.bottom_of(sheet3, @nesting)
     return [KSU::Sheet.world_bbox(found, @nesting), false] if found && found.valid?
     flag = (back_sheet && back_sheet.valid?) ? back_sheet : KSU::Sheet.first_bottom(@nesting)
     return nil unless flag && flag.valid?
@@ -200,12 +200,12 @@ module KSU::Mirror
   def _f42544d1(view)
     return if @arr57.nil? || @arr57.empty?
     flag = @flag21 ? KSU::View.warn_color : KSU::View.face_color
-    edge_color3 = @flag21 ? KSU::View.warning_color : KSU::View.edge_color
+    edge = @flag21 ? KSU::View.warning_color : KSU::View.edge_color
     @arr57.each do |fld|
       if fld[:frame]
         view.line_stipple = "-"
         view.line_width = 2
-        view.drawing_color = edge_color3
+        view.drawing_color = edge
         view.draw(GL_LINE_LOOP, fld[:frame])
         view.line_stipple = ""
       end
@@ -219,7 +219,7 @@ module KSU::Mirror
       end
       view.line_stipple = ""
       view.line_width = 1
-      view.drawing_color = edge_color3
+      view.drawing_color = edge
       view.draw(GL_LINE_LOOP, poly)
       (holes || []).each { |h| view.draw(GL_LINE_LOOP, h) if h && h.length >= 3 }
     end
@@ -234,12 +234,12 @@ module KSU::Mirror
     arr = _101ef2e3(view, @down_x, @down_y, @drag_x, @drag_y)
     return if arr.empty?
     _33c34f08 = KSU::View.face_color
-    edge_color4 = KSU::View.edge_color
+    edge = KSU::View.edge_color
     arr.each do |half|
       panel = half[:panel]
       sheet = half[:sheet]
       next unless panel && panel.valid? && sheet && sheet.valid?
-      draw_panel_fill(panel, sheet, _33c34f08, edge_color4)
+      draw_panel_fill(panel, sheet, _33c34f08, edge)
     end
   end
   def update_hover_sheets(x, y, view)
@@ -271,17 +271,17 @@ module KSU::Mirror
   end
   def _b01ddcaf(view, x, y)
     best = nil
-    area = Float::INFINITY
+    best_a = Float::INFINITY
     screen_items(view).each do |arr|
       next unless x.between?(arr[:sxmin], arr[:sxmax]) && y.between?(arr[:symin], arr[:symax])
-      next unless arr[:area] < area
+      next unless arr[:area] < best_a
       next unless arr[:panel] && arr[:panel].valid?
       ensure_screen_poly(view, arr)
       if arr[:outer]
         next unless KSU::View.in_poly?(x, y, arr[:outer])
         next if arr[:holes].any? { |h| h.length >= 3 && KSU::View.in_poly?(x, y, h) }
       end
-      area = arr[:area]
+      best_a = arr[:area]
       best = { panel: arr[:panel], sheet: arr[:sheet] }
     end
     best
@@ -365,10 +365,10 @@ module KSU::Mirror
   def draw_panel_fill(panel, sheet, color, _4a7d3cee = nil)
     fill = fill_of(panel, sheet)
     return false unless fill && fill[:outer].length >= 3
-    tris2 = (fill[:tris] ||= KSU::View.tris(fill[:outer], fill[:holes]))
-    if tris2 && !tris2.empty?
+    tris = (fill[:tris] ||= KSU::View.poly_tris(fill[:outer], fill[:holes]))
+    if tris && !tris.empty?
       KSU::View.set_pen(color)
-      KSU::View.view.draw(GL_TRIANGLES, tris2)
+      KSU::View.view.draw(GL_TRIANGLES, tris)
     else
       KSU::View.draw_poly_holes(fill[:outer], fill[:holes], color: color, line: false)
     end

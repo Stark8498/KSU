@@ -122,7 +122,7 @@ module KSU::View
     pt2 = (holes || []).map { |h| h.map { |pt| Geom::Point3d.new(pt.x, pt.y, z) } }
     {
       entity: entity,
-      tris: tris(poly, pt2),
+      tris: poly_tris(poly, pt2),
       two_sided: !board_index.nil? && !!two_sided_flags[board_index],
       back: back,
       board_index: board_index,
@@ -130,8 +130,8 @@ module KSU::View
     }
   end
   def self.cache_key(ref_p1, ref_p2, two_sided)
-    keys = ref_p1 ? ref_p1.each_key.map { |ent| ent && ent.valid? ? ent.entityID : -1 }.sort : nil
-    [ref_p2, two_sided, keys]
+    arr = ref_p1 ? ref_p1.each_key.map { |ent| ent && ent.valid? ? ent.entityID : -1 }.sort : nil
+    [ref_p2, two_sided, arr]
   end
   def self.tri_buckets(cache, ref_p1, ref_p2, two_sided)
     key = cache_key(ref_p1, ref_p2, two_sided)
@@ -163,11 +163,11 @@ module KSU::View
     @num2 = { nesting: nesting, sig: sig, at: Time.now.to_f } if sig
     cache = @panel_cache
     return unless cache && nesting && nesting.valid? && cache[:nesting] == nesting
-    keys = {}
-    Array(panels).each { |grp| keys[grp.entityID] = true if grp && grp.valid? }
+    h2 = {}
+    Array(panels).each { |grp| h2[grp.entityID] = true if grp && grp.valid? }
     cache[:panels].reject! do |ent|
       entity = ent[:entity]
-      !(entity && entity.valid?) || keys[entity.entityID]
+      !(entity && entity.valid?) || h2[entity.entityID]
     end
     h = {}
     nesting.definition.entities.each do |s|
@@ -211,7 +211,7 @@ module KSU::View
     ray = view.pickray(x, y)
     Geom.intersect_line_plane(ray, [Geom::Point3d.new(0, 0, z), Geom::Vector3d.new(0, 0, 1)])
   end
-  def self.top_corners(bbox)
+  def self.bbox_top(bbox)
     z = bbox.max.z
     [
       Geom::Point3d.new(bbox.min.x, bbox.min.y, z),
@@ -300,9 +300,9 @@ module KSU::View
     len2d > 1e-6 ? len2d / 100.0 : 1.0
   end
   def self.draw_brackets(view, corners, color: nil, active: nil)
-    outer_pts = expand_corners(corners)
-    scr = outer_pts.map { |_23505ef9| view.screen_coords(_23505ef9) }
-    scale = screen_scale(view, outer_pts[0])
+    arr3 = expand_corners(corners)
+    scr = arr3.map { |_23505ef9| view.screen_coords(_23505ef9) }
+    scale = screen_scale(view, arr3[0])
     arm = KSU::Const::BRACKET_ARM_MM * scale
     thickness_mm = KSU::Const::BRACKET_THICK_MM * scale
     inset = KSU::Const::BRACKET_INSET_MM * scale
@@ -321,9 +321,9 @@ module KSU::View
     end
   end
   def self.bracket_hit(view, corners, x, y, pad: KSU::Const::BRACKET_PAD_MM)
-    outer_pts = expand_corners(corners)
-    scr = outer_pts.map { |_23505ef9| view.screen_coords(_23505ef9) }
-    scale = screen_scale(view, outer_pts[0])
+    arr3 = expand_corners(corners)
+    scr = arr3.map { |_23505ef9| view.screen_coords(_23505ef9) }
+    scale = screen_scale(view, arr3[0])
     arm = KSU::Const::BRACKET_ARM_MM * scale
     inset = KSU::Const::BRACKET_INSET_MM * scale
     pad_x = pad * scale

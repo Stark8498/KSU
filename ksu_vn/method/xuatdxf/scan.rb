@@ -126,9 +126,9 @@ module KSU::Xuatdxf
   def _7c10a028(gr, _7bafc8a5, ents, pid, _8d6669ce = nil)
     return if gr.get_attribute("ABF", "is-label")
     return if gr.get_attribute("ABF", "is-edge-banding-notation")
-    name = gr.name.to_s
+    str = gr.name.to_s
     def_name = (gr.respond_to?(:definition) && gr.definition) ? gr.definition.name.to_s : ""
-    return if name.include?("_ABF_Label") || def_name.include?("_ABF_Label")
+    return if str.include?("_ABF_Label") || def_name.include?("_ABF_Label")
     _27846c89 = KSU::Sheet.sheet_border?(gr)
     _84dcc166 = gr.get_attribute("ABF", "is-mark-square")
     _bc8516a9 = gr.get_attribute("ABF", "is-cutting-lines")
@@ -143,42 +143,42 @@ module KSU::Xuatdxf
         if ent.curve
           next if seen[ent.curve.entityID]
           seen[ent.curve.entityID] = true
-          ents << { layer: dxf_layer(ent, normal), pts: pts(ent.curve.vertices, _7bafc8a5),
+          ents << { layer: dxf_layer(ent, normal), pts: xy_of(ent.curve.vertices, _7bafc8a5),
                        closed: true, via_module: true, bulge: true, pid: pid, sect: false }
         else
           arr2 << ent
         end
       end
-      layer = arr2.first ? dxf_layer(arr2.first, normal) : "0"
+      tag = arr2.first ? dxf_layer(arr2.first, normal) : "0"
       _c73c2639(arr2).each do |_c9fa72f2|
-        ents << { layer: layer, pts: pts(_c9fa72f2, _7bafc8a5),
+        ents << { layer: tag, pts: xy_of(_c9fa72f2, _7bafc8a5),
                      closed: true, via_module: true, bulge: true, pid: pid, sect: false }
       end
     elsif _27846c89 || _84dcc166
       edge = obj.grep(Sketchup::Edge).first
       if edge && edge.curve
-        ents << { layer: dxf_layer(edge, normal), pts: pts(edge.curve.vertices, _7bafc8a5),
+        ents << { layer: dxf_layer(edge, normal), pts: xy_of(edge.curve.vertices, _7bafc8a5),
                      closed: _27846c89, via_module: false, bulge: false, pid: pid, sect: false,
                      border: _27846c89 }
       end
     elsif _20c319d6
       h2 = {}
       obj.grep(Sketchup::Face).each do |f|
-        ents << { layer: dxf_layer(f, normal), pts: pts(f.outer_loop.vertices, _7bafc8a5),
+        ents << { layer: dxf_layer(f, normal), pts: xy_of(f.outer_loop.vertices, _7bafc8a5),
                      closed: true, via_module: true, bulge: true, pid: pid, sect: true }
         f.outer_loop.edges.each { |ent| h2[ent.entityID] = true }
       end
       obj.grep(Sketchup::Edge).each do |ent|
         next if ent.curve
         next if h2[ent.entityID]
-        ents << { layer: dxf_layer(ent, normal), pts: pts([ent.start, ent.end], _7bafc8a5),
+        ents << { layer: dxf_layer(ent, normal), pts: xy_of([ent.start, ent.end], _7bafc8a5),
                      closed: false, via_module: false, bulge: false, pid: pid, sect: true }
       end
     else
       h2 = {}
       obj.grep(Sketchup::Face).each do |f|
         f.loops.each do |face|
-          ents << { layer: dxf_layer(face.edges[0], normal), pts: pts(face.vertices, _7bafc8a5),
+          ents << { layer: dxf_layer(face.edges[0], normal), pts: xy_of(face.vertices, _7bafc8a5),
                        closed: true, via_module: true, bulge: true, pid: pid, sect: true }
           face.edges.each { |ent| h2[ent.entityID] = true }
         end
@@ -191,10 +191,10 @@ module KSU::Xuatdxf
           seen[ent.curve.entityID] = true
           arr3 = ent.curve.vertices
           closed = arr3.first.position == arr3.last.position
-          ents << { layer: dxf_layer(ent.curve.edges[0], normal), pts: pts(arr3, _7bafc8a5),
+          ents << { layer: dxf_layer(ent.curve.edges[0], normal), pts: xy_of(arr3, _7bafc8a5),
                        closed: closed, via_module: true, bulge: true, pid: pid, sect: true }
         else
-          ents << { layer: dxf_layer(ent, normal), pts: pts([ent.start, ent.end], _7bafc8a5),
+          ents << { layer: dxf_layer(ent, normal), pts: xy_of([ent.start, ent.end], _7bafc8a5),
                        closed: false, via_module: false, bulge: false, pid: pid, sect: true }
         end
       end
@@ -204,7 +204,7 @@ module KSU::Xuatdxf
       _7c10a028(entity, _7bafc8a5 * entity.transformation, ents, pid, normal)
     end
   end
-  def pts(arr, _7bafc8a5)
+  def xy_of(arr, _7bafc8a5)
     arr.map do |v|
       pt = v.position.transform(_7bafc8a5)
       [pt.x.to_f, pt.y.to_f]
@@ -224,15 +224,15 @@ module KSU::Xuatdxf
     _6b31f7ce = KSU::Font.half_width(_5cb20db4)
     num = [num, (_8ddd8c6f - 0.123 * _8ddd8c6f) / _6b31f7ce].min if _6b31f7ce > 0
     _60000b16 = _68165b06 * 0.5 - (KSU::Font::HEIGHT * num / 2)
-    KSU::Font._1ff4cc8f(_5cb20db4, [_8ddd8c6f * 0.5 - (_6b31f7ce * num / 2), _60000b16], num).each do |pts|
-      out << { layer: "ABF_sheetId", pts: pts, closed: false, via_module: false, bulge: false }
+    KSU::Font._1ff4cc8f(_5cb20db4, [_8ddd8c6f * 0.5 - (_6b31f7ce * num / 2), _60000b16], num).each do |poly|
+      out << { layer: "ABF_sheetId", pts: poly, closed: false, via_module: false, bulge: false }
     end
     str = mat.to_s
     unless str.empty?
       _4c541df4 = KSU::Font.half_width(str)
       flag = _4c541df4 > 0 ? [8.0, (_8ddd8c6f - 0.123 * _8ddd8c6f) / _4c541df4].min : 8.0
-      KSU::Font._1ff4cc8f(str, [_8ddd8c6f * 0.5 - (_4c541df4 * flag / 2), _60000b16 + 0.45 * _68165b06], flag).each do |pts|
-        out << { layer: "ABF_sheetMaterial", pts: pts, closed: false, via_module: false, bulge: false }
+      KSU::Font._1ff4cc8f(str, [_8ddd8c6f * 0.5 - (_4c541df4 * flag / 2), _60000b16 + 0.45 * _68165b06], flag).each do |poly|
+        out << { layer: "ABF_sheetMaterial", pts: poly, closed: false, via_module: false, bulge: false }
       end
     end
     out

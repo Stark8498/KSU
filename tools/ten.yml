@@ -24,7 +24,7 @@ ten:
   _04113f8e: src
   _0a2eb43e: box           # Geom::BoundingBox gom dan; _506bc226 la bbox tung phan
   _0cb7d924: inst5                 # rec[:instance] (4 lan)
-  _0f1bcb43: center
+  _0f1bcb43: centroid_pt
   _13279171: sxmax
   _13764272: holes
   _1456a3ad: plan
@@ -74,14 +74,14 @@ ten:
   _bbad7f9f: sheet_id      # gia tri get_attribute("ABF", "sheet-id") -- la id, khong phai Group
   _be1c5d10: pid
   _c2148d5e: x
-  _c65c0a0a: pts
+  _c65c0a0a: xy_of
   _c8636cca: bottom
   _cab2c36f: target
   _ce67eacc: polys
   _d395e9f8: dxf_layer             # xuatdxf/scan.rb: ten lop DXF; cutting.rb giu `layer`
   _d51b4ab3: members
   _d61658e0: sheets
-  _d94ef3ef: name
+  _d94ef3ef: type_name
   _dce0ad8f: base_tr
   _df507b9e: panel
   _df68e3b4: fld_bbox      # lay tu `fld[:bbox]` -- `fld` la ten con sot lai ngay tren
@@ -107,7 +107,8 @@ ten:
   _07bc5978: cmap
   _09d0752d: border
   _0a21207f: upm
-  _0cbdb95a: label
+  _0cbdb95a:
+    "*": text
   _0df1379c: edge
   _0ecc5ce9: upm
   _0fa2dd20: flat_index
@@ -118,7 +119,9 @@ ten:
   _149549b9: keep_existing
   _149def6d: inst6                 # rec[:instance] (2 lan)
   _16028ecb: cups
-  _179db7c2: rect
+  _179db7c2:
+    "*": last
+    ksu_vn/utils/preset/store.rb: box
   _17a4f8f8: align
   _192c3ea3: sheet_labels          # utils/sheet.rb; main.rb giu `labels`
   _1b474acd: panels
@@ -128,7 +131,8 @@ ten:
   _221342cc: line_vec
   _23ca0a5d: hmtx_off
   _2471b63d: src
-  _281b314e: sub_face_color
+  _281b314e:
+    "*": sub
   _28470268: ly0
   _2924baf5: tf
   _29f020a8: svg
@@ -144,9 +148,9 @@ ten:
   _37ce457c: pad_y
   _37e96ea1: entry
   _3808febe: pp_vec
-  _3a0c02a8: main_face_color
+  _3a0c02a8:
+    "*": main
   _3b0c3409: rect2                 # nesting/corner.rb; quet.rb+svg.rb giu `rect` (72 lan)
-  _3d7c9b5b: margin
   _3fdbf866: overlay_holes
   _44d5d3cd: az
   _466d05de: height
@@ -157,13 +161,14 @@ ten:
   _5434e0d2: y
   _54e81c4a: label
   _552ff1ee: at
-  _55943665: jobs
+  _55943665: build_jobs
   _562a89cf: materials
   _5646d0c0: nesting
   _5b0e5374: partner
   _5bc7c3c9: lock
   _5c26106e: polylines
-  _5e785761: center
+  _5e785761:
+    "*": mid
   _5ed46691: bbox
   _60164eef: placements
   _609d76aa: ix
@@ -182,7 +187,8 @@ ten:
   _74fd2956: lock_open
   _75686cbe: tf_axes
   _75b39981: trai
-  _75f60566: panel_normal_color
+  _75f60566:
+    "*": normal
   _75fab3ca: rotatable
   _78d29daa: skip
   _7a32b1aa: entity
@@ -191,7 +197,8 @@ ten:
   _7f114de1: normal
   _801d00f8: max
   _81045e85: theo_vung
-  _81453c2b: bottom
+  _81453c2b:
+    "*": faces
   _830cc130: d
   _8408f2cf: rotate
   _846b29af: ax
@@ -199,7 +206,6 @@ ten:
   _84c87104: ebs
   _880f8491: entity
   _885e1003: area
-  _88f532bc: back
   _8942d360: cano
   _8ce1cc3f: y1
   _8d6022fa: th
@@ -209,13 +215,16 @@ ten:
   _9277e941: external_index_map
   _92b10de9: overlay_polygon
   _93388593: small_size
-  _93f47db6: panel_two_color
+  _93f47db6:
+    "*": two
   _9404be8f: part_data
   _95c9f846: height_mm
   _969cfcac: inst3                 # rec[:instance] (6 lan)
   _98b32411: vec
   _9950f40c: part_tf
-  _9dcc2bb2: edge_color
+  _9dcc2bb2:
+    "*": edge
+    ksu_vn/utils/pdf/ttf.rb: end_char
   _a1308313: ph
   _a13d2261: poly0
   _a19d2014: screen
@@ -227,7 +236,8 @@ ten:
   _ab655ee0: rot
   _b290ad49: len
   _b34022c4: new_id
-  _b3b909e6: panel_group_color
+  _b3b909e6:
+    "*": group
   _b3ef684d: width
   _b419c75c: min_sheet_id
   _b662a89c: xf
@@ -239,10 +249,10 @@ ten:
   _bbff64e0: snap_edges
   _bd18224a: stat
   _bec69da5: top_corners
-  _bfbc76fb: transform
   _c07bf6db: count_by_length
   _c6ae116a: num_hm
-  _c6eb1443: edge_weight
+  _c6eb1443:
+    "*": weight
   _c7e8b218: bbox
   _cac16f40: depth
   _caf485b6: source_sheet
@@ -252,17 +262,17 @@ ten:
   _d374b315: color
   _d471bf7d: holes
   _d53db8b7: display_name
-  _da8ad11a: bounds_mm
   _dae43e1d: max_h
-  _dae89e17: area
+  _dae89e17:
+    "*": best_a
   _e36e045b: board_index
   _e455e902: fill
   _e552c98e: mat_order
   _e8dae2a9: ly
   _ea460feb: rotatable2            # nesting/optimize.rb; nesting/collect.rb giu `rotatable`
-  _eb0d2b5d: pts
   _ecd10f9f: edge_band_desc
-  _edb225ed: bottom
+  _edb225ed:
+    ksu_vn/method/themtam.rb: bot
   _ef223874: renumber
   _f005c610: closed
   _f16c7ab7: arrow_padding
@@ -272,15 +282,15 @@ ten:
   _f413c26e: x
   _f4e43624: y1
   _f69ed9ec: rotate_cfg
-  _f70ab167: drills
+  _f70ab167:
+    "*": found
   _f9fb932d: id
   _fa14bb54: true_color
   _fac73c01: thickness
   _fad48eec: large
   _fd63a357: drills
-  _fedaf7c3: jobs
-
-  # ================= ME 1: utils/const, font/data, other, isolate,
+  _fedaf7c3:
+    "*": job_list
   #                          system/update, system/addon =================
   _d21030ca: http_fetch      # Preset.http_get_curl, fallback Isolate.http_get
   _2695dd0b: read_license    # doc file license, giai ma, parse JSON
@@ -314,12 +324,9 @@ ten:
   _1e968b99: visible?
   _cecf648f: dispatch_keys
   _68de4054: dispatch
-  _d2988734: load_addons
   _7e6aad08: handler
 
   # Hex da nghia -- dat ten theo tung file, se bo sung dan khi doc cac file khac
-  _c04fb39c:
-    "ksu_vn/utils/other.rb": dir
   _9535dc0b:
     "ksu_vn/utils/isolate.rb": keep_list
   _c31e3116:
@@ -347,14 +354,16 @@ ten:
   _3798bfa1: panel
   _44c34410: transform
   _4dab96a3: umin
-  _513b6595: pts
+  _513b6595:
+    "*": poly
+    ksu_vn/utils/pdf/ttf.rb: n_pts
   _529cefc7: panel
   _572f7fb0: materials
   _5733aff5: bbox
   _7525a050: transform
-  _77445f53: x1
-  _788affef: tris
-  _838f9d06: layer
+  _788affef: poly_tris
+  _838f9d06:
+    "*": tag
   _85458193:
     "*": len
     "ksu_vn/method/xuatdxf/entry.rb#_727b63c7": len2
@@ -362,9 +371,8 @@ ten:
   _9e68ab19: partner
   _a8bdc7d4: materials
   _b0018280: parts
-  _b3bfd2a3: materials
   _b87879ab: umin
-  _be87b887: bottom
+  _be87b887: bottom_of
   _c279ca2b: tris
   _d1ef5b91:
     "*": sheet
@@ -458,7 +466,10 @@ ten:
   _3da15afd: rect_hit?
   _397b83d6: strict            # true = phai nam tron trong khung
   _4fbe9584: screen_box        # bbox cua thuc the chieu len man hinh
-  _4fcf5547: depth
+  _4fcf5547:
+    "*": lvl
+    ksu_vn/utils/cutting/detail.rb: drill_d
+    ksu_vn/method/chongbay.rb: gap_d
   _5feb83d4: match             # block loc
   _30fe1d49: kids
   _b3bfd2a3: collect_in_rect   # ban sinh doi goi nham la `materials`
@@ -569,7 +580,8 @@ ten:
   _9477a3c4: load_data
   _ea561d4c: push_data         # day du lieu da lam tron sang hop thoai
   _6b7e9fae: select_parts
-  _7acd0c42: keys
+  _7acd0c42:
+    "*": ids
   _cd6ad4a6: bool_setting
   _0a0f44aa: _part            # Ruby chi cho phep tham so block lap ten khi ten
                               # bat dau bang `_`; push.rb co `|_part, _part, b|`
@@ -657,9 +669,6 @@ ten:
   _5f966f9e: serialize        # ghep thanh file PDF, ke ca bang xref
   _22707eb1: xref_at
   _65570dfe: off
-  _cfde5454:
-    "*": descent
-    "ksu_vn/utils/pdf/build.rb#_5b6279e8": desc_id
   _c14c1dc9:
     "*": file
     "ksu_vn/utils/pdf/build.rb#_5b6279e8": file_id
@@ -949,7 +958,7 @@ ten:
   _7ed122ce: ids
   _1c247542: pick_on_plane    # ban tia tu con tro xuong mat phang z
   _8b5ff44c: ray
-  _7e9a4df0: top_corners
+  _7e9a4df0: bbox_top
   _a113d793: extents          # [min_x, max_x, min_y, max_y, max_z]
   _b9fdc2d5: center_of
   _1e77347e: draw_outline
@@ -962,7 +971,6 @@ ten:
   _ce19c813: b
   _5cee69e5: dx
   _e48d8065: dy
-  _85458193: len
   _b951b1ba: unit2d
   _77a9d095: len2d
   _f84a7879: expand_corners   # day bon goc ra ngoai 50mm theo hai canh ke
@@ -987,7 +995,8 @@ ten:
   _1890c36d: pt
   _47eba6dd: draw_brackets
   _fe39b69f: corners
-  _97d9692b: outer_pts
+  _97d9692b:
+    "*": outer
   _c88ba427: scr
   _30bd90bf: scale
   _dfa17d72: inset
@@ -998,7 +1007,7 @@ ten:
 
   # ================= ME 17: utils/label.rb -- khac nhan len tam =============
   _fd0b7a5f: apply_case       # upper / lower / title
-  _0566e2f1: plan             # { jobs:, layer:, renumber: }
+  _0566e2f1: label_plan             # { jobs:, layer:, renumber: }
   _de472479: board?           # co hai mat lon song song thi la tam van
   _137e2915: boards_in
   _ad1aab84: every_board
@@ -1011,7 +1020,8 @@ ten:
   _665bc239: pick_face
   _6dc55f15: label_text
   _d04b583b: draw_badge       # vong tron so hieu + ten tam
-  _bc1dd986: name
+  _bc1dd986:
+    "*": badge_text
   _90a73754: num_w
   _da2b5800: name_w
   _30b59511: box_w
@@ -1064,7 +1074,8 @@ ten:
   _82fdde5b: two_sided_set    # tap board-index cua cac tam hai mat
   _921c371c: out
   _916665cc: collect_label_polys
-  _ca0993d6: name
+  _ca0993d6:
+    "*": ent_name
   _d1ea58e7: def_name
   _bf8df1c8: kids
   _a8511360: seen
@@ -1161,7 +1172,8 @@ ten:
   _05bd8a7e: mark_point
   _3b8d4426: min_x
   _9e7e08c6: min_y
-  _a33e3d58: pad
+  _a33e3d58:
+    "*": tol_x
   _6fb26883: mark_corner      # [:left|:right, :bottom|:top]
   _0f82481b: corner_index     # 0..3, cung quy uoc voi kernel pack_bl
   _f2166b43: sheet
@@ -1227,7 +1239,8 @@ ten:
   _bb66defe: renumber_ids
   _cb75f618: prefix
   _6a752eb1: suffix2
-  _f5cefecd: pad
+  _f5cefecd:
+    "*": zero_pad
   _1cc9607d: world_bbox
   _7a7a9a52: sync_ids
 
@@ -1281,7 +1294,7 @@ ten:
   _08233e30: margin_rows      # bo o nhap le, co the tach rieng bon canh
   _4ab42ecd: margin
   _5d337571: two_sided
-  _0ef6a78c: slots            # bo cuc da tinh, nho lai giua cac khung hinh
+  _0ef6a78c: slot_rects            # bo cuc da tinh, nho lai giua cac khung hinh
   _a5c0536b: build_layout
   _cfe1b1dd: row_size
   _79555c31: pad              # khoang dem doc giua cac the
@@ -1293,7 +1306,8 @@ ten:
 
   # ================= ME 29: utils/preset/field.rb -- o nhap thong so =======
   _5ef56663: field_defs
-  _c1cdbab0: hover_field
+  _c1cdbab0:
+    "*": hover_ix
   _42aa98ff: hover_part
   _8512acdc: edit_field
   _f410c091: input_buf
@@ -1324,7 +1338,8 @@ ten:
   _25ba481c: txt
   _7f761602: val
   _925b750d: topts
-  _da8ad11a: bounds
+  _da8ad11a:
+    "*": bnds
   _873f703c: cancel_edit
 
   # ================= ME 30: system/setting.rb =================
@@ -1355,7 +1370,8 @@ ten:
   _b780d24c: label_total
   _904bb656: label_done
   _8fcfd8de: done
-  _7b079005: progress
+  _7b079005:
+    "*": pct
   _0d3fc43a: finish
   _143757f7: stop_timer
   _71d8fea4: percent
@@ -1406,7 +1422,8 @@ ten:
   _86bab841: edit_key
   _b27543b1: update_preview
   _1d7997eb: ctrl
-  _02b82a28: plan
+  _02b82a28:
+    "*": steps
   _ec8e6cb8: plan_for
   _da3eb970: reason
   _57ec5185: set_hover
@@ -1535,7 +1552,7 @@ ten:
   _33aae7c4: clear_preview
   _34966ae4: target_box
   _f9e9781a: sheet3
-  _d4944f67: board_index
+  _d4944f67: index_of
   _03018fe6: move_to_sheet
 
   # ================= ME 38: method/xeptam/collide.rb =================
@@ -1885,7 +1902,8 @@ ten:
   _38e0f0c5: ux2
   _24c1c612: uy2
   _44798e5e: free_rects           # @: van -> cac o trong tim duoc
-  _21eae3f6: slots                # @: { sheet:, points: } cua cac o da chot
+  _21eae3f6:
+    "*": rects
   _0183b2c7: buttons              # nut :add cho o de xuat, :remove cho o da co
   _d82a1555: add_all
   _cca954c3: panel_boxes
@@ -2336,6 +2354,7 @@ ten:
   # trong ca cay (178 lan) va moi noi mot nghia; o day luon la mot ban ghi tam.
   _23505ef9:
     ksu_vn/method/chongbay.rb: rec
+    "ksu_vn/utils/cutting.rb#_b344f39a": pt
   _60000b16:
     ksu_vn/method/chongbay.rb: y2
   _c723bcc4:
@@ -2386,6 +2405,7 @@ ten:
     "ksu_vn/utils/cutting/detail.rb#_5edc6938": lbl_scale
   _9b67c55d:
     "ksu_vn/utils/cutting/detail.rb#_5edc6938": pad2
+    "ksu_vn/method/netcatcuoi/resize.rb#_b6a93f39": loop_pts
   _5ec460ae:
     "ksu_vn/utils/cutting/detail.rb#_5edc6938": pad_total
   _c1f843df:
@@ -2404,8 +2424,6 @@ ten:
     ksu_vn/utils/cutting/detail.rb: flip
   _b41d8800:
     ksu_vn/utils/cutting/detail.rb: value
-  _23505ef9:
-    "ksu_vn/utils/cutting.rb#_b344f39a": pt
 
   # ----- ME 61: method/xeptam/nfp.rb -- no-fit polygon va luoi bam -----
   # NFP cua mot cap hinh la tap vi tri ma hinh dong cham hinh dung; dat goc
@@ -2507,8 +2525,6 @@ ten:
     ksu_vn/method/netcatcuoi/resize.rb: ry2
   _3b981bf6:
     ksu_vn/method/netcatcuoi/resize.rb: sheet
-  _9b67c55d:
-    "ksu_vn/method/netcatcuoi/resize.rb#_b6a93f39": loop_pts
 
 bo:
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,

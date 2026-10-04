@@ -254,9 +254,9 @@ class KSU::Chongbay
   end
   def update_preview(ctrl, view)
     return unless @dest
-    plan = plan_for(@dest, @btn_joint, ctrl)
-    return if plan == @btn_plan
-    @btn_plan = plan
+    steps = plan_for(@dest, @btn_joint, ctrl)
+    return if steps == @btn_plan
+    @btn_plan = steps
     view&.invalidate
   end
   def onCancel(reason, view)
@@ -413,8 +413,8 @@ class KSU::Chongbay
     lbl = @typed.empty? ? arr[:rank].to_s : @typed
     KSU::View.draw_label(lbl, arr[:center], shape: :circle, size: size2(arr), line_width: 2)
   end
-  def size2(_23505ef9)
-    return @co_so_thu_tu * 1.5 if _23505ef9.equal?(@editing) || _23505ef9.equal?(@hover_rec)
+  def size2(rec)
+    return @co_so_thu_tu * 1.5 if rec.equal?(@editing) || rec.equal?(@hover_rec)
     @co_so_thu_tu
   end
   def hit_at(x, y)
@@ -426,10 +426,10 @@ class KSU::Chongbay
     end
     nil
   end
-  def begin_edit(_23505ef9, view)
+  def begin_edit(rec, view)
     @typed = ""
-    return if @editing.equal?(_23505ef9)
-    @editing = _23505ef9
+    return if @editing.equal?(rec)
+    @editing = rec
     update_status
     view&.invalidate
   end
@@ -460,9 +460,9 @@ class KSU::Chongbay
     begin_edit(nil, view)
     view&.invalidate
   end
-  def set_hover(_23505ef9, view)
-    return if @hover_rec.equal?(_23505ef9)
-    @hover_rec = _23505ef9
+  def set_hover(rec, view)
+    return if @hover_rec.equal?(rec)
+    @hover_rec = rec
     view&.invalidate
   end
   def draw_overlay_fills
@@ -640,11 +640,11 @@ class KSU::Chongbay
     }
   end
   def nearest_side(trai, duoi, bbox)
-    arr = depths(trai, duoi, bbox).select do |side, depth|
-      gap_for_side(side).to_f > 0 && !layer_for_side(side).to_s.empty? && depth >= 0
+    arr = depths(trai, duoi, bbox).select do |side, gap_d|
+      gap_for_side(side).to_f > 0 && !layer_for_side(side).to_s.empty? && gap_d >= 0
     end
     return nil if arr.empty?
-    arr.min_by { |_part, depth| depth }.first
+    arr.min_by { |_part, gap_d| gap_d }.first
   end
   def draw_assigned(view)
     @plan_preview.each do |arr|
@@ -847,7 +847,7 @@ class KSU::Chongbay
         polygon = fill[:outer]
         holes = fill[:holes] || []
         if polygon.nil? || polygon.length < 3
-          polygon = KSU::View.top_corners(bbox)
+          polygon = KSU::View.bbox_top(bbox)
           holes = []
         end
         z = (-0.1).mm

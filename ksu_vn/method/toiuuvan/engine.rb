@@ -37,9 +37,9 @@ module KSU::Engine
       two_sided: [_ad07fd49 || []],
       orders: [@thu_tu_don == "theo_ten" ? _0638a063 : []],
       pair: KSU::Settings.get("ghep_cap_toi_uu", true, "nesting").to_s != "false",
-      on_progress: lambda do |progress|
+      on_progress: lambda do |pct|
         unless @str == "Đang xếp tấm"
-          @progress = (base + progress * span / 100.0).round
+          @progress = (base + pct * span / 100.0).round
           KSU::View.view&.invalidate
         end
       end,
@@ -87,7 +87,7 @@ module KSU::Engine
     arr2.compact.uniq.each do |s|
       next unless s && s.valid?
       next if KSU::Sheet.hidden?(s)
-      next if KSU::Sheet.bottom(s, @nesting)
+      next if KSU::Sheet.bottom_of(s, @nesting)
       rec = sheet_recs.find { |i| i[:instance] == s }
       next unless rec
       KSU::Nesting.pack_to_corner(@nesting, s, rec, ix, gap_for, gap2)

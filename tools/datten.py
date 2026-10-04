@@ -89,7 +89,9 @@ def load_dicts(files: list[str] | None = None) -> dict[str, object]:
         p = ROOT / "tools" / name
         if not p.exists():
             continue
-        doc = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+        text = p.read_text(encoding="utf-8")
+        warn_dup_keys(name, text)
+        doc = yaml.safe_load(text) or {}
         for h, v in (doc.get("ten") or {}).items():
             if isinstance(v, dict):
                 merged = dict(out[h]) if isinstance(out.get(h), dict) else {}
@@ -115,6 +117,25 @@ def load_dicts(files: list[str] | None = None) -> dict[str, object]:
     for h in drop:
         out.pop(h, None)
     return out
+
+
+def warn_dup_keys(name: str, text: str) -> None:
+    """A hex written twice in one file keeps only its LAST entry.
+
+    yaml.safe_load drops the earlier one without a word, so a batch that adds a
+    second block for a hex instead of editing the first silently throws the
+    first away -- including any per-scope detail in it, which then stops being
+    applied while the dictionary still appears to hold it.
+    """
+    seen: dict[str, int] = {}
+    for line in text.splitlines():
+        m = re.match(r"^  (_[0-9a-f]{8}):", line)
+        if m:
+            seen[m.group(1)] = seen.get(m.group(1), 0) + 1
+    dup = sorted(h for h, n in seen.items() if n > 1)
+    for h in dup:
+        print(f"  CANH BAO {name}: {h} co {seen[h]} muc, chi muc CUOI duoc dung"
+              f" -- gop lai thanh mot")
 
 
 def name_for(spec: object, rel: str, method: str | None) -> str | None:

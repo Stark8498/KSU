@@ -97,16 +97,16 @@ module KSU::Detail
     return false unless lines_grp
     draw_edgeband(panel, tr2.inverse, rec[:edge_band_lines])
     save_edgeband_desc(panel, rec[:edge_band_desc], tr2)
-    bottom = split_by_face(grp, vec2, tf3d)
-    draw_bands(panel, bottom[:up], tr2 * part_tf)
+    faces = split_by_face(grp, vec2, tf3d)
+    draw_bands(panel, faces[:up], tr2 * part_tf)
     save_drills_desc(panel, side_drills(grp, vec2, part_tf), tr2)
-    holes = label_opts(grp, bottom[:label], vec2, tf3d, max_eb[1], arr2)
+    holes = label_opts(grp, faces[:label], vec2, tf3d, max_eb[1], arr2)
     draw_holes(panel, tr2 * part_tf, holes, false)
     if nesting
-      if bottom[:bottom].empty?
+      if faces[:bottom].empty?
         erase_partner(nesting, panel)
       else
-        build_partner(nesting, panel, rec[:loops], bottom[:bottom], holes, tf2)
+        build_partner(nesting, panel, rec[:loops], faces[:bottom], holes, tf2)
       end
     end
     true
@@ -187,9 +187,9 @@ module KSU::Detail
     return unless lbl_w && lbl_h && lbl_scale && lbl_w > 0 && lbl_h > 0 && lbl_scale != 0
     rotate = arr[:rotate]
     arrow_padding = arr[:arrow_padding]
-    _9b67c55d = arrow_padding
-    _9b67c55d = _9b67c55d * 8 if rotate == 0 || rotate == 180
-    pad_total = arr[:arrow_size] * 2 + arrow_padding * 2 + _9b67c55d * 2 + arr[:max_eb_th] * 2
+    pad2 = arrow_padding
+    pad2 = pad2 * 8 if rotate == 0 || rotate == 180
+    pad_total = arr[:arrow_size] * 2 + arrow_padding * 2 + pad2 * 2 + arr[:max_eb_th] * 2
     arr2 = face_size(arr[:up_face], arr[:tf3d])
     max_h = arr[:max_h]
     if rotate == 0 || rotate == 180
@@ -323,8 +323,8 @@ module KSU::Detail
       next false if ent.get_attribute("ABF", "is-cutting-lines")
       next false if ent.get_attribute("ABF", "is-edge-banding-notation")
       next false if ent.get_attribute("ABF", "is-label")
-      name = ent.name.to_s
-      next false if name.include?("_ABF_cuttingLines") || name.include?("_ABF_edgeBanding") || name.include?("_ABF_Label")
+      arr = ent.name.to_s
+      next false if arr.include?("_ABF_cuttingLines") || arr.include?("_ABF_edgeBanding") || arr.include?("_ABF_Label")
       next false if KSU::Sheet.sheet_border?(ent)
       true
     end
@@ -360,16 +360,16 @@ module KSU::Detail
     [b[:max_y], b[:max_x], b[:min_y], b[:min_x]]
   end
   def drill_of(lp, arr2, tf)
-    depth2 = lp.get_attribute("ABF", "drill-depth", -1)
+    num2 = lp.get_attribute("ABF", "drill-depth", -1)
     num = lp.vertices.size - 1
     pt = lp.vertices[0].position.transform(tf)
     far_pt = lp.vertices[num / 2].position.transform(tf)
     len2d = pt.distance(far_pt)
     r = len2d / 2
-    arr = { d: d(len2d), depth: depth(depth2, 1, 1), edge: -1 }
+    arr = { d: d(len2d), depth: depth(num2, 1, 1), edge: -1 }
     p_ref = Geom::Point3d.new((pt[0] + far_pt[0]) / 2, (pt[1] + far_pt[1]) / 2, (pt[2] + far_pt[2]) / 2)
     arr[:pos] = p_ref
-    depth_len = depth2.mm
+    depth_len = num2.mm
     pt3 = lp.vertices[num / 4].position.transform(tf)
     pt4 = lp.vertices[num * 3 / 4].position.transform(tf)
     vec = pt.vector_to(far_pt).cross(pt3.vector_to(pt4))
@@ -387,19 +387,19 @@ module KSU::Detail
     p4 = p_ref.offset(vec2, r)
     arr[:poly] = [p1, p2, p3, p4]
     ent = edge_index(vec.reverse)
-    return arr unless depth2 > 0 && ent
+    return arr unless num2 > 0 && ent
     arr[:edge] = ent
     arr
   end
   def side_drills(gr, up_face, tf)
-    bounds = edge_bounds(up_face.outer_loop.vertices, tf)
+    bnds = edge_bounds(up_face.outer_loop.vertices, tf)
     arr3 = []
     ["is-minifix-part-a", "is-minifix-part-b", "is-hinge-part-a", "is-hinge-part-b", "is-side-drill"].each do |attr|
       partner = kids_with_attr(gr, attr)
       arr3.concat(partner) if partner
     end
     arr3.uniq!
-    drills = []
+    found = []
     vec2 = up_face.normal.transform(tf)
     vec = (KSU.entities_in(gr) || []).grep(Sketchup::Face).map { |f| [f.bounds.center.transform(tf), f.normal.transform(tf)] }
     vec.select! { |f| f[1].perpendicular?(vec2) }
@@ -414,23 +414,23 @@ module KSU::Detail
         arr[:edge_pos] = 0
         if arr[:edge] > -1
           case arr[:edge]
-          when 0 then arr[:edge_pos] = d(bounds[1] - arr[:pos][0])
-          when 1 then arr[:edge_pos] = d(arr[:pos][1] - bounds[2])
-          when 2 then arr[:edge_pos] = d(arr[:pos][0] - bounds[3])
-          when 3 then arr[:edge_pos] = d(bounds[0] - arr[:pos][1])
+          when 0 then arr[:edge_pos] = d(bnds[1] - arr[:pos][0])
+          when 1 then arr[:edge_pos] = d(arr[:pos][1] - bnds[2])
+          when 2 then arr[:edge_pos] = d(arr[:pos][0] - bnds[3])
+          when 3 then arr[:edge_pos] = d(bnds[0] - arr[:pos][1])
           end
         end
-        drills << arr
+        found << arr
       end
     end
     arr2 = [[], [], [], []]
-    drills.each do |arr|
+    found.each do |arr|
       next if arr[:edge] < 0
       arr2[arr[:edge]] << [arr[:edge_pos], arr]
     end
     arr2.each { |arr5| arr5.sort_by! { |arr4| arr4[0] } }
     arr6 = arr2.map { |arr5| arr5.map { |arr4| arr4[0].to_s }.join("_") }
-    [arr6, drills]
+    [arr6, found]
   end
   def save_drills_desc(panel, data, tf)
     keys = data[0]

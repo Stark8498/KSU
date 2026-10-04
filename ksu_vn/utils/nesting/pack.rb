@@ -7,13 +7,13 @@ module KSU::Pack
     id_str = KSU::Method.pack_bl(parts.map { |len2d| len2d[:w] }, parts.map { |len2d| len2d[:h] },
                                  width_mm, height_mm, gap2, arr, num2, num, seed)
     h = {}
-    id_str.each_with_index do |(placements, x, y, w, h30), i|
+    id_str.each_with_index do |(placements, x, y, w, h23), i|
       next if placements < 0
       len2d = parts[i]
       rot = (w - len2d[:w]).abs > 1e-6 ? 90 : 0
       (h[placements] ||= []) << {
         panel: len2d[:panel], source_sheet: len2d[:sheet], bbox: len2d[:bbox],
-        lx: x, ly: y, w: w, h: h30, rot: rot,
+        lx: x, ly: y, w: w, h: h23, rot: rot,
       }
     end
     h.keys.sort.map { |k| h[k] }

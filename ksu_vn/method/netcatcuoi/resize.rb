@@ -24,7 +24,7 @@ module KSU::Resize
       { x1: pt.min.x.to_f - gap2, x2: pt.max.x.to_f + gap2,
         y1: pt.min.y.to_f - gap2, y2: pt.max.y.to_f + gap2 }
     end
-    @slots.each do |half|
+    @rects.each do |half|
       next unless half[:sheet] == sheet && half[:points] && half[:points].length == 4
       arr5 = half[:points].map { |pt| pt.x.to_f }
       arr4 = half[:points].map { |pt| pt.y.to_f }
@@ -43,7 +43,7 @@ module KSU::Resize
     tol = 1e-6
     arr2 = KSU::Geom._a404e7b6([ux1, ux2] + arr3.flat_map { |b| [b[:x1], b[:x2]] }.select { |v| v > ux1 + tol && v < ux2 - tol })
     best = nil
-    area = 0.0
+    best_a = 0.0
     (0...arr2.length - 1).each do |i|
       ((i + 1)...arr2.length).each do |j|
         x213 = arr2[i]
@@ -60,8 +60,8 @@ module KSU::Resize
         gap2 = longest_free_y(uy1, uy2, arr4)
         next if gap2[:len] < _a0976be2
         _5fb96e91 = w * gap2[:len]
-        if _5fb96e91 > area + tol
-          area = _5fb96e91
+        if _5fb96e91 > best_a + tol
+          best_a = _5fb96e91
           best = { x1: x213, y1: gap2[:y1], x2: x2, y2: gap2[:y2] }
         end
       end
@@ -105,7 +105,7 @@ module KSU::Resize
       Geom::Point3d.new(half[:x1], half[:y2], @plane_z)
     ]
   end
-  def center(pts)
+  def centroid_pt(pts)
     color = KSU::Geom.centroid(pts)
     Geom::Point3d.new(color[0], color[1], @plane_z)
   end
@@ -113,12 +113,12 @@ module KSU::Resize
     arr = []
     @sheets.each do |rec|
       sheet = rec[:instance]
-      @slots.select { |half| half[:sheet] == sheet && half[:points] && half[:points].length == 4 }.each do |slot|
-        arr << { center: center(slot[:points]), kind: :remove, sheet: sheet, entry: slot, id: [:remove, slot.object_id] }
+      @rects.select { |half| half[:sheet] == sheet && half[:points] && half[:points].length == 4 }.each do |slot|
+        arr << { center: centroid_pt(slot[:points]), kind: :remove, sheet: sheet, entry: slot, id: [:remove, slot.object_id] }
       end
       (@free_rects[sheet] || []).each_with_index do |pts, ix|
         next unless pts && pts.length == 4
-        arr << { center: center(pts), kind: :add, sheet: sheet, entry: nil, points: pts, id: [:add, sheet.entityID, ix] }
+        arr << { center: centroid_pt(pts), kind: :add, sheet: sheet, entry: nil, points: pts, id: [:add, sheet.entityID, ix] }
       end
     end
     arr
@@ -127,7 +127,7 @@ module KSU::Resize
     @free_rects.each do |sheet, out|
       out.each do |pts|
         next unless pts && pts.length == 4
-        @slots << { sheet: sheet, points: pts }
+        @rects << { sheet: sheet, points: pts }
       end
     end
   end
@@ -159,7 +159,7 @@ module KSU::Resize
   def edge_at(view, x, y)
     best = nil
     _aa866019 = KSU::Const::EDGE_HIT_PX * KSU::Const::EDGE_HIT_PX
-    @slots.each do |slot|
+    @rects.each do |slot|
       slot_edges(slot).each do |ent|
         len2d = KSU::Geom.dist2_to_seg(Geom::Point3d.new(x, y, 0), view.screen_coords(ent[:a]), view.screen_coords(ent[:b]))
         next unless len2d < _aa866019
@@ -192,7 +192,7 @@ module KSU::Resize
       tx = px.clamp(x215, x2)
       _51d53976 = y2 + tol
     end
-    @slots.any? do |panel|
+    @rects.any? do |panel|
       next false if panel.equal?(slot)
       next false unless panel[:sheet] == slot[:sheet]
       opac = panel[:points]
@@ -309,7 +309,7 @@ module KSU::Resize
     KSU::View.draw_loop2d(pts, color: KSU::View.warning_color)
   end
   def draw_slots(view)
-    @slots.group_by { |ent| ent[:sheet] }.each do |sheet, entries|
+    @rects.group_by { |ent| ent[:sheet] }.each do |sheet, entries|
       arr = entries.map { |ent| ent[:points] }.select { |pts| pts && pts.length == 4 }
       next if arr.empty?
       loops = merge_rects(arr)

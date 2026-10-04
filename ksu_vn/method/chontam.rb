@@ -81,8 +81,8 @@ class KSU::Chontam
     KSU.set_vcb("Nhập ID", "")
   end
   def onUserText(text, view)
-    keys = self.class.parse_indices(text)
-    panels = self.class.panels_by_index(keys)
+    ids = self.class.parse_indices(text)
+    panels = self.class.panels_by_index(ids)
     self.class.set_selection(Sketchup.active_model, panels, additive: false, clear_on_empty: false)
     update_status
     view&.invalidate

@@ -19,9 +19,9 @@ module KSU::Cutting
     return nil unless ents
     ents.to_a.find do |ent|
       next false unless KSU.container?(ent) && ent.valid?
-      name = ent.name.to_s
+      str = ent.name.to_s
       def_name = (ent.respond_to?(:definition) && ent.definition) ? ent.definition.name.to_s : ""
-      name.include?("_ABF_Label") || def_name.include?("_ABF_Label")
+      str.include?("_ABF_Label") || def_name.include?("_ABF_Label")
     end
   end
   def self.label_rect(ents)
@@ -217,10 +217,10 @@ module KSU::Cutting
     _05045e96 = num3 if _05045e96 > num3
     [_05045e96, _05045e96 / num]
   end
-  def self.box_axes(bounds, tf)
-    p_ref = bounds.corner(0).transform(tf)
+  def self.box_axes(bnds, tf)
+    p_ref = bnds.corner(0).transform(tf)
     [1, 2, 4].map { |i|
-      pt = bounds.corner(i).transform(tf)
+      pt = bnds.corner(i).transform(tf)
       [p_ref.distance(pt), p_ref.vector_to(pt)]
     }.sort_by { |arr| arr[0] }
   end

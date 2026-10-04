@@ -3,29 +3,29 @@ module KSU::Query
     num = KSU::Settings.get("do_dam_mat_xem_truoc", 10, "cai_dat").to_f / 100
     mat = parse_color(KSU::Settings.get("mau_mat_xem_truoc", "60,175,214", "cai_dat"))
     mat.alpha = num
-    main_face_color = Sketchup::Color.new(mat.red, mat.green, mat.blue)
-    main_face_color.alpha = [num * 2, 1.0].min
-    sub_face_color = Sketchup::Color.new(mat.red, mat.green, mat.blue)
-    sub_face_color.alpha = num / 2
-    edge_color = parse_color(KSU::Settings.get("mau_net_xem_truoc", "61,61,153", "cai_dat"))
-    edge_weight = [(KSU::Settings.get("do_dam_net_xem_truoc", 2, "cai_dat").to_i * ui_scale).round, 1].max
+    main = Sketchup::Color.new(mat.red, mat.green, mat.blue)
+    main.alpha = [num * 2, 1.0].min
+    sub = Sketchup::Color.new(mat.red, mat.green, mat.blue)
+    sub.alpha = num / 2
+    edge = parse_color(KSU::Settings.get("mau_net_xem_truoc", "61,61,153", "cai_dat"))
+    weight = [(KSU::Settings.get("do_dam_net_xem_truoc", 2, "cai_dat").to_i * ui_scale).round, 1].max
     palette = parse_color(KSU::Settings.get("mau_chu_ghi_chu", "61,61,153", "cai_dat"))
     num2 = (KSU::Settings.get("co_chu_ghi_chu", 8, "cai_dat").to_i * ui_scale).round
     warn = parse_color(KSU::Settings.get("mau_canh_bao", "210,117,159", "cai_dat"))
     warning_face_color = Sketchup::Color.new(warn.red, warn.green, warn.blue)
     warning_face_color.alpha = [num * 2, 1.0].min
     normal_rgb = parse_color(KSU::Settings.get("mau_tam_thuong", "128,128,128", "cai_dat"))
-    panel_normal_color = Sketchup::Color.new(normal_rgb.red, normal_rgb.green, normal_rgb.blue, 200)
+    normal = Sketchup::Color.new(normal_rgb.red, normal_rgb.green, normal_rgb.blue, 200)
     group_rgb = parse_color(KSU::Settings.get("mau_nhom_tam", "179,179,179", "cai_dat"))
-    panel_group_color = Sketchup::Color.new(group_rgb.red, group_rgb.green, group_rgb.blue, 200)
+    group = Sketchup::Color.new(group_rgb.red, group_rgb.green, group_rgb.blue, 200)
     ph = parse_color(KSU::Settings.get("mau_tam_hai_mat", "98,195,165", "cai_dat"))
-    panel_two_color = Sketchup::Color.new(ph.red, ph.green, ph.blue, 200)
+    two = Sketchup::Color.new(ph.red, ph.green, ph.blue, 200)
     @style_memo = {
-      face_color: mat, main_face_color: main_face_color, sub_face_color: sub_face_color,
-      edge_color: edge_color, edge_weight: edge_weight,
+      face_color: mat, main_face_color: main, sub_face_color: sub,
+      edge_color: edge, edge_weight: weight,
       text_color: palette, text_size: num2,
       warning_color: warn, warning_face_color: warning_face_color,
-      panel_normal_color: panel_normal_color, panel_group_color: panel_group_color, panel_two_color: panel_two_color
+      panel_normal_color: normal, panel_group_color: group, panel_two_color: two
     }
   end
   def style
@@ -162,29 +162,29 @@ module KSU::Query
   def draw_poly_holes(outer, holes, color: nil, line: true)
     draw_polys([{ outer: outer, holes: holes }], color: color, line: line)
   end
-  def tris(outer, holes)
+  def poly_tris(outer, holes)
     arr = (holes || []).select { |h| h && h.length >= 3 }
     arr.empty? ? Geom.tesselate(outer) : Geom.tesselate(outer, *arr)
   rescue StandardError
     Geom.tesselate(outer)
   end
   def draw_polys(arr, color: nil, line: true)
-    tris3 = []
+    tris = []
     arr.each do |poly|
       if poly.is_a?(Hash)
         outer = poly[:outer]
         next unless outer && outer.length >= 3
         draw_loop(outer) if line
-        tris3.concat(tris(outer, poly[:holes]))
+        tris.concat(poly_tris(outer, poly[:holes]))
       else
         next unless poly && poly.length >= 3
         draw_loop(poly) if line
-        tris3.concat(Geom.tesselate(poly))
+        tris.concat(Geom.tesselate(poly))
       end
     end
-    return if tris3.empty?
+    return if tris.empty?
     set_pen(color || face_color)
-    view.draw(GL_TRIANGLES, tris3)
+    view.draw(GL_TRIANGLES, tris)
   end
   def band_tris(pts, thickness:, position: :outside)
     return [] unless pts && pts.length >= 3

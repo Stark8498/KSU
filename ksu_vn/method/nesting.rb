@@ -18,11 +18,11 @@ module KSU::Nest
         draw_mode_hint(view, "Đang gắn nhãn... #{[done + 1, total].min}/#{total}", 10)
         return
       end
-      progress2 = KSU::Nest.progress
-      return unless progress2
-      name2 = KSU::Nest.name
+      pct = KSU::Nest.progress
+      return unless pct
+      name = KSU::Nest.type_name
       lbl = KSU::Nest.str || "Đang nesting"
-      text = name2 ? "#{name2} | #{lbl}... #{progress2}%" : "#{lbl}... #{progress2}%"
+      text = name ? "#{name} | #{lbl}... #{pct}%" : "#{lbl}... #{pct}%"
       draw_mode_hint(view, text)
     end
   end
@@ -65,8 +65,8 @@ module KSU::Nest
     end
     def draw(view)
       return unless @num5 && @num5 > 0
-      name2 = KSU::Nest.refine_name
-      text = name2 ? "#{name2} | Đang hậu kỳ... #{percent}%" : "Đang hậu kỳ... #{percent}%"
+      name = KSU::Nest.refine_name
+      text = name ? "#{name} | Đang hậu kỳ... #{percent}%" : "Đang hậu kỳ... #{percent}%"
       draw_mode_hint(view, text)
     end
     def cancel
@@ -93,8 +93,8 @@ module KSU::Nest
   def str
     @str
   end
-  def name
-    @name
+  def type_name
+    @type_name
   end
   def refine_name
     @refine_name
@@ -157,7 +157,7 @@ module KSU::Nest
       UI.messagebox("Có lỗi xảy ra khi nesting!")
       return
     end
-    jobs = []
+    job_list = []
     @arr47.each do |job|
       members = build_parts(job)
       unless members
@@ -165,11 +165,11 @@ module KSU::Nest
         UI.messagebox("Có lỗi xảy ra khi nesting!")
         return
       end
-      jobs << members
+      job_list << members
     end
     reset_layout
     hide_all
-    _47d154e7(jobs)
+    _47d154e7(job_list)
   rescue StandardError => ent
     abort_collect
     UI.messagebox("Lỗi nesting: #{ent.message}")
@@ -235,17 +235,17 @@ module KSU::Nest
       pair: cfg[:ghep_cap] != false
     }
   end
-  def _47d154e7(jobs)
-    @name = @arr47[0][:type][:name]
+  def _47d154e7(job_list)
+    @type_name = @arr47[0][:type][:name]
     @progress = 0
     @str = "Đang tính dữ liệu"
     model = Sketchup.active_model
     _02d60c07(Progress) unless model.tools.active_tool.instance_of?(Progress)
     KSU::Nesting::Engine.instance.start_jobs(
-      jobs: jobs,
-      on_job_progress: lambda { |j, progress|
+      jobs: job_list,
+      on_job_progress: lambda { |j, pct|
         if j == @num4 && @str != "Đang xếp tấm"
-          @progress = progress
+          @progress = pct
           KSU::View.view.invalidate
         end
       },
@@ -292,7 +292,7 @@ module KSU::Nest
     if @num4 >= @arr47.length
       _3bfa2532
     else
-      @name = @arr47[@num4][:type][:name]
+      @type_name = @arr47[@num4][:type][:name]
       @progress = 0
       @str = "Đang tính dữ liệu"
       model = Sketchup.active_model
@@ -323,7 +323,7 @@ module KSU::Nest
     @h22 = nil
     @num4 = nil
     @arr51 = nil
-    @name = nil
+    @type_name = nil
     @progress = nil
     @str = nil
     finish_draw
@@ -344,7 +344,7 @@ module KSU::Nest
     @flag42 = false
     @flag58 = false
     @arr51 = nil
-    @name = nil
+    @type_name = nil
     @cfg = nil
     @arr61 = nil
     @arr45 = nil
@@ -535,7 +535,7 @@ module KSU::Nest
       UI.messagebox("Có lỗi xảy ra khi nesting!")
       return
     end
-    renumber = KSU::Label.plan(arr2)
+    renumber = KSU::Label.label_plan(arr2)
     if renumber.nil? || renumber[:jobs].empty?
       UI.messagebox("Có lỗi xảy ra khi nesting!")
       return

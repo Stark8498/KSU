@@ -39,13 +39,13 @@ module KSU::Thongke
       KSU::Thongke::Xuat.copy_image(id.to_s)
       KSU::Settings.send_to_dialog(dlg, "thong_ke", "tkSnapDone", "null")
     when "select_parts"
-      keys = JSON.parse(id.to_s) rescue []
-      select_parts(Array(keys))
+      str3 = JSON.parse(id.to_s) rescue []
+      select_parts(Array(str3))
     end
   end
-  def self.select_parts(keys)
+  def self.select_parts(ids)
     model = Sketchup.active_model
-    partner = KSU::Thongke::Quet.boards_by_index(keys)
+    partner = KSU::Thongke::Quet.boards_by_index(ids)
     if partner.empty?
       model.close_active while model.active_path
       return KSU.select_only(nil)
