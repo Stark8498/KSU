@@ -135,8 +135,8 @@ module KSU::Query
   end
   def to_screen(pts)
     return [] unless pts && pts.length > 0
-    return [] if pts.any? { |_23505ef9| !in_front?(_23505ef9) }
-    pts.map { |_23505ef9| view.screen_coords(_23505ef9) }
+    return [] if pts.any? { |pt| !in_front?(pt) }
+    pts.map { |pt| view.screen_coords(pt) }
   end
   def draw_lines(pts, color: nil, guide: false, width: nil)
     return unless pts && pts.length >= 2

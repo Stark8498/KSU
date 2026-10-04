@@ -363,7 +363,7 @@ class KSU::Netcatcuoi
   end
   def big_enough?(pts)
     bbox = Geom::BoundingBox.new
-    pts.each { |_23505ef9| bbox.add(_23505ef9) }
+    pts.each { |bb| bbox.add(bb) }
     lo = @chieu_rong_toi_thieu.to_f
     bbox.width > lo && bbox.height > lo
   end
@@ -414,7 +414,7 @@ class KSU::Netcatcuoi
       end
       next if out.empty?
       bbox = Geom::BoundingBox.new
-      out.each { |_23505ef9| bbox.add(_23505ef9) }
+      out.each { |bb| bbox.add(bb) }
       @rects << {
         sheet: sheet,
         points: points({ x1: bbox.min.x, y1: bbox.min.y, x2: bbox.max.x, y2: bbox.max.y })

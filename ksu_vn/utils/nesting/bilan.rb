@@ -155,18 +155,18 @@ module KSU::Bilan
   end
   def offset_in(poly, num3)
     return poly unless defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:offset)
-    arr = poly.map { |_23505ef9| [_23505ef9.x.to_f * 25.4, _23505ef9.y.to_f * 25.4] }
+    arr = poly.map { |pt| [pt.x.to_f * 25.4, pt.y.to_f * 25.4] }
     num2 = 0.0
-    arr.each_with_index do |_23505ef9, i|
+    arr.each_with_index do |pt, i|
       num = arr[(i + 1) % arr.length]
-      num2 += _23505ef9[0] * num[1] - num[0] * _23505ef9[1]
+      num2 += pt[0] * num[1] - num[0] * pt[1]
     end
     arr.reverse! if num2 < 0
     arr2 = KSU::Clipper.offset([arr], -(num3.to_f * 25.4), 0, 1)
     return poly unless arr2 && !arr2.empty?
     best = arr2.max_by { |half| poly_area(half) }
     return poly unless best && best.length >= 3
-    best.map { |_23505ef9| Geom::Point3d.new(_23505ef9[0] / 25.4, _23505ef9[1] / 25.4, 0) }
+    best.map { |pt| Geom::Point3d.new(pt[0] / 25.4, pt[1] / 25.4, 0) }
   rescue StandardError
     poly
   end

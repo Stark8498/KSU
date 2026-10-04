@@ -128,7 +128,7 @@ module KSU::Arrange
     rebuild_geom
   end
   def name_rect(view, rec)
-    outer = rec[:top_corners].map { |_23505ef9| view.screen_coords(_23505ef9) }
+    outer = rec[:top_corners].map { |pt| view.screen_coords(pt) }
     arr2 = outer.map(&:x)
     arr3 = outer.map(&:y)
     cx = (arr2.min + arr2.max) / 2.0
@@ -137,7 +137,7 @@ module KSU::Arrange
     { left: cx - row_w / 2.0, right: cx + row_w / 2.0, top: _ab593548, bottom: _ab593548 + 20 }
   end
   def near_outline?(view, x, y, rec)
-    outer = rec[:top_corners].map { |_23505ef9| view.screen_coords(_23505ef9) }
+    outer = rec[:top_corners].map { |pt| view.screen_coords(pt) }
     tol = 8
     outer.length.times do |i|
       _9710d820 = outer[i]

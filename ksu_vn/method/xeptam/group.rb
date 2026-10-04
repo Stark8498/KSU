@@ -2,7 +2,7 @@ module KSU::Group
   private
   def toggle_group
     return if @sel.empty?
-    arr = @sel.map { |_23505ef9| group_id(_23505ef9) }
+    arr = @sel.map { |pnl| group_id(pnl) }
     arr2 = arr.compact.uniq
     if arr2.size == 1 && !arr.include?(nil)
       ungroup_selected
@@ -24,8 +24,8 @@ module KSU::Group
     gid = group_id(panel)
     return [] unless gid
     out = []
-    all_panels.each do |_23505ef9, s, g|
-      out << [_23505ef9, s] if g == gid && _23505ef9 != panel
+    all_panels.each do |pnl, s, g|
+      out << [pnl, s] if g == gid && pnl != panel
     end
     out
   end
@@ -66,9 +66,9 @@ module KSU::Group
   end
   def remove_from_selection(panel)
     gid = group_id(panel)
-    arr = gid ? @sel.select { |_23505ef9| group_id(_23505ef9) == gid } : [panel]
-    arr.each do |_23505ef9|
-      ix = @sel.index(_23505ef9)
+    arr = gid ? @sel.select { |pnl| group_id(pnl) == gid } : [panel]
+    arr.each do |pnl|
+      ix = @sel.index(pnl)
       next unless ix
       @sel.delete_at(ix)
       @sel_sheets.delete_at(ix)

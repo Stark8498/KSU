@@ -47,8 +47,8 @@ module KSU::Collide
   end
   def partners_of(panels)
     out = []
-    Array(panels).each do |_23505ef9|
-      partner_of = partner_of2(_23505ef9)
+    Array(panels).each do |ent|
+      partner_of = partner_of2(ent)
       out << partner_of if partner_of && partner_of.valid? && !out.include?(partner_of)
     end
     out
@@ -57,18 +57,18 @@ module KSU::Collide
     @grid = nil
     return unless @hit_list
     h = {}
-    Array(panels).each { |_23505ef9| h[_23505ef9.entityID] = true if _23505ef9 && _23505ef9.valid? }
+    Array(panels).each { |ent| h[ent.entityID] = true if ent && ent.valid? }
     @hit_list.reject! do |bf|
       panel = bf[:panel]
       !(panel && panel.valid?) || h[panel.entityID]
     end
-    Array(panels).each do |_23505ef9|
-      next unless _23505ef9 && _23505ef9.valid? && KSU::Cutting.bottom_face?(_23505ef9)
-      rec = rec_by_def(_23505ef9.parent)
+    Array(panels).each do |ent|
+      next unless ent && ent.valid? && KSU::Cutting.bottom_face?(ent)
+      rec = rec_by_def(ent.parent)
       sheet = rec && rec[:instance]
       next unless sheet && sheet.valid? && KSU::Sheet.bottom_sheet?(sheet)
-      fill = panel_outline(_23505ef9, sheet)
-      @hit_list << { panel: _23505ef9, fill: fill } if fill
+      fill = panel_outline(ent, sheet)
+      @hit_list << { panel: ent, fill: fill } if fill
     end
   end
   def build_grid(arr4)
@@ -150,8 +150,8 @@ module KSU::Collide
     return if h.key?(:outer)
     fill = KSU::Cutting.outline(h[:panel], h[:world_tr])
     outer = fill[:outer]
-    h[:outer] = (outer && outer.length >= 3) ? outer.map { |_23505ef9| view.screen_coords(_23505ef9) } : nil
-    h[:holes] = (fill[:holes] || []).map { |h18| h18.map { |_23505ef9| view.screen_coords(_23505ef9) } }
+    h[:outer] = (outer && outer.length >= 3) ? outer.map { |ent| view.screen_coords(ent) } : nil
+    h[:holes] = (fill[:holes] || []).map { |h18| h18.map { |ent| view.screen_coords(ent) } }
   end
   def min_margin
     KSU::Avail.sides(@tam_cach_le.to_f).min
@@ -379,10 +379,10 @@ module KSU::Collide
       num5 = pt.x
       num = pt.y
     end
-    num4 = num5.to_f - dx
-    num3 = num.to_f - dy
-    return if num4.abs < 1e-9 && num3.abs < 1e-9
-    delta = Geom::Vector3d.new(num4, num3, 0)
+    ddx = num5.to_f - dx
+    ddy = num.to_f - dy
+    return if ddx.abs < 1e-9 && ddy.abs < 1e-9
+    delta = Geom::Vector3d.new(ddx, ddy, 0)
     add_offset(delta)
     shift_cached_polys(delta)
   end
@@ -445,7 +445,7 @@ module KSU::Collide
     ay = pt2.y.to_f
     num2 = ax.abs > 0 || ay.abs > 0
     h = {}
-    @sel.each { |_23505ef9| h[_23505ef9.object_id] = true }
+    @sel.each { |ent| h[ent.object_id] = true }
     @sel.each_with_index do |panel, ix|
       arr2 = (@sel_polys && @sel_polys[ix]) ||
                 outer_pts_of(panel, @sel_sheets[ix])

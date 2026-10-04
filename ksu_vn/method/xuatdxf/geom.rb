@@ -132,13 +132,13 @@ module KSU::Xuatdxf
         next unless color
         start_i = color[:start_i]
         end_i = color[:end_i]
-        _23505ef9 = box[start_i]
+        pt = box[start_i]
         if start_i < end_i
           box -= box[(start_i + 1...end_i)]
         else
           box = box[(end_i..start_i)]
         end
-        _23505ef9.bulge = color[:bulge]
+        pt.bulge = color[:bulge]
         done = false
         break
       end
@@ -195,7 +195,7 @@ module KSU::Xuatdxf
     path << start
     _c520310e << path.map { |ix| arr4[ix] }
   end
-  def _2b17a799(name)
+  def ascii_name(name)
     s = name.to_s.tr(
       "ĂÂÊÔƠƯăâêôơưÁÉÓÚÍÝÀÈÒÙÌỲẢẺỎỦỈỶÃẼÕŨĨỸẠẸỌỤỊỴẮẤẾỐỚỨẰẦỀỒỜỪẲẨỂỔỞỬẴẪỄỖỠỮẶẬỆỘỢỰĐáéóúíýàèòùìỳảẻỏủỉỷãẽõũĩỹạẹọụịỵắấếốớứằầềồờừẳẩểổởửẵẫễỗỡữặậệộợựđ -",
       "AAEOOUaaeoouAEOUIYAEOUIYAEOUIYAEOUIYAEOUIYAAEOOUAAEOOUAAEOOUAAEOOUAAEOOUDaeouiyaeouiyaeouiyaeouiyaeouiyaaeoouaaeoouaaeoouaaeoouaaeooud__"
@@ -212,7 +212,7 @@ module KSU::Xuatdxf
     return _133ee34f if _133ee34f
     model = Sketchup.active_model.layers[str]
     rgb = model && model.color ? [model.color.red, model.color.green, model.color.blue] : [0, 0, 0]
-    [_2b17a799(str), 1, rgb]
+    [ascii_name(str), 1, rgb]
   end
   def dxf_color(_e64bdf77)
     half, g, b = layer_spec(_e64bdf77)[2]

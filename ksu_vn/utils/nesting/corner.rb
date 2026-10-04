@@ -392,16 +392,16 @@ module KSU::Corner
       end
       rings = nfp_rings(arr, half, cache)
       if rings
-        arr3 = _84160c85(half)[0]
-        _23505ef9 = [arr3[0] - half[:su] + arr[:su], arr3[1] - half[:sv] + arr[:sv]]
-        if in_rings?(_23505ef9, rings)
+        arr3 = shape_of(half)[0]
+        pt = [arr3[0] - half[:su] + arr[:su], arr3[1] - half[:sv] + arr[:sv]]
+        if in_rings?(pt, rings)
           num = 0.0
           break
         end
         rings.each do |arr2|
           n = arr2.length
           n.times do |i|
-            thick = ray_hit(_23505ef9, dir, arr2[i], arr2[(i + 1) % n], pen)
+            thick = ray_hit(pt, dir, arr2[i], arr2[(i + 1) % n], pen)
             num = thick if thick && thick < num
           end
         end
@@ -411,23 +411,23 @@ module KSU::Corner
       end
       break if num <= 1e-9
     end
-    _bd0102dd = [per_row, num].min
-    _bd0102dd < 0.0 ? 0.0 : _bd0102dd
+    gap_u = [per_row, num].min
+    gap_u < 0.0 ? 0.0 : gap_u
   end
   def nfp_rings(arr3, half, cache)
     key = [arr3[:ix], half[:ix]]
     return cache[key] if cache.key?(key)
     arr8 = cache[[half[:ix], arr3[:ix]]]
     if arr8
-      arr6 = _84160c85(arr3)[0]
-      arr7 = _84160c85(half)[0]
+      arr6 = shape_of(arr3)[0]
+      arr7 = shape_of(half)[0]
       px = arr6[0] + arr7[0]
       py = arr6[1] + arr7[1]
       return cache[key] = arr8.map { |arr| arr.map { |(x, y)| [px - x, py - y] } }
     end
     rings = nil
     begin
-      arr5 = KSU::Nesting.nfp(_84160c85(arr3), [], _84160c85(half))
+      arr5 = KSU::Nesting.nfp(shape_of(arr3), [], shape_of(half))
       if arr5.is_a?(Array)
         rings = []
         arr5.each do |members|
@@ -480,7 +480,7 @@ module KSU::Corner
     end
     cross.odd? && num2 > 0.0004
   end
-  def _84160c85(arr3)
+  def shape_of(arr3)
     arr3[:shape] ||= begin
       poly = arr3[:poly0]
       if poly.length > 60 && defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:simplify)
@@ -573,8 +573,8 @@ module KSU::Corner
         break if num <= 1e-9
       end
     end
-    _bd0102dd = [per_row, num].min
-    [_bd0102dd, 0.0].max
+    gap_u = [per_row, num].min
+    [gap_u, 0.0].max
   end
   def slide_by_proj(arr, panel, dir)
     _a1abb318 = [-dir[0], -dir[1]]
@@ -583,8 +583,8 @@ module KSU::Corner
     num3.times do |i|
       _9710d820 = panel[i]
       b = panel[(i + 1) % num3]
-      arr.each do |_23505ef9|
-        thick = _ebae3e53(_23505ef9, dir, _9710d820, b)
+      arr.each do |pt|
+        thick = _ebae3e53(pt, dir, _9710d820, b)
         if thick && thick < best
           best = thick
           return best if best <= 1e-9
@@ -595,8 +595,8 @@ module KSU::Corner
     num2.times do |i|
       _9710d820 = arr[i]
       b = arr[(i + 1) % num2]
-      panel.each do |_23505ef9|
-        thick = _ebae3e53(_23505ef9, _a1abb318, _9710d820, b)
+      panel.each do |pt|
+        thick = _ebae3e53(pt, _a1abb318, _9710d820, b)
         if thick && thick < best
           best = thick
           return best if best <= 1e-9

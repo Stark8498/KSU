@@ -5,7 +5,7 @@ module KSU::Push
       arr2 = obstacles_of(arr3[:instance])
       return Geom::Vector3d.new(0, 0, 0) unless arr2
       h2 = {}
-      @sel.each { |_23505ef9| h2[_23505ef9.object_id] = true }
+      @sel.each { |pnl| h2[pnl.object_id] = true }
       arr = []
       @sel.each_with_index do |panel, ix|
         poly = (@sel_polys && @sel_polys[ix]) ||
@@ -66,7 +66,7 @@ module KSU::Push
     borders = arr2[:borders]
     grid = arr2[:grid]
     h = {}
-    @sel.each { |_23505ef9| h[_23505ef9.object_id] = true }
+    @sel.each { |pnl| h[pnl.object_id] = true }
     @sel.each_with_index do |panel, ix|
       arr = (@sel_polys && @sel_polys[ix]) ||
                       outer_pts_of(panel, @sel_sheets[ix])

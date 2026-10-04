@@ -130,7 +130,7 @@ module KSU::Flip
     poly = KSU::Cutting.cut_outline(panel, transform)
     return panel.definition.bounds.center.transform(transform) unless poly && poly.length >= 3
     bbox = Geom::BoundingBox.new
-    poly.each { |_23505ef9| bbox.add(_23505ef9) }
+    poly.each { |pt| bbox.add(pt) }
     bbox.center
   end
 end

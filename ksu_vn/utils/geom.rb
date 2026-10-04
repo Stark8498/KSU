@@ -176,7 +176,7 @@ module KSU::Geom
   end
   def self.world_box(bnds, tf = nil)
     bbox = Geom::BoundingBox.new
-    _3f61ee64(bnds, tf).each { |_23505ef9| bbox.add(_23505ef9) }
+    _3f61ee64(bnds, tf).each { |pt| bbox.add(pt) }
     bbox
   end
   def self._a404e7b6(_405c3f80, tol = 1e-6)

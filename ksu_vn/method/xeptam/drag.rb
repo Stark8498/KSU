@@ -239,8 +239,8 @@ module KSU::Drag
     sheets = arr.map { |half| half[:sheet] }
     if @flag5
       h = {}
-      @sel.each_with_index { |_23505ef9, i| h[_23505ef9] = @sel_sheets[i] }
-      panels.each_with_index { |_23505ef9, i| h[_23505ef9] = sheets[i] }
+      @sel.each_with_index { |panel, i| h[panel] = @sel_sheets[i] }
+      panels.each_with_index { |panel, i| h[panel] = sheets[i] }
       @sel = h.keys
       @sel_sheets = h.values
     else
@@ -404,7 +404,7 @@ module KSU::Drag
     end
   end
   def show_originals
-    @arr2.each { |_23505ef9| _23505ef9.hidden = false if _23505ef9&.valid? }
+    @arr2.each { |panel| panel.hidden = false if panel&.valid? }
     @arr2 = []
     clear_preview
   end

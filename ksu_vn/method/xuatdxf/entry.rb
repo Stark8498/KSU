@@ -141,9 +141,9 @@ module KSU::Xuatdxf
     (0...n).map do |k|
       ix = (n - 1 - k) % n
       src = pts[ix]
-      _23505ef9 = PtEx.new(src.x, src.y, 0)
-      _23505ef9.bulge = -pts[(ix - 1 + n) % n].bulge.to_f
-      _23505ef9
+      rec = PtEx.new(src.x, src.y, 0)
+      rec.bulge = -pts[(ix - 1 + n) % n].bulge.to_f
+      rec
     end
   end
   def _f8552d5f(pts, rx, ry)

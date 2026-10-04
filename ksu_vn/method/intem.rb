@@ -44,7 +44,7 @@ module KSU::Intem
   end
   def self.export_request(dlg, fmt)
     str = fmt.to_s == "jpg"
-    name = KSU::Xuatdxf._2b17a799(Sketchup.active_model.title)
+    name = KSU::Xuatdxf.ascii_name(Sketchup.active_model.title)
     name = "KSU" if name.empty?
     name += "__" + Time.now.strftime("%H-%M-%S") + (str ? ".jpg" : ".pdf")
     path = UI.savepanel("Xuất tem", KSU.model_dir, name)

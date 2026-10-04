@@ -35,26 +35,26 @@ module KSU::Xuatdxf
     }
     KSU::Settings.send_to_dialog(dlg, "xuat_dxf", "xbvLoad", arr.to_json)
   end
-  def self.export_request(_3c8ec851 = nil)
+  def self.export_request(only_keys = nil)
     nesting = KSU::Nesting.find_nesting(notify: false)
     return unless nesting && nesting.valid?
-    _1cb4f865(nesting)
+    drop_temp_layers(nesting)
     collect_in_rect = collect_in_rect(nesting)
-    sheets = set_selection(collect_in_rect[:sheets], _3c8ec851)
+    sheets = set_selection(collect_in_rect[:sheets], only_keys)
     if sheets.empty?
       UI.messagebox("Chưa chọn loại ván nào để xuất.")
       return
     end
-    title = _2b17a799(Sketchup.active_model.title)
+    title = ascii_name(Sketchup.active_model.title)
     title = "KSU" if title.empty?
     dir = UI.savepanel("Xuất DXF", KSU.model_dir, title + "__" + Time.now.strftime("%H-%M-%S"))
     return unless dir
-    ok = _4db09033(dir, collect_in_rect, sheets)
+    ok = write_dxf_files(dir, collect_in_rect, sheets)
     UI.openURL("file:///" + dir.gsub("\\", "/")) if ok
   rescue StandardError => ent
     UI.messagebox("Lỗi xuất DXF: #{ent.message}")
   end
-  def self._1cb4f865(nesting)
+  def self.drop_temp_layers(nesting)
     arr = []
     nesting.definition.entities.each do |sheet|
       next unless KSU.container?(sheet)
@@ -81,9 +81,9 @@ module KSU::Xuatdxf
   rescue StandardError
     KSU.abort_op
   end
-  def self.set_selection(sheets, str)
+  def self.set_selection(sheets, only_keys)
     _9535dc0b = begin
-      JSON.parse(str.to_s)
+      JSON.parse(only_keys.to_s)
     rescue StandardError
       nil
     end
@@ -110,14 +110,14 @@ module KSU::Xuatdxf
     out
   end
   def self._091b9335(s)
-    _2b17a799(s[:key]).gsub(/_+/, "_")
+    ascii_name(s[:key]).gsub(/_+/, "_")
   end
   def self.dxf_name(s, arr)
     normal = _091b9335(s) + "_" + s[:id].to_s.rjust(3, "0")
     normal += s[:bottom] ? "_01" : "_02" if arr[s[:key]]
     normal + ".dxf"
   end
-  def self._4db09033(dir, collect_in_rect, sheets)
+  def self.write_dxf_files(dir, collect_in_rect, sheets)
     FileUtils.mkdir_p(dir)
     arr2 = sheets.map { |s| s[:key] }.uniq
     h = {}

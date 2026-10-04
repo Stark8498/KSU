@@ -42,8 +42,8 @@ module KSU::Mirror
       end
     end
     h19.each_value do |parts|
-      arr2 = parts.reject { |_23505ef9| back_face2?(_23505ef9) }
-      arr = parts.select { |_23505ef9| back_face2?(_23505ef9) }
+      arr2 = parts.reject { |part| back_face2?(part) }
+      arr = parts.select { |part| back_face2?(part) }
       next if arr2.empty? || arr.empty?
       arr2.each_with_index do |grp6, i|
         back = arr[i] || arr.first
@@ -402,10 +402,10 @@ module KSU::Mirror
     end
   end
   def drop_panel_cache(panels)
-    Array(panels).each do |_23505ef9|
-      next unless _23505ef9 && _23505ef9.respond_to?(:object_id)
-      @poly_cache.delete(_23505ef9.object_id)
-      @h24.delete(_23505ef9.object_id)
+    Array(panels).each do |part|
+      next unless part && part.respond_to?(:object_id)
+      @poly_cache.delete(part.object_id)
+      @h24.delete(part.object_id)
     end
   end
   def rebuild_sel_polys

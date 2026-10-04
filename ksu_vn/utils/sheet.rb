@@ -19,7 +19,7 @@ module KSU::Sheet
         arr = (0..7).map { |i| bb.corner(i).transform(transform) }
       end
       box = Geom::BoundingBox.new
-      arr.each { |_23505ef9| box.add(_23505ef9) }
+      arr.each { |pt| box.add(pt) }
       sheets << {
         instance: sheet, bbox: box, transform: transform,
         top_corners: [arr[4], arr[5], arr[7], arr[6]],

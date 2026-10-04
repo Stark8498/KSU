@@ -155,16 +155,16 @@ module KSU::Collect
     rec = KSU::Cutting.cut_loops(g, face, _984e016d, max_eb[0], arr3[0], arr3[1])
     return [nil, _c348cdef] if rec[:loops].empty?
     bnds = rec[:loops].map do |arr|
-      KSU::Simplify.simplify_poly(arr[:pts].map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }, arr[:outer])
+      KSU::Simplify.simplify_poly(arr[:pts].map { |pt| [pt.x.to_f, pt.y.to_f] }, arr[:outer])
     end
     lx = nil
     flag = nil
     ly = nil
     bnds.each do |arr|
-      arr.each do |_23505ef9|
-        lx = _23505ef9[0] if lx.nil? || _23505ef9[0] < lx
-        flag = _23505ef9[0] if flag.nil? || _23505ef9[0] > flag
-        ly = _23505ef9[1] if ly.nil? || _23505ef9[1] < ly
+      arr.each do |pt|
+        lx = pt[0] if lx.nil? || pt[0] < lx
+        flag = pt[0] if flag.nil? || pt[0] > flag
+        ly = pt[1] if ly.nil? || pt[1] < ly
       end
     end
     return [nil, _c348cdef] unless lx
@@ -176,7 +176,7 @@ module KSU::Collect
     found = KSU::Cutting.side_drills(g, face, _984e016d)
     found[1].each do |len2d|
       if len2d[:depth] > 0 && len2d[:poly]
-        len2d[:poly].map! { |_23505ef9| _23505ef9.transform(tr) }
+        len2d[:poly].map! { |pt| pt.transform(tr) }
       else
         len2d[:pos] = len2d[:pos].transform(tr)
       end
@@ -186,9 +186,9 @@ module KSU::Collect
       group: g, up_face: face, tf: tf, part_tf: part_tf,
       two_sided: !faces[:bottom].empty?,
       outer_index: rec[:loops].find_index { |arr| arr[:outer] } || 0,
-      bounds_mm: bnds.map { |arr| arr.map { |_23505ef9| [(_23505ef9[0] + ax) * 25.4, (_23505ef9[1] + ay) * 25.4] } },
-      cutting_lines: rec[:loops].map { |arr| arr[:pts].map { |_23505ef9| _23505ef9.transform(tr) } },
-      edge_band_lines: rec[:edge_band_lines].map { |arr| arr.map { |_23505ef9| _23505ef9.transform(tr) } },
+      bounds_mm: bnds.map { |arr| arr.map { |pt| [(pt[0] + ax) * 25.4, (pt[1] + ay) * 25.4] } },
+      cutting_lines: rec[:loops].map { |arr| arr[:pts].map { |pt| pt.transform(tr) } },
+      edge_band_lines: rec[:edge_band_lines].map { |arr| arr.map { |pt| pt.transform(tr) } },
       edge_band_desc: rec[:edge_band_desc].map do |len2d|
         { p0: len2d[:p0].transform(tr), p1: len2d[:p1].transform(tr), name: len2d[:name], kind: len2d[:kind] }
       end,

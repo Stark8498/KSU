@@ -85,15 +85,15 @@ module KSU
     File.join(__dir__, "icons", "#{icon}.svg")
   end
   def self.active?(key)
-    str2 = key.to_s
+    kind2 = key.to_s
     return KSU::Addon.visible?(key) if KSU::Addon.known?(key)
-    if KSU::Settings::TOOL_WINDOWS.include?(str2)
-      dlg = KSU::Settings.tool_windows[str2]
+    if KSU::Settings::TOOL_WINDOWS.include?(kind2)
+      dlg = KSU::Settings.tool_windows[kind2]
       return !!(dlg && dlg.visible?)
     end
     return false unless KSU::Settings.dialog_open?
     return true if key == :cai_dat
-    KSU::Settings.open_tab == str2
+    KSU::Settings.open_tab == kind2
   end
   def self.build_command(key)
     name, tip = labels[key]

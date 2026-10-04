@@ -245,7 +245,7 @@ module KSU::Loop
       arr4 = arr2[0..-2].map { |k| arr[k] }
       loops << arr4 if area(arr4).abs >= KSU::Const::LOOP_AREA_MIN
     end
-    loops.uniq { |arr6| arr6.map { |_23505ef9| node_key(_23505ef9) }.join("|") }
+    loops.uniq { |arr6| arr6.map { |pt| node_key(pt) }.join("|") }
   end
   def turn_score(ix, dy_in, dx_out, dy_out)
     len_in = Math.sqrt(ix * ix + dy_in * dy_in)

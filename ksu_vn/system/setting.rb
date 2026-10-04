@@ -409,33 +409,33 @@ module KSU::Settings
     dlg2.center
     dlg2.show
   end
-  def self.reopen_with_message(dlg2, msg2, str = "cai_dat")
+  def self.reopen_with_message(dlg2, msg2, kind2 = "cai_dat")
     dlg2.close
     KSU.select_tool(nil)
     KSU::View.refresh
     UI.messagebox(msg2)
-    open_settings(str)
+    open_settings(kind2)
   end
   def self.bind_callbacks(dlg2)
-    dlg2.add_action_callback("tab_changed") do |_part, str3|
-      @open_tab = str3.to_s
+    dlg2.add_action_callback("tab_changed") do |_part, kind2|
+      @open_tab = kind2.to_s
     end
     dlg2.add_action_callback("tool_call") do |_part, payload2|
-      str3, action, id = payload2.to_s.split("@", 3)
-      _74f2aab3(dlg2, str3.to_s, action.to_s, id.to_s)
+      kind2, action, id = payload2.to_s.split("@", 3)
+      on_dialog_action(dlg2, kind2.to_s, action.to_s, id.to_s)
     end
     dlg2.add_action_callback("save_setting") do |_part, payload2|
       parts = payload2.split("@", 3)
-      _081c2f3e = parts[0]
+      section2 = parts[0]
       key2 = parts[1]
       raw_str = parts[2]
       value = parse_value(raw_str)
-      if _081c2f3e == "cai_dat" && (STARTUP_KEYS.include?(key2) || KSU::Addon.known?(key2))
+      if section2 == "cai_dat" && (STARTUP_KEYS.include?(key2) || KSU::Addon.known?(key2))
         set_startup_flag(key2, value)
       else
-        set(key2, value, _081c2f3e)
+        set(key2, value, section2)
       end
-      if _081c2f3e == "cai_dat"
+      if section2 == "cai_dat"
         KSU::Preset.load_cfg
         if KSU::Preset.global_key?(key2)
           tool = Sketchup.active_model.tools.active_tool
@@ -468,65 +468,65 @@ module KSU::Settings
     end
     dlg2.add_action_callback("save_preset") do |_part, payload2|
       parts = payload2.split("@")
-      _081c2f3e = parts[0]
-      _538a3d28 = parts[1]
+      section2 = parts[0]
+      pname2 = parts[1]
       str5 = parts[2..-1].join("@")
       settings = JSON.parse(str5)
-      save_preset(_081c2f3e, _538a3d28, settings)
-      push_presets(dlg2, _081c2f3e)
+      save_preset(section2, pname2, settings)
+      push_presets(dlg2, section2)
       reload_tool
     end
     dlg2.add_action_callback("delete_preset") do |_part, payload2|
       parts = payload2.split("@")
-      _081c2f3e = parts[0]
-      _538a3d28 = parts[1]
-      delete_preset(_081c2f3e, _538a3d28)
-      push_presets(dlg2, _081c2f3e)
+      section2 = parts[0]
+      pname2 = parts[1]
+      delete_preset(section2, pname2)
+      push_presets(dlg2, section2)
       reload_tool
     end
     dlg2.add_action_callback("load_preset") do |_part, payload2|
       parts = payload2.split("@")
-      _081c2f3e = parts[0]
-      _538a3d28 = parts[1]
-      settings = apply_preset(_081c2f3e, _538a3d28)
+      section2 = parts[0]
+      pname2 = parts[1]
+      settings = apply_preset(section2, pname2)
       if settings
         json_all = settings.to_json
-        str2 = "if (window.sendSettingsToIframe) { window.sendSettingsToIframe('#{_081c2f3e}', #{json_all}); }"
+        str2 = "if (window.sendSettingsToIframe) { window.sendSettingsToIframe('#{section2}', #{json_all}); }"
         dlg2.execute_script(str2)
       end
       settings ? settings.to_json : "null"
     end
     dlg2.add_action_callback("save_presets_order") do |_part, payload2|
       parts = payload2.split("@", 2)
-      _081c2f3e = parts[0]
+      section2 = parts[0]
       json_presets = parts[1]
       presets2 = JSON.parse(json_presets)
       data = load
-      data[_081c2f3e] ||= {}
-      data[_081c2f3e]["presets"] = presets2
+      data[section2] ||= {}
+      data[section2]["presets"] = presets2
       save_all(data)
       reload_tool
     end
     dlg2.add_action_callback("save_collapsed_groups") do |_part, payload2|
       parts = payload2.split("@", 2)
-      _081c2f3e = parts[0]
+      section2 = parts[0]
       json_collapsed2 = parts[1]
       collapsed2 = JSON.parse(json_collapsed2)
       data = load
-      data[_081c2f3e] ||= {}
-      data[_081c2f3e]["collapsed_groups"] = collapsed2
+      data[section2] ||= {}
+      data[section2]["collapsed_groups"] = collapsed2
       save_all(data)
     end
     dlg2.add_action_callback("pick_file") do |_part, payload2|
       parts = payload2.split("@")
-      _081c2f3e = parts[0]
+      section2 = parts[0]
       sec4 = parts[1]
       _3b7dc41a = parts[2]
       path = UI.openpanel("Chọn file", "", "SketchUp Files|*.skp||")
-      str4 = "iframe_#{_081c2f3e}"
+      str4 = "iframe_#{section2}"
       if path && File.exist?(path)
         path2 = path.gsub("\\", "/")
-        set(_3b7dc41a, path2, _081c2f3e)
+        set(_3b7dc41a, path2, section2)
         str2 = "var iframe = document.getElementById('#{str4}'); if (iframe && iframe.contentWindow) { iframe.contentWindow.postMessage({ action: 'file_picked', shapeKey: '#{sec4}', pathKey: '#{_3b7dc41a}', path: '#{path2}' }, '*'); }"
         dlg2.execute_script(str2)
       else
@@ -573,10 +573,10 @@ module KSU::Settings
   def self.tool_windows
     @tool_windows ||= {}
   end
-  def self.open_window(str, pname = nil)
-    str = str.to_s
-    return unless TOOL_WINDOWS.include?(str)
-    dlg = tool_windows[str]
+  def self.open_window(kind2, pname = nil)
+    kind2 = kind2.to_s
+    return unless TOOL_WINDOWS.include?(kind2)
+    dlg = tool_windows[kind2]
     if dlg && dlg.visible?
       if pname
         dlg.execute_script("if (window.selectPresetByName) { window.selectPresetByName('#{pname}'); }")
@@ -585,24 +585,24 @@ module KSU::Settings
       end
       return
     end
-    _a249f8a6(str, pname)
+    _a249f8a6(kind2, pname)
   end
-  def self._a249f8a6(_a40b0a8b, pname = nil)
-    dlg2 = new_dialog("ksu_tool_" + _a40b0a8b)
-    dlg2.set_html(KSU::Caidat.build_html(_a40b0a8b, load_all, true))
+  def self._a249f8a6(kind2, pname = nil)
+    dlg2 = new_dialog("ksu_tool_" + kind2)
+    dlg2.set_html(KSU::Caidat.build_html(kind2, load_all, true))
     bind_callbacks(dlg2)
     select_preset_later(dlg2, pname)
     dlg2.set_on_closed {
-      tool_windows.delete(_a40b0a8b)
+      tool_windows.delete(kind2)
       KSU::Preset.load_cfg
       KSU::View.refresh
     }
-    tool_windows[_a40b0a8b] = dlg2
+    tool_windows[kind2] = dlg2
     dlg2.center
     dlg2.show
   end
-  def self._74f2aab3(dlg2, _a40b0a8b, action, id)
-    case _a40b0a8b
+  def self.on_dialog_action(dlg2, kind2, action, id)
+    case kind2
     when "nesting"
       KSU::Nest.handle_action(dlg2, action, id) if defined?(KSU::Nest)
     when "in_tem"
@@ -612,11 +612,11 @@ module KSU::Settings
     when "thong_ke"
       KSU::Thongke.handle_action(dlg2, action, id) if defined?(KSU::Thongke)
     else
-      KSU::Addon.dispatch(dlg2, _a40b0a8b, action, id)
+      KSU::Addon.dispatch(dlg2, kind2, action, id)
     end
   end
-  def self.send_to_dialog(dlg2, _a40b0a8b, action, resp)
-    dlg2.execute_script("if (window.callTabFn) { window.callTabFn('#{_a40b0a8b}', '#{action}', #{resp}); }")
+  def self.send_to_dialog(dlg2, kind2, action, resp)
+    dlg2.execute_script("if (window.callTabFn) { window.callTabFn('#{kind2}', '#{action}', #{resp}); }")
   end
   def self.open_tab
     @open_tab.to_s

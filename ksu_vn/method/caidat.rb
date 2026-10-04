@@ -595,8 +595,8 @@ module KSU::Caidat
     end
     out
   end
-  def self.build_html(str = "cai_dat", str2 = "{}", solo = false)
-    str = "cai_dat" unless str.to_s =~ /\A[a-z_]+\z/
+  def self.build_html(kind2 = "cai_dat", str2 = "{}", solo = false)
+    kind2 = "cai_dat" unless kind2.to_s =~ /\A[a-z_]+\z/
     str3 = "file:///" + File.join(__dir__, "..", "html", "").gsub("\\", "/")
     out = HTML.sub("BASE_PLACEHOLDER", "<base href=\"#{str3}\">")
     out = inject_addons(out)
@@ -606,20 +606,20 @@ module KSU::Caidat
       out = out.sub("<html lang=\"vi\">", "<html lang=\"vi\" data-theme=\"dark\" style=\"background:#1c1c1e\">")
     end
     if solo
-      out = strip_tabs(out, ALL_TABS - [str])
+      out = strip_tabs(out, ALL_TABS - [kind2])
       out = out.sub("<div id=\"settings-container\">", "<div id=\"settings-container\" class=\"solo\">")
-      out = out.sub("<div class=\"tab\" data-tab=\"#{str}\">", "<div class=\"tab active\" data-tab=\"#{str}\">")
-      out = out.sub("<div class=\"tab-panel\" id=\"panel_#{str}\">", "<div class=\"tab-panel active\" id=\"panel_#{str}\">")
-      out = out.sub("let currentTabId = 'cai_dat';", "let currentTabId = '#{str}';")
-      return out.sub("var SOLO_TAB = '';", "var SOLO_TAB = '#{str}';")
+      out = out.sub("<div class=\"tab\" data-tab=\"#{kind2}\">", "<div class=\"tab active\" data-tab=\"#{kind2}\">")
+      out = out.sub("<div class=\"tab-panel\" id=\"panel_#{kind2}\">", "<div class=\"tab-panel active\" id=\"panel_#{kind2}\">")
+      out = out.sub("let currentTabId = 'cai_dat';", "let currentTabId = '#{kind2}';")
+      return out.sub("var SOLO_TAB = '';", "var SOLO_TAB = '#{kind2}';")
     end
     out = strip_tabs(out, KSU::Settings::TOOL_WINDOWS)
-    return out if str == "cai_dat"
+    return out if kind2 == "cai_dat"
     out = out.sub("<div class=\"tab active\" data-tab=\"cai_dat\">", "<div class=\"tab\" data-tab=\"cai_dat\">")
-    out = out.sub("<div class=\"tab\" data-tab=\"#{str}\">", "<div class=\"tab active\" data-tab=\"#{str}\">")
+    out = out.sub("<div class=\"tab\" data-tab=\"#{kind2}\">", "<div class=\"tab active\" data-tab=\"#{kind2}\">")
     out = out.sub("<div class=\"tab-panel active\" id=\"panel_cai_dat\">", "<div class=\"tab-panel\" id=\"panel_cai_dat\">")
-    out = out.sub("<div class=\"tab-panel\" id=\"panel_#{str}\">", "<div class=\"tab-panel active\" id=\"panel_#{str}\">")
-    out.sub("let currentTabId = 'cai_dat';", "let currentTabId = '#{str}';")
+    out = out.sub("<div class=\"tab-panel\" id=\"panel_#{kind2}\">", "<div class=\"tab-panel active\" id=\"panel_#{kind2}\">")
+    out.sub("let currentTabId = 'cai_dat';", "let currentTabId = '#{kind2}';")
   end
 end
 module KSU::Caidat

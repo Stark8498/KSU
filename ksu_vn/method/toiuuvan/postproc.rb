@@ -289,11 +289,11 @@ module KSU::Postproc
           out << { src: src, p: arr[:entry], kids: arr[:kid_entries], area: arr[:area], virtual: true }
           next
         end
-        _23505ef9 = parts.find { |ent| ent[:panel] == arr[:lead] }
-        next unless _23505ef9
+        lead = parts.find { |ent| ent[:panel] == arr[:lead] }
+        next unless lead
         arr4 = arr[:children].map { |normal_rgb| parts.find { |ent| ent[:panel] == normal_rgb } }
         next if arr4.any?(&:nil?)
-        out << { src: src, p: _23505ef9, kids: arr4, area: arr[:area] }
+        out << { src: src, p: lead, kids: arr4, area: arr[:area] }
       end
     end
     out.sort_by { |color| -(color[:p][:bw] * color[:p][:bh]) }

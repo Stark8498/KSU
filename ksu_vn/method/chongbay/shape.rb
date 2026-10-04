@@ -186,7 +186,7 @@ module KSU::Shape
   end
   def rank_drag(parts)
     if @layer_theo_vung
-      arr = parts.sort_by { |_23505ef9| band_key(@rank_a, @rank_b, _23505ef9) }
+      arr = parts.sort_by { |rec| band_key(@rank_a, @rank_b, rec) }
       rank_band(arr)
     else
       sweep = dir_of(@rank_a, @rank_b)
@@ -194,13 +194,13 @@ module KSU::Shape
     end
   end
   def number_parts(arr, side, layers2 = @so_layer_tu)
-    return arr.map { |_23505ef9| { part: _23505ef9, rank: 1, side: side } } unless @danh_so_thu_tu
+    return arr.map { |rec| { part: rec, rank: 1, side: side } } unless @danh_so_thu_tu
     layers = layers2 - 1
     answer = []
-    arr.each do |_23505ef9|
+    arr.each do |rec|
       layers += 1
       break if layers > @so_layer_den
-      answer << { part: _23505ef9, rank: layers, side: side }
+      answer << { part: rec, rank: layers, side: side }
     end
     answer
   end
@@ -365,8 +365,8 @@ module KSU::Shape
     (pts.length - 1).times do |i|
       _9710d820 = pts[i]
       b = pts[i + 1]
-      poly = parts_between(_9710d820, b).sort_by { |_23505ef9| band_key(_9710d820, b, _23505ef9) }
-      poly.each { |_23505ef9| arr << _23505ef9 unless arr.include?(_23505ef9) }
+      poly = parts_between(_9710d820, b).sort_by { |rec| band_key(_9710d820, b, rec) }
+      poly.each { |rec| arr << rec unless arr.include?(rec) }
     end
     arr
   end
@@ -378,7 +378,7 @@ module KSU::Shape
     ((pt6.x.to_f - pt.x.to_f) * dx + (pt6.y.to_f - pt.y.to_f) * dy) / len2
   end
   def parts_between(p1, p2)
-    eligible(@parts.select { |_23505ef9| seg_hits_part?(p1, p2, _23505ef9) })
+    eligible(@parts.select { |rec| seg_hits_part?(p1, p2, rec) })
   end
   def seg_hits_part?(p1, p2, arr)
     return false unless seg_hits_bbox?(p1, p2, arr[:bbox])

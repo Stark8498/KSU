@@ -301,7 +301,7 @@ module KSU::View
   end
   def self.draw_brackets(view, corners, color: nil, active: nil)
     arr3 = expand_corners(corners)
-    scr = arr3.map { |_23505ef9| view.screen_coords(_23505ef9) }
+    scr = arr3.map { |pt2| view.screen_coords(pt2) }
     scale = screen_scale(view, arr3[0])
     arm = KSU::Const::BRACKET_ARM_MM * scale
     thickness_mm = KSU::Const::BRACKET_THICK_MM * scale
@@ -322,7 +322,7 @@ module KSU::View
   end
   def self.bracket_hit(view, corners, x, y, pad: KSU::Const::BRACKET_PAD_MM)
     arr3 = expand_corners(corners)
-    scr = arr3.map { |_23505ef9| view.screen_coords(_23505ef9) }
+    scr = arr3.map { |pt2| view.screen_coords(pt2) }
     scale = screen_scale(view, arr3[0])
     arm = KSU::Const::BRACKET_ARM_MM * scale
     inset = KSU::Const::BRACKET_INSET_MM * scale
@@ -372,8 +372,8 @@ module KSU::View
     ]
   end
   def self.screen_pair(view, corners)
-    pt = corners.map { |_23505ef9| view.screen_coords(_23505ef9) }
-    outer = expand_corners(corners).map { |_23505ef9| view.screen_coords(_23505ef9) }
+    pt = corners.map { |pt2| view.screen_coords(pt2) }
+    outer = expand_corners(corners).map { |pt2| view.screen_coords(pt2) }
     [pt, outer]
   end
   def self.draw_corner_handles(view, corners, color: nil)
@@ -446,23 +446,23 @@ module KSU::View
     thick = 1.0 if thick > 1.0
     px = pt.x + thick * dx
     py = pt.y + thick * dy
-    _130a8af3 = trai - px
-    _35b1b769 = duoi - py
-    _130a8af3 * _130a8af3 + _35b1b769 * _35b1b769 <= tol * tol
+    ddx = trai - px
+    ddy = duoi - py
+    ddx * ddx + ddy * ddy <= tol * tol
   end
   def self.hit_sheet_top?(view, x, y, rec)
-    outer = rec[:top_corners].map { |_23505ef9| view.screen_coords(_23505ef9) }
+    outer = rec[:top_corners].map { |pt2| view.screen_coords(pt2) }
     in_poly?(x, y, outer)
   end
   def self.hit?(view, fill, x, y)
     return false unless fill
     outer = fill[:outer]
     return false unless outer && outer.length >= 3
-    pt = outer.map { |_23505ef9| view.screen_coords(_23505ef9) }
+    pt = outer.map { |pt2| view.screen_coords(pt2) }
     return false unless in_poly?(x, y, pt)
     (fill[:holes] || []).each do |arr|
       next if arr.length < 3
-      return false if in_poly?(x, y, arr.map { |_23505ef9| view.screen_coords(_23505ef9) })
+      return false if in_poly?(x, y, arr.map { |pt2| view.screen_coords(pt2) })
     end
     true
   end

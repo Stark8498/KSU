@@ -2219,9 +2219,6 @@ ten:
 
   # Cuc bo cua rieng file nay. _23505ef9 la hex con lai duoc dung nhieu nhat
   # trong ca cay (178 lan) va moi noi mot nghia; o day luon la mot ban ghi tam.
-  _23505ef9:
-    ksu_vn/method/chongbay.rb: rec
-    "ksu_vn/utils/cutting.rb#_b344f39a": pt
   _c723bcc4:
     ksu_vn/method/chongbay.rb: plan
   _d41bb15d:
@@ -2640,8 +2637,6 @@ ten:
     ksu_vn/method/toiuuvan/postproc.rb: free_area
   _fb072f1a:
     ksu_vn/method/toiuuvan/postproc.rb: ix
-  _bd0102dd:
-    ksu_vn/method/toiuuvan/postproc.rb: mv
   _799e513f:
     ksu_vn/method/toiuuvan/postproc.rb: spec
   _488638cf:
@@ -3290,6 +3285,51 @@ ten:
     ksu_vn/method/xuatdxf/entry.rb: inset2
     ksu_vn/utils/font.rb: pos
 
+  # ----- ME 84: hex con lai duoc dung nhieu nhat -----
+  # _23505ef9 la ten chung chung cua tac gia cho tham so khoi: cho la diem,
+  # cho la ban ghi, cho la mot the. Khong co mot tu nao dung ca 46 than ham,
+  # nen dat theo tung file; `"*": pt` chi la gia tri mac dinh cho so con lai.
+  _84160c85: shape_of            # dem vien da chuan hoa vao arr[:shape]
+  _1cb4f865: drop_temp_layers
+  _2b17a799: ascii_name          # bo dau tieng Viet de dat ten file
+  _4db09033: write_dxf_files
+  _74f2aab3: on_dialog_action
+  _a40b0a8b: kind2
+  _130a8af3: ddx
+  _35b1b769: ddy
+  _3c8ec851: only_keys
+
+  _bd0102dd:
+    ksu_vn/method/toiuuvan/postproc.rb: mv
+    ksu_vn/utils/nesting/corner.rb: gap_u
+  _081c2f3e:
+    ksu_vn/system/setting.rb: section2
+  _538a3d28:
+    ksu_vn/system/setting.rb: pname2
+  _23505ef9:
+    "*": pt
+    ksu_vn/utils/view.rb: pt2
+    ksu_vn/method/chongbay.rb: rec
+    ksu_vn/method/chongbay/assign.rb: rec
+    ksu_vn/method/chongbay/shape.rb: rec
+    ksu_vn/method/nesting.rb: rec
+    ksu_vn/method/nesting/draw.rb: rec
+    ksu_vn/method/netcatcuoi.rb: bb
+    ksu_vn/method/netcatcuoi/resize.rb: bb
+    ksu_vn/method/toiuuvan.rb: ent
+    ksu_vn/method/toiuuvan/engine.rb: rec
+    ksu_vn/method/toiuuvan/postproc.rb: lead
+    ksu_vn/method/xeptam/collide.rb: ent
+    ksu_vn/method/xeptam/drag.rb: panel
+    ksu_vn/method/xeptam/group.rb: pnl
+    ksu_vn/method/xeptam/mirror.rb: part
+    ksu_vn/method/xeptam/push.rb: pnl
+    ksu_vn/method/xuatdxf/entry.rb: rec
+    ksu_vn/method/xuatdxf/scan.rb: rec
+    ksu_vn/system/setting.rb: rec
+    ksu_vn/utils/chuanhoa.rb: v
+    "ksu_vn/utils/cutting.rb#_b344f39a": pt
+
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.
 # Moi dong duoi day la mot hex da thua mot tu cho hex khac dung nhieu
@@ -3436,9 +3476,7 @@ bo:
   - _5e0c1b8d   # blk: 2 lan, ban tay giu _5d690575 (9 lan)
   - _0dc41cf2   # dlg: 13 lan, ban tay giu _a72a3dce (50 lan)
    # grp: tenauto doan kieu, _d533ec26 dung 144 lan
-  - _538a3d28   # pname: 6 lan, cay sinh doi cung goi _2bcd29a8 (27 lan) la pname
   - _43ae5f3d   # rows: _62ef82e9 co 5 lan tu soi guong, cai nay khong co
-  - _081c2f3e   # section: 22 lan, cay sinh doi cung goi _f86dea4f (40 lan) la section
   - _79f8d55d   # sel: 3 lan, ban tay giu _7e48d1c7 (123 lan)
 
   # --- Dot hai: xung dot PHAM VI. Moi hex duoi day co bang chung ten that,

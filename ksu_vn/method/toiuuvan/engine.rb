@@ -315,20 +315,20 @@ module KSU::Engine
       rect = [[0.0, 0.0], [w, 0.0], [w, h], [0.0, h]]
       return [rect] if ang == 0.0
       rect = rot_poly(rect, ang)
-      arr8 = rect.map { |_23505ef9| _23505ef9[0] }.min
-      arr9 = rect.map { |_23505ef9| _23505ef9[1] }.min
-      return [rect.map { |_23505ef9| [_23505ef9[0] - arr8, _23505ef9[1] - arr9] }]
+      arr8 = rect.map { |rec| rec[0] }.min
+      arr9 = rect.map { |rec| rec[1] }.min
+      return [rect.map { |rec| [rec[0] - arr8, rec[1] - arr9] }]
     end
-    arr4 = outer.map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }
+    arr4 = outer.map { |rec| [rec.x.to_f, rec.y.to_f] }
     arr4 = rot_poly(arr4, ang) unless ang == 0.0
     arr2 = KSU::Simplify.simplify_poly(arr4, true)
-    min_x = arr2.map { |_23505ef9| _23505ef9[0] }.min
-    min_y = arr2.map { |_23505ef9| _23505ef9[1] }.min
-    conv2 = ->(arr10) { arr10.map { |_23505ef9| [(_23505ef9[0] - min_x) * 25.4, (_23505ef9[1] - min_y) * 25.4] } }
+    min_x = arr2.map { |rec| rec[0] }.min
+    min_y = arr2.map { |rec| rec[1] }.min
+    conv2 = ->(arr10) { arr10.map { |rec| [(rec[0] - min_x) * 25.4, (rec[1] - min_y) * 25.4] } }
     loops = [conv2.call(arr2)]
     (grp[:holes] || []).each do |h|
       next unless h && h.length >= 3
-      arr3 = h.map { |_23505ef9| [_23505ef9.x.to_f, _23505ef9.y.to_f] }
+      arr3 = h.map { |rec| [rec.x.to_f, rec.y.to_f] }
       arr3 = rot_poly(arr3, ang) unless ang == 0.0
       arr5 = KSU::Simplify.simplify_poly(arr3, false)
       next if arr5.length < 3

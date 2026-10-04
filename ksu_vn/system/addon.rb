@@ -43,8 +43,8 @@ module KSU
     def self.dispatch_keys
       @items.values.flat_map { |v| v[:dispatch].keys.map(&:to_s) }
     end
-    def self.dispatch(dlg2, str, action, id)
-      name = str.to_s
+    def self.dispatch(dlg2, kind2, action, id)
+      name = kind2.to_s
       @items.each_value do |v|
         handler = v[:dispatch][name] || v[:dispatch][name.to_sym]
         next unless handler

@@ -125,7 +125,7 @@ module KSU::Back
     poly = KSU::Cutting.cut_outline(panel, _6a989d41 * panel.transformation)
     return KSU::View.panel_world_box(panel, _6a989d41) unless poly && poly.length >= 3
     bbox = Geom::BoundingBox.new
-    poly.each { |_23505ef9| bbox.add(_23505ef9) }
+    poly.each { |pt| bbox.add(pt) }
     bbox
   end
 end

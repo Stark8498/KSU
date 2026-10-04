@@ -214,7 +214,7 @@ module KSU::Resize
     @edge = h[:edge]
     @flag61 = rec ? limits_of(rec) : nil
     @flag31 = rec ? panel_boxes(rec[:instance], rec[:transform]) : nil
-    @arr16 = h[:entry][:points].map { |_23505ef9| _23505ef9.clone }
+    @arr16 = h[:entry][:points].map { |bb| bb.clone }
     @flag60 = nil
     view.invalidate
     true
