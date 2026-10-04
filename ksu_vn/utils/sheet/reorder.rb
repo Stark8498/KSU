@@ -227,10 +227,10 @@ module KSU::Reorder
     drop_back = KSU::Settings.get("xoa_nhan_mat_sau", true, "xep_hang")
     arr6.each do |sheet_type|
       arr2 = h[sheet_type]
-      grp = arr[arr2.first]
-      ty = grp.transformation.origin.y.to_f
-      thickness_mm = grp.get_attribute("ABF", "sheet-thickness")
-      lbl = row_caption(grp, sheet_type.to_s, thickness_mm, arr2.size, th_on, num_on, wrap_on)
+      row0 = arr[arr2.first]
+      ty = row0.transformation.origin.y.to_f
+      thickness_mm = row0.get_attribute("ABF", "sheet-thickness")
+      lbl = row_caption(row0, sheet_type.to_s, thickness_mm, arr2.size, th_on, num_on, wrap_on)
       add_row_label(ents, lbl, ty, row_h)
       arr2.each do |id|
         num = pad_id(id, arr5.max, zero_pad)

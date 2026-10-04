@@ -47,7 +47,7 @@ module KSU::Lastcut
       sheet.attribute_dictionary("ABF")&.delete_key("sheet-last-cut")
       return
     end
-    data = _f89911a7(rec, arr)
+    data = last_cut_json(rec, arr)
     sheet.set_attribute("ABF", "sheet-last-cut", JSON.generate(data[:json]))
     return if data[:segments].empty?
     node = sheet.definition.entities.add_group
@@ -60,11 +60,11 @@ module KSU::Lastcut
     node.entities.grep(Sketchup::Face).each(&:erase!)
     KSU::Cutting.set_layer(node, tag)
   end
-  def _f89911a7(rec, arr5)
+  def last_cut_json(rec, arr5)
     box = rec[:bbox]
-    _bd21b165, _e55fd46f = KSU::Sheet.edit_offset(rec[:instance]) || [0.0, 0.0]
-    num = box.min.x.to_f + _bd21b165
-    num2 = box.min.y.to_f + _e55fd46f
+    off_x, off_y = KSU::Sheet.edit_offset(rec[:instance]) || [0.0, 0.0]
+    num = box.min.x.to_f + off_x
+    num2 = box.min.y.to_f + off_y
     arr6 = arr5.map do |pts|
       b = KSU::Geom.bounds(pts)
       [b[:min_x] - num, b[:min_y] - num2, b[:max_x] - b[:min_x], b[:max_y] - b[:min_y]]
@@ -75,8 +75,8 @@ module KSU::Lastcut
       b = KSU::Geom.bounds(arr4)
       [b[:max_x] - b[:min_x], b[:max_y] - b[:min_y]]
     end
-    polylines = _a95ae5a0(loops, rec)
-    arr9 = polylines.map { |members| members.map { |pt| [pt.x.to_f - _bd21b165, pt.y.to_f - _e55fd46f] } }
+    polylines = to_polylines(loops, rec)
+    arr9 = polylines.map { |members| members.map { |pt| [pt.x.to_f - off_x, pt.y.to_f - off_y] } }
     segments = polylines.flat_map { |members| members.each_cons(2).to_a }
     resp = {
       "rects" => arr6,
@@ -118,9 +118,9 @@ module KSU::Lastcut
       end
     end
     loops = KSU::Cutting.build_loops(arr6)
-    loops.map { |arr7| _245e1bad(arr7) }.select { |arr7| arr7.length >= 3 }
+    loops.map { |arr7| simplify_loop(arr7) }.select { |arr7| arr7.length >= 3 }
   end
-  def _a95ae5a0(loops, rec)
+  def to_polylines(loops, rec)
     box = rec[:bbox]
     dx, dy = KSU::Sheet.edit_offset(rec[:instance]) || [0.0, 0.0]
     num2 = box.min.x.to_f + [dx, 0.0].max
@@ -132,43 +132,43 @@ module KSU::Lastcut
     loops.each do |arr|
       n = arr.length
       snap_edges = (0...n).map { |i| [arr[i], arr[(i + 1) % n]] }
-      arr2 = snap_edges.map { |_9710d820, b| !_acfeef55(_9710d820, b, num2, num5, rx, ry, num) }
+      arr2 = snap_edges.map { |a, b| !on_sheet_edge?(a, b, num2, num5, rx, ry, num) }
       if arr2.all?
         polylines << (arr + [arr[0]])
         next
       end
       next unless arr2.any?
       start = arr2.index(false)
-      _7e53f420 = nil
+      run2 = nil
       n.times do |k|
         ix = (start + k) % n
         if arr2[ix]
-          _9710d820, b = snap_edges[ix]
-          if _7e53f420
-            _7e53f420 << b
+          a, b = snap_edges[ix]
+          if run2
+            run2 << b
           else
-            _7e53f420 = [_9710d820, b]
+            run2 = [a, b]
           end
-        elsif _7e53f420
-          polylines << _7e53f420
-          _7e53f420 = nil
+        elsif run2
+          polylines << run2
+          run2 = nil
         end
       end
-      polylines << _7e53f420 if _7e53f420
+      polylines << run2 if run2
     end
     polylines
   end
-  def _acfeef55(pt, b, _3e7613f3, _9ba1a361, rx, ry, _0845fb1d)
+  def on_sheet_edge?(pt, b, sx, sy, rx, ry, _0845fb1d)
     num = 0.01.mm.to_f
     if (pt.x - b.x).abs < num
-      (pt.x - _3e7613f3).abs <= _0845fb1d || (pt.x - rx).abs <= _0845fb1d
+      (pt.x - sx).abs <= _0845fb1d || (pt.x - rx).abs <= _0845fb1d
     elsif (pt.y - b.y).abs < num
-      (pt.y - _9ba1a361).abs <= _0845fb1d || (pt.y - ry).abs <= _0845fb1d
+      (pt.y - sy).abs <= _0845fb1d || (pt.y - ry).abs <= _0845fb1d
     else
       false
     end
   end
-  def _245e1bad(arr)
+  def simplify_loop(arr)
     n = arr.length
     return arr if n < 3
     answer = []

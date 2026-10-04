@@ -54,22 +54,22 @@ module KSU::Bilan
       keys << ix
     end
     num3 = KSU::Avail.two_sided_margin.mm.to_f
-    _035410f9 = KSU::Avail.two_sided?(sheet)
+    two_face = KSU::Avail.two_sided?(sheet)
     flag5 = KSU::Sheet.hidden?(sheet) && KSU::Sheet.marks_of(sheet).any?
-    _88817caf, _5dc624bc, _bee95155, _58b58971 = KSU::Avail.sides_for(sheet, gap_for)
-    m_left = _035410f9 ? num3 : _88817caf
-    m_bottom = (_035410f9 || flag5) ? num3 : _58b58971
-    m_right = flag5 ? num3 : _5dc624bc
-    top = _bee95155
-    _efb2355c = [m_left, m_right, top, m_bottom].max
+    m_left2, m_right2, m_top2, m_bot2 = KSU::Avail.sides_for(sheet, gap_for)
+    m_left = two_face ? num3 : m_left2
+    m_bottom = (two_face || flag5) ? num3 : m_bot2
+    m_right = flag5 ? num3 : m_right2
+    top = m_top2
+    m_max = [m_left, m_right, top, m_bottom].max
     h = {}
     h2 = {}
     keys.each do |i|
       fld = items[i]
-      _2e113abe = (h2[i] ||= _4bed79e1(fld[:poly], num4))
+      small = (h2[i] ||= offset_in(fld[:poly], num4))
       fld_bbox = fld[:bbox]
       hull = fld[:hull]
-      unless flag.nil? || _efb2355c <= 0.0
+      unless flag.nil? || m_max <= 0.0
         if fld_bbox[:min_x] < flag + m_left - tol || fld_bbox[:max_x] > flag3 - m_right + tol ||
            fld_bbox[:min_y] < flag4 + m_bottom - tol || fld_bbox[:max_y] > flag2 - top + tol
           h[i] = true
@@ -79,25 +79,25 @@ module KSU::Bilan
         next if j == i
         panel4 = items[j]
         next unless KSU::Geom.boxes_overlap?(fld_bbox, panel4[:bbox], num)
-        _33f52d3e = _d090233d([_2e113abe], panel4[:holes])
-        if _33f52d3e
-          if KSU::Geom.polys_overlap?(_2e113abe, _33f52d3e, num)
+        hole = hole_near([small], panel4[:holes])
+        if hole
+          if KSU::Geom.polys_overlap?(small, hole, num)
             h[i] = true
             h[j] = true
           end
           next
         end
-        _3e1d5f51 = _d090233d([panel4[:poly]], fld[:holes])
-        if _3e1d5f51
-          _982c8eb9 = (h2[j] ||= _4bed79e1(panel4[:poly], num4))
-          if KSU::Geom.polys_overlap?(_982c8eb9, _3e1d5f51, num)
+        hole2 = hole_near([panel4[:poly]], fld[:holes])
+        if hole2
+          small2 = (h2[j] ||= offset_in(panel4[:poly], num4))
+          if KSU::Geom.polys_overlap?(small2, hole2, num)
             h[i] = true
             h[j] = true
           end
           next
         end
-        next unless _faecb1ca(hull, panel4[:hull], num)
-        if _faecb1ca(_2e113abe, panel4[:poly], num)
+        next unless polys_hit?(hull, panel4[:hull], num)
+        if polys_hit?(small, panel4[:poly], num)
           h[i] = true
           h[j] = true
         end
@@ -124,9 +124,9 @@ module KSU::Bilan
       Geom::Point3d.new(x, y, pt.z.to_f)
     end
   end
-  def _d090233d(loops, holes)
+  def hole_near(loops, holes)
     return nil unless holes && !holes.empty? && loops && !loops.empty?
-    px, py = _24863b11(loops)
+    px, py = loops_mid(loops)
     return nil unless px
     holes.each do |vec|
       next if vec.length < 3
@@ -136,7 +136,7 @@ module KSU::Bilan
     end
     nil
   end
-  def _24863b11(loops)
+  def loops_mid(loops)
     lx = ly = nil
     flag2 = flag = nil
     loops.each do |arr|
@@ -153,7 +153,7 @@ module KSU::Bilan
     return [nil, nil] if lx.nil?
     [(lx + flag2) / 2.0, (ly + flag) / 2.0]
   end
-  def _4bed79e1(poly, num3)
+  def offset_in(poly, num3)
     return poly unless defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:offset)
     arr = poly.map { |_23505ef9| [_23505ef9.x.to_f * 25.4, _23505ef9.y.to_f * 25.4] }
     num2 = 0.0
@@ -170,7 +170,7 @@ module KSU::Bilan
   rescue StandardError
     poly
   end
-  def _faecb1ca(poly_a, poly_b, gap2)
+  def polys_hit?(poly_a, poly_b, gap2)
     if defined?(KSU::Method) && KSU::Method.respond_to?(:polygons_overlap?)
       return KSU::Method.polygons_overlap?(poly_a, poly_b, gap2)
     end

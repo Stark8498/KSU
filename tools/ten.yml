@@ -2269,8 +2269,6 @@ ten:
     ksu_vn/utils/cutting/detail.rb: lbl_w
   _54538e67:
     ksu_vn/utils/cutting/detail.rb: lbl_h
-  _7e53f420:
-    "ksu_vn/utils/cutting/detail.rb#_5edc6938": lbl_scale
   _9b67c55d:
     "ksu_vn/utils/cutting/detail.rb#_5edc6938": pad2
     "ksu_vn/method/netcatcuoi/resize.rb#_b6a93f39": loop_pts
@@ -2376,10 +2374,6 @@ ten:
     ksu_vn/method/netcatcuoi.rb: prev_sheets
   _b849fe49:
     ksu_vn/method/netcatcuoi.rb: prev_hidden
-  _bd21b165:
-    "ksu_vn/method/netcatcuoi.rb#_1bba59fa": off_x
-  _e55fd46f:
-    "ksu_vn/method/netcatcuoi.rb#_1bba59fa": off_y
   _02b82ead:
     ksu_vn/method/netcatcuoi/resize.rb: rx1
   _7505b7d3:
@@ -2494,8 +2488,6 @@ ten:
     ksu_vn/method/xeptam/push.rb: rad   #  toan cuc la cua _e4c576df
   _32310dba: pivot
 
-  _b5af8dbf:
-    ksu_vn/method/xeptam.rb: jump
   _f0301936:
     ksu_vn/method/xeptam.rb: was_drag
   _7a82534c:
@@ -2574,14 +2566,6 @@ ten:
     ksu_vn/method/xeptam/push.rb: hi_u
   _1c4e86f2:
     ksu_vn/method/xeptam/push.rb: gi
-  _2e113abe:
-    ksu_vn/method/xeptam/push.rb: small
-  _982c8eb9:
-    ksu_vn/method/xeptam/push.rb: small2
-  _33f52d3e:
-    ksu_vn/method/xeptam/push.rb: hole
-  _3e1d5f51:
-    ksu_vn/method/xeptam/push.rb: hole2
   _f38e85e6:
     ksu_vn/method/xeptam/push.rb: sel_bb
   _6a5c7d09:
@@ -2717,11 +2701,6 @@ ten:
     ksu_vn/utils/view.rb: s
   _6a989d41:
     ksu_vn/utils/view.rb: tf
-  _60000b16:
-    ksu_vn/method/chongbay.rb: y2
-    "ksu_vn/utils/view.rb#_23ea970c": y2
-    "ksu_vn/utils/view.rb#_b9fdc2d5": y2
-    "ksu_vn/utils/view.rb#_e519e18d": y2
 
   # ----- ME 69: method/xeptam/mirror.rb -- lat tam sang van mat sau -----
   # Khung chon keo tu phai sang trai la kieu "cat qua": nhan ca tam chi
@@ -2860,12 +2839,6 @@ ten:
     ksu_vn/method/xeptam/collide.rb: obs
   _80253039:
     ksu_vn/method/xeptam/collide.rb: hole
-  _88817caf:
-    ksu_vn/method/xeptam/collide.rb: m_left
-  _5dc624bc:
-    ksu_vn/method/xeptam/collide.rb: m_right
-  _bee95155:
-    ksu_vn/method/xeptam/collide.rb: m_top
   _08f8a9e0:
     ksu_vn/method/xeptam/collide.rb: m_min
   _ac6822d3:
@@ -2882,10 +2855,6 @@ ten:
     ksu_vn/method/xeptam/collide.rb: mag
   _f8733e26:
     ksu_vn/method/xeptam/collide.rb: moved_bb
-  _9535dc0b:
-    "ksu_vn/utils/isolate.rb": keep_list
-    ksu_vn/method/xuatdxf/entry.rb: ring
-    ksu_vn/method/xeptam/collide.rb: in_sel
 
   # ----- ME 74: utils/cutting/loop.rb -- noi doan thang thanh vong kin -----
   # Moi doan la mot canh giua hai nut; nut la toa do da lam tron. Di tu mot
@@ -2929,14 +2898,6 @@ ten:
   _c8573e56:
     "ksu_vn/utils/view.rb#_c9d9f590": my
     ksu_vn/utils/cutting/loop.rb: dy_in
-  _3e7613f3:
-    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_x
-    "ksu_vn/utils/view.rb#_c9d9f590": ox
-    ksu_vn/utils/cutting/loop.rb: dx_out
-  _9ba1a361:
-    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_y
-    "ksu_vn/utils/view.rb#_c9d9f590": oy
-    ksu_vn/utils/cutting/loop.rb: dy_out
 
   # ----- ME 75: method/toiuuvan/engine.rb -- goi bo xep ngoai -----
   # Chuyen hinh sang mm cho bo xep, va nhan ket qua ve. Cac tam dinh nhau
@@ -3103,14 +3064,126 @@ ten:
   _14ea4fab:
     ksu_vn/utils/sheet/reorder.rb: pi
     ksu_vn/utils/preset/store.rb: ci
-  _9710d820:
-    ksu_vn/method/xeptam/nfp.rb: area
-    ksu_vn/utils/preset/field.rb: ang
-    ksu_vn/utils/preset/store.rb: ang
   _fab4f06f:
     ksu_vn/utils/preset/store.rb: spec
   _9aa9564d:
     ksu_vn/utils/preset/store.rb: rects
+
+  # ----- ME 79: utils/nesting/bilan.rb -- tim tam bi lan -----
+  # Cung bo khung voi xeptam/push.rb nhung la hex khac, nen phai mang ten
+  # khac: tac gia dat mot ten cho mot hex, hai hex khong the cung mot tu.
+  _4bed79e1: offset_in
+  _d090233d: hole_near
+  _faecb1ca: polys_hit?
+  _24863b11: loops_mid
+  _035410f9: two_face
+  _efb2355c: m_max
+  _58b58971: m_bot2
+
+  # ----- ME 79b: utils/nesting/corner.rb -----
+  _be99d528: pad_box
+  _b869e241: swell_poly          # `grow_poly` da thuoc _72edd259
+  _e4eb7bdf: grow_d
+  _4bc14589: grow_mm
+  _e2e8ed58: nested
+  _20704b8d: center_off
+  _80a98e30: gk
+
+  # ----- ME 79c: method/netcatcuoi/lastcut.rb -----
+  _f89911a7: last_cut_json
+  _a95ae5a0: to_polylines
+  _245e1bad: simplify_loop
+  _acfeef55: on_sheet_edge?
+
+  _88817caf:
+    ksu_vn/method/xeptam/collide.rb: m_left
+    ksu_vn/utils/nesting/bilan.rb: m_left2
+  _5dc624bc:
+    ksu_vn/method/xeptam/collide.rb: m_right
+    ksu_vn/utils/nesting/bilan.rb: m_right2
+  _bee95155:
+    ksu_vn/method/xeptam/collide.rb: m_top
+    ksu_vn/utils/nesting/bilan.rb: m_top2
+  _2e113abe:
+    ksu_vn/method/xeptam/push.rb: small
+    ksu_vn/utils/nesting/bilan.rb: small
+  _982c8eb9:
+    ksu_vn/method/xeptam/push.rb: small2
+    ksu_vn/utils/nesting/bilan.rb: small2
+  _33f52d3e:
+    ksu_vn/method/xeptam/push.rb: hole
+    ksu_vn/utils/nesting/bilan.rb: hole
+  _3e1d5f51:
+    ksu_vn/method/xeptam/push.rb: hole2
+    ksu_vn/utils/nesting/bilan.rb: hole2
+  _60000b16:
+    "ksu_vn/utils/view.rb#_23ea970c": y2
+    "ksu_vn/utils/view.rb#_b9fdc2d5": y2
+    "ksu_vn/utils/view.rb#_e519e18d": y2
+    ksu_vn/method/chongbay.rb: y2
+    ksu_vn/utils/nesting/corner.rb: y2
+  _bd21b165:
+    "ksu_vn/method/netcatcuoi.rb#_1bba59fa": off_x
+    ksu_vn/method/netcatcuoi/lastcut.rb: off_x
+  _e55fd46f:
+    "ksu_vn/method/netcatcuoi.rb#_1bba59fa": off_y
+    ksu_vn/method/netcatcuoi/lastcut.rb: off_y
+  _7e53f420:
+    "ksu_vn/utils/cutting/detail.rb#_5edc6938": lbl_scale
+    ksu_vn/method/netcatcuoi/lastcut.rb: run2
+  _9710d820:
+    ksu_vn/method/xeptam/nfp.rb: area
+    ksu_vn/utils/preset/field.rb: ang
+    ksu_vn/utils/preset/store.rb: ang
+    ksu_vn/method/netcatcuoi/lastcut.rb: a
+
+  # ----- ME 80: method/thongke/xuat.rb -- bon file XML trong goi .xlsx -----
+  # Ten lay thang tu phan tu goc moi ham dung ra.
+  _278dd154: cols_xml            # <cols><col min max width/>
+  _4ae1e5d9: sheet_xml           # <worksheet><sheetData>
+  _46b90971: workbook_xml        # <workbook><sheets>
+  _e4092e6c: rels_xml            # <Relationships>
+  _7fb3dc0f: content_types_xml   # [Content_Types].xml
+  _bd6ab6e1: xml
+  _a925e834: row0
+
+  # ----- ME 80b: method/intem/scan.rb -----
+  _d7b62fb6: nesting_root        # nhom co attr ABF "is-nesting-root"
+  _14954c73: hinge_spec
+  _a8e56783: same_pt?            # sai so 0.05mm
+  _f0ab79c9: curves_in
+  _4e80230a: tf4
+  _93188890: codes
+
+  # ----- ME 80c: method/toiuuvan.rb -----
+  _a42dd0f4: draw_empty_marks
+  _92d864e9: track_handles
+  _8734f930:
+    ksu_vn/method/toiuuvan.rb: p_corner
+  _c3288067:
+    ksu_vn/method/toiuuvan.rb: p_pressed
+  _522da39c:
+    ksu_vn/method/toiuuvan.rb: p_edge
+  _b5af8dbf:
+    ksu_vn/method/xeptam.rb: jump
+    ksu_vn/method/toiuuvan.rb: jump
+  _9535dc0b:
+    "ksu_vn/utils/isolate.rb": keep_list
+    ksu_vn/method/xuatdxf/entry.rb: ring
+    ksu_vn/method/xeptam/collide.rb: in_sel
+    ksu_vn/method/toiuuvan.rb: live
+  _3e7613f3:
+    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_x
+    "ksu_vn/utils/view.rb#_c9d9f590": ox
+    ksu_vn/utils/cutting/loop.rb: dx_out
+    ksu_vn/method/netcatcuoi/lastcut.rb: sx
+    ksu_vn/method/intem/scan.rb: org_x
+  _9ba1a361:
+    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": inset_y
+    "ksu_vn/utils/view.rb#_c9d9f590": oy
+    ksu_vn/utils/cutting/loop.rb: dy_out
+    ksu_vn/method/netcatcuoi/lastcut.rb: sy
+    ksu_vn/method/intem/scan.rb: org_y
 
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.

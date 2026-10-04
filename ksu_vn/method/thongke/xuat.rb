@@ -55,11 +55,11 @@ module KSU::Thongke::Xuat
       num13 = rows.size + 1
       arr2 << "H#{num13}"
       items = arr3["items"] || []
-      _a925e834 = num13 + 1
-      formula = items.empty? ? nil : "SUM(H#{_a925e834}:H#{num13 + items.size})"
+      row0 = num13 + 1
+      formula = items.empty? ? nil : "SUM(H#{row0}:H#{num13 + items.size})"
       rows << { cells: build_cells(arr3["title"], arr3["tong"], formula) }
       items.each_with_index do |arr, i|
-        half = _a925e834 + i
+        half = row0 + i
         lines = arr["mota"].to_s
         rows << {
           cells: [
@@ -109,42 +109,42 @@ module KSU::Thongke::Xuat
     return "<c r=\"#{pt}\" s=\"#{style_ix}\"/>" if text.empty?
     "<c r=\"#{pt}\" s=\"#{style_ix}\" t=\"inlineStr\"><is><t xml:space=\"preserve\">#{xml_escape(text)}</t></is></c>"
   end
-  def self._278dd154(arr)
+  def self.cols_xml(arr)
     arr2 = arr.each_with_index.map { |w, i|
       "<col min=\"#{i + 1}\" max=\"#{i + 1}\" width=\"#{w}\" customWidth=\"1\"/>"
     }.join
     "<cols>#{arr2}</cols>"
   end
-  def self._4ae1e5d9(sheet)
-    _bd6ab6e1 = XML_HEAD + "<worksheet xmlns=\"#{NS_MAIN}\">"
-    _bd6ab6e1 += "<sheetViews><sheetView workbookViewId=\"0\"><pane ySplit=\"1\" topLeftCell=\"A2\" activePane=\"bottomLeft\" state=\"frozen\"/></sheetView></sheetViews>"
-    _bd6ab6e1 += _278dd154(sheet[:cols])
-    _bd6ab6e1 += "<sheetData>"
+  def self.sheet_xml(sheet)
+    xml = XML_HEAD + "<worksheet xmlns=\"#{NS_MAIN}\">"
+    xml += "<sheetViews><sheetView workbookViewId=\"0\"><pane ySplit=\"1\" topLeftCell=\"A2\" activePane=\"bottomLeft\" state=\"frozen\"/></sheetView></sheetViews>"
+    xml += cols_xml(sheet[:cols])
+    xml += "<sheetData>"
     sheet[:rows].each_with_index do |arr, half|
       count_by_length = arr[:lines] || 1
       attr = count_by_length > 1 ? " ht=\"#{count_by_length * 15}\" customHeight=\"1\"" : ""
-      _bd6ab6e1 += "<row r=\"#{half + 1}\"#{attr}>"
+      xml += "<row r=\"#{half + 1}\"#{attr}>"
       arr[:cells].each_with_index do |(value, style_ix, formula), color|
-        _bd6ab6e1 += cell_xml(col_name(color) + (half + 1).to_s, value, style_ix, formula)
+        xml += cell_xml(col_name(color) + (half + 1).to_s, value, style_ix, formula)
       end
-      _bd6ab6e1 += "</row>"
+      xml += "</row>"
     end
-    _bd6ab6e1 + "</sheetData></worksheet>"
+    xml + "</sheetData></worksheet>"
   end
-  def self._46b90971(sheets)
+  def self.workbook_xml(sheets)
     arr2 = sheets.each_with_index.map { |sheet, i|
       "<sheet name=\"#{xml_escape(sheet[:name])}\" sheetId=\"#{i + 1}\" r:id=\"rId#{i + 1}\"/>"
     }.join
     XML_HEAD + "<workbook xmlns=\"#{NS_MAIN}\" xmlns:r=\"#{NS_REL}\"><sheets>#{arr2}</sheets><calcPr fullCalcOnLoad=\"1\"/></workbook>"
   end
-  def self._e4092e6c(sheets)
+  def self.rels_xml(sheets)
     arr = sheets.each_with_index.map { |_part, i|
       "<Relationship Id=\"rId#{i + 1}\" Type=\"#{NS_REL}/worksheet\" Target=\"worksheets/sheet#{i + 1}.xml\"/>"
     }.join
     arr += "<Relationship Id=\"rId#{sheets.size + 1}\" Type=\"#{NS_REL}/styles\" Target=\"styles.xml\"/>"
     XML_HEAD + "<Relationships xmlns=\"#{NS_PKG}\">#{arr}</Relationships>"
   end
-  def self._7fb3dc0f(sheets)
+  def self.content_types_xml(sheets)
     arr = sheets.each_with_index.map { |_part, i|
       "<Override PartName=\"/xl/worksheets/sheet#{i + 1}.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>"
     }.join
@@ -195,12 +195,12 @@ module KSU::Thongke::Xuat
   end
   def self.build_doc(sheets)
     arr = []
-    arr << ["[Content_Types].xml", _7fb3dc0f(sheets)]
+    arr << ["[Content_Types].xml", content_types_xml(sheets)]
     arr << ["_rels/.rels", _8e83909c]
-    arr << ["xl/workbook.xml", _46b90971(sheets)]
-    arr << ["xl/_rels/workbook.xml.rels", _e4092e6c(sheets)]
+    arr << ["xl/workbook.xml", workbook_xml(sheets)]
+    arr << ["xl/_rels/workbook.xml.rels", rels_xml(sheets)]
     arr << ["xl/styles.xml", _7144b643]
-    sheets.each_with_index { |sheet, i| arr << ["xl/worksheets/sheet#{i + 1}.xml", _4ae1e5d9(sheet)] }
+    sheets.each_with_index { |sheet, i| arr << ["xl/worksheets/sheet#{i + 1}.xml", sheet_xml(sheet)] }
     _713c8e2b(arr)
   end
   def self._e8a07557

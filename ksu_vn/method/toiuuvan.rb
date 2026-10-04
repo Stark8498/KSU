@@ -123,14 +123,14 @@ class KSU::Toiuuvan
     when CONSTRAIN_MODIFIER_KEY
       @shift = true
       update_hover_sheets(true, view)
-      _92d864e9(view, true)
+      track_handles(view, true)
     when VK_LEFT, VK_RIGHT
       return if @sel.empty?
-      _b5af8dbf = (rot & CONSTRAIN_MODIFIER_MASK) != 0
+      jump = (rot & CONSTRAIN_MODIFIER_MASK) != 0
       dir = if key == VK_LEFT
-          _b5af8dbf ? :first : :prev
+          jump ? :first : :prev
         else
-          _b5af8dbf ? :last : :next
+          jump ? :last : :next
         end
       step_selection(dir)
       view&.invalidate
@@ -144,7 +144,7 @@ class KSU::Toiuuvan
     return unless key == CONSTRAIN_MODIFIER_KEY
     @shift = false
     update_hover_sheets(false, view)
-    _92d864e9(view, false)
+    track_handles(view, false)
   end
   def onReturn(view)
     return if @sel.empty?
@@ -174,7 +174,7 @@ class KSU::Toiuuvan
     return if hover_field(x, y, view)
     update_hover_sheets((rot & MK_SHIFT) != 0, view)
     update_hover_delete(view, x, y)
-    _92d864e9(view, (rot & MK_SHIFT) != 0)
+    track_handles(view, (rot & MK_SHIFT) != 0)
   end
   def update_hover_sheets(ctrl, view)
     return unless @mx && @my
@@ -280,7 +280,7 @@ class KSU::Toiuuvan
       KSU::View.draw_corner_handles(view, rec[:top_corners]) { |i| handle_color(sheet, i, @hover_edge, @pressed) }
     end
     draw_rect2d(view) if @banding
-    _a42dd0f4(view)
+    draw_empty_marks(view)
     draw_presets(view)
     draw_fields(view)
     draw_mode_hint(view, "#{@str || "Đang tối ưu"}... #{@progress}%") if @progress
@@ -323,21 +323,21 @@ class KSU::Toiuuvan
     end
     nil
   end
-  def _a42dd0f4(view)
+  def draw_empty_marks(view)
     @sheets.each do |rec|
       next unless KSU::Sheet.empty?(rec[:instance])
       KSU::View.draw_warn_button(view, KSU::View.center_of(rec[:top_corners]), hover: @hover_del == rec[:instance])
     end
   end
-  def _92d864e9(view, ctrl)
+  def track_handles(view, ctrl)
     return unless @mx && @my
-    _8734f930 = @hover_corner
-    _c3288067 = @pressed
-    _522da39c = @hover_edge
+    p_corner = @hover_corner
+    p_pressed = @pressed
+    p_edge = @hover_edge
     @hover_corner = handle_at(view, @mx, @my, :corner)
     @hover_edge = @hover_corner ? nil : handle_at(view, @mx, @my, :edge)
     @pressed = ctrl
-    view.invalidate if @hover_corner != _8734f930 || @pressed != _c3288067 || @hover_edge != _522da39c
+    view.invalidate if @hover_corner != p_corner || @pressed != p_pressed || @hover_edge != p_edge
   end
   def handle_at(view, x, y, joint)
     @sel.each do |sheet|
@@ -380,14 +380,14 @@ class KSU::Toiuuvan
     KSU.abort_op
   end
   def step_selection(dir)
-    _9535dc0b = @sel.select { |s| s && s.valid? }
-    return if _9535dc0b.empty?
+    live = @sel.select { |s| s && s.valid? }
+    return if live.empty?
     arr3 = []
     arr4 = []
-    _9535dc0b.each do |sheet|
+    live.each do |sheet|
       next if arr4.include?(sheet)
       arr = KSU::Sheet.row_of(sheet, @sheets)
-      arr2 = arr.each_index.select { |i| _9535dc0b.include?(arr[i]) }
+      arr2 = arr.each_index.select { |i| live.include?(arr[i]) }
       next if arr2.empty?
       arr4.concat(arr2.map { |i| arr[i] })
       materials = _ea9e841c(arr.length, arr2, dir)
@@ -405,7 +405,7 @@ class KSU::Toiuuvan
       end
     end
     KSU.commit
-    @sel = ((_9535dc0b - arr6) + arr5).select { |s| s && s.valid? }.uniq
+    @sel = ((live - arr6) + arr5).select { |s| s && s.valid? }.uniq
     sheet_list
     KSU::View.clear_cache
   rescue StandardError
@@ -413,33 +413,33 @@ class KSU::Toiuuvan
   end
   def _ea9e841c(n, arr, dir)
     materials = (0...n).to_a
-    _9535dc0b = Array.new(n, false)
-    arr.each { |i| _9535dc0b[i] = true }
+    live = Array.new(n, false)
+    arr.each { |i| live[i] = true }
     flag = (dir == :prev || dir == :first) ? :prev : :next
     repeat = dir == :first || dir == :last
     bbox = false
     loop do
-      _8bb0188d = _44a5d1aa(materials, _9535dc0b, flag)
+      _8bb0188d = _44a5d1aa(materials, live, flag)
       bbox ||= _8bb0188d
       break if !_8bb0188d || !repeat
     end
     bbox ? materials : nil
   end
-  def _44a5d1aa(materials, _9535dc0b, _89bad203)
+  def _44a5d1aa(materials, live, _89bad203)
     n = materials.length
     bbox = false
     if _89bad203 == :next
       (n - 2).downto(0) do |i|
-        next unless _9535dc0b[i] && !_9535dc0b[i + 1]
+        next unless live[i] && !live[i + 1]
         materials[i], materials[i + 1] = materials[i + 1], materials[i]
-        _9535dc0b[i], _9535dc0b[i + 1] = _9535dc0b[i + 1], _9535dc0b[i]
+        live[i], live[i + 1] = live[i + 1], live[i]
         bbox = true
       end
     else
       1.upto(n - 1) do |i|
-        next unless _9535dc0b[i] && !_9535dc0b[i - 1]
+        next unless live[i] && !live[i - 1]
         materials[i], materials[i - 1] = materials[i - 1], materials[i]
-        _9535dc0b[i], _9535dc0b[i - 1] = _9535dc0b[i - 1], _9535dc0b[i]
+        live[i], live[i - 1] = live[i - 1], live[i]
         bbox = true
       end
     end

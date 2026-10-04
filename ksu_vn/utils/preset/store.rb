@@ -230,13 +230,13 @@ module KSU::Store
       else
         flat_index += key[:choices].size
       end
-      arr3 = arr.first[:rect]
+      row0 = arr.first[:rect]
       box = arr.last[:rect]
       entries << { type: :card, rect: {
         x: color[:x],
-        y: arr3[:y] - pad,
+        y: row0[:y] - pad,
         width: rsz[:width],
-        height: (box[:y] + box[:height]) - arr3[:y] + 2 * pad
+        height: (box[:y] + box[:height]) - row0[:y] + 2 * pad
       } }
       entries.concat(arr)
     end

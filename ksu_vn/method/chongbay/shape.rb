@@ -217,9 +217,9 @@ module KSU::Shape
   def rank_nearest_edge(parts)
     parts = parts.reject { |arr3| arr3[:rank] } unless @cho_phep_ghi_de
     return [] if parts.empty?
-    arr2 = parts.first
-    arr = KSU::Sheet.record_for(@sheets, arr2[:sheet])
-    number_by_sheet(parts, side_nearest(arr2[:bbox], arr && arr[:bbox]))
+    row0 = parts.first
+    arr = KSU::Sheet.record_for(@sheets, row0[:sheet])
+    number_by_sheet(parts, side_nearest(row0[:bbox], arr && arr[:bbox]))
   end
   def side_nearest(_9fda117b, arr)
     return nil unless arr

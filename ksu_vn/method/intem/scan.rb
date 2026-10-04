@@ -1,7 +1,7 @@
 module KSU::Intem
   def self.scan
     model = Sketchup.active_model
-    nesting = KSU::Nesting._d7b62fb6
+    nesting = KSU::Nesting.nesting_root
     src = nesting ? nesting.entities : model.entities
     sheets = {}
     parts2 = []
@@ -22,8 +22,8 @@ module KSU::Intem
         board_index = grp.get_attribute("ABF", "board-index")
         next unless board_index
         next if h16[board_index]
-        _14954c73 = hinge(grp)
-        h16[board_index] = _14954c73 if _14954c73
+        hinge_spec = hinge(grp)
+        h16[board_index] = hinge_spec if hinge_spec
       end
     end
     src.grep(Sketchup::Group).each do |sheet|
@@ -101,14 +101,14 @@ module KSU::Intem
       nil
     end
     return [] unless data.is_a?(Hash) && data["polys"].is_a?(Array)
-    _3e7613f3, _9ba1a361 = sheet_origin(sheet)
+    org_x, org_y = sheet_origin(sheet)
     loops = data["polys"].select { |arr| arr.is_a?(Array) && arr.length >= 3 }
     out = []
     loops.each_with_index do |arr, ix|
       pts = arr.map do |arr2|
-        [((_3e7613f3 + arr2[0].to_f) * 25.4).round(2), ((_9ba1a361 + arr2[1].to_f) * 25.4).round(2)]
+        [((org_x + arr2[0].to_f) * 25.4).round(2), ((org_y + arr2[1].to_f) * 25.4).round(2)]
       end
-      pts << pts.first.dup unless _a8e56783(pts.first, pts.last)
+      pts << pts.first.dup unless same_pt?(pts.first, pts.last)
       out << {
         id: "L#{ix + 1}",
         eid: nil,
@@ -146,10 +146,10 @@ module KSU::Intem
               ent.get_attribute("ABF", "is-flatten")
       board_index = ent.get_attribute("ABF", "board-index")
       if board_index
-        str = [ent.get_attribute("ABF", "code_n1").to_s,
+        codes = [ent.get_attribute("ABF", "code_n1").to_s,
                  ent.get_attribute("ABF", "code_n2").to_s,
                  ent.get_attribute("ABF", "code_n3").to_s]
-        arr4[board_index] = str unless str.all?(&:empty?)
+        arr4[board_index] = codes unless codes.all?(&:empty?)
         unless arr[board_index]
           arr3 = KSU::Cutting.edgeband_list(ent)
           arr[board_index] = arr3 unless arr3.empty?
@@ -172,10 +172,10 @@ module KSU::Intem
     name = KSU::Label.label_text(grp)
     name = pid.to_s if name.to_s.empty?
     arr2 = _503b4f27(grp, part_tf)
-    _93188890 = [grp.get_attribute("ABF", "code_n1").to_s,
+    codes = [grp.get_attribute("ABF", "code_n1").to_s,
              grp.get_attribute("ABF", "code_n2").to_s,
              grp.get_attribute("ABF", "code_n3").to_s]
-    _93188890 = arr[pid] if _93188890.all?(&:empty?) && arr[pid]
+    codes = arr[pid] if codes.all?(&:empty?) && arr[pid]
     {
       id: pid,
       eid: grp.entityID,
@@ -189,9 +189,9 @@ module KSU::Intem
       grooves: arr2[:paths],
       gname: arr2[:names].join(" - "),
       hinge: hinge(grp) || arr4[pid],
-      code1: _93188890[0],
-      code2: _93188890[1],
-      code3: _93188890[2]
+      code1: codes[0],
+      code2: codes[1],
+      code3: codes[2]
     }
   end
   def self.hinge(entity, num = 0)
@@ -209,7 +209,7 @@ module KSU::Intem
     end
     nil
   end
-  def self._f0ab79c9(gr, _4e80230a)
+  def self.curves_in(gr, tf4)
     seen = {}
     arr = []
     (KSU.entities_in(gr) || []).each do |edge|
@@ -222,7 +222,7 @@ module KSU::Intem
         pts = [edge.start.position, edge.end.position]
       end
       arr << pts.map do |pt2|
-        pt = pt2.transform(_4e80230a)
+        pt = pt2.transform(tf4)
         [(pt.x * 25.4).round(2), (pt.y * 25.4).round(2)]
       end
     end
@@ -234,10 +234,10 @@ module KSU::Intem
     return out unless ents
     ents.each do |ent|
       next unless KSU.container?(ent)
-      tr = tf * ent.transformation
+      tf4 = tf * ent.transformation
       if ent.get_attribute("ABF", "is-hinge-part-b")
         best = nil
-        _f0ab79c9(ent, tr).each do |arr5|
+        curves_in(ent, tf4).each do |arr5|
           arr3 = arr5.map { |arr4| arr4[0] }
           arr2 = arr5.map { |arr4| arr4[1] }
           rsz = [arr3.max - arr3.min, arr2.max - arr2.min].max.round(2)
@@ -247,7 +247,7 @@ module KSU::Intem
         end
         out << best if best
       else
-        cups(ent, tr, num + 1, out)
+        cups(ent, tf4, num + 1, out)
       end
     end
     out
@@ -258,14 +258,14 @@ module KSU::Intem
     return out unless ents
     ents.each do |ent|
       next unless KSU.container?(ent)
-      tr = tf * ent.transformation
+      tf4 = tf * ent.transformation
       if ent.get_attribute("ZSU", "bao_ranh")
         str = ent.get_attribute("ABF", "statistical-name").to_s
         next if str.empty?
         out[:names] << str unless out[:names].include?(str)
-        out[:paths].concat(_f0ab79c9(ent, tr))
+        out[:paths].concat(curves_in(ent, tf4))
       else
-        _503b4f27(ent, tr, num + 1, out)
+        _503b4f27(ent, tf4, num + 1, out)
       end
     end
     out
@@ -304,9 +304,9 @@ module KSU::Intem
         _fc35762e = pts.last
         arr.each_with_index do |f, i|
           next if _fe5ae039(f[:pts])
-          if _a8e56783(f[:pts].first, _fc35762e)
+          if same_pt?(f[:pts].first, _fc35762e)
             pts.concat(f[:pts][1..-1])
-          elsif _a8e56783(f[:pts].last, _fc35762e)
+          elsif same_pt?(f[:pts].last, _fc35762e)
             pts.concat(f[:pts].reverse[1..-1])
           else
             next
@@ -321,11 +321,11 @@ module KSU::Intem
     end
     loops
   end
-  def self._a8e56783(arr2, b)
+  def self.same_pt?(arr2, b)
     (arr2[0] - b[0]).abs < 0.05 && (arr2[1] - b[1]).abs < 0.05
   end
   def self._fe5ae039(pts)
-    pts.length > 3 && _a8e56783(pts.first, pts.last)
+    pts.length > 3 && same_pt?(pts.first, pts.last)
   end
   def self.drills(grp, part_tf)
     d2x = grp.get_attribute("ABF", "drills-desc")

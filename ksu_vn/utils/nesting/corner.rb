@@ -69,15 +69,15 @@ module KSU::Corner
     end
     return nil if arr.empty?
     arr = group_items(arr)
-    arr4 = nest_in_holes(arr) || arr
+    nested = nest_in_holes(arr) || arr
     deadline ||= Time.now + 4.0
     if flag3
-      local_polys = to_local_polys(arr4, base_tr, start_x, ly0, px, py, flag2, gap2, flag)
+      local_polys = to_local_polys(nested, base_tr, start_x, ly0, px, py, flag2, gap2, flag)
       arr2 = compact(local_polys, gap2, deadline)
     else
-      arr2 = KSU::Nesting.pack(arr4, width_mm, height_mm, gap2)
-      if arr2.empty? || arr2.size < arr4.size
-        local_polys = to_local_polys(arr4, base_tr, start_x, ly0, px, py, flag2, gap2, flag)
+      arr2 = KSU::Nesting.pack(nested, width_mm, height_mm, gap2)
+      if arr2.empty? || arr2.size < nested.size
+        local_polys = to_local_polys(nested, base_tr, start_x, ly0, px, py, flag2, gap2, flag)
         arr2 = compact(local_polys, gap2, deadline)
       end
     end
@@ -137,15 +137,15 @@ module KSU::Corner
     if num4
       id_str = pack(rotated(arr), height_mm, width_mm, gap2)
       if id_str.empty? || id_str.size < arr.size
-        _e2e8ed58 = nest_in_holes(arr)
-        id_str = _e2e8ed58 ? pack(rotated(_e2e8ed58), height_mm, width_mm, gap2) : []
+        nested = nest_in_holes(arr)
+        id_str = nested ? pack(rotated(nested), height_mm, width_mm, gap2) : []
       end
       arr2 = id_str.map { |half| half.merge(lx: half[:ly], ly: half[:lx], w: half[:h], h: half[:w]) }
     else
       arr2 = pack(arr, width_mm, height_mm, gap2)
       if arr2.empty? || arr2.size < arr.size
-        _e2e8ed58 = nest_in_holes(arr)
-        arr2 = _e2e8ed58 ? pack(_e2e8ed58, width_mm, height_mm, gap2) : []
+        nested = nest_in_holes(arr)
+        arr2 = nested ? pack(nested, width_mm, height_mm, gap2) : []
       end
     end
     return nil if arr2.empty?
@@ -155,16 +155,16 @@ module KSU::Corner
       flag2 = start_x > 0 ? m_left : m_right
       flag2 = g if g && (start_x > 0 ? num2 > 0 : num2 < 0)
       arr4 = arr2.map { |members| members[:ly] + members[:h] }.max
-      _20704b8d = [(height_mm - arr4) * 0.5, 0.0].max
-      num5 = pt3.y.to_f + (g && num > 0 ? g : m_bottom) + [num, 0.0].max + _20704b8d
+      center_off = [(height_mm - arr4) * 0.5, 0.0].max
+      num5 = pt3.y.to_f + (g && num > 0 ? g : m_bottom) + [num, 0.0].max + center_off
     else
       ly0 = num9 < center.y.to_f ? 1 : -1
       num8 = pt.y.to_f + (ly0 > 0 ? [num, 0.0].max : [num, 0.0].min)
       flag = ly0 > 0 ? m_bottom : top
       flag = g if g && (ly0 > 0 ? num > 0 : num < 0)
       arr4 = arr2.map { |members| members[:lx] + members[:w] }.max
-      _20704b8d = [(width_mm - arr4) * 0.5, 0.0].max
-      num12 = pt3.x.to_f + (g && num2 > 0 ? g : m_left) + [num2, 0.0].max + _20704b8d
+      center_off = [(width_mm - arr4) * 0.5, 0.0].max
+      num12 = pt3.x.to_f + (g && num2 > 0 ? g : m_left) + [num2, 0.0].max + center_off
     end
     moves = arr2.map do |members|
       if num4
@@ -252,8 +252,8 @@ module KSU::Corner
       nesting = ents3[nesting] while ents3[nesting]
       (groups[nesting] ||= []) << arr
     end
-    groups.map do |_80a98e30, members|
-      arr3 = h2[_80a98e30]
+    groups.map do |gk, members|
+      arr3 = h2[gk]
       { panel: arr3[:panel], w: arr3[:w], h: arr3[:h], bbox: arr3[:bbox],
         members: members.flat_map { |meta| meta[:members] || [meta[:panel]] },
         hull: members.any? { |meta| meta[:hull] } }
@@ -270,7 +270,7 @@ module KSU::Corner
           (fill && fill[:outer] && fill[:outer].length >= 3) ? fill[:outer] : box_pts(h[:bbox])
         end
       poly = outer.map { |pt| [start_x * (pt.x.to_f - px) - gap_for, ly0 * (pt.y.to_f - py) - gap_y] }
-      poly = _b869e241(poly, gap2 * 0.5)
+      poly = swell_poly(poly, gap2 * 0.5)
       bx2 = start_x > 0 ? h[:bbox].min.x.to_f : h[:bbox].max.x.to_f
       by2 = ly0 > 0 ? h[:bbox].min.y.to_f : h[:bbox].max.y.to_f
       h.merge(poly: poly, lx0: start_x * (bx2 - px) - gap_for, ly0: ly0 * (by2 - py) - gap_y)
@@ -285,26 +285,26 @@ module KSU::Corner
     end
     num * 0.5
   end
-  def _be99d528(poly, arr)
+  def pad_box(poly, grow_d)
     arr4 = poly.map { |arr2| arr2[0] }
     arr3 = poly.map { |arr2| arr2[1] }
-    x1 = arr4.min - arr
-    x2 = arr4.max + arr
-    y1 = arr3.min - arr
-    _60000b16 = arr3.max + arr
-    [[x1, y1], [x2, y1], [x2, _60000b16], [x1, _60000b16]]
+    x1 = arr4.min - grow_d
+    x2 = arr4.max + grow_d
+    y1 = arr3.min - grow_d
+    y2 = arr3.max + grow_d
+    [[x1, y1], [x2, y1], [x2, y2], [x1, y2]]
   end
-  def _b869e241(poly, _e4eb7bdf)
-    return poly if _e4eb7bdf <= 0
+  def swell_poly(poly, grow_d)
+    return poly if grow_d <= 0
     if defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:offset)
       begin
         arr = poly.map { |arr2| [arr2[0] * 25.4, arr2[1] * 25.4] }
         arr = arr.reverse if signed_area(arr) < 0
-        _4bc14589 = _e4eb7bdf * 25.4
+        grow_mm = grow_d * 25.4
         arr3 = begin
-            KSU::Clipper.offset([arr], _4bc14589, 0, 1, 6)
+            KSU::Clipper.offset([arr], grow_mm, 0, 1, 6)
           rescue ArgumentError
-            KSU::Clipper.offset([arr], _4bc14589, 0, 1)
+            KSU::Clipper.offset([arr], grow_mm, 0, 1)
           end
         if arr3 && !arr3.empty?
           best = arr3.max_by { |half| KSU::Nesting.poly_area(half) }
@@ -313,7 +313,7 @@ module KSU::Corner
       rescue StandardError
       end
     end
-    _be99d528(poly, _e4eb7bdf)
+    pad_box(poly, grow_d)
   end
   def box_pts(box)
     num = box.min.x.to_f

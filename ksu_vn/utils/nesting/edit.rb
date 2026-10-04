@@ -181,7 +181,7 @@ module KSU::Edit
     UI.messagebox("Không tìm thấy group nesting!") if notify
     nil
   end
-  def _d7b62fb6
+  def nesting_root
     Sketchup.active_model.entities.grep(Sketchup::Group).find { |ent| ent.get_attribute("ABF", "is-nesting-root") }
   end
   def _88f4d2bb(entity)
