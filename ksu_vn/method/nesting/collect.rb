@@ -1,14 +1,14 @@
 module KSU::Collect
-  def start_collect(cfg, ask, flag = nil)
+  def start_collect(cfg, ask, saved_sel = nil)
     model = Sketchup.active_model
-    flag = nil if flag && flag.empty?
+    saved_sel = nil if saved_sel && saved_sel.empty?
     arr = []
-    gather_boards(flag || model.entities, arr, {})
-    return collect_failed(:empty, cfg, ask, flag) if arr.empty?
+    gather_boards(saved_sel || model.entities, arr, {})
+    return collect_failed(:empty, cfg, ask, saved_sel) if arr.empty?
     @collecting = true
     @collect_cfg = cfg
     @collect_ask = ask
-    @collect_scope = flag
+    @collect_scope = saved_sel
     @boards = arr
     @collected = []
     @seen_ids = {}
@@ -33,9 +33,9 @@ module KSU::Collect
       if id && @seen_ids[id]
         cfg = @collect_cfg
         ask = @collect_ask
-        _4effcb0e = @collect_scope
+        saved_sel = @collect_scope
         clear_collect
-        return collect_failed(:dup_ids, cfg, ask, _4effcb0e)
+        return collect_failed(:dup_ids, cfg, ask, saved_sel)
       end
       @seen_ids[id] = true if id
       grp, @total_area = part_of(g, @collect_cfg, @total_area)
@@ -55,26 +55,26 @@ module KSU::Collect
   def collect_done
     cfg = @collect_cfg
     ask = @collect_ask
-    _4effcb0e = @collect_scope
+    saved_sel = @collect_scope
     parts = @collected
     arr = @failed_names
     clear_collect
     unless arr.empty?
       UI.messagebox("Cảnh báo! Có lỗi xảy ra khi tạo đường cắt của tấm.")
     end
-    return collect_failed(:empty, cfg, ask, _4effcb0e) if parts.empty?
+    return collect_failed(:empty, cfg, ask, saved_sel) if parts.empty?
     start3(cfg, jobs_of(parts, cfg))
   rescue StandardError => ent
     abort_collect
     UI.messagebox("Lỗi nesting: #{ent.message}")
   end
-  def collect_failed(err, cfg, ask, _4effcb0e = nil)
+  def collect_failed(err, cfg, ask, saved_sel = nil)
     clear_progress
     unless ask
       UI.messagebox("Có lỗi xảy ra khi nesting!")
       return
     end
-    run2(cfg, _4effcb0e) if ask_relabel(err)
+    run2(cfg, saved_sel) if ask_relabel(err)
   end
   def clear_collect
     UI.stop_timer(@collect_timer) if @collect_timer
@@ -135,10 +135,10 @@ module KSU::Collect
     tf = KSU::Cutting.tf_of(g)
     b2 = KSU::Cutting.board_faces(g, tf)
     return [nil, _c348cdef] unless b2
-    thickness_mm = _2c9761fb(b2, tf)
+    thickness_mm = thickness_of(b2, tf)
     return [:skip, _c348cdef] if thickness_mm < 1.0 || thickness_mm > 50.0
     face = KSU::Cutting.front_face(g, b2)
-    mat = _6f88583c(g, face)
+    mat = material_of(g, face)
     return [:skip, _c348cdef] if cfg[:materials] && !cfg[:materials]["#{mat}#{thickness_mm}"]
     out = face.normal.transform(tf).axes
     tf_axes = Geom::Transformation.axes(ORIGIN, out[0], out[1], out[2]).inverse
@@ -218,13 +218,13 @@ module KSU::Collect
     ang += 2 * Math::PI if ang < 0
     ang
   end
-  def _6f88583c(g, face)
+  def material_of(g, face)
     mat = g.material ? g.material.name : (face.material ? face.material.name : "")
     mat = mat.strip
     mat = mat[1..-2] if mat.length > 1 && mat[0] == "[" && mat[-1] == "]"
     mat.to_s
   end
-  def _2c9761fb(b2, tf)
+  def thickness_of(b2, tf)
     bb = b2[0].bounds.center.transform(tf)
     bb2 = b2[1].bounds.center.transform(tf)
     vec = b2[0].normal.transform(tf)
@@ -249,10 +249,10 @@ module KSU::Collect
         [mat_order.fetch("#{half[:material]}#{half[:thickness_mm]}", 1 << 20), i]
       end.map { |half, _part| half }
     end
-    _3758e659(rows)
+    fill_sizes(rows)
     rows
   end
-  def _3758e659(rows)
+  def fill_sizes(rows)
     rows.each do |half|
       half[:name] = if half[:material].empty?
                       "#{half[:thickness_mm]}mm"

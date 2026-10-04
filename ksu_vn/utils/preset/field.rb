@@ -394,7 +394,7 @@ module KSU::Field
     _63378db3 = _a1bf6a3a / 2.0 - 2 * KSU::View.ui_scale
     flag = on ? tx + tw - half : tx + half
     _16daa7da = ty + _a1bf6a3a / 2.0
-    _92fb4be7 = KSU::View._8a0d2500(flag, _16daa7da, _63378db3, segments: 24)
+    _92fb4be7 = KSU::View.circle_pts(flag, _16daa7da, _63378db3, segments: 24)
     view.drawing_color = Sketchup::Color.new(*palette[:knob])
     view.draw2d(GL_POLYGON, _92fb4be7)
   end

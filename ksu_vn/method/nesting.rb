@@ -527,10 +527,10 @@ module KSU::Nest
     return true unless err == :dup_ids
     UI.messagebox("Có vấn đề với dữ liệu nhãn. Tự động gắn lại nhãn?", MB_YESNO) == IDYES
   end
-  def run2(cfg, arr = nil)
-    flag = arr && !arr.empty?
+  def run2(cfg, saved_sel = nil)
+    flag = saved_sel && !saved_sel.empty?
     arr2 = []
-    gather_boards(arr, arr2, {}) if flag
+    gather_boards(saved_sel, arr2, {}) if flag
     if flag && arr2.empty?
       UI.messagebox("Có lỗi xảy ra khi nesting!")
       return
@@ -550,7 +550,7 @@ module KSU::Nest
       renumber: renumber[:renumber]
     }
     @_a7e29efc = cfg
-    @_576fddc0 = arr
+    @_576fddc0 = saved_sel
     @jobs = renumber[:jobs]
     @layer2 = renumber[:layer]
     @label_total = @jobs.size
@@ -577,12 +577,12 @@ module KSU::Nest
   end
   def _0c3a8be0
     cfg = @_a7e29efc
-    _4effcb0e = @_576fddc0
+    saved_sel = @_576fddc0
     _37cfb2cb
     KSU.commit
     KSU::View.view.invalidate
     cfg.delete(:materials) if cfg.is_a?(Hash)
-    start_collect(cfg, false, _4effcb0e)
+    start_collect(cfg, false, saved_sel)
   rescue StandardError => ent
     abort_collect
     UI.messagebox("Lỗi nesting: #{ent.message}")

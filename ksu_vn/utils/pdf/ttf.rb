@@ -40,24 +40,24 @@ module KSU::Ttf
     num.times do |i|
       normal = _4bcb6213 + 4 + i * 8
       pid = data[normal, 2].unpack1("n")
-      _507dcc2d = data[normal + 2, 2].unpack1("n")
+      eid = data[normal + 2, 2].unpack1("n")
       kids = data[normal + 4, 4].unpack1("N")
-      score = if pid == 3 && _507dcc2d == 10 then 5
-                 elsif pid == 3 && _507dcc2d == 1 then 4
+      score = if pid == 3 && eid == 10 then 5
+                 elsif pid == 3 && eid == 1 then 4
                  elsif pid == 0 then 3
                  else 0 end
       best = [score, _4bcb6213 + kids] if score > 0 && (best.nil? || score > best[0])
     end
     return {} unless best
-    _a3257134(data, best[1])
+    cmap_table(data, best[1])
   end
-  def _a3257134(data, _4bcb6213)
+  def cmap_table(data, _4bcb6213)
     fmt = data[_4bcb6213, 2].unpack1("n")
-    return _31c28be0(data, _4bcb6213) if fmt == 4
-    return _19412587(data, _4bcb6213) if fmt == 12
+    return cmap_fmt4(data, _4bcb6213) if fmt == 4
+    return cmap_fmt12(data, _4bcb6213) if fmt == 12
     {}
   end
-  def _31c28be0(data, _4bcb6213)
+  def cmap_fmt4(data, _4bcb6213)
     _cd2f261c = data[_4bcb6213 + 6, 2].unpack1("n")
     n_pts = _cd2f261c / 2
     _b44355cf = _4bcb6213 + 14
@@ -84,7 +84,7 @@ module KSU::Ttf
     end
     h
   end
-  def _19412587(data, _4bcb6213)
+  def cmap_fmt12(data, _4bcb6213)
     num = data[_4bcb6213 + 12, 4].unpack1("N")
     h = {}
     num.times do |i|

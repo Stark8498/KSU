@@ -2455,8 +2455,6 @@ ten:
     ksu_vn/utils/label.rb: gx2
   _42782d97:
     ksu_vn/utils/label.rb: lbl
-  _2cb52d46:
-    ksu_vn/utils/label.rb: layer
   _5fb96e91:
     "ksu_vn/utils/label.rb#inner_rect": area
 
@@ -2824,8 +2822,6 @@ ten:
   _9c089a0b: show_back
   _d4a205ac: sheet_grp
 
-  _27161c40:
-    ksu_vn/method/xuatdxf/scan.rb: h
   _884dee16:
     ksu_vn/method/xuatdxf/scan.rb: flags
 
@@ -3184,6 +3180,57 @@ ten:
     ksu_vn/utils/cutting/loop.rb: dy_out
     ksu_vn/method/netcatcuoi/lastcut.rb: sy
     ksu_vn/method/intem/scan.rb: org_y
+
+  # ----- ME 81: utils/pdf/ttf.rb -- bang cmap cua font TrueType -----
+  _a3257134: cmap_table          # chon nhanh doc theo format
+  _31c28be0: cmap_fmt4
+  _19412587: cmap_fmt12
+  _507dcc2d: eid
+
+  # ----- ME 81b: utils/view/widget.rb -- nhan tron / vien thuoc ve 2D -----
+  _8a0d2500: circle_pts
+  _47bc0d27: pill_pts
+  _0561785c: label_metrics
+  _7b770b82: lean_offset         # `label_offset` da thuoc _c78ffdfe
+  _f9fcd123: char_w
+  _cc001c4d: pad_v
+  _6099be2b: ox3
+  _b7399dca: oy3
+  _4a55ace4: shape_pts
+
+  # ----- ME 81c: method/nesting/launch.rb -- hop thoai chon vat lieu -----
+  _93d34efc: sel_snapshot
+  _31540a9a: send_materials
+  _d1ef9374: material_rows
+  _49dd846c: apply_saved_cfg     # setting "cau_hinh_vat_lieu"
+  _e3264765: parse_thickness
+  _1582b880: parse_rows
+  _e534023c: parse_run
+  _f75e3e4f: start_from_dialog
+  _4effcb0e: saved_sel
+  _3758e659: fill_sizes
+  _2c9761fb: thickness_of
+  _6f88583c: material_of
+
+  # ----- ME 81d: method/chongbay/assign.rb -- doc lai rank da gan -----
+  _9d1ea6a7: saved_assign        # attr KSU "chong_bay_da_gan", JSON
+  _0c3fd272: tag_from_layer
+  _481463cd: rank_from_attr
+  _2840517f: split_layer_name
+  _79743880: side_from_prefix
+  _7abed8c0: part_key
+  _81966999: use_color
+
+  _797647b5:
+    ksu_vn/method/nesting/launch.rb: snap
+  _15cb29cb:
+    ksu_vn/method/nesting/launch.rb: face
+  _27161c40:
+    ksu_vn/method/xuatdxf/scan.rb: h
+    ksu_vn/method/chongbay/assign.rb: h
+  _2cb52d46:
+    ksu_vn/utils/label.rb: layer
+    ksu_vn/method/chongbay/assign.rb: layer
 
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.

@@ -1,16 +1,16 @@
 module KSU::Assign
   private
   def load_ranks
-    arr3 = _9d1ea6a7
+    arr3 = saved_assign
     @parts.each do |arr|
-      tag = _0c3fd272(arr[:cutting])
+      tag = tag_from_layer(arr[:cutting])
       if tag
         arr[:rank] = tag[:rank]
         arr[:side] = tag[:side]
         arr[:theo_vung] = tag[:theo_vung]
         arr[:prefix] = tag[:prefix]
         arr[:base_color] = tag[:base_color]
-      elsif (slot = arr3[_7abed8c0(arr[:part])]).is_a?(Hash)
+      elsif (slot = arr3[part_key(arr[:part])]).is_a?(Hash)
         arr[:rank] = slot["rank"]&.to_i
         str = slot["side"].to_s
         arr[:side] = str.empty? ? nil : str.to_sym
@@ -18,29 +18,29 @@ module KSU::Assign
         arr[:prefix] = slot["prefix"] || layer_prefix(arr[:side], arr[:theo_vung])
         arr[:base_color] = slot["color"] ? KSU::View.parse_color(slot["color"]) : nil
       else
-        arr[:rank] = _481463cd(arr[:cutting])
+        arr[:rank] = rank_from_attr(arr[:cutting])
         arr[:prefix] = arr[:rank] ? "Lớp" : nil
       end
       arr[:fill_color] = fill_color_of(arr)
     end
   end
-  def _481463cd(cutting)
+  def rank_from_attr(cutting)
     return nil unless cutting && cutting.respond_to?(:layer) && cutting.layer
     meta = cutting.layer.name.to_s.match(/^Lớp\s+(\d+)$/)
     meta ? meta[1].to_i : nil
   end
-  def _0c3fd272(cutting)
+  def tag_from_layer(cutting)
     return nil unless cutting && cutting.respond_to?(:layer)
-    _2cb52d46 = cutting.layer
-    return nil unless _2cb52d46
-    layers, prefix = _2840517f(_2cb52d46)
+    layer = cutting.layer
+    return nil unless layer
+    layers, prefix = split_layer_name(layer)
     return nil unless layers
-    side, theo_vung, _81966999 = _79743880(prefix)
+    side, theo_vung, use_color = side_from_prefix(prefix)
     return nil if side.nil? && theo_vung.nil?
-    color = _81966999 && _2cb52d46.respond_to?(:color) ? _2cb52d46.color : nil
+    color = use_color && layer.respond_to?(:color) ? layer.color : nil
     { rank: layers, side: side, theo_vung: theo_vung, prefix: prefix.to_s.strip, base_color: color }
   end
-  def _2840517f(grp)
+  def split_layer_name(grp)
     if grp.respond_to?(:get_attribute)
       num = grp.get_attribute("ABF", "cutting-layer-postfix")
       unless num.nil?
@@ -50,7 +50,7 @@ module KSU::Assign
     meta = grp.name.to_s.match(/\A(.*?)\s*(\d+)\z/)
     meta ? [meta[2].to_i, meta[1]] : [nil, nil]
   end
-  def _79743880(prefix)
+  def side_from_prefix(prefix)
     str = prefix.to_s.strip
     return [nil, nil, false] if str.empty?
     return [:tren, true, true] if str == @ten_tren
@@ -61,13 +61,13 @@ module KSU::Assign
     return [nil, true, false] if str == "Lớp"
     [nil, nil, false]
   end
-  def _7abed8c0(grp)
+  def part_key(grp)
     (grp.respond_to?(:persistent_id) ? grp.persistent_id : grp.object_id).to_s
   end
-  def _9d1ea6a7
+  def saved_assign
     id_str = Sketchup.active_model.get_attribute("KSU", "chong_bay_da_gan", "{}").to_s
-    _27161c40 = JSON.parse(id_str)
-    _27161c40.is_a?(Hash) ? _27161c40 : {}
+    h = JSON.parse(id_str)
+    h.is_a?(Hash) ? h : {}
   rescue StandardError
     {}
   end
@@ -75,7 +75,7 @@ module KSU::Assign
     h = {}
     @parts.each do |arr|
       next unless arr[:rank]
-      h[_7abed8c0(arr[:part])] = {
+      h[part_key(arr[:part])] = {
         "rank" => arr[:rank],
         "side" => arr[:side]&.to_s,
         "theo_vung" => arr[:theo_vung],

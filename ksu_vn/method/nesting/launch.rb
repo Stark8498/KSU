@@ -2,8 +2,8 @@ module KSU::Launch
   def handle_action(dlg, action, id)
     case action
     when "load_data", "reload_data"
-      @_93d34efc = KSU.selection
-      _31540a9a(dlg, _d1ef9374(@_93d34efc))
+      @sel_snapshot = KSU.selection
+      send_materials(dlg, material_rows(@sel_snapshot))
     when "save_setting"
       k, v = id.to_s.split("@", 2)
       return if k.to_s.empty?
@@ -20,17 +20,17 @@ module KSU::Launch
     when "save_rows"
       KSU::Settings.set("cau_hinh_vat_lieu", id.to_s, "nesting")
     when "select_parts"
-      _1582b880(id)
+      parse_rows(id)
     when "search_parts"
-      _e3264765(id)
+      parse_thickness(id)
     when "nest_run"
-      rows = _e534023c(id)
-      _797647b5 = @_93d34efc
+      rows = parse_run(id)
+      snap = @sel_snapshot
       dlg.close if dlg
-      UI.start_timer(0, false) { _f75e3e4f(rows, _797647b5) }
+      UI.start_timer(0, false) { start_from_dialog(rows, snap) }
     end
   end
-  def _31540a9a(dlg, materials)
+  def send_materials(dlg, materials)
     settings = {
       "chieu_rong_van" => KSU::Settings.get("chieu_rong_van", 1220.0, "nesting"),
       "chieu_dai_van" => KSU::Settings.get("chieu_dai_van", 2440.0, "nesting"),
@@ -46,8 +46,8 @@ module KSU::Launch
     data = { settings: settings, materials: materials }
     KSU::Settings.send_to_dialog(dlg, "nesting", "nestingLoad", data.to_json)
   end
-  def _d1ef9374(arr)
-    src = arr && !arr.empty? ? arr : Sketchup.active_model.entities
+  def material_rows(saved_sel)
+    src = saved_sel && !saved_sel.empty? ? saved_sel : Sketchup.active_model.entities
     arr2 = []
     gather_boards(src, arr2, {})
     h = {}
@@ -56,10 +56,10 @@ module KSU::Launch
       tf = KSU::Cutting.tf_of(g)
       b2 = KSU::Cutting.board_faces(g, tf)
       next unless b2
-      thickness_mm = _2c9761fb(b2, tf)
+      thickness_mm = thickness_of(b2, tf)
       next if thickness_mm < 1.0 || thickness_mm > 50.0
-      _15cb29cb = KSU::Cutting.front_face(g, b2)
-      mat = _6f88583c(g, _15cb29cb)
+      face = KSU::Cutting.front_face(g, b2)
+      mat = material_of(g, face)
       key = "#{mat}#{thickness_mm}"
       unless h[key]
         h[key] = { key: key, material: mat, thickness_mm: thickness_mm, eids: [] }
@@ -69,11 +69,11 @@ module KSU::Launch
     end
     rows = materials.map { |k| h[k] }
     rows.sort_by! { |half| [half[:thickness_mm].to_f, half[:material].to_s.downcase] }
-    _3758e659(rows)
-    _49dd846c(rows)
+    fill_sizes(rows)
+    apply_saved_cfg(rows)
     rows
   end
-  def _49dd846c(rows)
+  def apply_saved_cfg(rows)
     h = begin
       JSON.parse(KSU::Settings.get("cau_hinh_vat_lieu", "", "nesting").to_s)
     rescue StandardError
@@ -93,7 +93,7 @@ module KSU::Launch
     ordered.each { |half| half.delete(:ord) }
     rows.replace(ordered)
   end
-  def _e3264765(str2)
+  def parse_thickness(str2)
     arr2 = str2.to_s.split(/[,\n]/).map { |thick| thick.strip }.reject(&:empty?)
     return if arr2.empty?
     h = {}
@@ -123,7 +123,7 @@ module KSU::Launch
   rescue StandardError
     nil
   end
-  def _1582b880(resp)
+  def parse_rows(resp)
     arr = begin
       JSON.parse(resp.to_s)
     rescue StandardError
@@ -138,7 +138,7 @@ module KSU::Launch
   rescue StandardError
     nil
   end
-  def _e534023c(resp)
+  def parse_run(resp)
     arr = begin
       JSON.parse(resp.to_s)
     rescue StandardError
@@ -147,7 +147,7 @@ module KSU::Launch
     return [] unless arr.is_a?(Array)
     arr.select { |half| half.is_a?(Hash) && !half["key"].to_s.empty? }
   end
-  def _f75e3e4f(rows, _4effcb0e)
+  def start_from_dialog(rows, saved_sel)
     return if @arr47 || @progress || @labelling || @collecting
     KSU.select_only([])
     cfg = job_settings
@@ -175,7 +175,7 @@ module KSU::Launch
     end
     close_contexts
     erase_nesting
-    start_collect(cfg, true, _4effcb0e)
+    start_collect(cfg, true, saved_sel)
   rescue StandardError => ent
     abort_collect
     UI.messagebox("Lỗi nesting: #{ent.message}")

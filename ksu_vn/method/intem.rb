@@ -13,7 +13,7 @@ module KSU::Intem
       return if k.to_s.empty?
       KSU::Settings.set(k, KSU::Settings.parse_value(v), "in_tem")
     when "select_parts"
-      KSU::Nest._1582b880(id)
+      KSU::Nest.parse_rows(id)
     when "export_request"
       export_request(dlg, id)
     when "pdf_begin"

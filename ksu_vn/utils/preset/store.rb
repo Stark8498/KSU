@@ -330,12 +330,12 @@ module KSU::Store
     _4469b015 = size * 0.7
     _ed487403 = box2[:x] + box2[:width] - size * 1.0 - _4469b015
     _589d555a = box2[:y] + box2[:height] / 2.0
-    _d4c00ad0 = KSU::View._8a0d2500(_ed487403, _589d555a, _4469b015, segments: 24)
+    _d4c00ad0 = KSU::View.circle_pts(_ed487403, _589d555a, _4469b015, segments: 24)
     if is_sel
       view.drawing_color = Sketchup::Color.new(*(hovered ? palette[:sw_on_hover] : palette[:sw_on]))
       view.draw2d(GL_POLYGON, _d4c00ad0)
       _06ac7af7 = _4469b015 * 0.4
-      _f7331275 = KSU::View._8a0d2500(_ed487403, _589d555a, _06ac7af7, segments: 16)
+      _f7331275 = KSU::View.circle_pts(_ed487403, _589d555a, _06ac7af7, segments: 16)
       view.drawing_color = Sketchup::Color.new(*palette[:knob])
       view.draw2d(GL_POLYGON, _f7331275)
     else

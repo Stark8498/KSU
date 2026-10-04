@@ -133,62 +133,62 @@ module KSU::Widget
     arr3.map { |color| color[:center] }
   end
   def fill_circle(view, px, py, half, color, segments: 32)
-    arr = _8a0d2500(px, py, half, segments: segments)
+    arr = circle_pts(px, py, half, segments: segments)
     view.drawing_color = color
     view.draw2d(GL_TRIANGLE_FAN, [Geom::Point3d.new(px, py, 0)] + arr + [arr[0]])
   end
   def draw_label(text, position, color: nil, ref_p1: nil, ref_p2: nil, shape: :pill, size: nil, pad_x: nil, line_width: 1)
-    meta = _0561785c(text, position, ref_p1: ref_p1, ref_p2: ref_p2, size: size, pad_x: pad_x)
+    meta = label_metrics(text, position, ref_p1: ref_p1, ref_p2: ref_p2, size: size, pad_x: pad_x)
     return unless meta
-    _4a55ace4 = if shape == :circle
-               _8a0d2500(meta[:cx], meta[:cy], [meta[:half_width], meta[:radius]].max)
+    shape_pts = if shape == :circle
+               circle_pts(meta[:cx], meta[:cy], [meta[:half_width], meta[:radius]].max)
              else
-               _47bc0d27(meta[:cx], meta[:cy], meta[:half_width], meta[:radius])
+               pill_pts(meta[:cx], meta[:cy], meta[:half_width], meta[:radius])
              end
     view.line_stipple = ""
     view.drawing_color = "White"
-    view.draw2d(GL_POLYGON, _4a55ace4)
+    view.draw2d(GL_POLYGON, shape_pts)
     view.drawing_color = "Black"
     view.line_width = line_width
-    view.draw2d(GL_LINE_LOOP, _4a55ace4)
+    view.draw2d(GL_LINE_LOOP, shape_pts)
     pt = Geom::Point3d.new(meta[:cx], meta[:cy] + meta[:pad_y] / 4, 0)
     opts2 = { color: color || text_color, size: meta[:ts], align: TextAlignCenter, vertical_align: TextVerticalAlignCenter }
     view.draw_text(pt, text.to_s, opts2)
   end
-  def _0561785c(text, position, ref_p1: nil, ref_p2: nil, size: nil, pad_x: nil)
+  def label_metrics(text, position, ref_p1: nil, ref_p2: nil, size: nil, pad_x: nil)
     return nil unless text && position
     return nil unless in_front?(position)
     num = size ? (size * ui_scale).round : text_size
     pt = view.screen_coords(position)
-    _f9fcd123 = num * 0.6
-    half_width = text.to_s.length * _f9fcd123
-    _cc001c4d = pad_x || num / 3
+    char_w = num * 0.6
+    half_width = text.to_s.length * char_w
+    pad_v = pad_x || num / 3
     pad_y = num / 2
-    _6099be2b, _b7399dca = _7b770b82(ref_p1, ref_p2, half_width)
+    ox3, oy3 = lean_offset(ref_p1, ref_p2, half_width)
     {
       ts: num,
-      cx: pt.x + _6099be2b,
-      cy: pt.y + _b7399dca - pad_y / 4,
-      half_width: half_width / 2 + _cc001c4d,
+      cx: pt.x + ox3,
+      cy: pt.y + oy3 - pad_y / 4,
+      half_width: half_width / 2 + pad_v,
       radius: (num / 2) + pad_y,
       pad_y: pad_y
     }
   end
   def _6ced5498(text, position, x, y, size: nil, pad_x: nil)
-    meta = _0561785c(text, position, size: size, pad_x: pad_x)
+    meta = label_metrics(text, position, size: size, pad_x: pad_x)
     return false unless meta
     half = [meta[:half_width], meta[:radius]].max
     dx = x - meta[:cx]
     dy = y - meta[:cy]
     dx * dx + dy * dy <= half * half
   end
-  def _8a0d2500(px, py, half, segments: 16)
+  def circle_pts(px, py, half, segments: 16)
     segments.times.map do |i|
       angle = 2 * Math::PI * i / segments
       Geom::Point3d.new(px + half * Math.cos(angle), py + half * Math.sin(angle), 0)
     end
   end
-  def _7b770b82(ref_p1, ref_p2, half_width)
+  def lean_offset(ref_p1, ref_p2, half_width)
     return [0, 0] unless ref_p1 && ref_p2
     pt2 = view.screen_coords(ref_p1)
     pt = view.screen_coords(ref_p2)
@@ -199,7 +199,7 @@ module KSU::Widget
     _d04775aa = half_width * 1.5
     [(-dy / len) * _d04775aa, (dx / len) * _d04775aa]
   end
-  def _47bc0d27(px, py, _5bfc19d3, radius, segments: 8)
+  def pill_pts(px, py, _5bfc19d3, radius, segments: 8)
     pts = []
     (0..segments).each do |i|
       angle = Math::PI / 2 + (Math::PI * i / segments)
