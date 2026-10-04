@@ -74,14 +74,14 @@ module KSU::Launch
     rows
   end
   def _49dd846c(rows)
-    _884dee16 = begin
+    h = begin
       JSON.parse(KSU::Settings.get("cau_hinh_vat_lieu", "", "nesting").to_s)
     rescue StandardError
       {}
     end
-    _884dee16 = {} unless _884dee16.is_a?(Hash)
+    h = {} unless h.is_a?(Hash)
     rows.each do |half|
-      color = _884dee16[half[:key]]
+      color = h[half[:key]]
       half[:on] = !(color.is_a?(Array) && color[0] == false)
       half[:ord] = color.is_a?(Array) && color[1].is_a?(Numeric) ? color[1] : nil
       half[:rot] = color.is_a?(Array) && color[2] == true

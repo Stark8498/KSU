@@ -28,8 +28,8 @@ module KSU::Xuatdxf
       ent2 = gr.get_attribute("ABF", "sheet-dimension", [1220, 2440])
       num2 = ent2[0].to_f.mm
       num = ent2[1].to_f.mm
-      ents, parts = _daa2f929(gr)
-      ents.concat(_cdd54f61(rec, mat, num2, num))
+      ents, parts = scan_sheet(gr)
+      ents.concat(sheet_id_text(rec, mat, num2, num))
       pt = gr.transformation.origin
       sheets << {
         id: rec[:id], key: key, mat: h[key],
@@ -38,32 +38,32 @@ module KSU::Xuatdxf
         bottom: rec[:bottom], ents: ents, parts: parts
       }
     end
-    _884dee16 = _4d1bd02d
+    h3 = layer_flags
     materials = h.keys.map do |k|
       { key: k, name: h[k], th: th[k].to_f,
-        on: _884dee16.key?(k) ? !!_884dee16[k] : true }
+        on: h3.key?(k) ? !!h3[k] : true }
     end
     { materials: materials, sheets: sheets, true_color: true_color }
   end
-  def _4d1bd02d
+  def layer_flags
     id_str = KSU::Settings.get("vat_lieu_chon", "{}", "xuat_dxf").to_s
-    _27161c40 = JSON.parse(id_str)
-    _27161c40.is_a?(Hash) ? _27161c40 : {}
+    h = JSON.parse(id_str)
+    h.is_a?(Hash) ? h : {}
   rescue StandardError
     {}
   end
-  def _89a2e173(collect_in_rect)
+  def export_list(collect_in_rect)
     h = {}
     collect_in_rect[:sheets].each { |s| h[s[:key]] = true if s[:bottom] }
-    _9c089a0b = !!KSU::Settings.get("hien_mat_sau", false, "xuat_dxf")
+    show_back = !!KSU::Settings.get("hien_mat_sau", false, "xuat_dxf")
     sheets = []
     collect_in_rect[:sheets].each do |s|
-      next if s[:bottom] && !_9c089a0b
+      next if s[:bottom] && !show_back
       ents = []
       s[:ents].each do |ent|
         next if ent[:layer] == "ABF_sheetId" || ent[:layer] == "ABF_sheetMaterial"
         ents << {
-          c: KSU::Xuatdxf._302ced66(ent[:layer]),
+          c: KSU::Xuatdxf.dxf_color(ent[:layer]),
           closed: ent[:closed],
           bd: ent[:border] ? 1 : 0,
           p: ent[:pid],
@@ -75,15 +75,15 @@ module KSU::Xuatdxf
       end
       sheets << { id: s[:id], key: s[:key], mat: s[:mat], w: s[:w], h: s[:h],
                      x: s[:x], y: s[:y],
-                     name: KSU::Xuatdxf._c57d63ae(s, h),
+                     name: KSU::Xuatdxf.dxf_name(s, h),
                      bottom: s[:bottom], ents: ents, parts: s[:parts] }
     end
     { materials: collect_in_rect[:materials], sheets: sheets }
   end
-  def _daa2f929(_d4a205ac)
+  def scan_sheet(sheet_grp)
     ents = []
     parts = []
-    obj = KSU.entities_in(_d4a205ac)
+    obj = KSU.entities_in(sheet_grp)
     return [ents, parts] unless obj
     obj.each do |entity|
       next unless KSU.container?(entity)
@@ -92,18 +92,18 @@ module KSU::Xuatdxf
         name = KSU::Label.label_text(entity).to_s
         name = pid.to_s if name.empty?
         pt = entity.bounds.center
-        layers, prefix = _530b02a3(entity)
+        layers, prefix = layers_of(entity)
         parts << { id: pid, name: name, cb: layers, cp: prefix,
                       c: [(pt.x.to_f * 25.4).round(1), (pt.y.to_f * 25.4).round(1)] }
-        _7c10a028(entity, entity.transformation, ents, pid)
+        walk_group(entity, entity.transformation, ents, pid)
       else
-        _7c10a028(entity, entity.transformation, ents, nil)
+        walk_group(entity, entity.transformation, ents, nil)
       end
     end
     parts.sort_by! { |arr2| arr2[:id].to_i }
     [ents, parts]
   end
-  def _530b02a3(panel)
+  def layers_of(panel)
     cutting = KSU::Cutting.cutting_group(panel)
     return [nil, nil] unless cutting
     grp = cutting.layer
@@ -123,62 +123,62 @@ module KSU::Xuatdxf
     return name unless name.empty? || name == "Layer0"
     normal.to_s.empty? ? name : normal
   end
-  def _7c10a028(gr, _7bafc8a5, ents, pid, _8d6669ce = nil)
+  def walk_group(gr, tf3, ents, pid, parent_layer = nil)
     return if gr.get_attribute("ABF", "is-label")
     return if gr.get_attribute("ABF", "is-edge-banding-notation")
     str = gr.name.to_s
     def_name = (gr.respond_to?(:definition) && gr.definition) ? gr.definition.name.to_s : ""
     return if str.include?("_ABF_Label") || def_name.include?("_ABF_Label")
-    _27846c89 = KSU::Sheet.sheet_border?(gr)
-    _84dcc166 = gr.get_attribute("ABF", "is-mark-square")
-    _bc8516a9 = gr.get_attribute("ABF", "is-cutting-lines")
-    _20c319d6 = gr.get_attribute("ABF", "is-intersect")
+    is_border = KSU::Sheet.sheet_border?(gr)
+    is_mark = gr.get_attribute("ABF", "is-mark-square")
+    is_cut = gr.get_attribute("ABF", "is-cutting-lines")
+    is_sect = gr.get_attribute("ABF", "is-intersect")
     obj = KSU.entities_in(gr)
     return unless obj
-    normal = dxf_layer(gr, _8d6669ce)
-    if _bc8516a9
+    normal = dxf_layer(gr, parent_layer)
+    if is_cut
       seen = {}
       arr2 = []
       obj.grep(Sketchup::Edge).each do |ent|
         if ent.curve
           next if seen[ent.curve.entityID]
           seen[ent.curve.entityID] = true
-          ents << { layer: dxf_layer(ent, normal), pts: xy_of(ent.curve.vertices, _7bafc8a5),
+          ents << { layer: dxf_layer(ent, normal), pts: xy_of(ent.curve.vertices, tf3),
                        closed: true, via_module: true, bulge: true, pid: pid, sect: false }
         else
           arr2 << ent
         end
       end
       tag = arr2.first ? dxf_layer(arr2.first, normal) : "0"
-      _c73c2639(arr2).each do |_c9fa72f2|
-        ents << { layer: tag, pts: xy_of(_c9fa72f2, _7bafc8a5),
+      merge_loops(arr2).each do |_c9fa72f2|
+        ents << { layer: tag, pts: xy_of(_c9fa72f2, tf3),
                      closed: true, via_module: true, bulge: true, pid: pid, sect: false }
       end
-    elsif _27846c89 || _84dcc166
+    elsif is_border || is_mark
       edge = obj.grep(Sketchup::Edge).first
       if edge && edge.curve
-        ents << { layer: dxf_layer(edge, normal), pts: xy_of(edge.curve.vertices, _7bafc8a5),
-                     closed: _27846c89, via_module: false, bulge: false, pid: pid, sect: false,
-                     border: _27846c89 }
+        ents << { layer: dxf_layer(edge, normal), pts: xy_of(edge.curve.vertices, tf3),
+                     closed: is_border, via_module: false, bulge: false, pid: pid, sect: false,
+                     border: is_border }
       end
-    elsif _20c319d6
+    elsif is_sect
       h2 = {}
       obj.grep(Sketchup::Face).each do |f|
-        ents << { layer: dxf_layer(f, normal), pts: xy_of(f.outer_loop.vertices, _7bafc8a5),
+        ents << { layer: dxf_layer(f, normal), pts: xy_of(f.outer_loop.vertices, tf3),
                      closed: true, via_module: true, bulge: true, pid: pid, sect: true }
         f.outer_loop.edges.each { |ent| h2[ent.entityID] = true }
       end
       obj.grep(Sketchup::Edge).each do |ent|
         next if ent.curve
         next if h2[ent.entityID]
-        ents << { layer: dxf_layer(ent, normal), pts: xy_of([ent.start, ent.end], _7bafc8a5),
+        ents << { layer: dxf_layer(ent, normal), pts: xy_of([ent.start, ent.end], tf3),
                      closed: false, via_module: false, bulge: false, pid: pid, sect: true }
       end
     else
       h2 = {}
       obj.grep(Sketchup::Face).each do |f|
         f.loops.each do |face|
-          ents << { layer: dxf_layer(face.edges[0], normal), pts: xy_of(face.vertices, _7bafc8a5),
+          ents << { layer: dxf_layer(face.edges[0], normal), pts: xy_of(face.vertices, tf3),
                        closed: true, via_module: true, bulge: true, pid: pid, sect: true }
           face.edges.each { |ent| h2[ent.entityID] = true }
         end
@@ -191,26 +191,26 @@ module KSU::Xuatdxf
           seen[ent.curve.entityID] = true
           arr3 = ent.curve.vertices
           closed = arr3.first.position == arr3.last.position
-          ents << { layer: dxf_layer(ent.curve.edges[0], normal), pts: xy_of(arr3, _7bafc8a5),
+          ents << { layer: dxf_layer(ent.curve.edges[0], normal), pts: xy_of(arr3, tf3),
                        closed: closed, via_module: true, bulge: true, pid: pid, sect: true }
         else
-          ents << { layer: dxf_layer(ent, normal), pts: xy_of([ent.start, ent.end], _7bafc8a5),
+          ents << { layer: dxf_layer(ent, normal), pts: xy_of([ent.start, ent.end], tf3),
                        closed: false, via_module: false, bulge: false, pid: pid, sect: true }
         end
       end
     end
     obj.each do |entity|
       next unless KSU.container?(entity)
-      _7c10a028(entity, _7bafc8a5 * entity.transformation, ents, pid, normal)
+      walk_group(entity, tf3 * entity.transformation, ents, pid, normal)
     end
   end
-  def xy_of(arr, _7bafc8a5)
+  def xy_of(arr, tf3)
     arr.map do |v|
-      pt = v.position.transform(_7bafc8a5)
+      pt = v.position.transform(tf3)
       [pt.x.to_f, pt.y.to_f]
     end
   end
-  def _cdd54f61(rec, mat, _8ddd8c6f, _68165b06)
+  def sheet_id_text(rec, mat, _8ddd8c6f, _68165b06)
     return [] unless KSU::Font.import
     out = []
     num = 18.0

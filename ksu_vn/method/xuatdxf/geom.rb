@@ -35,7 +35,7 @@ module KSU::Xuatdxf
     num = 2 * Math::PI - num if vec2.cross(b).dot(Z_AXIS) < 0
     (num - (2 * Math::PI)).abs < EPS_ARC ? 0.0 : num
   end
-  def _a54bea0f(box)
+  def circle?(box)
     return nil if box.size < 12
     _67416b90 = box[0].distance(box[1])
     (1...box.size - 1).each do |i|
@@ -115,7 +115,7 @@ module KSU::Xuatdxf
     bulge *= (vec6 >= 0 ? 1 : -1)
     { start_i: start_i, end_i: end_i, bulge: bulge }
   end
-  def _074e3371(box, deadline = nil)
+  def simplify_bulge(box, deadline = nil)
     if box[0] == box[-1]
       return box if box.size < 12
     elsif box.size < 5
@@ -146,7 +146,7 @@ module KSU::Xuatdxf
     end
     box
   end
-  def _c73c2639(snap_edges)
+  def merge_loops(snap_edges)
     arr = []
     seen = {}
     snap_edges.each do |ent|
@@ -214,7 +214,7 @@ module KSU::Xuatdxf
     rgb = model && model.color ? [model.color.red, model.color.green, model.color.blue] : [0, 0, 0]
     [_2b17a799(str), 1, rgb]
   end
-  def _302ced66(_e64bdf77)
+  def dxf_color(_e64bdf77)
     half, g, b = layer_spec(_e64bdf77)[2]
     format("#%02x%02x%02x", half, g, b)
   end

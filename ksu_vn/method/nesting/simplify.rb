@@ -4,9 +4,9 @@ module KSU::Simplify
     n = box.length
     return box if n < 4
     min_x = box.map { |arr3| arr3[0] }.min
-    arr8 = box.map { |arr3| arr3[0] }.max
+    hi_x = box.map { |arr3| arr3[0] }.max
     min_y = box.map { |arr3| arr3[1] }.min
-    arr9 = box.map { |arr3| arr3[1] }.max
+    hi_y = box.map { |arr3| arr3[1] }.max
     num2 = 0.0
     n.times do |i|
       arr6 = box[i]
@@ -80,8 +80,8 @@ module KSU::Simplify
       end
     end
     return box if arr.length < 3
-    _72faa8fa = [[min_x - 0.0001, min_y - 0.0001], [arr8 + 0.0001, min_y - 0.0001],
-               [arr8 + 0.0001, arr9 + 0.0001], [min_x - 0.0001, arr9 + 0.0001]]
+    _72faa8fa = [[min_x - 0.0001, min_y - 0.0001], [hi_x + 0.0001, min_y - 0.0001],
+               [hi_x + 0.0001, hi_y + 0.0001], [min_x - 0.0001, hi_y + 0.0001]]
     arr7 = _578e7a65(arr, _72faa8fa)
     arr7.length >= 3 ? arr7 : arr
   end

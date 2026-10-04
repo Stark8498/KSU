@@ -90,17 +90,17 @@ module KSU::Draw
   end
   def draw_sheet(root, sheet_type, arr3, sheet_ix, ox, oy, cfg)
     name = "#{sheet_type[:name]}-sheet-#{sheet_ix}"
-    grp = root.entities.add_group
-    grp.name = "__" + name
-    grp.set_attribute("ABF", "sheet-id", sheet_ix)
-    grp.set_attribute("ABF", "sheet-type", sheet_type[:name])
-    grp.set_attribute("KSU", "sheet-material", sheet_type[:material].to_s)
-    grp.set_attribute("ABF", "sheet-thickness", sheet_type[:thickness_mm])
-    grp.set_attribute("ABF", "sheet-dimension", [cfg[:sheet_w], cfg[:sheet_h]])
-    add_border(grp)
-    grp.transformation = grp.transformation * Geom::Transformation.translation([ox, oy, 0])
-    KSU::Sheet.add_sheet_label(root.entities, grp, sheet_ix, @w, sheet_label(sheet_ix))
-    @drawn_sheets << grp
+    sheet_grp = root.entities.add_group
+    sheet_grp.name = "__" + name
+    sheet_grp.set_attribute("ABF", "sheet-id", sheet_ix)
+    sheet_grp.set_attribute("ABF", "sheet-type", sheet_type[:name])
+    sheet_grp.set_attribute("KSU", "sheet-material", sheet_type[:material].to_s)
+    sheet_grp.set_attribute("ABF", "sheet-thickness", sheet_type[:thickness_mm])
+    sheet_grp.set_attribute("ABF", "sheet-dimension", [cfg[:sheet_w], cfg[:sheet_h]])
+    add_border(sheet_grp)
+    sheet_grp.transformation = sheet_grp.transformation * Geom::Transformation.translation([ox, oy, 0])
+    KSU::Sheet.add_sheet_label(root.entities, sheet_grp, sheet_ix, @w, sheet_label(sheet_ix))
+    @drawn_sheets << sheet_grp
     arr2 = []
     h = {}
     flag = arr3.any? { |arr4| arr4[0][:two_sided] }
@@ -109,17 +109,17 @@ module KSU::Draw
     arr3.each do |fld|
       x = fld[1] / 25.4 + flag2
       y = fld[2] / 25.4 + flag3
-      gr, board_index = draw_panel(grp, fld[0], x, y, fld[3], cfg)
+      gr, board_index = draw_panel(sheet_grp, fld[0], x, y, fld[3], cfg)
       arr2 << board_index if board_index
       next unless cfg[:nhom_cap] && gr && fld[4].to_i >= 0
       (h[fld[4].to_i] ||= []) << gr
     end
     group_pairs(h)
-    return [grp, false] if arr2.empty?
+    return [sheet_grp, false] if arr2.empty?
     bottom = draw_bottom_sheet(root, sheet_type, arr2, name, sheet_ix, ox, oy, cfg)
     @drawn_sheets << bottom
     KSU::Sheet.add_sheet_label(root.entities, bottom, sheet_ix, @w, sheet_label(sheet_ix))
-    [grp, true]
+    [sheet_grp, true]
   end
   def group_pairs(arr)
     return if arr.nil? || arr.empty?
@@ -131,9 +131,9 @@ module KSU::Draw
       arr2.each { |g| g.set_attribute("KSU", "group-id", gid) }
     end
   end
-  def draw_panel(grp3, grp, x, y, _33aa68d7, cfg)
+  def draw_panel(sheet_grp, grp, x, y, _33aa68d7, cfg)
     part_tf = grp[:part_tf]
-    gr = grp3.entities.add_group
+    gr = sheet_grp.entities.add_group
     KSU::Cutting.copy_attrs(gr, grp[:group])
     gr.delete_attribute("KSU", "group-id")
     cutting_gr = gr.entities.add_group

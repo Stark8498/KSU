@@ -22,7 +22,7 @@ module KSU::Xuatdxf
     end
   end
   def self.load_data(dlg, collect_in_rect)
-    arr = _89a2e173(collect_in_rect)
+    arr = export_list(collect_in_rect)
     arr[:settings] = {
       "ty_le_zoom" => KSU::Settings.get("ty_le_zoom", 220, "xuat_dxf").to_i,
       "goc_xoay" => KSU::Settings.get("goc_xoay", 0, "xuat_dxf").to_i,
@@ -88,7 +88,7 @@ module KSU::Xuatdxf
       nil
     end
     unless _9535dc0b.is_a?(Array) && !_9535dc0b.empty?
-      on = _4d1bd02d
+      on = layer_flags
       return sheets.select { |s| on.key?(s[:key]) ? on[s[:key]] : true }
     end
     h3 = {}
@@ -112,7 +112,7 @@ module KSU::Xuatdxf
   def self._091b9335(s)
     _2b17a799(s[:key]).gsub(/_+/, "_")
   end
-  def self._c57d63ae(s, arr)
+  def self.dxf_name(s, arr)
     normal = _091b9335(s) + "_" + s[:id].to_s.rjust(3, "0")
     normal += s[:bottom] ? "_01" : "_02" if arr[s[:key]]
     normal + ".dxf"
@@ -137,11 +137,11 @@ module KSU::Xuatdxf
         FileUtils.mkdir_p(str2)
       end
       node.each do |s|
-        _f60dec30(s) if str4
+        set_entries(s) if str4
         layer_name = KSU::Xuatdxf::Dxf.new(collect_in_rect[:true_color])
         _de24fd0f(layer_name, s[:ents], str4)
         inst2 = s[:bottom] ? str2 : str3
-        ok = false unless layer_name.write_file(File.join(inst2, _c57d63ae(s, h)))
+        ok = false unless layer_name.write_file(File.join(inst2, dxf_name(s, h)))
       end
     end
     ok
@@ -151,13 +151,13 @@ module KSU::Xuatdxf
       pts = entity[:pts].map { |arr2| KSU::Xuatdxf::PtEx.new(arr2[0], arr2[1], 0) }
       if entity[:via_module]
         if entity[:closed]
-          color = _a54bea0f(pts)
+          color = circle?(pts)
           if color
             layer_name.write_circle(color[:center], color[:radius], entity[:layer])
             next
           end
         end
-        pts = _074e3371(pts)
+        pts = simplify_bulge(pts)
       end
       if flag && entity[:entry] && entity[:closed]
         pts = pts[0...-1] if pts.size > 2 && pts.first == pts.last

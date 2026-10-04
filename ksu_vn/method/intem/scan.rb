@@ -66,10 +66,10 @@ module KSU::Intem
       materials2[sheet_type][:sheets] << sheet_id
       bbox = sheet.bounds
       next if bbox.empty?
-      num = bbox.max.y.to_f
+      ty = bbox.max.y.to_f
       tx = bbox.min.x.to_f
       arr = box[sheet_type]
-      box[sheet_type] = [num, tx] if arr.nil? || num > arr[0] || (num == arr[0] && tx < arr[1])
+      box[sheet_type] = [ty, tx] if arr.nil? || ty > arr[0] || (ty == arr[0] && tx < arr[1])
     end
     materials2.each_value { |meta| meta[:sheets].sort_by! { |sheet_id| [sheet_id.to_i, sheet_id.to_s] } }
     materials.sort_by! do |k|
@@ -87,9 +87,9 @@ module KSU::Intem
     if ent2.is_a?(Array) && ent2[0].to_f > 0 && ent2[1].to_f > 0
       return [ent2[0].to_f, ent2[1].to_f]
     end
-    ents = sheet.entities.grep(Sketchup::Group).find { |ent| KSU::Sheet.sheet_border?(ent) }
-    return [0.0, 0.0] unless ents
-    bbox = ents.bounds
+    best_d = sheet.entities.grep(Sketchup::Group).find { |ent| KSU::Sheet.sheet_border?(ent) }
+    return [0.0, 0.0] unless best_d
+    bbox = best_d.bounds
     [(bbox.width * 25.4).round(2), (bbox.height * 25.4).round(2)]
   end
   def self.last_cut_parts(sheet, sheet_id, mat)
@@ -132,8 +132,8 @@ module KSU::Intem
   end
   def self.sheet_origin(sheet)
     arr = KSU::Sheet.edit_offset(sheet) || [0.0, 0.0]
-    ents = sheet.entities.grep(Sketchup::Group).find { |ent| KSU::Sheet.sheet_border?(ent) }
-    lo = ents && ents.bounds.valid? ? ents.bounds.min : nil
+    best_d = sheet.entities.grep(Sketchup::Group).find { |ent| KSU::Sheet.sheet_border?(ent) }
+    lo = best_d && best_d.bounds.valid? ? best_d.bounds.min : nil
     [(lo ? lo.x.to_f : 0.0) + arr[0], (lo ? lo.y.to_f : 0.0) + arr[1]]
   end
   def self.index_boards(ents, arr4, seen, lvl, arr)
@@ -328,10 +328,10 @@ module KSU::Intem
     pts.length > 3 && _a8e56783(pts.first, pts.last)
   end
   def self.drills(grp, part_tf)
-    arr3 = grp.get_attribute("ABF", "drills-desc")
-    return [] unless arr3.is_a?(Array) && arr3[1].is_a?(Array)
+    d2x = grp.get_attribute("ABF", "drills-desc")
+    return [] unless d2x.is_a?(Array) && d2x[1].is_a?(Array)
     out = []
-    arr3[1].each do |arr2|
+    d2x[1].each do |arr2|
       next unless arr2.is_a?(Array) && arr2.length >= 3
       num = [arr2[0].to_f, arr2[1].to_f]
       ok = true

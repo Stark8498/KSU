@@ -292,18 +292,18 @@ module KSU::Engine
     }
   end
   def _f573a61c(members)
-    min_x = min_y = flag3 = flag4 = nil
+    min_x = min_y = hi_x = hi_y = nil
     members.each do |pt, arr2|
       loops_mm(pt).first.each do |arr|
         x = arr[0] + arr2[0]
         y = arr[1] + arr2[1]
         min_x = x if min_x.nil? || x < min_x
         min_y = y if min_y.nil? || y < min_y
-        flag3 = x if flag3.nil? || x > flag3
-        flag4 = y if flag4.nil? || y > flag4
+        hi_x = x if hi_x.nil? || x > hi_x
+        hi_y = y if hi_y.nil? || y > hi_y
       end
     end
-    [[min_x, min_y], [flag3, min_y], [flag3, flag4], [min_x, flag4]]
+    [[min_x, min_y], [hi_x, min_y], [hi_x, hi_y], [min_x, hi_y]]
   end
   def loops_mm(grp, flag2 = false)
     return grp[:loops_mm] if grp[:loops_mm]

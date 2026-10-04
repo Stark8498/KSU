@@ -181,16 +181,16 @@ module KSU::Resize
     case edge
     when :x1
       tx = x214 - num
-      _51d53976 = py.clamp(_60000b16, y2)
+      ty = py.clamp(_60000b16, y2)
     when :x2
       tx = x2 + num
-      _51d53976 = py.clamp(_60000b16, y2)
+      ty = py.clamp(_60000b16, y2)
     when :y1
       tx = px.clamp(x214, x2)
-      _51d53976 = _60000b16 - num
+      ty = _60000b16 - num
     when :y2
       tx = px.clamp(x214, x2)
-      _51d53976 = y2 + num
+      ty = y2 + num
     end
     @rects.any? do |panel|
       next false if panel.equal?(slot)
@@ -198,7 +198,7 @@ module KSU::Resize
       opac = panel[:points]
       next false unless opac && opac.length == 4
       _fcc2ae55, _e9dd4105, _f2b1338e, _175bc002 = xy_bounds(opac)
-      tx > _fcc2ae55 - 1e-6 && tx < _e9dd4105 + 1e-6 && _51d53976 > _f2b1338e - 1e-6 && _51d53976 < _175bc002 + 1e-6
+      tx > _fcc2ae55 - 1e-6 && tx < _e9dd4105 + 1e-6 && ty > _f2b1338e - 1e-6 && ty < _175bc002 + 1e-6
     end
   end
   def cursor_for(edge)

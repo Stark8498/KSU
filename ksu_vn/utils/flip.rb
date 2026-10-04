@@ -81,8 +81,8 @@ module KSU::Flip
     ents2 = panel.definition.entities.select { |ent| _cae3470a(ent) }
     return [] if ents2.empty?
     tr = panel.transformation
-    _884dee16 = ents2.map { |ent| [ent, ent.transformation.clone] }
-    bbox = _884dee16.map do |ent, _eef8786a|
+    tr3 = ents2.map { |ent| [ent, ent.transformation.clone] }
+    bbox = tr3.map do |ent, _eef8786a|
       ents = KSU::Nesting.clone_panel(sheet.definition.entities, ent, tr * _eef8786a)
       [ents, _eef8786a]
     end

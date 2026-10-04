@@ -228,10 +228,10 @@ module KSU::Arrange
     num = pt3.length.to_f
     return if num < KSU::TOL || pt2.length.to_f < KSU::TOL
     tx = -pt3.y.to_f / num
-    num5 = pt3.x.to_f / num
-    num2 = pt2.x.to_f * tx + pt2.y.to_f * num5
+    ty = pt3.x.to_f / num
+    num2 = pt2.x.to_f * tx + pt2.y.to_f * ty
     return if num2.abs < KSU::TOL
-    pt = Geom::Vector3d.new(tx * num2, num5 * num2, 0)
+    pt = Geom::Vector3d.new(tx * num2, ty * num2, 0)
     add_offset(pt)
     shift_cached_polys(pt)
     arr = compute_push_back(_435e9c11, true)

@@ -167,8 +167,8 @@ module KSU::Collide
       next unless KSU::Sheet.drawable?(panel)
       poly = (@poly_cache && @poly_cache[panel.object_id]) || outer_pts_of(panel, sheet)
       next if poly.length < 3
-      str = panel.name.to_s == "__ABF_sheetBorder"
-      if str
+      is_border = panel.name.to_s == "__ABF_sheetBorder"
+      if is_border
         _88817caf, _5dc624bc, _bee95155, bbox = KSU::Avail.sides_for(sheet, @tam_cach_le.to_f)
         _08f8a9e0 = [_88817caf, _5dc624bc, _bee95155, bbox].min
         poly = KSU::Avail.shrink_poly(poly, _88817caf - _08f8a9e0, _5dc624bc - _08f8a9e0, _bee95155 - _08f8a9e0, bbox - _08f8a9e0)
@@ -177,7 +177,7 @@ module KSU::Collide
           poly = shift_edges(poly, num[0], num[1])
         end
       end
-      holes = if str
+      holes = if is_border
           []
         else
           fill = fill_of(panel, sheet)
@@ -185,9 +185,9 @@ module KSU::Collide
         end
       fld = { panel: panel, poly: poly, holes: holes,
                   hull: (poly.length > 12 ? KSU::Geom.convex_hull(poly) : poly),
-                  bbox: KSU::Geom.bounds(poly), is_border: str }
+                  bbox: KSU::Geom.bounds(poly), is_border: is_border }
       items << fld
-      borders << fld if str
+      borders << fld if is_border
     end
     @obstacle_cache[sheet] = {
       items: items,

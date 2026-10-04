@@ -228,10 +228,10 @@ module KSU::Reorder
     arr6.each do |sheet_type|
       arr2 = h[sheet_type]
       grp = arr[arr2.first]
-      pt3 = grp.transformation.origin.y.to_f
+      ty = grp.transformation.origin.y.to_f
       thickness_mm = grp.get_attribute("ABF", "sheet-thickness")
       lbl = row_caption(grp, sheet_type.to_s, thickness_mm, arr2.size, th_on, num_on, wrap_on)
-      add_row_label(ents, lbl, pt3, row_h)
+      add_row_label(ents, lbl, ty, row_h)
       arr2.each do |id|
         num = pad_id(id, arr5.max, zero_pad)
         flag2 = prefix.nil? ? nil : label(num, prefix, suffix2)
@@ -256,9 +256,9 @@ module KSU::Reorder
     vec = Geom::Vector3d.new(-pt.x, -pt.y, -pt.z)
     ents.transform_entities(Geom::Transformation.translation(vec), arr7)
   end
-  def add_sheet_label(ents, grp2, id, sheet_w, text = nil)
-    start_x = grp2.transformation.origin.x.to_f
-    ly0 = grp2.transformation.origin.y.to_f
+  def add_sheet_label(ents, sheet_grp, id, sheet_w, text = nil)
+    start_x = sheet_grp.transformation.origin.x.to_f
+    ly0 = sheet_grp.transformation.origin.y.to_f
     ent2 = ents.add_dimension_linear(
       [start_x + sheet_w / 2.0 - 0.1.mm, ly0 - 5.cm, 0],
       [start_x + sheet_w / 2.0 + 0.1.mm, ly0 - 5.cm, 0], [0, -0.1.mm, 0]

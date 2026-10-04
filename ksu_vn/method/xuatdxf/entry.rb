@@ -1,35 +1,35 @@
 module KSU::Xuatdxf
   module_function
-  def _f60dec30(s)
+  def set_entries(s)
     return if s[:bottom]
     len2d = KSU::Settings.get("khoang_cach_goc", 50.0, "xuat_dxf").to_f / 25.4
     num2 = s[:w].to_f.mm
     num = s[:h].to_f.mm
-    scr = _30057963(s[:ents], s[:parts] || [], num2, num)
-    _8b1edfc4(s[:ents], num2, num, len2d, scr)
+    scr = corner_seeds(s[:ents], s[:parts] || [], num2, num)
+    entry_each(s[:ents], num2, num, len2d, scr)
   end
-  def _8b1edfc4(ents, _8ddd8c6f, _68165b06, len2d, scr = {})
-    ents.each { |ent| _3161186f(ent, _8ddd8c6f, _68165b06, len2d, scr[ent[:pid]]) }
+  def entry_each(ents, _8ddd8c6f, _68165b06, len2d, scr = {})
+    ents.each { |ent| entry_for(ent, _8ddd8c6f, _68165b06, len2d, scr[ent[:pid]]) }
   end
-  def _3161186f(ent, _8ddd8c6f, _68165b06, len2d, seed = nil)
+  def entry_for(ent, _8ddd8c6f, _68165b06, len2d, seed = nil)
     return unless ent[:closed] && ent[:via_module] && !ent[:sect]
     pts = ent[:pts]
     return if pts.size < 3
-    _9535dc0b = _97443b71(ent)
-    return unless _9535dc0b
-    _9535dc0b = _9535dc0b[0...-1] if _9535dc0b.size > 2 && _9535dc0b.first == _9535dc0b.last
-    return if _9535dc0b.size < 2
-    pt = _de556708(pts, _9535dc0b, _8ddd8c6f, _68165b06, len2d, seed)
+    ring = outline_pts(ent)
+    return unless ring
+    ring = ring[0...-1] if ring.size > 2 && ring.first == ring.last
+    return if ring.size < 2
+    pt = entry_target(pts, ring, _8ddd8c6f, _68165b06, len2d, seed)
     return unless pt
     ent[:entry] = pt
   end
-  def _30057963(ents, parts, _8ddd8c6f, _68165b06)
+  def corner_seeds(ents, parts, _8ddd8c6f, _68165b06)
     outer = {}
     ents.each do |ent|
       next unless ent[:closed] && ent[:via_module] && !ent[:sect] && !ent[:pid].nil?
       next if ent[:pts].size < 3
-      min_x, min_y, _a4beb817, _9deb3cee = KSU::Nesting.poly_bounds(ent[:pts])
-      _5fb96e91 = (_a4beb817 - min_x) * (_9deb3cee - min_y)
+      min_x, min_y, hi_x, hi_y = KSU::Nesting.poly_bounds(ent[:pts])
+      _5fb96e91 = (hi_x - min_x) * (hi_y - min_y)
       next if outer[ent[:pid]] && outer[ent[:pid]][1] >= _5fb96e91
       outer[ent[:pid]] = [ent[:pts], _5fb96e91]
     end
@@ -40,7 +40,7 @@ module KSU::Xuatdxf
       h[k] = arr if h[k].nil? || arr[:cb] < h[k][:cb]
     end
     h2 = {}
-    h.each { |k, arr| h2[k] = _984ee8f3(outer[arr[:id]][0], _8ddd8c6f, _68165b06) }
+    h.each { |k, arr| h2[k] = corner_of(outer[arr[:id]][0], _8ddd8c6f, _68165b06) }
     out = {}
     parts.each do |arr|
       next unless arr[:cb]
@@ -49,19 +49,19 @@ module KSU::Xuatdxf
     end
     out
   end
-  def _984ee8f3(pts, _8ddd8c6f, _68165b06)
-    _bb40b229(KSU::Nesting.poly_bounds(pts), _8ddd8c6f, _68165b06)
+  def corner_of(pts, _8ddd8c6f, _68165b06)
+    corner_sign(KSU::Nesting.poly_bounds(pts), _8ddd8c6f, _68165b06)
   end
-  def _bb40b229(bnds, _8ddd8c6f, _68165b06)
-    min_x, min_y, _a4beb817, _9deb3cee = bnds
-    w = _a4beb817 - min_x
-    h = _9deb3cee - min_y
+  def corner_sign(bnds, _8ddd8c6f, _68165b06)
+    min_x, min_y, hi_x, hi_y = bnds
+    w = hi_x - min_x
+    h = hi_y - min_y
     if w > 1.5 * h && h < 200 / 25.4
-      return [1, (min_y + _9deb3cee) / 2.0 > _68165b06 / 2.0 ? -1 : 1]
+      return [1, (min_y + hi_y) / 2.0 > _68165b06 / 2.0 ? -1 : 1]
     end
-    (min_x + _a4beb817) / 2.0 >= _8ddd8c6f / 2.0 ? [-1, -1] : [1, 1]
+    (min_x + hi_x) / 2.0 >= _8ddd8c6f / 2.0 ? [-1, -1] : [1, 1]
   end
-  def _97443b71(ent)
+  def outline_pts(ent)
     pts = ent[:pts]
     min_x, min_y = KSU::Nesting.poly_bounds(pts)
     key = String.new("b")
@@ -72,11 +72,11 @@ module KSU::Xuatdxf
     color = @h12[key]
     unless color
       arr3 = pts.map { |arr4| PtEx.new(arr4[0], arr4[1], 0) }
-      if _a54bea0f(arr3)
+      if circle?(arr3)
         color = :circle
       else
-        _9535dc0b = _074e3371(arr3, Time.now + 0.5)
-        color = _9535dc0b.map { |pt| [pt.x - min_x, pt.y - min_y, pt.bulge.to_f] }
+        ring = simplify_bulge(arr3, Time.now + 0.5)
+        color = ring.map { |pt| [pt.x - min_x, pt.y - min_y, pt.bulge.to_f] }
       end
       @h12.clear if @h12.size > 5000
       @h12[key] = color
@@ -88,47 +88,47 @@ module KSU::Xuatdxf
       pt
     end
   end
-  def _de556708(pts, _9535dc0b, _8ddd8c6f, _68165b06, len2d, seed = nil)
+  def entry_target(pts, ring, _8ddd8c6f, _68165b06, len2d, seed = nil)
     bnds = KSU::Nesting.poly_bounds(pts)
-    min_x, min_y, _a4beb817, _9deb3cee = bnds
-    w = _a4beb817 - min_x
-    h = _9deb3cee - min_y
-    x2, dy = seed || _bb40b229(bnds, _8ddd8c6f, _68165b06)
+    min_x, min_y, hi_x, hi_y = bnds
+    w = hi_x - min_x
+    h = hi_y - min_y
+    x2, dy = seed || corner_sign(bnds, _8ddd8c6f, _68165b06)
     if w > 1.5 * h && h < 200 / 25.4
-      ry = dy > 0 ? _9deb3cee : min_y
-      rx = x2 > 0 ? _a4beb817 - [len2d, w].min : min_x + [len2d, w].min
-      return _727b63c7(_9535dc0b, rx, ry, len2d)
+      ry = dy > 0 ? hi_y : min_y
+      rx = x2 > 0 ? hi_x - [len2d, w].min : min_x + [len2d, w].min
+      return entry_on_edge(ring, rx, ry, len2d)
     end
-    rx = x2 > 0 ? _a4beb817 : min_x
-    _4bcb6213 = [len2d, h / 2.0].min
-    ry = dy > 0 ? _9deb3cee - _4bcb6213 : min_y + _4bcb6213
-    _727b63c7(_9535dc0b, rx, ry, len2d)
+    rx = x2 > 0 ? hi_x : min_x
+    inset2 = [len2d, h / 2.0].min
+    ry = dy > 0 ? hi_y - inset2 : min_y + inset2
+    entry_on_edge(ring, rx, ry, len2d)
   end
-  def _727b63c7(_9535dc0b, tx, _51d53976, len2d)
-    n = _9535dc0b.size
+  def entry_on_edge(ring, tx, ty, len2d)
+    n = ring.size
     return nil if n < 2
-    _080e1e07 = nil
-    _892e5ea9 = nil
+    best_e = nil
+    best_d = nil
     (0...n).each do |i|
-      pt = _9535dc0b[i]
-      b = _9535dc0b[(i + 1) % n]
+      pt = ring[i]
+      b = ring[(i + 1) % n]
       dx = b.x - pt.x
       dy = b.y - pt.y
       len2 = Math.sqrt(dx * dx + dy * dy)
       next if len2 <= len2d * 2
       next if pt.bulge.to_f.abs > 1e-9
-      thick = ((tx - pt.x) * dx + (_51d53976 - pt.y) * dy) / (len2 * len2)
+      thick = ((tx - pt.x) * dx + (ty - pt.y) * dy) / (len2 * len2)
       thick = 0.0 if thick < 0
       thick = 1.0 if thick > 1
       trai = pt.x + thick * dx
       duoi = pt.y + thick * dy
-      _fa09db7b = (trai - tx)**2 + (duoi - _51d53976)**2
-      next unless _892e5ea9.nil? || _fa09db7b < _892e5ea9
-      _892e5ea9 = _fa09db7b
-      _080e1e07 = [pt, dx, dy, len2, thick]
+      d2x = (trai - tx)**2 + (duoi - ty)**2
+      next unless best_d.nil? || d2x < best_d
+      best_d = d2x
+      best_e = [pt, dx, dy, len2, thick]
     end
-    return nil unless _080e1e07
-    pt, dx, dy, len2, thick = _080e1e07
+    return nil unless best_e
+    pt, dx, dy, len2, thick = best_e
     pad_x = len2d / len2
     thick = pad_x if thick < pad_x
     thick = 1.0 - pad_x if thick > 1.0 - pad_x
@@ -165,9 +165,9 @@ module KSU::Xuatdxf
       thick = 1.0 if thick > 1
       trai = pt.x + thick * dx
       duoi = pt.y + thick * dy
-      _fa09db7b = (trai - rx)**2 + (duoi - ry)**2
-      next unless _aa866019.nil? || _fa09db7b < _aa866019
-      _aa866019 = _fa09db7b
+      d2x = (trai - rx)**2 + (duoi - ry)**2
+      next unless _aa866019.nil? || d2x < _aa866019
+      _aa866019 = d2x
       num2 = i
       num3 = thick
       num4 = Math.sqrt(_219a873c)

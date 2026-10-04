@@ -23,21 +23,21 @@ module KSU::Bilan
     sheet.definition.entities.each do |panel|
       next unless KSU.container?(panel)
       next unless KSU::Sheet.drawable?(panel)
-      str = panel.name.to_s == "__ABF_sheetBorder"
-      next if !str && last_cut?(panel)
+      is_border = panel.name.to_s == "__ABF_sheetBorder"
+      next if !is_border && last_cut?(panel)
       panel_tr = sheet_tr * panel.transformation
       poly = KSU::Cutting.outer_pts(panel, panel_tr)
       next unless poly && poly.length >= 3
-      if str && (arr2 = KSU::Sheet.edit_offset(sheet))
+      if is_border && (arr2 = KSU::Sheet.edit_offset(sheet))
         poly = grow_poly(poly, arr2[0], arr2[1])
       end
-      fill = str ? nil : KSU::Cutting.outline(panel, panel_tr)
+      fill = is_border ? nil : KSU::Cutting.outline(panel, panel_tr)
       fld = { panel: panel, poly: poly, fill: fill,
                   holes: fill ? (fill[:holes] || []) : [],
                   hull: (poly.length > 12 ? KSU::Geom.convex_hull(poly) : poly),
-                  bbox: KSU::Geom.bounds(poly), is_border: str }
+                  bbox: KSU::Geom.bounds(poly), is_border: is_border }
       items << fld
-      borders << fld if str
+      borders << fld if is_border
     end
     flag = flag3 = flag4 = flag2 = nil
     borders.each do |b|

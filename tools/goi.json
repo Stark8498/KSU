@@ -2306,13 +2306,13 @@
   },
   {
    "ns": "KSU::Xuatdxf",
-   "m": "_302ced66",
+   "m": "dxf_color",
    "f": "ksu_vn/method/xuatdxf/scan.rb",
    "l": 66
   },
   {
    "ns": "KSU::Xuatdxf",
-   "m": "_c57d63ae",
+   "m": "dxf_name",
    "f": "ksu_vn/method/xuatdxf/scan.rb",
    "l": 78
   },

@@ -291,6 +291,7 @@ ten:
   # Hex da nghia -- dat ten theo tung file, se bo sung dan khi doc cac file khac
   _9535dc0b:
     "ksu_vn/utils/isolate.rb": keep_list
+    ksu_vn/method/xuatdxf/entry.rb: ring
   _c31e3116:
     "ksu_vn/utils/isolate.rb": io
     "ksu_vn/system/update.rb": io
@@ -621,7 +622,9 @@ ten:
   _5ef5cc45: hhea_off
   _7bb04226: read_short
   _facbe376: tag
-  _4bcb6213: off
+  _4bcb6213:
+    "*": off
+    ksu_vn/method/xuatdxf/entry.rb: inset2
 
   # `_7dddad48` la METHOD o svg.rb: no doc the <path> cua SVG. Cung mot ten goc
   # voi duong dan file .skp o other.rb va duong dan font o ttf.rb -- deu la "path".
@@ -2815,6 +2818,62 @@ ten:
   _e74b5af2:
     ksu_vn/utils/preset/field.rb: r2
 
+  # ----- ME 71: method/xuatdxf/entry.rb -- diem vao dao cho moi duong cat -----
+  # May cat phai bat dau o mot doan THANG du dai, va nen bat dau o goc van
+  # gan nhat de dao khong phai chay qua giua tam. Cac tam cung mot chi tiet
+  # dung chung mot goc, lay tu tam lon nhat trong nhom.
+  _f60dec30: set_entries
+  _8b1edfc4: entry_each          # `entries_for` da thuoc mot hex khac
+  _3161186f: entry_for
+  _30057963: corner_seeds
+  _984ee8f3: corner_of
+  _bb40b229: corner_sign         # [+-1, +-1]: goc nao cua van gan hop nhat
+  _97443b71: outline_pts         # don gian hoa co bulge, co dem theo hinh dang
+  _de556708: entry_target
+  _727b63c7: entry_on_edge       # doan thang dai hon 2x duong vao, gan dich nhat
+  _a54bea0f: circle?
+  _074e3371: simplify_bulge
+  _a4beb817: hi_x
+  _9deb3cee: hi_y
+  _51d53976: ty
+  _080e1e07: best_e
+  _892e5ea9: best_d
+  _fa09db7b: d2x
+
+  _8ddd8c6f:
+    ksu_vn/method/xuatdxf: sheet_w2
+  _68165b06:
+    ksu_vn/method/xuatdxf: sheet_h2
+
+  # ----- ME 72: method/xuatdxf/scan.rb -- quet van thanh thuc the DXF -----
+  # Di de quy xuong cac nhom con, moi loai hinh nhan ra bang mot thuoc tinh
+  # ABF con sot: is-cutting-lines, is-sheet-border, is-mark-square,
+  # is-intersect. Layer cua nhom cha truyen xuong khi nhom con khong co.
+  _daa2f929: scan_sheet
+  _cdd54f61: sheet_id_text       # so van ve bang net chu, cao 18
+  _4d1bd02d: layer_flags         # JSON dang bat/tat tung layer
+  _89a2e173: export_list
+  _530b02a3: layers_of
+  _7c10a028: walk_group
+  _c73c2639: merge_loops
+  _302ced66: dxf_color           # "#rrggbb"
+  _c57d63ae: dxf_name            # "<ten>_007_01.dxf"
+  _e64bdf77:
+    ksu_vn/method/xuatdxf: lname   #  toan cuc la cua _86717f44
+  _7bafc8a5: tf3
+  _8d6669ce: parent_layer
+  _27846c89: is_border
+  _84dcc166: is_mark
+  _bc8516a9: is_cut
+  _20c319d6: is_sect
+  _9c089a0b: show_back
+  _d4a205ac: sheet_grp
+
+  _27161c40:
+    ksu_vn/method/xuatdxf/scan.rb: h
+  _884dee16:
+    ksu_vn/method/xuatdxf/scan.rb: flags
+
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.
 # Moi dong duoi day la mot hex da thua mot tu cho hex khac dung nhieu
@@ -2973,9 +3032,6 @@ bo:
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,
   # hoac voi mot dinh danh chua bi lam roi. Gop lai la mat mot thu. Chung
   # cho dot dat ten THEO PHAM VI; tu gio den do cu de nguyen hex.
-  - _727b63c7
-  - _7c10a028
-  - _884dee16
   - _d8a5a5cb
   # Ban sinh doi ZSU goi hex nay la `arr`. Ben nay no la thu khac va doc theo
   # ngu canh thi ro hon. (_6e6c93db va _9535dc0b da co ten that: xem tren.)

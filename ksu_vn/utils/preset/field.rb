@@ -383,7 +383,7 @@ module KSU::Field
     end
   end
   def draw_switch(view, box2, on, hovered)
-    tx, _51d53976, tw, _a1bf6a3a = box2[:x], box2[:y], box2[:width], box2[:height]
+    tx, ty, tw, _a1bf6a3a = box2[:x], box2[:y], box2[:width], box2[:height]
     half = _a1bf6a3a / 2.0
     fill = if on
                     hovered ? palette[:sw_on_hover] : palette[:sw_on]
@@ -393,7 +393,7 @@ module KSU::Field
     draw_round_rect(view, box2, half, border: nil, fill: fill)
     _63378db3 = _a1bf6a3a / 2.0 - 2 * KSU::View.ui_scale
     flag = on ? tx + tw - half : tx + half
-    _16daa7da = _51d53976 + _a1bf6a3a / 2.0
+    _16daa7da = ty + _a1bf6a3a / 2.0
     _92fb4be7 = KSU::View._8a0d2500(flag, _16daa7da, _63378db3, segments: 24)
     view.drawing_color = Sketchup::Color.new(*palette[:knob])
     view.draw2d(GL_POLYGON, _92fb4be7)
