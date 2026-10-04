@@ -6,7 +6,7 @@ module KSU::Settings
   SETTINGS_BACKUP = File.join(SETTINGS_DIR, "settings_backup.json")
   STARTUP_FILE = File.join(SETTINGS_DIR, "startup.json")
   STARTUP_KEYS = %w[xep_tam chon_tam them_tam xep_hang danh_so_van net_cat_cuoi gan_nhan chong_bay toi_uu_van nesting thong_ke in_tem xuat_dxf cai_dat].freeze
-  @dlg = nil
+  @_0dc41cf2 = nil
   SETTINGS_VERSION = 1
   def self.ensure_file
     FileUtils.mkdir_p(SETTINGS_DIR)
@@ -400,12 +400,12 @@ module KSU::Settings
     bind_callbacks(dlg2)
     select_preset_later(dlg2, pname)
     dlg2.set_on_closed {
-      @dlg = nil
+      @_0dc41cf2 = nil
       @open_tab = nil
       KSU::Preset.load_cfg
       KSU::View.refresh
     }
-    @dlg = dlg2
+    @_0dc41cf2 = dlg2
     dlg2.center
     dlg2.show
   end
@@ -426,16 +426,16 @@ module KSU::Settings
     end
     dlg2.add_action_callback("save_setting") do |_part, payload2|
       parts = payload2.split("@", 3)
-      section = parts[0]
+      _081c2f3e = parts[0]
       key2 = parts[1]
       raw_str = parts[2]
       value = parse_value(raw_str)
-      if section == "cai_dat" && (STARTUP_KEYS.include?(key2) || KSU::Addon.known?(key2))
+      if _081c2f3e == "cai_dat" && (STARTUP_KEYS.include?(key2) || KSU::Addon.known?(key2))
         set_startup_flag(key2, value)
       else
-        set(key2, value, section)
+        set(key2, value, _081c2f3e)
       end
-      if section == "cai_dat"
+      if _081c2f3e == "cai_dat"
         KSU::Preset.load_cfg
         if KSU::Preset.global_key?(key2)
           tool = Sketchup.active_model.tools.active_tool
@@ -468,65 +468,65 @@ module KSU::Settings
     end
     dlg2.add_action_callback("save_preset") do |_part, payload2|
       parts = payload2.split("@")
-      section = parts[0]
-      pname = parts[1]
+      _081c2f3e = parts[0]
+      _538a3d28 = parts[1]
       str5 = parts[2..-1].join("@")
       settings = JSON.parse(str5)
-      save_preset(section, pname, settings)
-      push_presets(dlg2, section)
+      save_preset(_081c2f3e, _538a3d28, settings)
+      push_presets(dlg2, _081c2f3e)
       reload_tool
     end
     dlg2.add_action_callback("delete_preset") do |_part, payload2|
       parts = payload2.split("@")
-      section = parts[0]
-      pname = parts[1]
-      delete_preset(section, pname)
-      push_presets(dlg2, section)
+      _081c2f3e = parts[0]
+      _538a3d28 = parts[1]
+      delete_preset(_081c2f3e, _538a3d28)
+      push_presets(dlg2, _081c2f3e)
       reload_tool
     end
     dlg2.add_action_callback("load_preset") do |_part, payload2|
       parts = payload2.split("@")
-      section = parts[0]
-      pname = parts[1]
-      settings = apply_preset(section, pname)
+      _081c2f3e = parts[0]
+      _538a3d28 = parts[1]
+      settings = apply_preset(_081c2f3e, _538a3d28)
       if settings
         json_all = settings.to_json
-        str2 = "if (window.sendSettingsToIframe) { window.sendSettingsToIframe('#{section}', #{json_all}); }"
+        str2 = "if (window.sendSettingsToIframe) { window.sendSettingsToIframe('#{_081c2f3e}', #{json_all}); }"
         dlg2.execute_script(str2)
       end
       settings ? settings.to_json : "null"
     end
     dlg2.add_action_callback("save_presets_order") do |_part, payload2|
       parts = payload2.split("@", 2)
-      section = parts[0]
+      _081c2f3e = parts[0]
       json_presets = parts[1]
       presets2 = JSON.parse(json_presets)
       data = load
-      data[section] ||= {}
-      data[section]["presets"] = presets2
+      data[_081c2f3e] ||= {}
+      data[_081c2f3e]["presets"] = presets2
       save_all(data)
       reload_tool
     end
     dlg2.add_action_callback("save_collapsed_groups") do |_part, payload2|
       parts = payload2.split("@", 2)
-      section = parts[0]
+      _081c2f3e = parts[0]
       json_collapsed2 = parts[1]
       collapsed2 = JSON.parse(json_collapsed2)
       data = load
-      data[section] ||= {}
-      data[section]["collapsed_groups"] = collapsed2
+      data[_081c2f3e] ||= {}
+      data[_081c2f3e]["collapsed_groups"] = collapsed2
       save_all(data)
     end
     dlg2.add_action_callback("pick_file") do |_part, payload2|
       parts = payload2.split("@")
-      section = parts[0]
+      _081c2f3e = parts[0]
       sec4 = parts[1]
       _3b7dc41a = parts[2]
       path = UI.openpanel("Chọn file", "", "SketchUp Files|*.skp||")
-      str4 = "iframe_#{section}"
+      str4 = "iframe_#{_081c2f3e}"
       if path && File.exist?(path)
         path2 = path.gsub("\\", "/")
-        set(_3b7dc41a, path2, section)
+        set(_3b7dc41a, path2, _081c2f3e)
         str2 = "var iframe = document.getElementById('#{str4}'); if (iframe && iframe.contentWindow) { iframe.contentWindow.postMessage({ action: 'file_picked', shapeKey: '#{sec4}', pathKey: '#{_3b7dc41a}', path: '#{path2}' }, '*'); }"
         dlg2.execute_script(str2)
       else
@@ -622,17 +622,17 @@ module KSU::Settings
     @open_tab.to_s
   end
   def self.dialog_open?
-    @dlg && @dlg.visible?
+    @_0dc41cf2 && @_0dc41cf2.visible?
   end
-  def self.dlg
-    dialog_open? ? @dlg : nil
+  def self._0dc41cf2
+    dialog_open? ? @_0dc41cf2 : nil
   end
   def self.push_to_dialog(key, key3, value)
     return unless dialog_open?
     resp = { key3 => value }.to_json
     str = "if (window.sendSettingsToIframe) {" \
       " window.sendSettingsToIframe('#{key}', #{resp}); }"
-    @dlg.execute_script(str)
+    @_0dc41cf2.execute_script(str)
   end
   def self.open_settings(section = "cai_dat", pname = nil, switch_tab = false)
     KSU::Xeptam.check_license
@@ -640,22 +640,22 @@ module KSU::Settings
     return open_window(section.to_s, pname) if TOOL_WINDOWS.include?(section.to_s)
     if dialog_open?
       if pname
-        @dlg.execute_script("switchToTab('#{section}');")
+        @_0dc41cf2.execute_script("switchToTab('#{section}');")
         UI.start_timer(0.1, false) do
-          @dlg.execute_script("if (window.selectPresetByName) { window.selectPresetByName('#{pname}'); }")
+          @_0dc41cf2.execute_script("if (window.selectPresetByName) { window.selectPresetByName('#{pname}'); }")
         end
         return
       end
       if switch_tab
         if @open_tab.to_s == section.to_s
-          @dlg.close
+          @_0dc41cf2.close
         else
           @open_tab = section.to_s
-          @dlg.execute_script("switchToTab('#{section}', true);")
+          @_0dc41cf2.execute_script("switchToTab('#{section}', true);")
         end
         return
       end
-      @dlg.close
+      @_0dc41cf2.close
       return
     end
     open_dialog(section, pname)

@@ -16,14 +16,14 @@ module KSU::Back
     return false unless panel && panel.valid?
     !KSU::Cutting.index_of(panel).nil? && !back_face2?(panel)
   end
-  def back_of(panel)
-    return nil unless panel && panel.valid? && front_panel?(panel)
-    ix = KSU::Cutting.index_of(panel)
+  def back_of(vec)
+    return nil unless vec && vec.valid? && front_panel?(vec)
+    ix = KSU::Cutting.index_of(vec)
     return nil if ix.nil?
     @nesting.definition.entities.each do |sheet|
       next unless KSU.container?(sheet) && sheet.name.to_s.downcase.include?("sheet")
       back = sheet.definition.entities.find do |ent|
-        KSU.container?(ent) && ent != panel &&
+        KSU.container?(ent) && ent != vec &&
           KSU::Cutting.index_of(ent) == ix && back_face2?(ent)
       end
       return [back, sheet] if back
@@ -100,17 +100,17 @@ module KSU::Back
     vec2 = Geom::Vector3d.new(dx, 0, 0).transform(@nesting.transformation.inverse)
     tr.transformation = Geom::Transformation.translation(vec2) * tr.transformation
   end
-  def place_mirror(panel2, grp3, sheet, tr4)
-    _d0a341c6 = KSU::Sheet.world_bbox(sheet, @nesting)
+  def place_mirror(panel2, grp3, grp2, tr4)
+    _d0a341c6 = KSU::Sheet.world_bbox(grp2, @nesting)
     _cc2599da = KSU::Sheet.world_bbox(tr4, @nesting)
-    tr = _cc53f14a(panel2, @nesting.transformation * sheet.transformation)
+    tr = _cc53f14a(panel2, @nesting.transformation * grp2.transformation)
     bb = _cc53f14a(grp3, @nesting.transformation * tr4.transformation)
     return unless _d0a341c6 && _cc2599da && tr && bb
     _3e7613f3, _9ba1a361 = KSU::Sheet.inset_of(tr4)
     hside, vside = KSU::Sheet.mark_corner(tr4, @nesting)
     hside ||= :right
     vside ||= :bottom
-    _7bb0b74c, _5e0b9d0f = KSU::Sheet.edit_offset(sheet) || [0.0, 0.0]
+    _7bb0b74c, _5e0b9d0f = KSU::Sheet.edit_offset(grp2) || [0.0, 0.0]
     _5f2b530c, _76baa4cb = KSU::Sheet._5134c34c(
       _d0a341c6, _cc2599da, _3e7613f3, _9ba1a361, hside, vside, _7bb0b74c, _5e0b9d0f,
       tr.min.x, tr.max.x, tr.min.y, tr.max.y,

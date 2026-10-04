@@ -101,9 +101,9 @@ module KSU::Xuatdxf
       half = h3["#{s[:id]}|#{s[:bottom] ? 1 : 0}"]
       next if half && half["on"] == false
       if half && half["off"].is_a?(Array) && !half["off"].empty?
-        hide = {}
-        half["off"].each { |pid| hide[pid.to_s] = true }
-        s = s.merge(ents: s[:ents].reject { |ent| ent[:pid] && hide[ent[:pid].to_s] })
+        h = {}
+        half["off"].each { |pid| h[pid.to_s] = true }
+        s = s.merge(ents: s[:ents].reject { |ent| ent[:pid] && h[ent[:pid].to_s] })
       end
       out << s
     end

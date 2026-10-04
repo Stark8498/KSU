@@ -54,13 +54,13 @@ module KSU::Edit
   end
   def panel_list(nesting)
     return [] unless nesting && nesting.valid?
-    out = []
-    tr = nesting.transformation
+    arr = []
+    tr2 = nesting.transformation
     nesting.definition.entities.each do |sheet|
       next unless KSU.container?(sheet)
       next unless sheet.name.to_s.downcase.include?("sheet")
       is_bottom = KSU::Sheet.bottom_sheet?(sheet)
-      sheet_tr = tr * sheet.transformation
+      sheet_tr = tr2 * sheet.transformation
       sheet.definition.entities.each do |panel|
         next unless KSU::Sheet.panel?(panel)
         next if is_bottom && !KSU::Cutting.cutting_group(panel)
@@ -68,24 +68,24 @@ module KSU::Edit
         fill = KSU::Cutting.outline(panel, panel_tr)
         polygon = fill[:outer]
         next unless polygon && polygon.length >= 3
-        out << { entity: panel, polygon: polygon, holes: fill[:holes], board_index: panel.get_attribute("ABF", "board-index"), back: is_bottom || KSU::Cutting.bottom_face?(panel) }
+        arr << { entity: panel, polygon: polygon, holes: fill[:holes], board_index: panel.get_attribute("ABF", "board-index"), back: is_bottom || KSU::Cutting.bottom_face?(panel) }
       end
     end
-    out
+    arr
   end
   def two_sided_set(nesting)
-    out = {}
-    return out unless nesting && nesting.valid?
+    h = {}
+    return h unless nesting && nesting.valid?
     nesting.definition.entities.each do |sheet|
       next unless KSU::Sheet.sheet?(sheet)
       sheet.definition.entities.each do |panel|
         next unless KSU.container?(panel)
         next unless KSU::Cutting.bottom_face?(panel)
         ix = panel.get_attribute("ABF", "board-index")
-        out[ix] = true unless ix.nil?
+        h[ix] = true unless ix.nil?
       end
     end
-    out
+    h
   end
   def overlap_polys(nesting)
     polys = []
@@ -102,10 +102,10 @@ module KSU::Edit
       def_name = (ent.respond_to?(:definition) && ent.definition) ? ent.definition.name.to_s : ""
       transform = transform3 * ent.transformation
       if str.include?("_ABF_Label") || def_name.include?("_ABF_Label")
-        kids = KSU.entities_in(ent)
-        next unless kids
+        arr2 = KSU.entities_in(ent)
+        next unless arr2
         seen = {}
-        kids.each do |edge|
+        arr2.each do |edge|
           next unless edge.is_a?(Sketchup::Edge) && edge.valid?
           lp = edge.curve
           next unless lp

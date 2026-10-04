@@ -135,7 +135,7 @@ module KSU::Push
   def _726c65ba(sheet)
     gap_for = min_margin
     tol = 0.5.mm.to_f
-    tol2 = 0.1.mm.to_f
+    num3 = 0.1.mm.to_f
     num = @tam_cach_nhau.to_f - tol
     num = 0.0 if num < 0.0
     answer = []
@@ -162,7 +162,7 @@ module KSU::Push
       h3 = {}
       h2.each_key do |i|
         fld = items[i]
-        _2e113abe = (h3[i] ||= _5dc6e713(fld[:poly], tol2))
+        _2e113abe = (h3[i] ||= _5dc6e713(fld[:poly], num3))
         fld_bbox = fld[:bbox]
         hull = fld[:hull]
         unless flag.nil? || gap_for <= 0.0
@@ -185,7 +185,7 @@ module KSU::Push
           end
           _3e1d5f51 = hole_around([panel[:poly]], fld[:holes])
           if _3e1d5f51
-            _982c8eb9 = (h3[j] ||= _5dc6e713(panel[:poly], tol2))
+            _982c8eb9 = (h3[j] ||= _5dc6e713(panel[:poly], num3))
             if KSU::Geom._0c91518b(_982c8eb9, _3e1d5f51, num)
               h[i] = true
               h[j] = true
@@ -208,11 +208,11 @@ module KSU::Push
     end
     answer
   end
-  def _5dc6e713(poly, tol)
+  def _5dc6e713(poly, num)
     return poly unless defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:offset)
     arr = poly.map { |pt| [pt.x.to_f * 25.4, pt.y.to_f * 25.4] }
     arr.reverse! if KSU::Nfp.ring_area(arr) < 0
-    arr2 = KSU::Clipper.offset([arr], -(tol.to_f * 25.4), 0, 1)
+    arr2 = KSU::Clipper.offset([arr], -(num.to_f * 25.4), 0, 1)
     return poly unless arr2 && !arr2.empty?
     best = arr2.max_by { |half| KSU::Nesting.poly_area(half) }
     return poly unless best && best.length >= 3
@@ -383,10 +383,10 @@ module KSU::Push
     Geom::Transformation.translation(pt.transform(inv))
   end
   def _c7b0bc62(panel, sheet)
-    tf = @nesting.transformation * sheet.transformation * panel.transformation
+    tr = @nesting.transformation * sheet.transformation * panel.transformation
     box = panel.definition.bounds
     bb = Geom::BoundingBox.new
-    (0..7).each { |i| bb.add(box.corner(i).transform(tf)) }
+    (0..7).each { |i| bb.add(box.corner(i).transform(tr)) }
     bb
   end
 end

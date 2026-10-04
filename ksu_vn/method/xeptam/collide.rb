@@ -197,14 +197,14 @@ module KSU::Collide
   end
   def shift_edges(poly, dx, dy)
     b = KSU::Geom.bounds(poly)
-    tol = 0.1.mm
+    num = 0.1.mm
     poly.map do |pt|
       x = pt.x.to_f
-      x += dx if dx > 0 && (pt.x.to_f - b[:min_x]).abs < tol
-      x += dx if dx < 0 && (pt.x.to_f - b[:max_x]).abs < tol
+      x += dx if dx > 0 && (pt.x.to_f - b[:min_x]).abs < num
+      x += dx if dx < 0 && (pt.x.to_f - b[:max_x]).abs < num
       y = pt.y.to_f
-      y += dy if dy > 0 && (pt.y.to_f - b[:min_y]).abs < tol
-      y += dy if dy < 0 && (pt.y.to_f - b[:max_y]).abs < tol
+      y += dy if dy > 0 && (pt.y.to_f - b[:min_y]).abs < num
+      y += dy if dy < 0 && (pt.y.to_f - b[:max_y]).abs < num
       Geom::Point3d.new(x, y, pt.z.to_f)
     end
   end
@@ -241,17 +241,17 @@ module KSU::Collide
     return nil unless @pt5 && @sel_polys
     _24eac4c4 = obstacles_of(arr[:instance])
     return nil unless _24eac4c4
-    x = @pt5.x.to_f
-    y = @pt5.y.to_f
+    num2 = @pt5.x.to_f
+    num = @pt5.y.to_f
     px, py = bbox_mid(@sel_polys)
     return nil unless px
-    _80253039 = hole_at(_24eac4c4, x, y)
+    _80253039 = hole_at(_24eac4c4, num2, num)
     if _80253039
       return nil if KSU::Geom.point_in?(px, py, _80253039)
-      return Geom::Vector3d.new(x - px, y - py, 0)
+      return Geom::Vector3d.new(num2 - px, num - py, 0)
     end
     return nil unless hole_at(_24eac4c4, px, py)
-    Geom::Vector3d.new(x - px, y - py, 0)
+    Geom::Vector3d.new(num2 - px, num - py, 0)
   end
   def hole_at(arr, trai, duoi)
     arr[:items].each do |fld|
@@ -368,19 +368,19 @@ module KSU::Collide
     num6 = @anchor_pt.x.to_f
     num7 = @anchor_pt.y.to_f
     num2 = @anchor_pt.z.to_f
-    dx2 = num6 + @drag_offset.x.to_f
+    dx = num6 + @drag_offset.x.to_f
     dy = num7 + @drag_offset.y.to_f
     if @flag2 && arr[:flat]
-      dx, dy2 = KSU::Method.nfp_snap(arr[:flat], dx2, dy)
+      num5, num = KSU::Method.nfp_snap(arr[:flat], dx, dy)
     else
-      inst2 = Geom::Point3d.new(dx2, dy, num2)
-      pt3 = Geom::Point3d.new(dx2 - pt2.x.to_f, dy - pt2.y.to_f, num2)
+      inst2 = Geom::Point3d.new(dx, dy, num2)
+      pt3 = Geom::Point3d.new(dx - pt2.x.to_f, dy - pt2.y.to_f, num2)
       pt = KSU::Nfp.snap_out(arr, pt3, inst2)
-      dx = pt.x
-      dy2 = pt.y
+      num5 = pt.x
+      num = pt.y
     end
-    num4 = dx.to_f - dx2
-    num3 = dy2.to_f - dy
+    num4 = num5.to_f - dx
+    num3 = num.to_f - dy
     return if num4.abs < 1e-9 && num3.abs < 1e-9
     delta = Geom::Vector3d.new(num4, num3, 0)
     add_offset(delta)

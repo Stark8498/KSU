@@ -18,18 +18,18 @@ module KSU::Shape
   end
   def band_parts
     return [] unless @sweep_a && @sweep_b
-    x1, x2 = [@sweep_a.x.to_f, @sweep_b.x.to_f].minmax
-    y1, y2 = [@sweep_a.y.to_f, @sweep_b.y.to_f].minmax
-    return [] if (x2 - x1) < 1.mm.to_f && (y2 - y1) < 1.mm.to_f
+    x1, num = [@sweep_a.x.to_f, @sweep_b.x.to_f].minmax
+    y1, num2 = [@sweep_a.y.to_f, @sweep_b.y.to_f].minmax
+    return [] if (num - x1) < 1.mm.to_f && (num2 - y1) < 1.mm.to_f
     @parts.select do |arr|
       bbox = arr[:bbox]
       if @che_do_chon == 1
-        bbox.min.x.to_f >= x1 && bbox.max.x.to_f <= x2 &&
-          bbox.min.y.to_f >= y1 && bbox.max.y.to_f <= y2
+        bbox.min.x.to_f >= x1 && bbox.max.x.to_f <= num &&
+          bbox.min.y.to_f >= y1 && bbox.max.y.to_f <= num2
       else
-        bbox.min.x.to_f <= x2 && bbox.max.x.to_f >= x1 &&
-          bbox.min.y.to_f <= y2 && bbox.max.y.to_f >= y1 &&
-          part_in_rect?(x1, y1, x2, y2, arr)
+        bbox.min.x.to_f <= num && bbox.max.x.to_f >= x1 &&
+          bbox.min.y.to_f <= num2 && bbox.max.y.to_f >= y1 &&
+          part_in_rect?(x1, y1, num, num2, arr)
       end
     end
   end
@@ -221,9 +221,9 @@ module KSU::Shape
     arr = KSU::Sheet.record_for(@sheets, arr2[:sheet])
     number_by_sheet(parts, side_nearest(arr2[:bbox], arr && arr[:bbox]))
   end
-  def side_nearest(_9fda117b, bbox)
-    return nil unless bbox
-    [:tren, :duoi, :trai, :phai].min_by { |s| threshold(_9fda117b, bbox, s).to_f }
+  def side_nearest(_9fda117b, arr)
+    return nil unless arr
+    [:tren, :duoi, :trai, :phai].min_by { |s| threshold(_9fda117b, arr, s).to_f }
   end
   def eligible(parts)
     return parts unless @gioi_han_kich_thuoc
@@ -251,13 +251,13 @@ module KSU::Shape
   end
   def forced_dir
     return nil unless @sweep_a && @sweep_b
-    x1, x2 = [@sweep_a.x.to_f, @sweep_b.x.to_f].minmax
-    y1, y2 = [@sweep_a.y.to_f, @sweep_b.y.to_f].minmax
-    return nil if (x2 - x1) < 1.mm.to_f && (y2 - y1) < 1.mm.to_f
+    x1, num = [@sweep_a.x.to_f, @sweep_b.x.to_f].minmax
+    y1, num2 = [@sweep_a.y.to_f, @sweep_b.y.to_f].minmax
+    return nil if (num - x1) < 1.mm.to_f && (num2 - y1) < 1.mm.to_f
     arr = []
     @sheets.each do |rec|
       sx1, sx2, sy1, sy2 = rect_of(rec)
-      edge_overlaps(sx1, sx2, sy1, sy2, x1, x2, y1, y2).each do |edge, len|
+      edge_overlaps(sx1, sx2, sy1, sy2, x1, num, y1, num2).each do |edge, len|
         next if len <= 0
         arr << { edge: edge, len: len, dist: dist(sx1, sx2, sy1, sy2, edge) }
       end
@@ -387,13 +387,13 @@ module KSU::Shape
       seg_touches_part?(p1, p2, arr)
   end
   def seg_hits_bbox?(p1, p2, bbox)
-    x26, num4 = p1.x.to_f, p1.y.to_f
+    x25, num4 = p1.x.to_f, p1.y.to_f
     x2, y2 = p2.x.to_f, p2.y.to_f
-    x1, x25 = bbox.min.x.to_f, bbox.max.x.to_f
-    y1, y23 = bbox.min.y.to_f, bbox.max.y.to_f
-    return true if x26.between?(x1, x25) && num4.between?(y1, y23)
-    return true if x2.between?(x1, x25) && y2.between?(y1, y23)
-    seg_hits_rect?(x26, num4, x2, y2, x1, y1, x25, y23)
+    x1, num = bbox.min.x.to_f, bbox.max.x.to_f
+    y1, num2 = bbox.min.y.to_f, bbox.max.y.to_f
+    return true if x25.between?(x1, num) && num4.between?(y1, num2)
+    return true if x2.between?(x1, num) && y2.between?(y1, num2)
+    seg_hits_rect?(x25, num4, x2, y2, x1, y1, num, num2)
   end
   def seg_touches_part?(p1, p2, arr)
     return true if point_in_part?(p1.x.to_f, p1.y.to_f, arr)
@@ -407,18 +407,18 @@ module KSU::Shape
     seg_crosses_poly?(p1, p2, poly)
   end
   def seg_crosses_poly?(p1, p2, poly)
-    x27, num2 = p1.x.to_f, p1.y.to_f
+    x26, num2 = p1.x.to_f, p1.y.to_f
     x2, y2 = p2.x.to_f, p2.y.to_f
     n = poly.length
     n.times do |i|
       pt2 = poly[i]
       b = poly[(i + 1) % n]
-      return true if segs_cross?(x27, num2, x2, y2, pt2.x.to_f, pt2.y.to_f, b.x.to_f, b.y.to_f)
+      return true if segs_cross?(x26, num2, x2, y2, pt2.x.to_f, pt2.y.to_f, b.x.to_f, b.y.to_f)
     end
     false
   end
-  def segs_cross?(x28, _60000b16, x2, y2, bx1, by1, bx2, by2)
-    !seg_cross_t(x28, _60000b16, x2, y2, bx1, by1, bx2, by2).nil?
+  def segs_cross?(x27, _60000b16, x2, y2, bx1, by1, bx2, by2)
+    !seg_cross_t(x27, _60000b16, x2, y2, bx1, by1, bx2, by2).nil?
   end
   def band_key(p1, p2, arr)
     return 0.0 if point_in_part?(p1.x.to_f, p1.y.to_f, arr)
@@ -430,23 +430,23 @@ module KSU::Shape
     best || proj_t(p1, p2, arr[:center])
   end
   def first_cross_t(p1, p2, poly)
-    x29, num3 = p1.x.to_f, p1.y.to_f
+    x28, num3 = p1.x.to_f, p1.y.to_f
     x2, y2 = p2.x.to_f, p2.y.to_f
     best = nil
     n = poly.length
     n.times do |i|
       pt2 = poly[i]
       b = poly[(i + 1) % n]
-      thick = seg_cross_t(x29, num3, x2, y2, pt2.x.to_f, pt2.y.to_f, b.x.to_f, b.y.to_f)
+      thick = seg_cross_t(x28, num3, x2, y2, pt2.x.to_f, pt2.y.to_f, b.x.to_f, b.y.to_f)
       best = thick if thick && (best.nil? || thick < best)
     end
     best
   end
-  def seg_cross_t(x210, _60000b16, x2, y2, bx1, by1, bx2, by2)
-    num = (x210 - x2) * (by1 - by2) - (_60000b16 - y2) * (bx1 - bx2)
+  def seg_cross_t(x29, _60000b16, x2, y2, bx1, by1, bx2, by2)
+    num = (x29 - x2) * (by1 - by2) - (_60000b16 - y2) * (bx1 - bx2)
     return nil if num.abs < 1e-9
-    thick = ((x210 - bx1) * (by1 - by2) - (_60000b16 - by1) * (bx1 - bx2)) / num
-    _6facb951 = -((x210 - x2) * (_60000b16 - by1) - (_60000b16 - y2) * (x210 - bx1)) / num
+    thick = ((x29 - bx1) * (by1 - by2) - (_60000b16 - by1) * (bx1 - bx2)) / num
+    _6facb951 = -((x29 - x2) * (_60000b16 - by1) - (_60000b16 - y2) * (x29 - bx1)) / num
     return nil unless thick.between?(0.0, 1.0) && _6facb951.between?(0.0, 1.0)
     thick
   end
@@ -474,13 +474,13 @@ module KSU::Shape
   end
   def draw_sweep_rect(view)
     return unless @sweeping && @sweep_a && @sweep_b
-    x211, x2 = @sweep_a.x.to_f, @sweep_b.x.to_f
+    x210, x2 = @sweep_a.x.to_f, @sweep_b.x.to_f
     _60000b16, y2 = @sweep_a.y.to_f, @sweep_b.y.to_f
     pts = [
-      Geom::Point3d.new([x211, x2].min, [_60000b16, y2].min, @plane_z),
-      Geom::Point3d.new([x211, x2].max, [_60000b16, y2].min, @plane_z),
-      Geom::Point3d.new([x211, x2].max, [_60000b16, y2].max, @plane_z),
-      Geom::Point3d.new([x211, x2].min, [_60000b16, y2].max, @plane_z)
+      Geom::Point3d.new([x210, x2].min, [_60000b16, y2].min, @plane_z),
+      Geom::Point3d.new([x210, x2].max, [_60000b16, y2].min, @plane_z),
+      Geom::Point3d.new([x210, x2].max, [_60000b16, y2].max, @plane_z),
+      Geom::Point3d.new([x210, x2].min, [_60000b16, y2].max, @plane_z)
     ]
     KSU::View.draw_polygon2d(view, KSU::View.to_screen(pts))
     draw_sweep_arrow(view)

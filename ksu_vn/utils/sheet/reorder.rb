@@ -191,24 +191,24 @@ module KSU::Reorder
       _3a4c25ca = KSU::Const::SHEET_V_PADDING / 2.0
       _88097773 = KSU::Const::SHEET_V_PADDING
     end
-    num13 = 0.0
+    num17 = 0.0
     num2 = 0
     box = {}
     _ab80cc5b = nil
     arr6.each do |sheet_type|
       normal = sheet_type.to_s.sub(part_re3, "")
-      num13 += (normal == _ab80cc5b ? _88097773 : _6baff1da) unless _ab80cc5b.nil?
+      num17 += (normal == _ab80cc5b ? _88097773 : _6baff1da) unless _ab80cc5b.nil?
       arr2 = h[sheet_type]
       num2 = [num2, arr2.size].max
       flag = false
-      oy = num13
+      oy = num17
       arr2.each_with_index do |id, fill|
         ox = fill * (sheet_w + KSU::Const::SHEET_H_PADDING)
         arr[id].transformation = Geom::Transformation.translation([ox, oy, 0])
         box[id] = [ox, oy]
         flag = true if bot[id]
       end
-      num13 += _dcd13e53
+      num17 += _dcd13e53
       if flag
         by2 = oy + _dcd13e53 + _3a4c25ca
         arr2.each do |id|
@@ -216,11 +216,11 @@ module KSU::Reorder
           bx2 = box[id][0]
           bot[id].transformation = Geom::Transformation.translation([bx2, by2, 0])
         end
-        num13 = by2 + _dcd13e53
+        num17 = by2 + _dcd13e53
       end
       _ab80cc5b = normal
     end
-    _7bc2ff7d = num13
+    _7bc2ff7d = num17
     _865b7251 = KSU::Settings.get("hien_do_day", false, "xep_hang")
     _620ee4af = KSU::Settings.get("hien_so_van", false, "xep_hang")
     _8be1afcd = KSU::Settings.get("cho_phep_xuong_dong", true, "xep_hang")
@@ -345,12 +345,12 @@ module KSU::Reorder
     type_set = {}
     h.each_value { |g| type_set[g.get_attribute("ABF", "sheet-type").to_s] = true }
     sheet_w, arr5 = sheet_dim(h.values.first, nesting)
-    out = h.map do |id, g|
+    arr3 = h.map do |id, g|
       { id: id, gr: g, x: g.transformation.origin.x.to_f, y: g.transformation.origin.y.to_f }
     end
     tol = arr5 * 0.5
     rows = []
-    ordered = _2ad1250d ? out.sort_by { |ent| ent[:y] } : out.sort_by { |ent| -ent[:y] }
+    ordered = _2ad1250d ? arr3.sort_by { |ent| ent[:y] } : arr3.sort_by { |ent| -ent[:y] }
     ordered.each do |ent|
       if rows.empty? || (rows.last.first[:y] - ent[:y]).abs > tol
         rows << [ent]

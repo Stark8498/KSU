@@ -4,24 +4,24 @@ module KSU::Loop
     cutting = cutting_group(entity)
     if cutting && cutting.respond_to?(:definition) && cutting.definition
       ents = cutting.definition.entities
-      tf = transform * cutting.transformation
+      tr = transform * cutting.transformation
     else
       ents = entity.definition.entities
-      tf = transform
+      tr = transform
     end
     arr3 = ents.grep(Sketchup::Face).map do |font|
-      font.outer_loop.vertices.map { |v| v.position.transform(tf) }
+      font.outer_loop.vertices.map { |v| v.position.transform(tr) }
     end.reject { |arr| arr.length < 3 }
     unless arr3.empty?
       num = arr3.max_by { |arr| area(arr).abs }
       return num if num && num.length >= 3
     end
-    arr2 = loops_of(ents, tf)
+    arr2 = loops_of(ents, tr)
     unless arr2.empty?
       num = arr2.max_by { |arr| area(arr).abs }
       return num if num && num.length >= 3
     end
-    _1bba05d9 = hull_of(ents, tf)
+    _1bba05d9 = hull_of(ents, tr)
     return _1bba05d9 if _1bba05d9
     box = entity.definition.bounds
     _7db17b8e(box).map { |i| box.corner(i).transform(transform) }
@@ -46,10 +46,10 @@ module KSU::Loop
       return { outer: outer_pts(entity, transform), holes: [] }
     end
     ents = cutting.definition.entities
-    tf = transform * cutting.transformation
-    loops = curve_loops(ents, tf).select { |arr| arr[:closed] }
+    tr = transform * cutting.transformation
+    loops = curve_loops(ents, tr).select { |arr| arr[:closed] }
     if loops.empty?
-      loops_of(ents, tf).each do |pts|
+      loops_of(ents, tr).each do |pts|
         next if pts.length < 3
         loops << { pts: pts, outer: false, area: area(pts).abs }
       end
@@ -95,11 +95,11 @@ module KSU::Loop
     return [] unless entity && entity.valid? && entity.respond_to?(:definition) && entity.definition
     cutting = cutting_group(entity)
     return [] unless cutting && cutting.respond_to?(:definition) && cutting.definition
-    tf = transform * cutting.transformation
+    tr = transform * cutting.transformation
     segments = []
     cutting.definition.entities.each do |ent|
       next unless ent.is_a?(Sketchup::Edge)
-      segments << [ent.start.position.transform(tf), ent.end.position.transform(tf)]
+      segments << [ent.start.position.transform(tr), ent.end.position.transform(tr)]
     end
     return [] if segments.empty?
     loops = build_loops(segments)
@@ -150,9 +150,9 @@ module KSU::Loop
   def hide_decor(nesting)
     set_hidden(nesting, true)
   end
-  def unhide(out)
-    return unless out
-    out.each { |ent| ent.hidden = false if ent && ent.valid? && ent.respond_to?(:hidden?) && ent.hidden? }
+  def unhide(arr)
+    return unless arr
+    arr.each { |ent| ent.hidden = false if ent && ent.valid? && ent.respond_to?(:hidden?) && ent.hidden? }
   end
   def show_decor(nesting)
     set_hidden(nesting, false)

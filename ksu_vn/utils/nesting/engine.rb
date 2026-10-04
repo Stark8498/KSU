@@ -39,15 +39,15 @@ module KSU::Nesting
       @on_job_progress = on_job_progress
       @on_job_place_progress = on_job_place_progress
       @h10 = {}
-      out = jobs.map do |j|
+      arr2 = jobs.map do |j|
         "{w:#{j[:w]},h:#{j[:h]},w2:#{j[:w2] || 0},h2:#{j[:h2] || 0}," \
         "sp:#{j[:sp]},rot:#{j[:rot].inspect}," \
         "holes:#{!!j[:holes]},parts:#{j[:parts].inspect}," \
         "two:#{(j[:two] || []).inspect},ord:#{(j[:ord] || []).inspect}," \
         "pair:#{j[:pair] != false}}"
       end
-      @str2 = "startJobs([#{out.join(',')}]);"
-      @num16 = out.size
+      @str2 = "startJobs([#{arr2.join(',')}]);"
+      @num16 = arr2.size
       @flag47 = true
       run_pending
     end

@@ -200,9 +200,9 @@ module KSU::Query
       next [0.0, 0.0] if len < 1e-6
       nx = -ry / len
       ny = rx / len
-      x = (pt2.x.to_f + b.x.to_f) / 2.0
-      y = (pt2.y.to_f + b.y.to_f) / 2.0
-      if (px - x) * nx + (py - y) * ny > 0
+      num6 = (pt2.x.to_f + b.x.to_f) / 2.0
+      num4 = (pt2.y.to_f + b.y.to_f) / 2.0
+      if (px - num6) * nx + (py - num4) * ny > 0
         nx = -nx
         ny = -ny
       end

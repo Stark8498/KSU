@@ -2672,7 +2672,7 @@
   },
   {
    "ns": "KSU::Preset",
-   "m": "cfg",
+   "m": "_6796ef4d",
    "f": "ksu_vn/utils/preset/field.rb",
    "l": 15
   },

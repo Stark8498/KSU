@@ -6,7 +6,7 @@ module KSU::Draw
     @m_left, @m_right, @top, @m_bottom = KSU::Nest.margins_of(cfg).map { |v| v.mm }
     @errors = []
     @sheet_ix = 0
-    @num = 0
+    @_3cc0311c = 0
     @root = nil
   end
   def ensure_root(model)
@@ -27,7 +27,7 @@ module KSU::Draw
       layer0 = model.layers["Layer0"]
       model.active_layer = layer0 if layer0 && model.active_layer != layer0
       ensure_root(model)
-      strip_y = -(@num + job[:slots]) * (@h + KSU::Const::SHEET_V_PADDING)
+      strip_y = -(@_3cc0311c + job[:slots]) * (@h + KSU::Const::SHEET_V_PADDING)
       KSU::Sheet._edd17adf(@root.entities, job[:type][:name], strip_y, @h)
       @drawn_panels = []
       @drawn_sheets = []
@@ -41,8 +41,8 @@ module KSU::Draw
         arr2 << gr
         flag = true if has_bottom
       end
-      @num += job[:slots]
-      @num += 1 if flag && job[:slots] == 1
+      @_3cc0311c += job[:slots]
+      @_3cc0311c += 1 if flag && job[:slots] == 1
       flip_drawn_panels
       merge_cut_lines(@drawn_sheets)
       place_root
@@ -402,9 +402,9 @@ module KSU::Draw
     { x1: arr2.min, y1: arr.max, x2: arr2.max, y2: arr.min }
   end
   def _4afb97a0(defn, entity)
-    tol = 0.001.mm
-    entity[:x1] < defn[:x1] - tol || entity[:x2] > defn[:x2] + tol ||
-      entity[:y1] > defn[:y1] + tol || entity[:y2] < defn[:y2] - tol
+    num = 0.001.mm
+    entity[:x1] < defn[:x1] - num || entity[:x2] > defn[:x2] + num ||
+      entity[:y1] > defn[:y1] + num || entity[:y2] < defn[:y2] - num
   end
 end
 KSU::Nest.extend(KSU::Draw)

@@ -73,34 +73,34 @@ module KSU::Detail
       instance.transform!(tr2 * inv * tr2.inverse)
     end
   end
-  def build_panel(panel, grp, nesting = nil)
-    return false unless panel && panel.valid? && grp && grp.valid?
+  def build_panel(panel, vec, nesting = nil)
+    return false unless panel && panel.valid? && vec && vec.valid?
     cutting = cutting_group(panel)
     return false unless cutting && cutting.valid? && cutting.respond_to?(:definition) && cutting.definition
     tr = cutting.transformation
     pt = Geom::Transformation.axes(tr.origin, tr.xaxis.normalize, tr.yaxis.normalize, tr.zaxis.normalize)
     part_tf = pt.inverse
-    unscale(grp)
-    tf3d = tf_of(grp)
-    b2 = board_faces(grp, tf3d)
+    unscale(vec)
+    tf3d = tf_of(vec)
+    b2 = board_faces(vec, tf3d)
     return false unless b2
-    vec2 = front_face(grp, b2)
+    vec2 = front_face(vec, b2)
     return false unless vec2 && vec2.valid?
-    tf2 = align_tf(grp, vec2, tf3d)
+    tf2 = align_tf(vec, vec2, tf3d)
     part_tf = tf2 if tf2
-    max_eb = edgeband_spec(grp)
+    max_eb = edgeband_spec(vec)
     small_size = short_side(vec2, tf3d)
     arr2 = arrow_sizes(small_size)
-    rec = cut_loops(grp, vec2, part_tf, max_eb[0], arr2[0], arr2[1])
+    rec = cut_loops(vec, vec2, part_tf, max_eb[0], arr2[0], arr2[1])
     return false if rec[:loops].empty?
     lines_grp, tr2 = build_lines_group(panel, cutting, tr, rec[:loops])
     return false unless lines_grp
     draw_edgeband(panel, tr2.inverse, rec[:edge_band_lines])
     save_edgeband_desc(panel, rec[:edge_band_desc], tr2)
-    faces = split_by_face(grp, vec2, tf3d)
+    faces = split_by_face(vec, vec2, tf3d)
     draw_bands(panel, faces[:up], tr2 * part_tf)
-    save_drills_desc(panel, side_drills(grp, vec2, part_tf), tr2)
-    holes = label_opts(grp, faces[:label], vec2, tf3d, max_eb[1], arr2)
+    save_drills_desc(panel, side_drills(vec, vec2, part_tf), tr2)
+    holes = label_opts(vec, faces[:label], vec2, tf3d, max_eb[1], arr2)
     draw_holes(panel, tr2 * part_tf, holes, false)
     if nesting
       if faces[:bottom].empty?

@@ -52,11 +52,11 @@ module KSU::Thongke::Xuat
     rows = [{ cells: CHI_PHI_HEAD.map { |h| [h, ST_HEAD] } }]
     arr2 = []
     (cls2["sections"] || []).each do |arr3|
-      num9 = rows.size + 1
-      arr2 << "H#{num9}"
+      num13 = rows.size + 1
+      arr2 << "H#{num13}"
       items = arr3["items"] || []
-      _a925e834 = num9 + 1
-      formula = items.empty? ? nil : "SUM(H#{_a925e834}:H#{num9 + items.size})"
+      _a925e834 = num13 + 1
+      formula = items.empty? ? nil : "SUM(H#{_a925e834}:H#{num13 + items.size})"
       rows << { cells: build_cells(arr3["title"], arr3["tong"], formula) }
       items.each_with_index do |arr, i|
         half = _a925e834 + i
@@ -110,10 +110,10 @@ module KSU::Thongke::Xuat
     "<c r=\"#{pt}\" s=\"#{style_ix}\" t=\"inlineStr\"><is><t xml:space=\"preserve\">#{xml_escape(text)}</t></is></c>"
   end
   def self._278dd154(arr)
-    out = arr.each_with_index.map { |w, i|
+    arr2 = arr.each_with_index.map { |w, i|
       "<col min=\"#{i + 1}\" max=\"#{i + 1}\" width=\"#{w}\" customWidth=\"1\"/>"
     }.join
-    "<cols>#{out}</cols>"
+    "<cols>#{arr2}</cols>"
   end
   def self._4ae1e5d9(sheet)
     _bd6ab6e1 = XML_HEAD + "<worksheet xmlns=\"#{NS_MAIN}\">"
@@ -132,20 +132,20 @@ module KSU::Thongke::Xuat
     _bd6ab6e1 + "</sheetData></worksheet>"
   end
   def self._46b90971(sheets)
-    out = sheets.each_with_index.map { |sheet, i|
+    arr2 = sheets.each_with_index.map { |sheet, i|
       "<sheet name=\"#{xml_escape(sheet[:name])}\" sheetId=\"#{i + 1}\" r:id=\"rId#{i + 1}\"/>"
     }.join
-    XML_HEAD + "<workbook xmlns=\"#{NS_MAIN}\" xmlns:r=\"#{NS_REL}\"><sheets>#{out}</sheets><calcPr fullCalcOnLoad=\"1\"/></workbook>"
+    XML_HEAD + "<workbook xmlns=\"#{NS_MAIN}\" xmlns:r=\"#{NS_REL}\"><sheets>#{arr2}</sheets><calcPr fullCalcOnLoad=\"1\"/></workbook>"
   end
   def self._e4092e6c(sheets)
-    out = sheets.each_with_index.map { |_part, i|
+    arr = sheets.each_with_index.map { |_part, i|
       "<Relationship Id=\"rId#{i + 1}\" Type=\"#{NS_REL}/worksheet\" Target=\"worksheets/sheet#{i + 1}.xml\"/>"
     }.join
-    out += "<Relationship Id=\"rId#{sheets.size + 1}\" Type=\"#{NS_REL}/styles\" Target=\"styles.xml\"/>"
-    XML_HEAD + "<Relationships xmlns=\"#{NS_PKG}\">#{out}</Relationships>"
+    arr += "<Relationship Id=\"rId#{sheets.size + 1}\" Type=\"#{NS_REL}/styles\" Target=\"styles.xml\"/>"
+    XML_HEAD + "<Relationships xmlns=\"#{NS_PKG}\">#{arr}</Relationships>"
   end
   def self._7fb3dc0f(sheets)
-    out = sheets.each_with_index.map { |_part, i|
+    arr = sheets.each_with_index.map { |_part, i|
       "<Override PartName=\"/xl/worksheets/sheet#{i + 1}.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>"
     }.join
     XML_HEAD +
@@ -154,7 +154,7 @@ module KSU::Thongke::Xuat
     "<Default Extension=\"xml\" ContentType=\"application/xml\"/>" \
     "<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>" \
     "<Override PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml\"/>" \
-    "#{out}</Types>"
+    "#{arr}</Types>"
   end
   def self.xf(fmt, font_full, fill, align, flag = false)
     flag2 = flag ? " wrapText=\"1\"" : ""

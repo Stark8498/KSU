@@ -50,7 +50,7 @@ module KSU::Overlay
     return unless view && nesting && nesting.valid?
     entries = entries_for(nesting)
     return if entries.empty?
-    tr = nesting.transformation
+    tr2 = nesting.transformation
     num = 0.2.mm
     flag = false
     entries.each do |ent|
@@ -62,10 +62,10 @@ module KSU::Overlay
         view.drawing_color = KSU::View.warning_color
         flag = true
       end
-      tr7 = tr * sheet.transformation
+      tr = tr2 * sheet.transformation
       ent[:polylines].each do |pts|
         transform = pts.map do |pt2|
-          pt = pt2.transform(tr7)
+          pt = pt2.transform(tr)
           Geom::Point3d.new(pt.x, pt.y, pt.z + num)
         end
         view.draw(GL_LINE_STRIP, transform)

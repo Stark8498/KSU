@@ -5,15 +5,15 @@ module KSU::Sheet
   def self.sheet_list(nesting, include_bottom: false)
     sheets = []
     return sheets unless nesting && nesting.valid?
-    tr = nesting.transformation
+    tr2 = nesting.transformation
     nesting.definition.entities.each do |sheet|
       next unless sheet.respond_to?(:name) && sheet.name.to_s.downcase.include?("sheet")
       next if !include_bottom && bottom_sheet?(sheet)
-      transform = tr * sheet.transformation
+      transform = tr2 * sheet.transformation
       bd2 = border_of(sheet)
       if bd2 && bd2.respond_to?(:definition) && bd2.definition
-        tr6 = transform * bd2.transformation
-        arr = (0..7).map { |i| tr6 * bd2.definition.bounds.corner(i) }
+        tr = transform * bd2.transformation
+        arr = (0..7).map { |i| tr * bd2.definition.bounds.corner(i) }
       else
         bb = sheet.definition.bounds
         arr = (0..7).map { |i| bb.corner(i).transform(transform) }

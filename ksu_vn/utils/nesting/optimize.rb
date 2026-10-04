@@ -114,24 +114,24 @@ module KSU::Optimize
   def add_sheets(want, sheets)
     arr = []
     return arr if want <= 0
-    anchor = rightmost(sheets)
-    return arr unless anchor
-    arr2 = KSU::Sheet.row_of(anchor, sheet_recs)
-    grp3 = arr2.last || anchor
+    grp = rightmost(sheets)
+    return arr unless grp
+    arr2 = KSU::Sheet.row_of(grp, sheet_recs)
+    grp3 = arr2.last || grp
     rec = sheet_recs.find { |s| s[:instance] == grp3 }
     return arr unless rec
     ix = arr2.index(grp3) || (arr2.length - 1)
     pt = KSU::Sheet.row_offset(rec, arr2, ix, sheet_recs)
     base_tr = grp3.transformation
-    labels = KSU::Sheet.sheet_labels(anchor, @nesting)
-    pt3 = anchor.transformation.origin
-    str = KSU::Sheet.sheet_no(anchor.name.to_s)
+    labels = KSU::Sheet.sheet_labels(grp, @nesting)
+    pt3 = grp.transformation.origin
+    str = KSU::Sheet.sheet_no(grp.name.to_s)
     KSU::Sheet.shift_sheets(@nesting, str + 1, want) if str
     want.times do |k|
       n = k + 1
       vec = Geom::Vector3d.new(pt.x * n, pt.y * n, pt.z * n)
       tr = Geom::Transformation.translation(vec) * base_tr
-      grp2 = KSU::Sheet.clone_sheet_shell(anchor, tr, @nesting)
+      grp2 = KSU::Sheet.clone_sheet_shell(grp, tr, @nesting)
       next unless grp2 && grp2.valid?
       new_id = str ? str + n : max_sheet_no
       str2 = "sheet-#{new_id}"
@@ -144,10 +144,10 @@ module KSU::Optimize
     end
     arr
   end
-  def rightmost(out)
+  def rightmost(arr3)
     best = nil
     max_x = nil
-    out.each do |s|
+    arr3.each do |s|
       next unless s && s.valid?
       rec = sheet_recs.find { |i| i[:instance] == s }
       next unless rec

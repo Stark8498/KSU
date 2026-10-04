@@ -73,9 +73,9 @@ module KSU::Mark
     hside, vside = mark_corner(bot, nesting)
     return nil unless hside
     flag2 = (hside == :right) ? :left : :right
-    dx = (flag2 == :left) ? _3e7613f3 : -_3e7613f3
-    dy = (vside == :bottom) ? arr : -arr
-    [dx.to_f, dy.to_f]
+    flag3 = (flag2 == :left) ? _3e7613f3 : -_3e7613f3
+    flag = (vside == :bottom) ? arr : -arr
+    [flag3.to_f, flag.to_f]
   end
   def _5134c34c(bb2, bb, _3e7613f3, _9ba1a361, hside, vside, _7bb0b74c, _5e0b9d0f, _16d547ab, _740b67b8, _08bd07cc, _29b02ee7, _e9f5ddbc, _1aa82cff)
     _18feedaf = _16d547ab - _7bb0b74c
@@ -91,17 +91,17 @@ module KSU::Mark
     flag3 = (vside == :bottom) ? (num2 + flag) : (num2 - flag - _1aa82cff)
     [flag4, flag3]
   end
-  def _1c44e717(_f4e85c51, sheet, tr)
-    return nil unless _f4e85c51 && sheet && sheet.valid? && tr && tr.valid?
-    bd2 = border_of(sheet)
-    bbox = (bd2 && bd2.respond_to?(:bounds) && bd2.bounds.valid?) ? bd2.bounds : sheet.definition.bounds
+  def _1c44e717(_f4e85c51, grp, tr)
+    return nil unless _f4e85c51 && grp && grp.valid? && tr && tr.valid?
+    bd2 = border_of(grp)
+    bbox = (bd2 && bd2.respond_to?(:bounds) && bd2.bounds.valid?) ? bd2.bounds : grp.definition.bounds
     px = (bbox.min.x.to_f + bbox.max.x.to_f) / 2.0
     pt = Geom::Transformation.rotation(Geom::Point3d.new(px, 0, 0), Geom::Vector3d.new(0, 1, 0), Math::PI)
     pt * _f4e85c51
   end
-  def mirror_tf(panel, sheet, tr)
-    return nil unless panel && panel.valid?
-    _1c44e717(panel.transformation, sheet, tr)
+  def mirror_tf(grp, sheet, tr)
+    return nil unless grp && grp.valid?
+    _1c44e717(grp.transformation, sheet, tr)
   end
   def offset_polys(sheet, nesting)
     bot = bottom_of(sheet, nesting)

@@ -353,13 +353,13 @@ class KSU::Netcatcuoi
   end
   def drag_rect
     return nil unless @pt9 && @pt
-    x212 = @pt9.x.to_f
+    x211 = @pt9.x.to_f
     num2 = @pt9.y.to_f
     x2 = @pt.x.to_f
     y2 = @pt.y.to_f
     tol = 0.01.mm.to_f
-    return nil if (x212 - x2).abs <= tol && (num2 - y2).abs <= tol
-    points({ x1: [x212, x2].min, y1: [num2, y2].min, x2: [x212, x2].max, y2: [num2, y2].max })
+    return nil if (x211 - x2).abs <= tol && (num2 - y2).abs <= tol
+    points({ x1: [x211, x2].min, y1: [num2, y2].min, x2: [x211, x2].max, y2: [num2, y2].max })
   end
   def big_enough?(pts)
     bbox = Geom::BoundingBox.new

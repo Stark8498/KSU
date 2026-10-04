@@ -63,12 +63,12 @@ module KSU::Geom
   end
   def self.sat_mtv(poly_a, poly_b, gap2)
     return KSU::Method.sat_mtv(poly_a, poly_b, gap2) if defined?(KSU::Method)
-    out = edge_normals(poly_a) + edge_normals(poly_b)
-    return nil if out.empty?
+    arr = edge_normals(poly_a) + edge_normals(poly_b)
+    return nil if arr.empty?
     g = gap2.to_f
     min_overlap = Float::INFINITY
     nx = ny = 0.0
-    out.each do |ax, ay|
+    arr.each do |ax, ay|
       a_lo, a_hi = project_range(poly_a, ax, ay)
       b_lo, b_hi = project_range(poly_b, ax, ay)
       overlap = [a_hi, b_hi].min - [a_lo, b_lo].max + g

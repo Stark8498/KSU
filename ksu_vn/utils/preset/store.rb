@@ -55,10 +55,10 @@ module KSU::Store
   def apply_settings(s, except: nil)
     return unless @field_defs
     @field_defs.each_value do |keys|
-      keys.each do |key, job|
+      keys.each do |key, _fab4f06f|
         next if except&.include?(key)
         next if KSU::Preset.global_key?(key)
-        fmt = job.is_a?(Array) ? job.first : job
+        fmt = _fab4f06f.is_a?(Array) ? _fab4f06f.first : _fab4f06f
         conv2 = case fmt
                when :mm then ->(v) { v.to_f.mm }
                when nil
@@ -106,12 +106,12 @@ module KSU::Store
     @layout_memo = nil
   end
   def draw_presets(view)
-    return unless KSU::Preset.cfg[:hien_preset]
+    return unless KSU::Preset._6796ef4d[:hien_preset]
     return unless @state && @state[:sections]&.any?
-    slots = slot_rects
+    _9aa9564d = slot_rects
     opac = opacity
     prev = nil
-    slots.each do |slot|
+    _9aa9564d.each do |slot|
       if slot[:type] == :card
         draw_round_rect(view, slot[:rect], radius, border: nil, fill: palette[:card] + [opac[:normal]], line_width: 1)
         prev = nil
@@ -128,7 +128,7 @@ module KSU::Store
     end
   end
   def hover_preset(x, y, view)
-    return unless KSU::Preset.cfg[:hien_preset]
+    return unless KSU::Preset._6796ef4d[:hien_preset]
     return unless @state && @state[:sections]&.any?
     prev2 = @hover_flat
     prev_sec = @hover_sec
@@ -156,7 +156,7 @@ module KSU::Store
     view.invalidate if prev2 != @hover_flat || prev_sec != @hover_sec || prev_tog != @hover_toggle
   end
   def hit_preset(x, y)
-    return unless KSU::Preset.cfg[:hien_preset]
+    return unless KSU::Preset._6796ef4d[:hien_preset]
     return unless @state
     slot_rects.each do |slot|
       next unless slot[:type] == :button

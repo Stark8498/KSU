@@ -41,8 +41,8 @@ module KSU::Corner
     m_left, m_right, top, m_bottom = KSU::Avail.sides_for(sheet, gap_for)
     width_mm = rec[:bbox].width.to_f - m_left - m_right
     height_mm = rec[:bbox].height.to_f - top - m_bottom
-    x = start_x > 0 ? m_left : m_right
-    y = ly0 > 0 ? m_bottom : top
+    flag2 = start_x > 0 ? m_left : m_right
+    flag = ly0 > 0 ? m_bottom : top
     if (v = KSU::Sheet.edit_offset(sheet))
       px += (start_x > 0 ? [v[0], 0.0].max : [v[0], 0.0].min)
       py += (ly0 > 0 ? [v[1], 0.0].max : [v[1], 0.0].min)
@@ -50,8 +50,8 @@ module KSU::Corner
       height_mm -= v[1].abs
       if KSU::Avail.two_sided?(sheet)
         g = KSU::Avail.two_sided_margin.mm.to_f
-        x = g if start_x > 0 ? v[0] > 0 : v[0] < 0
-        y = g if ly0 > 0 ? v[1] > 0 : v[1] < 0
+        flag2 = g if start_x > 0 ? v[0] > 0 : v[0] < 0
+        flag = g if ly0 > 0 ? v[1] > 0 : v[1] < 0
       end
     end
     base_tr = nesting.transformation * sheet.transformation
@@ -72,12 +72,12 @@ module KSU::Corner
     arr4 = nest_in_holes(arr) || arr
     deadline ||= Time.now + 4.0
     if flag3
-      local_polys = to_local_polys(arr4, base_tr, start_x, ly0, px, py, x, gap2, y)
+      local_polys = to_local_polys(arr4, base_tr, start_x, ly0, px, py, flag2, gap2, flag)
       arr2 = compact(local_polys, gap2, deadline)
     else
       arr2 = KSU::Nesting.pack(arr4, width_mm, height_mm, gap2)
       if arr2.empty? || arr2.size < arr4.size
-        local_polys = to_local_polys(arr4, base_tr, start_x, ly0, px, py, x, gap2, y)
+        local_polys = to_local_polys(arr4, base_tr, start_x, ly0, px, py, flag2, gap2, flag)
         arr2 = compact(local_polys, gap2, deadline)
       end
     end
@@ -86,8 +86,8 @@ module KSU::Corner
       num5 = start_x > 0 ? members[:bbox].min.x.to_f : members[:bbox].max.x.to_f
       num4 = ly0 > 0 ? members[:bbox].min.y.to_f : members[:bbox].max.y.to_f
       { members: members[:members] || [members[:panel]],
-        dx: px + start_x * (x + members[:lx]) - num5,
-        dy: py + ly0 * (y + members[:ly]) - num4 }
+        dx: px + start_x * (flag2 + members[:lx]) - num5,
+        dy: py + ly0 * (flag + members[:ly]) - num4 }
     end
     { base_tr: base_tr, moves: moves }
   end
@@ -103,8 +103,8 @@ module KSU::Corner
     b = rec[:top_corners][(edge_ix + 1) % 4]
     return nil unless pt && b
     center = rec[:bbox].center
-    x = (pt.x.to_f + b.x.to_f) * 0.5
-    y = (pt.y.to_f + b.y.to_f) * 0.5
+    num11 = (pt.x.to_f + b.x.to_f) * 0.5
+    num9 = (pt.y.to_f + b.y.to_f) * 0.5
     num4 = (b.x.to_f - pt.x.to_f).abs <= (b.y.to_f - pt.y.to_f).abs
     pt3 = rec[:bbox].min
     m_left, m_right, top, m_bottom = KSU::Avail.sides_for(sheet, gap_for)
@@ -150,7 +150,7 @@ module KSU::Corner
     end
     return nil if arr2.empty?
     if num4
-      start_x = x < center.x.to_f ? 1 : -1
+      start_x = num11 < center.x.to_f ? 1 : -1
       num7 = pt.x.to_f + (start_x > 0 ? [num2, 0.0].max : [num2, 0.0].min)
       flag2 = start_x > 0 ? m_left : m_right
       flag2 = g if g && (start_x > 0 ? num2 > 0 : num2 < 0)
@@ -158,7 +158,7 @@ module KSU::Corner
       _20704b8d = [(height_mm - arr4) * 0.5, 0.0].max
       num5 = pt3.y.to_f + (g && num > 0 ? g : m_bottom) + [num, 0.0].max + _20704b8d
     else
-      ly0 = y < center.y.to_f ? 1 : -1
+      ly0 = num9 < center.y.to_f ? 1 : -1
       num8 = pt.y.to_f + (ly0 > 0 ? [num, 0.0].max : [num, 0.0].min)
       flag = ly0 > 0 ? m_bottom : top
       flag = g if g && (ly0 > 0 ? num > 0 : num < 0)
@@ -232,12 +232,12 @@ module KSU::Corner
   end
   def nest_in_holes(panels)
     ordered = panels.sort_by { |arr| -(arr[:w] * arr[:h]) }
-    tol = 1e-4
+    num = 1e-4
     ents3 = {}
     h24 = {}
     ordered.each_with_index do |arr, i|
       (0...i).each do |j|
-        next unless box_inside?(arr[:bbox], ordered[j][:bbox], tol)
+        next unless box_inside?(arr[:bbox], ordered[j][:bbox], num)
         next unless inside_hole?(arr, ordered[j], h24)
         ents3[arr[:panel].object_id] = ordered[j][:panel].object_id
         break
@@ -392,8 +392,8 @@ module KSU::Corner
       end
       rings = nfp_rings(arr, half, cache)
       if rings
-        pt = _84160c85(half)[0]
-        _23505ef9 = [pt[0] - half[:su] + arr[:su], pt[1] - half[:sv] + arr[:sv]]
+        arr3 = _84160c85(half)[0]
+        _23505ef9 = [arr3[0] - half[:su] + arr[:su], arr3[1] - half[:sv] + arr[:sv]]
         if in_rings?(_23505ef9, rings)
           num = 0.0
           break

@@ -177,10 +177,10 @@ class KSU::Chontam
         entity = color[:entity]
         next unless entity.valid?
         pts = (0..7).map { |i| entity.definition.bounds.corner(i).transform(color[:transform]) }
-        x1, x2 = pts.map { |pt2| pt2.x.to_f }.minmax
-        y1, y2 = pts.map { |pt2| pt2.y.to_f }.minmax
-        next unless num2.between?(x1, x2) && num.between?(y1, y2)
-        _5fb96e91 = (x2 - x1) * (y2 - y1)
+        x1, arr2 = pts.map { |pt2| pt2.x.to_f }.minmax
+        y1, arr3 = pts.map { |pt2| pt2.y.to_f }.minmax
+        next unless num2.between?(x1, arr2) && num.between?(y1, arr3)
+        _5fb96e91 = (arr2 - x1) * (arr3 - y1)
         next unless _5fb96e91 < best_a
         best_a = _5fb96e91
         best = entity

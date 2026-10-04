@@ -37,18 +37,18 @@ module KSU::Flip
     KSU::Cutting.partner_panel(nesting, panel)
   end
   def hit_targets(nesting)
-    out = []
-    return out unless nesting && nesting.valid?
+    arr = []
+    return arr unless nesting && nesting.valid?
     nesting.definition.entities.each do |sheet|
       next unless KSU::Sheet.sheet?(sheet)
       next unless KSU::Sheet.bottom_sheet?(sheet)
       transform = nesting.transformation * sheet.transformation
       sheet.definition.entities.each do |grp|
         next unless KSU.container?(grp) && KSU::Cutting.bottom_face?(grp)
-        out << { panel: grp, fill: KSU::Cutting.outline(grp, transform * grp.transformation) }
+        arr << { panel: grp, fill: KSU::Cutting.outline(grp, transform * grp.transformation) }
       end
     end
-    out
+    arr
   end
   def hit_panel(view, src, x, y)
     src.each do |bf|

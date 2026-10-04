@@ -12,7 +12,7 @@ module KSU::Field
     @flag62 = false
   end
   def draw_fields(view)
-    return unless KSU::Preset.cfg[:hien_setting]
+    return unless KSU::Preset._6796ef4d[:hien_setting]
     return unless @field_defs
     @view_ref = view
     items = visible_fields
@@ -94,7 +94,7 @@ module KSU::Field
     end
   end
   def hover_field(x, y, view)
-    return false unless KSU::Preset.cfg[:hien_setting]
+    return false unless KSU::Preset._6796ef4d[:hien_setting]
     return false unless @field_defs
     @view_ref = view
     prev_field = @hover_ix
@@ -133,7 +133,7 @@ module KSU::Field
         end
       end
     end
-    return false unless KSU::Preset.cfg[:hien_setting]
+    return false unless KSU::Preset._6796ef4d[:hien_setting]
     return false unless @field_defs
     view ||= @view_ref
     return false unless view
@@ -286,27 +286,27 @@ module KSU::Field
   end
   private
   def size
-    KSU::Preset.cfg[:font_size]
+    KSU::Preset._6796ef4d[:font_size]
   end
   def radius
-    KSU::Preset.cfg[:radius]
+    KSU::Preset._6796ef4d[:radius]
   end
   def font_name
-    KSU::Preset.cfg[:font]
+    KSU::Preset._6796ef4d[:font]
   end
   def _8adbceca(view)
-    cfg = KSU::Preset.cfg
-    cfg[:text_y] ||= begin
-      topts = { size: cfg[:font_size], font: cfg[:font] }
+    _6796ef4d = KSU::Preset._6796ef4d
+    _6796ef4d[:text_y] ||= begin
+      topts = { size: _6796ef4d[:font_size], font: _6796ef4d[:font] }
       bnds = view.text_bounds(Geom::Point3d.new(0, 0, 0), "Ag", topts)
       bnds.height / 2.0
     end
   end
   def gap
-    KSU::Preset.cfg[:gap]
+    KSU::Preset._6796ef4d[:gap]
   end
   def opacity
-    KSU::Preset.cfg[:opacity]
+    KSU::Preset._6796ef4d[:opacity]
   end
   def row_size
     { width: size * 22 + 5, height: size * 2.85 }
@@ -453,8 +453,8 @@ module KSU::Field
     items = []
     @field_defs.each do |sec3, keys|
       flag = true
-      keys.each do |key, job|
-        arr = job.is_a?(Array) ? job : [job, key.to_s.tr("_", " ")]
+      keys.each do |key, _fab4f06f|
+        arr = _fab4f06f.is_a?(Array) ? _fab4f06f : [_fab4f06f, key.to_s.tr("_", " ")]
         fmt = arr[0]
         title = arr[1]
         cond = arr[2]

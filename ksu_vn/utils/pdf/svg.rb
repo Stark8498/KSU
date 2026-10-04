@@ -3,23 +3,23 @@ module KSU::Svg
   def _3c7812cc(svg, font, font_bold, used, used_bold)
     ops = ["0 0 0 rg", "0 0 0 RG", "2 J", "0 j"]
     arr2 = svg.scan(/<g\s[^>]*>|<\/g>|<rect\s[^>]*\/>|<line\s[^>]*\/>|<path\s[^>]*\/>|<polygon\s[^>]*\/>|<circle\s[^>]*\/>|<text\s[^>]*>.*?<\/text>/m)
-    arr2.each do |node|
-      if node.start_with?("<g")
-        ops.concat(_a846d664(node))
-      elsif node.start_with?("</g")
+    arr2.each do |str|
+      if str.start_with?("<g")
+        ops.concat(_a846d664(str))
+      elsif str.start_with?("</g")
         ops << "Q"
-      elsif node.start_with?("<rect")
-        ops.concat(rect(node))
-      elsif node.start_with?("<line")
-        ops.concat(axis(node))
-      elsif node.start_with?("<path")
-        ops.concat(path(node))
-      elsif node.start_with?("<polygon")
-        ops.concat(polygon(node))
-      elsif node.start_with?("<circle")
-        ops.concat(circle(node))
-      elsif node.start_with?("<text")
-        ops.concat(text(node, font, font_bold, used, used_bold))
+      elsif str.start_with?("<rect")
+        ops.concat(rect(str))
+      elsif str.start_with?("<line")
+        ops.concat(axis(str))
+      elsif str.start_with?("<path")
+        ops.concat(path(str))
+      elsif str.start_with?("<polygon")
+        ops.concat(polygon(str))
+      elsif str.start_with?("<circle")
+        ops.concat(circle(str))
+      elsif str.start_with?("<text")
+        ops.concat(text(str, font, font_bold, used, used_bold))
       end
     end
     ops
@@ -108,7 +108,7 @@ module KSU::Svg
     pre + ops + [opac]
   end
   def axis(node)
-    x220 = attr(node, "x1")
+    x219 = attr(node, "x1")
     _60000b16 = attr(node, "y1")
     x2 = attr(node, "x2")
     y2 = attr(node, "y2")
@@ -119,7 +119,7 @@ module KSU::Svg
     len2d = dash(node)
     ops << "0 J" if len2d && !cap
     ops << len2d if len2d
-    ops.concat(["#{n(x220)} #{n(_60000b16)} m", "#{n(x2)} #{n(y2)} l", "S"])
+    ops.concat(["#{n(x219)} #{n(_60000b16)} m", "#{n(x2)} #{n(y2)} l", "S"])
     cap || len2d ? ["q"] + ops + ["Q"] : ops
   end
   def path(node)
@@ -157,16 +157,16 @@ module KSU::Svg
     ops << "h"
     pre + ops + [opac]
   end
-  def text(node, font, font_bold, used, used_bold)
-    x = attr(node, "x").to_f
-    y = attr(node, "y").to_f
-    rsz = attr(node, "font-size").to_f
-    flag = node.include?("font-weight=\"bold\"")
-    anchor = attr(node, "text-anchor") || "start"
+  def text(arr, font, font_bold, used, used_bold)
+    x = attr(arr, "x").to_f
+    y = attr(arr, "y").to_f
+    rsz = attr(arr, "font-size").to_f
+    flag = arr.include?("font-weight=\"bold\"")
+    anchor = attr(arr, "text-anchor") || "start"
     font_full = flag ? font_bold : font
     flag3 = flag ? used_bold : used
     flag2 = flag ? "F2" : "F1"
-    obj = node.sub(/^<text\s[^>]*>/, "").sub(/<\/text>$/, "")
+    obj = arr.sub(/^<text\s[^>]*>/, "").sub(/<\/text>$/, "")
     stream = unescape(obj)
     color = ""
     num = 0
@@ -181,9 +181,9 @@ module KSU::Svg
             when "middle" then x - num / 2
             when "end" then x - num
             else x end
-    fill = rgb(attr(node, "fill"))
+    fill = rgb(attr(arr, "fill"))
     ops = ["#{fill} rg", "BT", "/#{flag2} #{n(rsz)} Tf", "1 0 0 -1 #{n(tx)} #{n(y)} Tm", "<#{color}> Tj", "ET"]
-    tf = transform_ops(attr(node, "transform").to_s)
+    tf = transform_ops(attr(arr, "transform").to_s)
     tf.empty? ? ops : ["q"] + tf + ops + ["Q"]
   end
   def unescape(s)

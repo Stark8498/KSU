@@ -271,15 +271,15 @@ module KSU::View
     color = scr[i]
     [unit2d(color, scr[(i + 1) % 4]), unit2d(color, scr[(i - 1) % 4])]
   end
-  def self.bracket_pts(color, d1, d2, arm, thickness_mm)
-    a1x = d1[0] * arm
-    a1y = d1[1] * arm
-    a2x = d1[0] * thickness_mm
-    a2y = d1[1] * thickness_mm
-    b1x = d2[0] * arm
-    b1y = d2[1] * arm
-    b2x = d2[0] * thickness_mm
-    b2y = d2[1] * thickness_mm
+  def self.bracket_pts(color, arr2, arr, arm, thickness_mm)
+    a1x = arr2[0] * arm
+    a1y = arr2[1] * arm
+    a2x = arr2[0] * thickness_mm
+    a2y = arr2[1] * thickness_mm
+    b1x = arr[0] * arm
+    b1y = arr[1] * arm
+    b2x = arr[0] * thickness_mm
+    b2y = arr[1] * thickness_mm
     px = color.x
     py = color.y
     [
@@ -479,11 +479,11 @@ module KSU::View
     rgb = arr[(layers - 1) % arr.length]
     Sketchup::Color.new(rgb[0], rgb[1], rgb[2], 180)
   end
-  def self._0b8e9c29(view, x221, _60000b16, x2, y2, tip)
+  def self._0b8e9c29(view, x220, _60000b16, x2, y2, tip)
     mat = Sketchup::Color.new(0, 0, 0)
     set_pen(mat, true)
     view.line_width = 1
-    view.draw2d(GL_LINES, [Geom::Point3d.new(x221, _60000b16, 0), Geom::Point3d.new(x2, y2, 0)])
+    view.draw2d(GL_LINES, [Geom::Point3d.new(x220, _60000b16, 0), Geom::Point3d.new(x2, y2, 0)])
     s = 8
     pts = case tip
           when :right then [[x2, y2], [x2 - s, y2 - s], [x2, y2], [x2 - s, y2 + s]]

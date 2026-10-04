@@ -18,7 +18,7 @@ class KSU::Themtam
     @hover_loose = nil
     @add_buttons = []
     @hover_side = nil
-    @grp = nil
+    @_42782d97 = nil
     @them_tam_tu_do = !!get("them_tam_tu_do", true)
     @them_tem_nhan = !!get("them_tem_nhan", false)
     @ghi_de_tam_cu = !!get("ghi_de_tam_cu", false)
@@ -318,7 +318,7 @@ class KSU::Themtam
     return unless arr2
     return if arr2.empty?
     @next_index = KSU::Nesting.max_board_index(@nesting) + 1
-    @grp = nil if @them_tem_nhan
+    @_42782d97 = nil if @them_tem_nhan
     flag = arr3.last
     arr2.each do |arr|
       break unless flag && flag.valid?
@@ -486,15 +486,15 @@ class KSU::Themtam
     src
   end
   def overwritable_indices(top, bot, h)
-    out = []
+    arr = []
     face_presence(top, bot).each do |ix, f|
       flag = h.key?([ix, false])
       flag2 = h.key?([ix, true])
       next unless flag || flag2
       next unless f[:top] == flag && f[:bottom] == flag2
-      out << ix
+      arr << ix
     end
-    out
+    arr
   end
   def overwrite_panels(grp2, arr, arr2)
     return if arr.empty?
@@ -644,9 +644,9 @@ class KSU::Themtam
         next if arr3.include?(ent)
         pt3 = ent.start.position
         b = ent.end.position
-        x = (pt3.x.to_f + b.x.to_f) / 2.0
-        y = (pt3.y.to_f + b.y.to_f) / 2.0
-        arr2 << ent if KSU::Nesting.point_in_poly?([x, y], poly)
+        num3 = (pt3.x.to_f + b.x.to_f) / 2.0
+        num2 = (pt3.y.to_f + b.y.to_f) / 2.0
+        arr2 << ent if KSU::Nesting.point_in_poly?([num3, num2], poly)
       elsif KSU.container?(ent)
         color = ent.bounds.center
         arr2 << ent if KSU::Nesting.point_in_poly?([color.x.to_f, color.y.to_f], poly)
@@ -718,8 +718,8 @@ class KSU::Themtam
     end
   end
   def label_root
-    return @grp if @grp && @grp.valid?
-    @grp = KSU::Cutting.new_label_group
+    return @_42782d97 if @_42782d97 && @_42782d97.valid?
+    @_42782d97 = KSU::Cutting.new_label_group
   end
   def add_label_stub(z, name)
     KSU::Nesting.add_board_stub(label_root, z, name)

@@ -659,15 +659,15 @@ class KSU::Chongbay
     return unless rec
     bbox = rec[:bbox]
     x1 = bbox.min.x.to_f
-    x2 = bbox.max.x.to_f
+    num2 = bbox.max.x.to_f
     y1 = bbox.min.y.to_f
-    y2 = bbox.max.y.to_f
+    num3 = bbox.max.y.to_f
     z = bbox.max.z.to_f
     pts = case side
-             when :tren then [Geom::Point3d.new(x1, y2, z), Geom::Point3d.new(x2, y2, z)]
-             when :duoi then [Geom::Point3d.new(x1, y1, z), Geom::Point3d.new(x2, y1, z)]
-             when :trai then [Geom::Point3d.new(x1, y1, z), Geom::Point3d.new(x1, y2, z)]
-             when :phai then [Geom::Point3d.new(x2, y1, z), Geom::Point3d.new(x2, y2, z)]
+             when :tren then [Geom::Point3d.new(x1, num3, z), Geom::Point3d.new(num2, num3, z)]
+             when :duoi then [Geom::Point3d.new(x1, y1, z), Geom::Point3d.new(num2, y1, z)]
+             when :trai then [Geom::Point3d.new(x1, y1, z), Geom::Point3d.new(x1, num3, z)]
+             when :phai then [Geom::Point3d.new(num2, y1, z), Geom::Point3d.new(num2, num3, z)]
              end
     return unless pts
     view.line_stipple = ""
@@ -675,21 +675,21 @@ class KSU::Chongbay
     view.drawing_color = side_color(side)
     view.draw(GL_LINES, pts)
   end
-  def near_side?(bb, bbox, side, gap2)
+  def near_side?(bb, bb2, side, gap2)
     return false unless gap2.to_f > 0
     case side
-    when :tren then bb.min.y >= bbox.max.y - gap2
-    when :duoi then bb.max.y <= bbox.min.y + gap2
-    when :phai then bb.min.x >= bbox.max.x - gap2
-    when :trai then bb.max.x <= bbox.min.x + gap2
+    when :tren then bb.min.y >= bb2.max.y - gap2
+    when :duoi then bb.max.y <= bb2.min.y + gap2
+    when :phai then bb.min.x >= bb2.max.x - gap2
+    when :trai then bb.max.x <= bb2.min.x + gap2
     end
   end
-  def threshold(bb, bbox, side)
+  def threshold(bb, bb2, side)
     case side
-    when :tren then bbox.max.y - bb.max.y
-    when :duoi then bb.min.y - bbox.min.y
-    when :phai then bbox.max.x - bb.max.x
-    when :trai then bb.min.x - bbox.min.x
+    when :tren then bb2.max.y - bb.max.y
+    when :duoi then bb.min.y - bb2.min.y
+    when :phai then bb2.max.x - bb.max.x
+    when :trai then bb.min.x - bb2.min.x
     end
   end
   def preview_plan
@@ -782,27 +782,27 @@ class KSU::Chongbay
     return if @kieu_chon_tam == 0
     num3 = @co_bang_mau.to_f
     num4 = 14.0
-    x1 = @screen_pt.x.to_f + num4
-    y1 = @screen_pt.y.to_f + num4
-    x2 = x1 + num3
-    y2 = y1 + num3
+    num = @screen_pt.x.to_f + num4
+    num2 = @screen_pt.y.to_f + num4
+    x2 = num + num3
+    y2 = num2 + num3
     view.line_stipple = ""
     if @layer_theo_vung
       thick = num3 / 4.0
       case cur_side
-      when :phai then fill_rect2d(view, x2 - thick, y1, x2, y2, @mau_phai)
-      when :trai then fill_rect2d(view, x1, y1, x1 + thick, y2, @mau_trai)
-      when :tren then fill_rect2d(view, x1, y1, x2, y1 + thick, @mau_tren)
-      when :duoi then fill_rect2d(view, x1, y2 - thick, x2, y2, @mau_duoi)
+      when :phai then fill_rect2d(view, x2 - thick, num2, x2, y2, @mau_phai)
+      when :trai then fill_rect2d(view, num, num2, num + thick, y2, @mau_trai)
+      when :tren then fill_rect2d(view, num, num2, x2, num2 + thick, @mau_tren)
+      when :duoi then fill_rect2d(view, num, y2 - thick, x2, y2, @mau_duoi)
       end
     else
-      fill_rect2d(view, x1, y1, x2, y2, @mau_chung)
+      fill_rect2d(view, num, num2, x2, y2, @mau_chung)
     end
     view.drawing_color = KSU::View.edge_color
     view.line_width = 1
     view.draw2d(GL_LINE_LOOP, [
-      Geom::Point3d.new(x1, y1, 0), Geom::Point3d.new(x2, y1, 0),
-      Geom::Point3d.new(x2, y2, 0), Geom::Point3d.new(x1, y2, 0)
+      Geom::Point3d.new(num, num2, 0), Geom::Point3d.new(x2, num2, 0),
+      Geom::Point3d.new(x2, y2, 0), Geom::Point3d.new(num, y2, 0)
     ])
   end
   def fill_rect2d(view, x1, y1, x2, y2, color)

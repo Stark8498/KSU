@@ -71,9 +71,9 @@ module KSU::Mirror
     return false unless panel && panel.valid?
     !KSU::Cutting.index_of(panel).nil? && !back_face2?(panel)
   end
-  def back_of(panel)
-    return nil unless panel && panel.valid? && front_panel?(panel)
-    back = partner_of2(panel)
+  def back_of(vec)
+    return nil unless vec && vec.valid? && front_panel?(vec)
+    back = partner_of2(vec)
     return nil unless back && back.valid? && back_face2?(back)
     rec = rec_by_def(back.parent)
     sheet = rec && rec[:instance]
@@ -286,10 +286,10 @@ module KSU::Mirror
     end
     best
   end
-  def _101ef2e3(view, x219, _60000b16, x2, y2)
-    _2cf18878, _d6439c88 = [x219, x2].minmax
+  def _101ef2e3(view, x218, _60000b16, x2, y2)
+    _2cf18878, _d6439c88 = [x218, x2].minmax
     _ab593548, bot = [_60000b16, y2].minmax
-    _3b0d8ae2 = x2 < x219
+    _3b0d8ae2 = x2 < x218
     arr2 = []
     screen_items(view).each do |arr|
       next unless arr[:panel] && arr[:panel].valid?
@@ -451,14 +451,14 @@ module KSU::Mirror
   end
   def skip
     return nil unless @flag56
-    out = {}
+    h = {}
     @sel.each do |vec|
       next unless vec && vec.valid?
-      out[vec] = true
+      h[vec] = true
       partner_of = partner_of2(vec)
-      out[partner_of] = true if partner_of && partner_of.valid?
+      h[partner_of] = true if partner_of && partner_of.valid?
     end
-    out
+    h
   end
 end
 KSU::Xeptam.include(KSU::Mirror)

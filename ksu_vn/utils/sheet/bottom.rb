@@ -75,18 +75,18 @@ module KSU::Bottom
     meta = name.to_s.match(/sheet-(\d+)/i)
     meta ? meta[1].to_i : nil
   end
-  def bottom_of(sheet, nesting)
-    return nil unless sheet && sheet.valid? && nesting && nesting.valid?
-    str = sheet.name.to_s + "-bottom"
+  def bottom_of(vec, nesting)
+    return nil unless vec && vec.valid? && nesting && nesting.valid?
+    str = vec.name.to_s + "-bottom"
     nesting.definition.entities.find do |ent|
       ent.respond_to?(:name) && ent.name.to_s == str
     end
   end
-  def bottom_for(sheet, nesting)
-    return nil unless sheet && sheet.valid?
-    vec2 = bottom_of(sheet, nesting)
+  def bottom_for(vec, nesting)
+    return nil unless vec && vec.valid?
+    vec2 = bottom_of(vec, nesting)
     return vec2 if vec2 && vec2.valid?
-    match_hidden(sheet, nesting)
+    match_hidden(vec, nesting)
   end
   def back_face?(panel)
     return false unless panel && panel.valid? && panel.respond_to?(:get_attribute)
@@ -118,23 +118,23 @@ module KSU::Bottom
     end
   end
   def index_set(sheet)
-    out = {}
-    return out unless sheet && sheet.valid?
+    h = {}
+    return h unless sheet && sheet.valid?
     sheet.definition.entities.each do |grp2|
       next unless cut_panel?(grp2)
       board_index = grp2.get_attribute("ABF", "board-index")
-      out[board_index] = true unless board_index.nil?
+      h[board_index] = true unless board_index.nil?
     end
-    out
+    h
   end
-  def match_hidden(sheet, nesting)
-    return nil unless sheet && sheet.valid? && nesting && nesting.valid?
-    arr = index_set(sheet)
+  def match_hidden(vec, nesting)
+    return nil unless vec && vec.valid? && nesting && nesting.valid?
+    arr = index_set(vec)
     return nil if arr.empty?
     best = nil
     num = 0
     nesting.definition.entities.each do |ent|
-      next unless ent.respond_to?(:get_attribute) && ent != sheet
+      next unless ent.respond_to?(:get_attribute) && ent != vec
       next unless hidden?(ent)
       n = index_set(ent).keys.count { |k| arr[k] }
       if n > num
@@ -297,10 +297,10 @@ module KSU::Bottom
       s = slot[:start_local]
       ent = slot[:end_local]
       next unless s && ent
-      a, b = offset_pair(s, ent, slot[:container], offset, nesting)
-      b = a.offset(Geom::Vector3d.new(1.mm, 0, 0)) if a.distance(b) < 1e-6
+      a, vec = offset_pair(s, ent, slot[:container], offset, nesting)
+      vec = a.offset(Geom::Vector3d.new(1.mm, 0, 0)) if a.distance(vec) < 1e-6
       vec2 = slot[:offset_vector] || Geom::Vector3d.new(0, 0, 0)
-      grp2 = slot[:container].add_dimension_linear(a, b, vec2)
+      grp2 = slot[:container].add_dimension_linear(a, vec, vec2)
       next unless grp2 && grp2.valid?
       set_dim_text(grp2, ent2.text) if ent2.respond_to?(:text)
       grp2.layer = ent2.layer if ent2.respond_to?(:layer) && ent2.layer && grp2.respond_to?(:layer=)

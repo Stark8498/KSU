@@ -24,15 +24,15 @@ module KSU::Postproc
   def errors_in_selection?
     return false unless @err_pts && @err_pts.any?
     return false unless @sel && @sheets
-    tol = 1.mm.to_f
+    num = 1.mm.to_f
     @sel.each do |sheet|
       rec = @sheets.find { |s| s[:instance] == sheet }
       next unless rec && rec[:bbox]
       lo = rec[:bbox].min
       hi = rec[:bbox].max
       @err_pts.each do |pt|
-        next if pt.x.to_f < lo.x.to_f - tol || pt.x.to_f > hi.x.to_f + tol
-        next if pt.y.to_f < lo.y.to_f - tol || pt.y.to_f > hi.y.to_f + tol
+        next if pt.x.to_f < lo.x.to_f - num || pt.x.to_f > hi.x.to_f + num
+        next if pt.y.to_f < lo.y.to_f - num || pt.y.to_f > hi.y.to_f + num
         return true
       end
     end

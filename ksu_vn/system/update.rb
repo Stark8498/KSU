@@ -118,8 +118,8 @@ module KSU::Update
 end
 module KSU::Update
   def self.disk_id2
-    rows = KSU.wmi_connect.ExecQuery("SELECT * FROM Win32_DiskDrive WHERE InterfaceType = 'IDE' OR InterfaceType = 'SCSI'")
-    rows.each do |row2|
+    _43ae5f3d = KSU.wmi_connect.ExecQuery("SELECT * FROM Win32_DiskDrive WHERE InterfaceType = 'IDE' OR InterfaceType = 'SCSI'")
+    _43ae5f3d.each do |row2|
       next unless row2.SerialNumber
       return KSU::Xephang.normalize_id(row2.SerialNumber)
     end

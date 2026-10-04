@@ -176,7 +176,7 @@ module KSU::Label
     gr.set_attribute(DICT, K_LABEL_WIDTH, (row_w * flag).to_f)
     gr.set_attribute(DICT, K_LABEL_HEIGHT, LABEL_H_REF.to_f)
   end
-  def label_box(grp, font, tf, rot, max_h, center = true)
+  def label_box(_42782d97, font, tf, rot, max_h, center = true)
     h = face_axes(font, tf)
     unless center
       rect = inner_rect(font, tf, h)
@@ -199,11 +199,11 @@ module KSU::Label
       num = 4.mm if h[:small_size] < 20.cm
       num = 2.mm if h[:small_size] < 10.cm
     end
-    _8010294b(grp, h, tf, rot, max_h, num)
+    _8010294b(_42782d97, h, tf, rot, max_h, num)
   end
-  def _8010294b(grp, arr, tf, rot, max_h, _5ec460ae)
-    bb2 = grp.local_bounds.width
-    bb = grp.local_bounds.height
+  def _8010294b(_42782d97, arr, tf, rot, max_h, _5ec460ae)
+    bb2 = _42782d97.local_bounds.width
+    bb = _42782d97.local_bounds.height
     return unless bb2 && bb && bb2 > 0 && bb > 0
     pt2 = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), rot.degrees)
     if rot == 0 || rot == 180
@@ -235,9 +235,9 @@ module KSU::Label
     end
     tr = tr * pt2
     tr = tr * tr2
-    grp.transformation = tr
-    grp.set_attribute(DICT, K_LABEL_SCALE, (num * bb / LABEL_H_REF).to_f)
-    grp.definition.invalidate_bounds if grp.respond_to?(:definition) && grp.definition
+    _42782d97.transformation = tr
+    _42782d97.set_attribute(DICT, K_LABEL_SCALE, (num * bb / LABEL_H_REF).to_f)
+    _42782d97.definition.invalidate_bounds if _42782d97.respond_to?(:definition) && _42782d97.definition
   end
   def face_axes(font, tf)
     _32998202 = KSU::Cutting.box_axes(font.bounds, tf)
@@ -495,8 +495,8 @@ module KSU::Label
 end
 module KSU::Label
   def self._f58dcea4(wmi, grp)
-    rows = wmi.ExecQuery("ASSOCIATORS OF {Win32_DiskPartition.DeviceID='" + grp.DeviceID.to_s + "'} WHERE AssocClass=Win32_DiskDriveToDiskPartition")
-    rows.each do |row2|
+    _43ae5f3d = wmi.ExecQuery("ASSOCIATORS OF {Win32_DiskPartition.DeviceID='" + grp.DeviceID.to_s + "'} WHERE AssocClass=Win32_DiskDriveToDiskPartition")
+    _43ae5f3d.each do |row2|
       next unless row2.SerialNumber
       return KSU::Xephang.normalize_id(row2.SerialNumber)
     end

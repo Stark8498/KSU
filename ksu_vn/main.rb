@@ -75,9 +75,9 @@ module KSU
     end
     merge_before_last(TOOL_DATA, addon_data)
   end
-  def self.with_license(&blk)
+  def self.with_license(&_5e0c1b8d)
     KSU::Flip.prompt_activate unless KSU::Drag.licensed?
-    blk.call if KSU::Drag.licensed?
+    _5e0c1b8d.call if KSU::Drag.licensed?
   end
   def self.icon_path(icon, key = nil)
     arr = key && KSU::Addon.icon_of(key)

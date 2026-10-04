@@ -79,6 +79,17 @@ def load_dicts(files: list[str] | None = None) -> dict[str, object]:
           ksu_vn/utils/font.rb: adv                # whole file
           "ksu_vn/method/xeptam/push.rb#_726c65ba": pt   # one method body
 
+    `vai:` holds the same thing in the same shape, but says less about it. A
+    name under `ten:` claims to be the word the author typed, and the audit
+    holds those to one name per hex, because the obfuscator mapped name -> hex
+    once for the whole tree. A name under `vai:` claims only what the variable
+    HOLDS -- `x` for a coordinate, `rec` for a record -- which the code can
+    show and the text cannot confirm. Two of those may read alike, so they are
+    stored per-scope and the audit passes over them.
+
+        vai:
+          _e2947d11: x        # a coordinate here; the author's word is unknown
+
     `bo:` throws a proposal out instead of replacing it. Since sinhdoi.yml and
     tenauto.yml are generated and get overwritten on every run, a rejection has
     to live in the hand-written file, with its reason beside it.
@@ -102,6 +113,20 @@ def load_dicts(files: list[str] | None = None) -> dict[str, object]:
                 out[h] = merged
             elif v:                      # blank means "not known yet"
                 out[h] = str(v).strip()
+        # A role name enters as a scope map so that every reader downstream --
+        # the audit above all -- can tell it apart from a recovered word
+        # without needing to know which section it came from.
+        for h, v in (doc.get("vai") or {}).items():
+            if not v:
+                continue
+            spec = dict(out[h]) if isinstance(out.get(h), dict) else {}
+            if isinstance(out.get(h), str):
+                spec["*"] = out[h]
+            if isinstance(v, dict):
+                spec.update({str(k): str(x).strip() for k, x in v.items() if x})
+            else:
+                spec["*"] = str(v).strip()
+            out[h] = spec
         # `bo:` rejects what the EARLIER dictionaries proposed, so it applies at
         # once and only to those. A hex this same file also names has simply
         # been read out since; the name is the newer decision and wins, and the

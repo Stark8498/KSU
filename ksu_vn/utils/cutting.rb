@@ -39,14 +39,14 @@ module KSU::Cutting
     return arr.first if arr.length == 1
     arr.max_by { |color| area(color.vertices.map(&:position)).abs }
   end
-  def self.label_pts(panel, tf3)
+  def self.label_pts(panel, tf)
     return nil unless panel && panel.valid?
     lbl = label_of(panel)
     return nil unless lbl && lbl.valid? && lbl.respond_to?(:definition) && lbl.definition
     box2 = label_rect(lbl.definition.entities)
     return nil unless box2
-    tf = tf3 * lbl.transformation
-    pts = box2.vertices.map { |v| v.position.transform(tf) }
+    tr = tf * lbl.transformation
+    pts = box2.vertices.map { |v| v.position.transform(tr) }
     pts.pop if pts.length >= 2 && pts.first.distance(pts.last).to_f < 1e-6
     pts.length >= 3 ? pts : nil
   end
@@ -165,7 +165,7 @@ module KSU::Cutting
     return [[], 0.1.mm] unless arr2
     arr3 = edgeband_meta(g)
     mat = material_for(g)
-    thick_mm2 = thick_mm || (arr3.empty? ? nil : board_thickness(g))
+    flag = thick_mm || (arr3.empty? ? nil : board_thickness(g))
     _419b7d17 = separator
     h = {}
     (0...arr2.size / 5).each do |i|
@@ -173,7 +173,7 @@ module KSU::Cutting
       name = arr2[i * 5 + 1].to_s
       thickness = arr2[i * 5 + 2].to_f
       str = thickness > thickness.to_i ? thickness.to_s : thickness.to_i.to_s
-      fields = edgeband_row(arr3[id], name, mat, thick_mm2, str)
+      fields = edgeband_row(arr3[id], name, mat, flag, str)
       stat = arr3[id] ? arr3[id][3] != false : true
       h[id] = { thickness: thickness / 25.4, display_name: display_name(fields, _419b7d17), fields: fields, stat: stat }
     end

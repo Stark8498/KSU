@@ -125,17 +125,17 @@ module KSU::Pack
       end
     num4 = bbox3.min.x.to_f
     num3 = bbox3.min.y.to_f
-    dx, dy4 = KSU::Sheet.edit_offset(grp) || [0.0, 0.0]
+    dx, dy2 = KSU::Sheet.edit_offset(grp) || [0.0, 0.0]
     _c9bc3f08 = num4 + [dx, 0.0].max
-    _1d9bcdf1 = num3 + [dy4, 0.0].max
+    _1d9bcdf1 = num3 + [dy2, 0.0].max
     _5ae18fa7, _b4835d15 = KSU::Avail.gaps_for(grp, gap_for)
     _a688a1a7 = px - members[:w] / 2.0
     _02d8215d = py - members[:h] / 2.0
     lx = _c9bc3f08 + _5ae18fa7 + members[:lx]
     ly = _1d9bcdf1 + _b4835d15 + members[:ly]
-    dx4 = lx - _a688a1a7
+    dx2 = lx - _a688a1a7
     dy = ly - _02d8215d
-    vec = Geom::Transformation.translation(Geom::Vector3d.new(dx4, dy, 0))
+    vec = Geom::Transformation.translation(Geom::Vector3d.new(dx2, dy, 0))
     _1233c2de = vec * rot_tf
     tr = tr3.inverse * _1233c2de * tr2 * panel.transformation
     pair = back_of(panel)
@@ -155,8 +155,8 @@ module KSU::Pack
     rec = sheet_recs.find { |s| s[:instance] == sheet }
     return [nil, nil] unless rec
     bbox = rec[:bbox]
-    dx, dy = KSU::Sheet.edit_offset(sheet) || [0.0, 0.0]
-    [bbox.width.to_f - dx.abs, bbox.height.to_f - dy.abs]
+    num2, num = KSU::Sheet.edit_offset(sheet) || [0.0, 0.0]
+    [bbox.width.to_f - num2.abs, bbox.height.to_f - num.abs]
   end
 end
 KSU::Nesting.include(KSU::Pack)

@@ -469,9 +469,9 @@ class KSU::Toiuuvan
     sheet_list
     KSU::View.clear_cache
   end
-  def sheets_in_rect(view, x218, _60000b16, x2, y2)
-    rect = KSU::Quet.rect([x218, _60000b16], [x2, y2])
-    strict = x2 >= x218
+  def sheets_in_rect(view, x217, _60000b16, x2, y2)
+    rect = KSU::Quet.rect([x217, _60000b16], [x2, y2])
+    strict = x2 >= x217
     @sheets.each_with_object([]) do |rec, out|
       pts = (0..7).map { |i| view.screen_coords(rec[:bbox].corner(i)) }
       arr3 = pts.map(&:x)

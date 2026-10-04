@@ -15,7 +15,7 @@ module KSU::Bilan
   def sheet_overlaps(sheet, sheet_tr, gap2, gap_for)
     answer = []
     tol = 0.5.mm.to_f
-    tol3 = 0.1.mm.to_f
+    num4 = 0.1.mm.to_f
     num = gap2.to_f - tol
     num = 0.0 if num < 0.0
     items = []
@@ -66,7 +66,7 @@ module KSU::Bilan
     h2 = {}
     keys.each do |i|
       fld = items[i]
-      _2e113abe = (h2[i] ||= _4bed79e1(fld[:poly], tol3))
+      _2e113abe = (h2[i] ||= _4bed79e1(fld[:poly], num4))
       fld_bbox = fld[:bbox]
       hull = fld[:hull]
       unless flag.nil? || _efb2355c <= 0.0
@@ -89,7 +89,7 @@ module KSU::Bilan
         end
         _3e1d5f51 = _d090233d([panel4[:poly]], fld[:holes])
         if _3e1d5f51
-          _982c8eb9 = (h2[j] ||= _4bed79e1(panel4[:poly], tol3))
+          _982c8eb9 = (h2[j] ||= _4bed79e1(panel4[:poly], num4))
           if KSU::Geom._0c91518b(_982c8eb9, _3e1d5f51, num)
             h[i] = true
             h[j] = true
@@ -113,14 +113,14 @@ module KSU::Bilan
   end
   def grow_poly(poly, dx, dy)
     b = KSU::Geom.bounds(poly)
-    tol = 0.1.mm
+    num = 0.1.mm
     poly.map do |pt|
       x = pt.x.to_f
-      x += dx if dx > 0 && (pt.x.to_f - b[:min_x]).abs < tol
-      x += dx if dx < 0 && (pt.x.to_f - b[:max_x]).abs < tol
+      x += dx if dx > 0 && (pt.x.to_f - b[:min_x]).abs < num
+      x += dx if dx < 0 && (pt.x.to_f - b[:max_x]).abs < num
       y = pt.y.to_f
-      y += dy if dy > 0 && (pt.y.to_f - b[:min_y]).abs < tol
-      y += dy if dy < 0 && (pt.y.to_f - b[:max_y]).abs < tol
+      y += dy if dy > 0 && (pt.y.to_f - b[:min_y]).abs < num
+      y += dy if dy < 0 && (pt.y.to_f - b[:max_y]).abs < num
       Geom::Point3d.new(x, y, pt.z.to_f)
     end
   end
@@ -153,7 +153,7 @@ module KSU::Bilan
     return [nil, nil] if lx.nil?
     [(lx + flag2) / 2.0, (ly + flag) / 2.0]
   end
-  def _4bed79e1(poly, tol)
+  def _4bed79e1(poly, num3)
     return poly unless defined?(KSU::Clipper) && KSU::Clipper.respond_to?(:offset)
     arr = poly.map { |_23505ef9| [_23505ef9.x.to_f * 25.4, _23505ef9.y.to_f * 25.4] }
     num2 = 0.0
@@ -162,7 +162,7 @@ module KSU::Bilan
       num2 += _23505ef9[0] * num[1] - num[0] * _23505ef9[1]
     end
     arr.reverse! if num2 < 0
-    arr2 = KSU::Clipper.offset([arr], -(tol.to_f * 25.4), 0, 1)
+    arr2 = KSU::Clipper.offset([arr], -(num3.to_f * 25.4), 0, 1)
     return poly unless arr2 && !arr2.empty?
     best = arr2.max_by { |half| poly_area(half) }
     return poly unless best && best.length >= 3

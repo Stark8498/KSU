@@ -59,7 +59,7 @@ module KSU::Xuatdxf
     center = _2d01dec4(p1, p2, p3)
     return nil unless center
     r = p1.distance(center)
-    num11 = 2
+    num15 = 2
     start_i = i
     end_i = i + 2
     (start_i - 1).downto(i - num + 3) do |j|
@@ -68,7 +68,7 @@ module KSU::Xuatdxf
       break unless (box[_771229d2].distance(box[_bfe9f61b]) - _d9b81a7a).abs < EPS_ARC &&
                    (box[_771229d2].distance(center) - r).abs < EPS_ARC
       start_i = _771229d2
-      num11 += 1
+      num15 += 1
     end
     pt3 = box[start_i - 1]
     pt = box[start_i]
@@ -78,7 +78,7 @@ module KSU::Xuatdxf
     a2 = _b33d5052(pt.vector_to(pt4), pt.vector_to(pt3))
     if pt.distance(pt3) < _d9b81a7a && a1.radians < 72.001 && (a1 - a2).abs < EPS_ARC
       start_i -= 1
-      num11 += 1
+      num15 += 1
     end
     (end_i + 1..end_i + num - 3).each do |j|
       _771229d2 = j % num
@@ -86,7 +86,7 @@ module KSU::Xuatdxf
       break unless (box[_78b1bbe1].distance(box[_771229d2]) - _d9b81a7a).abs < EPS_ARC &&
                    (box[_771229d2].distance(center) - r).abs < EPS_ARC
       end_i = _771229d2
-      num11 += 1
+      num15 += 1
     end
     end_i %= num
     pt3 = box[end_i - 1]
@@ -96,10 +96,10 @@ module KSU::Xuatdxf
     a2 = _b33d5052(pt3.vector_to(pt), pt3.vector_to(box[end_i - 2]))
     if end_i < num - 1 && pt.distance(pt4) < _d9b81a7a && a1.radians < 72.001 && (a1 - a2).abs < EPS_ARC
       end_i += 1
-      num11 += 1
+      num15 += 1
     end
-    return nil if num11 < 5
-    return nil if num11 > num
+    return nil if num15 < 5
+    return nil if num15 > num
     p1 = box[start_i]
     p2 = box[(start_i + 1) % num]
     p3 = box[(start_i + 2) % num]
@@ -108,8 +108,8 @@ module KSU::Xuatdxf
     vec4 = box[end_i].vector_to(center)
     _0f0ce717 = vec2.cross(vec5).z > 0
     flag = _0f0ce717 ? _b33d5052(vec2, vec4) : _b33d5052(vec4, vec2)
-    return nil if num == 6 && num11 == 5 && flag.radians > 299
-    return nil if num11 == 6 && flag.radians > 359
+    return nil if num == 6 && num15 == 5 && flag.radians > 299
+    return nil if num15 == 6 && flag.radians > 359
     bulge = Math.tan(flag / 4)
     vec6 = p1.vector_to(p2).cross(p1.vector_to(p3)).z
     bulge *= (vec6 >= 0 ? 1 : -1)
