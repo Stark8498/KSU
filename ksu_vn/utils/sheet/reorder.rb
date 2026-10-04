@@ -291,9 +291,9 @@ module KSU::Reorder
     arr2 << th_txt if show_th && th_txt
     arr2 << "#{want} ván" if show_count
     return head_off if arr2.empty?
-    str = arr2.join(" - ")
-    return str if head_off.empty?
-    wrap ? "#{head_off}\n#{str}" : "#{head_off} - #{str}"
+    tail_pt = arr2.join(" - ")
+    return tail_pt if head_off.empty?
+    wrap ? "#{head_off}\n#{tail_pt}" : "#{head_off} - #{tail_pt}"
   end
   def material_text(sheet, sheet_type, th_txt)
     mat = sheet.get_attribute("KSU", "sheet-material")

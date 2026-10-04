@@ -351,7 +351,7 @@ module KSU::Corner
     (arr2.size + 2).times do
       break if deadline && Time.now > deadline
       bbox = false
-      arr2.sort_by! { |half| half[:poly].map { |(_6facb951, v)| _6facb951 * _6facb951 + v * v }.min }
+      arr2.sort_by! { |half| half[:poly].map { |(ux, v)| ux * ux + v * v }.min }
       arr2.each do |half|
         break if deadline && Time.now > deadline
         du = slide_dist(half, arr2, true, gap2, cache)
@@ -502,13 +502,13 @@ module KSU::Corner
   def ray_hit(arr3, dir, arr, b, pen)
     rx = b[0] - arr[0]
     ry = b[1] - arr[1]
-    _621a105c = dir[0] * ry - dir[1] * rx
-    return nil if _621a105c > -1e-12
+    den = dir[0] * ry - dir[1] * rx
+    return nil if den > -1e-12
     dx = arr[0] - arr3[0]
     dy = arr[1] - arr3[1]
-    thick = (dx * ry - dy * rx) / _621a105c
+    thick = (dx * ry - dy * rx) / den
     return nil if thick < -pen
-    s = -(dir[0] * dy - dir[1] * dx) / _621a105c
+    s = -(dir[0] * dy - dir[1] * dx) / den
     len = Math.sqrt(rx * rx + ry * ry)
     return nil if s * len < -0.04 || (s - 1.0) * len > 0.04
     thick
@@ -526,8 +526,8 @@ module KSU::Corner
       arr2.sort_by! { |half| half[:u0] + half[:v0] }
       arr2.each_with_index do |half, i|
         arr3 = []
-        arr2.each_with_index { |_65570dfe, k| arr3 << _65570dfe unless k == i }
-        du = _39ad1aa8(half, arr3, true, gap2)
+        arr2.each_with_index { |other, k| arr3 << other unless k == i }
+        du = slide_in(half, arr3, true, gap2)
         if du > 1e-6
           half[:poly] = half[:poly].map { |arr| [arr[0] - du, arr[1]] }
           half[:u0] -= du
@@ -535,7 +535,7 @@ module KSU::Corner
           half[:su] += du
           bbox = true
         end
-        dv = _39ad1aa8(half, arr3, false, gap2)
+        dv = slide_in(half, arr3, false, gap2)
         if dv > 1e-6
           half[:poly] = half[:poly].map { |arr| [arr[0], arr[1] - dv] }
           half[:v0] -= dv
@@ -548,7 +548,7 @@ module KSU::Corner
     end
     arr2.map { |half| half.merge(lx: half[:lx0] - half[:su], ly: half[:ly0] - half[:sv]) }
   end
-  def _39ad1aa8(half, arr2, horiz, gap2)
+  def slide_in(half, arr2, horiz, gap2)
     per_row = [(horiz ? half[:u0] : half[:v0]) + gap2 * 0.5, 0.0].max
     return 0.0 if per_row <= 1e-9
     dir = horiz ? [-1.0, 0.0] : [0.0, -1.0]
@@ -577,14 +577,14 @@ module KSU::Corner
     [gap_u, 0.0].max
   end
   def slide_by_proj(arr, panel, dir)
-    _a1abb318 = [-dir[0], -dir[1]]
+    back_dir = [-dir[0], -dir[1]]
     best = 1.0 / 0.0
     num3 = panel.length
     num3.times do |i|
-      _9710d820 = panel[i]
+      a = panel[i]
       b = panel[(i + 1) % num3]
       arr.each do |pt|
-        thick = _ebae3e53(pt, dir, _9710d820, b)
+        thick = ray_t(pt, dir, a, b)
         if thick && thick < best
           best = thick
           return best if best <= 1e-9
@@ -593,10 +593,10 @@ module KSU::Corner
     end
     num2 = arr.length
     num2.times do |i|
-      _9710d820 = arr[i]
+      a = arr[i]
       b = arr[(i + 1) % num2]
       panel.each do |pt|
-        thick = _ebae3e53(pt, _a1abb318, _9710d820, b)
+        thick = ray_t(pt, back_dir, a, b)
         if thick && thick < best
           best = thick
           return best if best <= 1e-9
@@ -605,7 +605,7 @@ module KSU::Corner
     end
     best
   end
-  def _ebae3e53(arr3, dir, arr, b)
+  def ray_t(arr3, dir, arr, b)
     rx = b[0] - arr[0]
     ry = b[1] - arr[1]
     num = dir[0] * ry - dir[1] * rx

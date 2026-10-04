@@ -162,7 +162,7 @@ module KSU::Thongke::Xuat
     " applyNumberFormat=\"1\" applyFont=\"1\" applyFill=\"1\" applyBorder=\"1\" applyAlignment=\"1\">" \
     "<alignment horizontal=\"#{align}\" vertical=\"center\"#{flag2}/></xf>"
   end
-  def self._7144b643
+  def self.styles_xml
     arr = [
       "<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\"/>",
       xf(0, 1, 2, "center"),
@@ -188,7 +188,7 @@ module KSU::Thongke::Xuat
     "<cellStyles count=\"1\"><cellStyle name=\"Normal\" xfId=\"0\" builtinId=\"0\"/></cellStyles>" \
     "</styleSheet>"
   end
-  def self._8e83909c
+  def self.root_rels_xml
     XML_HEAD +
     "<Relationships xmlns=\"#{NS_PKG}\">" \
     "<Relationship Id=\"rId1\" Type=\"#{NS_REL}/officeDocument\" Target=\"xl/workbook.xml\"/></Relationships>"
@@ -196,21 +196,21 @@ module KSU::Thongke::Xuat
   def self.build_doc(sheets)
     arr = []
     arr << ["[Content_Types].xml", content_types_xml(sheets)]
-    arr << ["_rels/.rels", _8e83909c]
+    arr << ["_rels/.rels", root_rels_xml]
     arr << ["xl/workbook.xml", workbook_xml(sheets)]
     arr << ["xl/_rels/workbook.xml.rels", rels_xml(sheets)]
-    arr << ["xl/styles.xml", _7144b643]
+    arr << ["xl/styles.xml", styles_xml]
     sheets.each_with_index { |sheet, i| arr << ["xl/worksheets/sheet#{i + 1}.xml", sheet_xml(sheet)] }
-    _713c8e2b(arr)
+    write_zip(arr)
   end
-  def self._e8a07557
+  def self.dos_time
     at = Time.now
-    _07eaaf5b = (at.hour << 11) | (at.min << 5) | (at.sec / 2)
-    _93f68fd8 = ((at.year - 1980) << 9) | (at.month << 5) | at.day
-    [_07eaaf5b, _93f68fd8]
+    dos_t = (at.hour << 11) | (at.min << 5) | (at.sec / 2)
+    dos_d = ((at.year - 1980) << 9) | (at.month << 5) | at.day
+    [dos_t, dos_d]
   end
-  def self._713c8e2b(arr)
-    _07eaaf5b, _93f68fd8 = _e8a07557
+  def self.write_zip(arr)
+    dos_t, dos_d = dos_time
     out = "".b
     str = "".b
     arr.each do |name, txt3|
@@ -218,10 +218,10 @@ module KSU::Thongke::Xuat
       _46300933 = name.b
       _c39cdbeb = Zlib.crc32(data)
       _8a2a0205 = out.bytesize
-      out << ["PK\u0003\u0004", 20, 0x0800, 0, _07eaaf5b, _93f68fd8, _c39cdbeb, data.bytesize, data.bytesize, _46300933.bytesize, 0].pack("a4vvvvvVVVvv")
+      out << ["PK\u0003\u0004", 20, 0x0800, 0, dos_t, dos_d, _c39cdbeb, data.bytesize, data.bytesize, _46300933.bytesize, 0].pack("a4vvvvvVVVvv")
       out << _46300933
       out << data
-      str << ["PK\u0001\u0002", 20, 20, 0x0800, 0, _07eaaf5b, _93f68fd8, _c39cdbeb, data.bytesize, data.bytesize, _46300933.bytesize, 0, 0, 0, 0, 0, _8a2a0205].pack("a4vvvvvvVVVvvvvvVV")
+      str << ["PK\u0001\u0002", 20, 20, 0x0800, 0, dos_t, dos_d, _c39cdbeb, data.bytesize, data.bytesize, _46300933.bytesize, 0, 0, 0, 0, 0, _8a2a0205].pack("a4vvvvvvVVVvvvvvVV")
       str << _46300933
     end
     start = out.bytesize

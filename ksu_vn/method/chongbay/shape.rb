@@ -363,9 +363,9 @@ module KSU::Shape
   def parts_along(pts)
     arr = []
     (pts.length - 1).times do |i|
-      _9710d820 = pts[i]
+      a = pts[i]
       b = pts[i + 1]
-      poly = parts_between(_9710d820, b).sort_by { |rec| band_key(_9710d820, b, rec) }
+      poly = parts_between(a, b).sort_by { |rec| band_key(a, b, rec) }
       poly.each { |rec| arr << rec unless arr.include?(rec) }
     end
     arr
@@ -446,8 +446,8 @@ module KSU::Shape
     num = (x29 - x2) * (by1 - by2) - (ay1 - y2) * (bx1 - bx2)
     return nil if num.abs < 1e-9
     thick = ((x29 - bx1) * (by1 - by2) - (ay1 - by1) * (bx1 - bx2)) / num
-    _6facb951 = -((x29 - x2) * (ay1 - by1) - (ay1 - y2) * (x29 - bx1)) / num
-    return nil unless thick.between?(0.0, 1.0) && _6facb951.between?(0.0, 1.0)
+    u = -((x29 - x2) * (ay1 - by1) - (ay1 - y2) * (x29 - bx1)) / num
+    return nil unless thick.between?(0.0, 1.0) && u.between?(0.0, 1.0)
     thick
   end
   def draw_ranked(view)
@@ -500,17 +500,17 @@ module KSU::Shape
     py = (s.y + ent.y) / 2.0
     case sweep
     when :left_to_right
-      _ab6ad32b, _04e2c501 = [s.x, ent.x].minmax
-      KSU::View._0b8e9c29(view, _ab6ad32b + 10, py, _04e2c501 - 12, py, :right)
+      ax0, ax1 = [s.x, ent.x].minmax
+      KSU::View.draw_dim_arrow(view, ax0 + 10, py, ax1 - 12, py, :right)
     when :right_to_left
-      _ab6ad32b, _04e2c501 = [s.x, ent.x].minmax
-      KSU::View._0b8e9c29(view, _04e2c501 - 10, py, _ab6ad32b + 12, py, :left)
+      ax0, ax1 = [s.x, ent.x].minmax
+      KSU::View.draw_dim_arrow(view, ax1 - 10, py, ax0 + 12, py, :left)
     when :top_to_bottom
-      _0bcae196, _827bd392 = [s.y, ent.y].minmax
-      KSU::View._0b8e9c29(view, px, _0bcae196 + 10, px, _827bd392 - 12, :down)
+      ay0, ay1b = [s.y, ent.y].minmax
+      KSU::View.draw_dim_arrow(view, px, ay0 + 10, px, ay1b - 12, :down)
     when :bottom_to_top
-      _0bcae196, _827bd392 = [s.y, ent.y].minmax
-      KSU::View._0b8e9c29(view, px, _827bd392 - 10, px, _0bcae196 + 12, :up)
+      ay0, ay1b = [s.y, ent.y].minmax
+      KSU::View.draw_dim_arrow(view, px, ay1b - 10, px, ay0 + 12, :up)
     end
   end
   def draw_rank_line(view)

@@ -41,7 +41,7 @@ module KSU::Resize
   end
   def largest_gap(ux1, uy1, ux2, uy2, arr3, min_side)
     tol = 1e-6
-    arr2 = KSU::Geom._a404e7b6([ux1, ux2] + arr3.flat_map { |b| [b[:x1], b[:x2]] }.select { |v| v > ux1 + tol && v < ux2 - tol })
+    arr2 = KSU::Geom.merge_near([ux1, ux2] + arr3.flat_map { |b| [b[:x1], b[:x2]] }.select { |v| v > ux1 + tol && v < ux2 - tol })
     best = nil
     best_a = 0.0
     (0...arr2.length - 1).each do |i|

@@ -24,8 +24,8 @@ module KSU::Pack
     arr4 = []
     arr.sort_by { |len2d| -(len2d[:w] * len2d[:h]) }.each do |grp|
       flag = false
-      arr3.each do |_e76e0098|
-        if try_place(_e76e0098, grp, width_mm, height_mm, gap2, allow_rot)
+      arr3.each do |slot|
+        if try_place(slot, grp, width_mm, height_mm, gap2, allow_rot)
           flag = true
           break
         end
@@ -126,15 +126,15 @@ module KSU::Pack
     num4 = bbox3.min.x.to_f
     num3 = bbox3.min.y.to_f
     dx, dy2 = KSU::Sheet.edit_offset(grp) || [0.0, 0.0]
-    _c9bc3f08 = num4 + [dx, 0.0].max
-    _1d9bcdf1 = num3 + [dy2, 0.0].max
-    _5ae18fa7, _b4835d15 = KSU::Avail.gaps_for(grp, gap_for)
-    _a688a1a7 = px - members[:w] / 2.0
-    _02d8215d = py - members[:h] / 2.0
-    lx = _c9bc3f08 + _5ae18fa7 + members[:lx]
-    ly = _1d9bcdf1 + _b4835d15 + members[:ly]
-    dx2 = lx - _a688a1a7
-    dy = ly - _02d8215d
+    ox0 = num4 + [dx, 0.0].max
+    oy0 = num3 + [dy2, 0.0].max
+    gx, gy = KSU::Avail.gaps_for(grp, gap_for)
+    cx0 = px - members[:w] / 2.0
+    cy0 = py - members[:h] / 2.0
+    lx = ox0 + gx + members[:lx]
+    ly = oy0 + gy + members[:ly]
+    dx2 = lx - cx0
+    dy = ly - cy0
     vec = Geom::Transformation.translation(Geom::Vector3d.new(dx2, dy, 0))
     _1233c2de = vec * rot_tf
     tr = tr3.inverse * _1233c2de * tr2 * panel.transformation

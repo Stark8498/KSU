@@ -291,7 +291,7 @@ module KSU::Label
     vals = arr.dup
     step = (hi - lo) / 64.0
     (1...64).each { |i| vals << lo + step * i } if step > tol
-    KSU::Geom._a404e7b6(vals, tol)
+    KSU::Geom.merge_near(vals, tol)
   end
   def inner_rect(font, tf, arr6)
     color = arr6[:center]

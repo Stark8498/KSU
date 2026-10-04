@@ -266,7 +266,7 @@
   },
   {
    "ns": "KSU::View",
-   "m": "_0b8e9c29",
+   "m": "draw_dim_arrow",
    "f": "ksu_vn/method/chongbay/shape.rb",
    "l": 504
   },
@@ -1190,7 +1190,7 @@
   },
   {
    "ns": "KSU::Geom",
-   "m": "_a404e7b6",
+   "m": "merge_near",
    "f": "ksu_vn/method/netcatcuoi/lastcut.rb",
    "l": 95
   },

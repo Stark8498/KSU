@@ -167,11 +167,11 @@ module KSU::Intem
     cutting_gr = grp.entities.find { |ent| KSU.container?(ent) && ent.get_attribute("ABF", "is-cutting-lines") }
     return nil unless cutting_gr
     part_tf = grp.transformation
-    poly = _d8a5a5cb(cutting_gr, part_tf * cutting_gr.transformation)
+    poly = cut_loops_of(cutting_gr, part_tf * cutting_gr.transformation)
     return nil if poly.empty?
     name = KSU::Label.label_text(grp)
     name = pid.to_s if name.to_s.empty?
-    arr2 = _503b4f27(grp, part_tf)
+    arr2 = walk_names(grp, part_tf)
     codes = [grp.get_attribute("ABF", "code_n1").to_s,
              grp.get_attribute("ABF", "code_n2").to_s,
              grp.get_attribute("ABF", "code_n3").to_s]
@@ -252,7 +252,7 @@ module KSU::Intem
     end
     out
   end
-  def self._503b4f27(entity, tf, num = 0, out = { names: [], paths: [] })
+  def self.walk_names(entity, tf, num = 0, out = { names: [], paths: [] })
     return out if num > 3
     ents = KSU.entities_in(entity)
     return out unless ents
@@ -265,12 +265,12 @@ module KSU::Intem
         out[:names] << str unless out[:names].include?(str)
         out[:paths].concat(curves_in(ent, tf4))
       else
-        _503b4f27(ent, tf4, num + 1, out)
+        walk_names(ent, tf4, num + 1, out)
       end
     end
     out
   end
-  def self._d8a5a5cb(cutting_gr, tf)
+  def self.cut_loops_of(cutting_gr, tf)
     arr2 = []
     seen = {}
     (KSU.entities_in(cutting_gr) || []).each do |ent|
@@ -285,12 +285,12 @@ module KSU::Intem
       arr2 << { pts: pts, outer: outer2 } if pts.length > 1
     end
     return [] if arr2.empty?
-    loops = _1391721f(arr2)
-    _65e1bd60 = loops.index { |arr3| arr3[:outer] } || 0
-    loops[0], loops[_65e1bd60] = loops[_65e1bd60], loops[0]
+    loops = join_loops(arr2)
+    outer_ix = loops.index { |arr3| arr3[:outer] } || 0
+    loops[0], loops[outer_ix] = loops[outer_ix], loops[0]
     loops.map { |arr3| arr3[:pts] }
   end
-  def self._1391721f(h)
+  def self.join_loops(h)
     arr = h.dup
     loops = []
     until arr.empty?
@@ -300,13 +300,13 @@ module KSU::Intem
       flag = true
       while flag
         flag = false
-        break if _fe5ae039(pts)
-        _fc35762e = pts.last
+        break if closed_loop?(pts)
+        tail_pt = pts.last
         arr.each_with_index do |f, i|
-          next if _fe5ae039(f[:pts])
-          if same_pt?(f[:pts].first, _fc35762e)
+          next if closed_loop?(f[:pts])
+          if same_pt?(f[:pts].first, tail_pt)
             pts.concat(f[:pts][1..-1])
-          elsif same_pt?(f[:pts].last, _fc35762e)
+          elsif same_pt?(f[:pts].last, tail_pt)
             pts.concat(f[:pts].reverse[1..-1])
           else
             next
@@ -324,7 +324,7 @@ module KSU::Intem
   def self.same_pt?(arr2, b)
     (arr2[0] - b[0]).abs < 0.05 && (arr2[1] - b[1]).abs < 0.05
   end
-  def self._fe5ae039(pts)
+  def self.closed_loop?(pts)
     pts.length > 3 && same_pt?(pts.first, pts.last)
   end
   def self.drills(grp, part_tf)
@@ -376,9 +376,9 @@ module KSU::Intem
     hit || fields
   end
   def self._a1ae3880(name, _204e57f4)
-    str = "#{_204e57f4}mm"
-    return false unless name.end_with?(str)
-    ch = name[-(str.length + 1), 1]
+    tail_pt = "#{_204e57f4}mm"
+    return false unless name.end_with?(tail_pt)
+    ch = name[-(tail_pt.length + 1), 1]
     ch.nil? || !(ch =~ /[\d.]/)
   end
 end

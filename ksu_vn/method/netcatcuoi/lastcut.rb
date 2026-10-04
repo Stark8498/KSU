@@ -92,8 +92,8 @@ module KSU::Lastcut
       arr3 = pts.map { |pt| pt.y.to_f }
       { x1: arr2.min, x2: arr2.max, y1: arr3.min, y2: arr3.max }
     end
-    arr2 = KSU::Geom._a404e7b6(arr5.flat_map { |b| [b[:x1], b[:x2]] })
-    arr3 = KSU::Geom._a404e7b6(arr5.flat_map { |b| [b[:y1], b[:y2]] })
+    arr2 = KSU::Geom.merge_near(arr5.flat_map { |b| [b[:x1], b[:x2]] })
+    arr3 = KSU::Geom.merge_near(arr5.flat_map { |b| [b[:y1], b[:y2]] })
     return [] if arr2.length < 2 || arr3.length < 2
     nx = arr2.length - 1
     ny = arr3.length - 1
@@ -158,12 +158,12 @@ module KSU::Lastcut
     end
     polylines
   end
-  def on_sheet_edge?(pt, b, sx, sy, rx, ry, _0845fb1d)
+  def on_sheet_edge?(pt, b, sx, sy, rx, ry, tol)
     num = 0.01.mm.to_f
     if (pt.x - b.x).abs < num
-      (pt.x - sx).abs <= _0845fb1d || (pt.x - rx).abs <= _0845fb1d
+      (pt.x - sx).abs <= tol || (pt.x - rx).abs <= tol
     elsif (pt.y - b.y).abs < num
-      (pt.y - sy).abs <= _0845fb1d || (pt.y - ry).abs <= _0845fb1d
+      (pt.y - sy).abs <= tol || (pt.y - ry).abs <= tol
     else
       false
     end
@@ -209,7 +209,7 @@ module KSU::Lastcut
       next if KSU::Sheet.sheet_border?(panel)
       next unless KSU::Sheet.drawable?(panel)
       world_tr = transform * panel.transformation
-      flag = flag2 ? nil : _3431a152(panel, world_tr)
+      flag = flag2 ? nil : panel_cells(panel, world_tr)
       if flag && !flag.empty?
         arr.concat(flag)
       else
@@ -221,14 +221,14 @@ module KSU::Lastcut
     end
     arr
   end
-  def _3431a152(panel, panel_tr)
+  def panel_cells(panel, panel_tr)
     fill = KSU::Cutting.outline(panel, panel_tr)
     outer = fill && fill[:outer]
     return nil unless outer && outer.length >= 3
     holes = (fill[:holes] || []).select { |h| h && h.length >= 3 }
     loops = [outer] + holes
-    arr2 = KSU::Geom._a404e7b6(loops.flat_map { |arr3| arr3.map { |pt| pt.x.to_f } })
-    arr = KSU::Geom._a404e7b6(loops.flat_map { |arr3| arr3.map { |pt| pt.y.to_f } })
+    arr2 = KSU::Geom.merge_near(loops.flat_map { |arr3| arr3.map { |pt| pt.x.to_f } })
+    arr = KSU::Geom.merge_near(loops.flat_map { |arr3| arr3.map { |pt| pt.y.to_f } })
     return nil if arr2.length < 2 || arr.length < 2
     nx = arr2.length - 1
     ny = arr.length - 1
@@ -237,9 +237,9 @@ module KSU::Lastcut
       KSU::View.in_poly?(px, py, outer) &&
         holes.none? { |h| KSU::View.in_poly?(px, py, h) }
     end
-    _b9371681(cells, arr2, arr)
+    rows_of_cells(cells, arr2, arr)
   end
-  def _b9371681(cells, arr3, arr2)
+  def rows_of_cells(cells, arr3, arr2)
     nx = cells.length
     ny = cells.first.length
     arr = Array.new(ny) { [] }

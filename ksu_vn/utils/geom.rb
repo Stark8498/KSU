@@ -179,7 +179,7 @@ module KSU::Geom
     _3f61ee64(bnds, tf).each { |pt| bbox.add(pt) }
     bbox
   end
-  def self._a404e7b6(_405c3f80, tol = 1e-6)
+  def self.merge_near(_405c3f80, tol = 1e-6)
     out = []
     _405c3f80.sort.each { |v| out << v if out.empty? || (v - out.last).abs > tol }
     out

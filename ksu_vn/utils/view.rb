@@ -479,11 +479,11 @@ module KSU::View
     rgb = arr[(layers - 1) % arr.length]
     Sketchup::Color.new(rgb[0], rgb[1], rgb[2], 180)
   end
-  def self._0b8e9c29(view, x220, _60000b16, x2, y2, tip)
+  def self.draw_dim_arrow(view, x220, ya, x2, y2, tip)
     mat = Sketchup::Color.new(0, 0, 0)
     set_pen(mat, true)
     view.line_width = 1
-    view.draw2d(GL_LINES, [Geom::Point3d.new(x220, _60000b16, 0), Geom::Point3d.new(x2, y2, 0)])
+    view.draw2d(GL_LINES, [Geom::Point3d.new(x220, ya, 0), Geom::Point3d.new(x2, y2, 0)])
     s = 8
     pts = case tip
           when :right then [[x2, y2], [x2 - s, y2 - s], [x2, y2], [x2 - s, y2 + s]]

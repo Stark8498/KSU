@@ -322,11 +322,11 @@ class KSU::Netcatcuoi
     return pt unless pt && arr
     x = [[pt.x.to_f, arr[:xs]].max, arr[:xe]].min
     y = [[pt.y.to_f, arr[:ys]].max, arr[:ye]].min
-    _0845fb1d = snap_tol(view, pt)
-    nx = arr[:x].select { |s| y >= s[:lo] - _0845fb1d && y <= s[:hi] + _0845fb1d }.map { |s| s[:v] }.min_by { |v| (v - x).abs }
-    ny = arr[:y].select { |s| x >= s[:lo] - _0845fb1d && x <= s[:hi] + _0845fb1d }.map { |s| s[:v] }.min_by { |v| (v - y).abs }
-    x = nx if nx && (nx - x).abs <= _0845fb1d
-    y = ny if ny && (ny - y).abs <= _0845fb1d
+    tol = snap_tol(view, pt)
+    nx = arr[:x].select { |s| y >= s[:lo] - tol && y <= s[:hi] + tol }.map { |s| s[:v] }.min_by { |v| (v - x).abs }
+    ny = arr[:y].select { |s| x >= s[:lo] - tol && x <= s[:hi] + tol }.map { |s| s[:v] }.min_by { |v| (v - y).abs }
+    x = nx if nx && (nx - x).abs <= tol
+    y = ny if ny && (ny - y).abs <= tol
     Geom::Point3d.new(x, y, @plane_z)
   end
   def snap_tol(view, _d41bb15d)

@@ -58,25 +58,25 @@ module KSU::Ttf
     {}
   end
   def cmap_fmt4(data, _4bcb6213)
-    _cd2f261c = data[_4bcb6213 + 6, 2].unpack1("n")
-    n_pts = _cd2f261c / 2
-    _b44355cf = _4bcb6213 + 14
-    _cd0dfa0c = _b44355cf + _cd2f261c + 2
-    _1ef61ee4 = _cd0dfa0c + _cd2f261c
-    _774060b6 = _1ef61ee4 + _cd2f261c
+    seg_x2 = data[_4bcb6213 + 6, 2].unpack1("n")
+    n_pts = seg_x2 / 2
+    end_off = _4bcb6213 + 14
+    start_off = end_off + seg_x2 + 2
+    delta_off = start_off + seg_x2
+    range_off = delta_off + seg_x2
     h = {}
     n_pts.times do |i|
-      _781628f9 = data[_b44355cf + i * 2, 2].unpack1("n")
-      start = data[_cd0dfa0c + i * 2, 2].unpack1("n")
-      delta = data[_1ef61ee4 + i * 2, 2].unpack1("n")
-      _52d8d4a9 = data[_774060b6 + i * 2, 2].unpack1("n")
+      end_code = data[end_off + i * 2, 2].unpack1("n")
+      start = data[start_off + i * 2, 2].unpack1("n")
+      delta = data[delta_off + i * 2, 2].unpack1("n")
+      range_ix = data[range_off + i * 2, 2].unpack1("n")
       next if start == 0xffff
-      (start.._781628f9).each do |color|
-        if _52d8d4a9 == 0
+      (start..end_code).each do |color|
+        if range_ix == 0
           g = (color + delta) & 0xffff
         else
-          _b7a8e470 = _774060b6 + i * 2 + _52d8d4a9 + (color - start) * 2
-          g = data[_b7a8e470, 2].unpack1("n")
+          gid_off = range_off + i * 2 + range_ix + (color - start) * 2
+          g = data[gid_off, 2].unpack1("n")
           g = (g + delta) & 0xffff if g != 0
         end
         h[color] = g if g != 0
@@ -91,8 +91,8 @@ module KSU::Ttf
       normal = _4bcb6213 + 16 + i * 12
       screen = data[normal, 4].unpack1("N")
       end_char = data[normal + 4, 4].unpack1("N")
-      _6048e0bb = data[normal + 8, 4].unpack1("N")
-      (screen..end_char).each { |color| h[color] = _6048e0bb + (color - screen) }
+      start_gid = data[normal + 8, 4].unpack1("N")
+      (screen..end_char).each { |color| h[color] = start_gid + (color - screen) }
     end
     h
   end

@@ -62,9 +62,9 @@ module KSU
   }.freeze
   def self.merge_before_last(normal, addon_data)
     return normal if addon_data.empty?
-    arr = normal.keys.last
-    head_off = normal.reject { |k, _part| k == arr }
-    head_off.merge(addon_data).merge(arr => normal[arr])
+    tail_pt = normal.keys.last
+    head_off = normal.reject { |k, _part| k == tail_pt }
+    head_off.merge(addon_data).merge(tail_pt => normal[tail_pt])
   end
   def self.labels
     merge_before_last(TOOL_LABELS, KSU::Addon.labels)

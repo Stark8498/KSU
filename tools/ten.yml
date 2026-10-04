@@ -606,9 +606,6 @@ ten:
   _412a8a82: stream_obj
   _5f966f9e: serialize        # ghep thanh file PDF, ke ca bang xref
   _22707eb1: xref_at
-  _65570dfe:
-    ksu_vn/utils/pdf/build.rb: off
-    ksu_vn/utils/font.rb: code
   _c14c1dc9:
     "*": file
     "ksu_vn/utils/pdf/build.rb#_5b6279e8": file_id
@@ -2322,8 +2319,6 @@ ten:
     ksu_vn/method/xeptam/nfp.rb: cy1
   _2a1092ed:
     ksu_vn/method/xeptam/nfp.rb: sy
-  _621a105c:
-    ksu_vn/method/xeptam/nfp.rb: cross
   _aaba751b:
     ksu_vn/method/xeptam/nfp.rb: fast
 
@@ -2643,14 +2638,6 @@ ten:
     ksu_vn/method/toiuuvan/postproc.rb: best_s
   _1614616b:
     ksu_vn/method/toiuuvan/postproc.rb: collect_kids
-  _c9bc3f08:
-    ksu_vn/method/toiuuvan/postproc.rb: ox0
-  _1d9bcdf1:
-    ksu_vn/method/toiuuvan/postproc.rb: oy0
-  _5ae18fa7:
-    ksu_vn/method/toiuuvan/postproc.rb: gx
-  _b4835d15:
-    ksu_vn/method/toiuuvan/postproc.rb: gy
   _e66e2152:
     ksu_vn/method/toiuuvan/postproc.rb: pminx
   _c0711cd2:
@@ -2679,8 +2666,6 @@ ten:
     ksu_vn/utils/view.rb: dy
   _775466f2:
     ksu_vn/utils/view.rb: nlen
-  _6facb951:
-    ksu_vn/utils/view.rb: s
   _6a989d41:
     ksu_vn/utils/view.rb: tf
 
@@ -2907,8 +2892,6 @@ ten:
     "ksu_vn/utils/label.rb#inner_rect": top
     ksu_vn/method/xeptam/mirror.rb: top
     ksu_vn/method/toiuuvan/engine.rb: flip_y
-  _b7a8e470:
-    ksu_vn/method/toiuuvan/engine.rb: pi
   _ebffc3f1:
     ksu_vn/method/toiuuvan/engine.rb: rx
   _0e6f8149:
@@ -3102,11 +3085,6 @@ ten:
   _e55fd46f:
     "ksu_vn/method/netcatcuoi.rb#_1bba59fa": off_y
     ksu_vn/method/netcatcuoi/lastcut.rb: off_y
-  _9710d820:
-    ksu_vn/method/xeptam/nfp.rb: area
-    ksu_vn/utils/preset/field.rb: ang
-    ksu_vn/utils/preset/store.rb: ang
-    ksu_vn/method/netcatcuoi/lastcut.rb: a
 
   # ----- ME 80: method/thongke/xuat.rb -- bon file XML trong goi .xlsx -----
   # Ten lay thang tu phan tu goc moi ham dung ra.
@@ -3225,13 +3203,6 @@ ten:
   _5fb96e91:
     "ksu_vn/utils/label.rb#inner_rect": area
     ksu_vn/method/netcatcuoi/resize.rb: area
-  _60000b16:
-    "ksu_vn/utils/view.rb#_23ea970c": y2
-    "ksu_vn/utils/view.rb#_b9fdc2d5": y2
-    "ksu_vn/utils/view.rb#_e519e18d": y2
-    ksu_vn/method/chongbay.rb: y2
-    ksu_vn/utils/nesting/corner.rb: y2
-    ksu_vn/method/chongbay/shape.rb: ay1
   _eef8786a:
     ksu_vn/utils/flip.rb: etf
   _b5060b46:
@@ -3329,6 +3300,98 @@ ten:
     ksu_vn/system/setting.rb: rec
     ksu_vn/utils/chuanhoa.rb: v
     "ksu_vn/utils/cutting.rb#_b344f39a": pt
+
+  # ----- ME 85: utils/pdf/ttf.rb -- bang cmap format 4, dung ten cua dac ta -----
+  # segCountX2, endCode[], startCode[], idDelta[], idRangeOffset[]: tat ca
+  # deu la ten trong dac ta TrueType, va doc theo do thi so hoc o day ro ngay.
+  _cd2f261c: seg_x2
+  _b44355cf: end_off
+  _cd0dfa0c: start_off
+  _1ef61ee4: delta_off
+  _774060b6: range_off
+  _781628f9: end_code
+  _52d8d4a9: range_ix
+  _6048e0bb: start_gid
+
+  # ----- ME 85b: utils/nesting/corner.rb -- do bong trong truot trong -----
+  _39ad1aa8: slide_in            # truot duoc bao xa ve phia u hoac v
+  _ebae3e53: ray_t               # t tren tia, hoac nil neu khong cat
+  _a1abb318: back_dir
+
+  # ----- ME 85c: utils/view.rb va chongbay/shape.rb -- mui ten co thuoc -----
+  _0b8e9c29: draw_dim_arrow
+  _ab6ad32b: ax0
+  _04e2c501: ax1
+  _0bcae196: ay0
+  _827bd392: ay1b
+
+  _b7a8e470:
+    ksu_vn/method/toiuuvan/engine.rb: pi
+    ksu_vn/method/nesting.rb: pi
+    ksu_vn/utils/pdf/ttf.rb: gid_off
+  _6facb951:
+    ksu_vn/utils/view.rb: s
+    ksu_vn/method/chongbay/shape.rb: u
+    ksu_vn/utils/nesting/corner.rb: ux
+  _621a105c:
+    ksu_vn/method/xeptam/nfp.rb: cross
+    ksu_vn/utils/nesting/corner.rb: den
+  _9710d820:
+    ksu_vn/method/xeptam/nfp.rb: area
+    ksu_vn/utils/preset/field.rb: ang
+    ksu_vn/utils/preset/store.rb: ang
+    ksu_vn/method/netcatcuoi/lastcut.rb: a
+    ksu_vn/method/chongbay/shape.rb: a
+    ksu_vn/utils/nesting/corner.rb: a
+  _65570dfe:
+    ksu_vn/utils/pdf/build.rb: off
+    ksu_vn/utils/font.rb: code
+    ksu_vn/utils/nesting/corner.rb: other
+  _60000b16:
+    "ksu_vn/utils/view.rb#_23ea970c": y2
+    "ksu_vn/utils/view.rb#_b9fdc2d5": y2
+    "ksu_vn/utils/view.rb#_e519e18d": y2
+    "ksu_vn/utils/view.rb#_0b8e9c29": ya
+    ksu_vn/method/chongbay.rb: y2
+    ksu_vn/utils/nesting/corner.rb: y2
+    ksu_vn/method/chongbay/shape.rb: ay1
+
+  # ----- ME 86: dot gan cuoi -----
+  _7144b643: styles_xml          # <styleSheet>: font, fill, border, xf
+  _8e83909c: root_rels_xml       # _rels/.rels
+  _713c8e2b: write_zip
+  _e8a07557: dos_time            # gio/ngay kieu MS-DOS cho muc ZIP
+  _07eaaf5b: dos_t
+  _93f68fd8: dos_d
+  _1391721f: join_loops          # noi cac doan roi thanh vong
+  _fe5ae039: closed_loop?
+  _503b4f27: walk_names
+  _d8a5a5cb: cut_loops_of
+  _65e1bd60: outer_ix
+  _fc35762e: tail_pt
+  _3431a152: panel_cells         # luoi o cua mot tam, de do phu kin
+  _b9371681: rows_of_cells
+  _a404e7b6: merge_near          # gop cac gia tri sat nhau trong mot day
+  _a688a1a7: cx0
+  _02d8215d: cy0
+
+  _0845fb1d:
+    ksu_vn/method/netcatcuoi.rb: tol
+    ksu_vn/method/netcatcuoi/lastcut.rb: tol
+  _c9bc3f08:
+    ksu_vn/method/toiuuvan/postproc.rb: ox0
+    ksu_vn/utils/nesting/pack.rb: ox0
+  _1d9bcdf1:
+    ksu_vn/method/toiuuvan/postproc.rb: oy0
+    ksu_vn/utils/nesting/pack.rb: oy0
+  _5ae18fa7:
+    ksu_vn/method/toiuuvan/postproc.rb: gx
+    ksu_vn/utils/nesting/pack.rb: gx
+  _b4835d15:
+    ksu_vn/method/toiuuvan/postproc.rb: gy
+    ksu_vn/utils/nesting/pack.rb: gy
+  _e76e0098:
+    ksu_vn/utils/nesting/pack.rb: slot
 
 # ===================================================================
 # vai: TEN THEO VAI, khong phai tu tac gia go.
@@ -3483,7 +3546,6 @@ bo:
   # nhung trong mot than ham nao do no dung do voi mot hex khac cung ten,
   # hoac voi mot dinh danh chua bi lam roi. Gop lai la mat mot thu. Chung
   # cho dot dat ten THEO PHAM VI; tu gio den do cu de nguyen hex.
-  - _d8a5a5cb
   # Ban sinh doi ZSU goi hex nay la `arr`. Ben nay no la thu khac va doc theo
   # ngu canh thi ro hon. (_6e6c93db va _9535dc0b da co ten that: xem tren.)
   # `pts` -- o loop.rb la mot doan hai diem, o scan.rb la duong vien chu. Hai
