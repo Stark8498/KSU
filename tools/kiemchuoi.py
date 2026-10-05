@@ -15,7 +15,7 @@ What counts as text comes from kscommon.text_spans, which walks the source
 instead of pattern-matching it, so a caption nested inside an interpolation --
 "#{name || "Dang toi uu"}" -- is compared like any other.
 
-    python tools/kiemchuoi.py [rev]        # mac dinh c45104c
+    python tools/kiemchuoi.py [rev]        # mac dinh e72d0b2
 """
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from kscommon import ROOT, literals  # noqa: E402
 
-DEFAULT_REV = "c45104c"
+DEFAULT_REV = "e72d0b2"
 
 # The decrypted files open with an XSU_NOTICE constant that the readable tree
 # does not keep: 88 copies of it make Ruby warn about an already initialised

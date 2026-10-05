@@ -4,7 +4,14 @@
 Dictionaries, lowest priority first -- a later one overrides an earlier one:
 
   tools/sinhdoi.yml   carried over from the ZSU twin by tools/sinhdoi.py
+  tools/tenauto.yml   a data type read off this tree, by tools/dexuat.py
+  tools/sinhban.yml   carried over from KSU 2.1.5 by tools/sinhban.py
   tools/ten.yml       read out by hand; this one wins
+  tools/tenpv.yml     per-scope numbering from tools/goxungdot.py
+
+sinhban.yml outranks the two generated dictionaries above it because it carries
+the author's own words off the previous version of this same code, while those
+two state a type or a counter.
 
 Both hold `hex: name` pairs under a top-level `ten:` key. A blank value means
 "not known yet" and is skipped. A hex says "unknown"; a wrong name lies.
@@ -54,9 +61,10 @@ except ImportError:
 # Lowest priority first. tenpv.yml comes last because it holds nothing but the
 # per-scope entries tools/goxungdot.py generates to break a collision, and those
 # have to win over whatever gave the colliding name in the first place.
-DICTS = ["sinhdoi.yml", "tenauto.yml", "ten.yml", "tenpv.yml"]
+DICTS = ["sinhdoi.yml", "tenauto.yml", "sinhban.yml", "ten.yml",
+         "tenpv.yml"]
 
-BASELINE = "c45104c"
+BASELINE = "e72d0b2"
 # Every decrypted file opens with an XSU_NOTICE constant the readable tree
 # does not keep.
 NOTICE = re.compile(r'\AXSU_NOTICE\s*=\s*"(?:[^"\\]|\\.)*"\s*\n')
@@ -116,6 +124,14 @@ def load_dicts(files: list[str] | None = None) -> dict[str, object]:
         # A role name enters as a scope map so that every reader downstream --
         # the audit above all -- can tell it apart from a recovered word
         # without needing to know which section it came from.
+        # A plain role name enters as the `*` fallback and leaves whatever an
+        # earlier dictionary scoped per body in place. That is deliberate: the
+        # bulk of `vai:` is a tree-wide fallback for the bodies dexuat.py could
+        # not type, and letting it replace the per-body names instead would
+        # trade `pt`/`grp` for one blunt word everywhere. The cost is that
+        # moving a name from `ten:` to `vai:` is NOT output-neutral wherever
+        # tenauto.yml has a scope for that hex -- so a name worth keeping stays
+        # in `ten:`, and `--soat` reports it as an over-claim instead.
         for h, v in (doc.get("vai") or {}).items():
             if not v:
                 continue
@@ -141,6 +157,38 @@ def load_dicts(files: list[str] | None = None) -> dict[str, object]:
         drop |= bo_here - named_here
     for h in drop:
         out.pop(h, None)
+    return out
+
+
+def param_names(spec: str) -> list[str]:
+    """The names a parameter list BINDS, in order; [] if it is not one.
+
+    Splits on top-level commas and keeps the head of each part, so a default
+    value, a splat, a block argument or a keyword colon never counts as a
+    binding of its own. A part that is not a bare identifier means the capture
+    was never a parameter list, and the whole thing yields nothing.
+    """
+    parts, depth, cur = [], 0, []
+    for ch in spec:
+        if ch in "([{":
+            depth += 1
+        elif ch in ")]}":
+            depth -= 1
+        if ch == "," and depth == 0:
+            parts.append("".join(cur))
+            cur = []
+        else:
+            cur.append(ch)
+    parts.append("".join(cur))
+
+    out: list[str] = []
+    for part in parts:
+        head = part.split("=", 1)[0].strip().lstrip("*&").rstrip(":").strip()
+        if not head:
+            continue                     # a bare `*` or `**` binds nothing
+        if not re.fullmatch(r"[A-Za-z_]\w*", head):
+            return []                    # not a parameter list after all
+        out.append(head)
     return out
 
 
@@ -218,6 +266,36 @@ def ivar_hexes() -> set[str]:
     return _IVAR_HEXES
 
 
+_LOCAL_HEXES: set[str] | None = None
+
+
+def local_hexes() -> set[str]:
+    """Hex that is a local or a parameter somewhere, read from the BASELINE.
+
+    Same reason as ivar_hexes(), one step wider. `?` and `!` are legal only in
+    a method name, and the obfuscator maps one author word to one hex across
+    the whole tree, so a word used for both a predicate method and a variable
+    cannot keep its `?`. Checking only `@ivar` missed exactly that: Clip's
+    `elements_match?(...)` is the same hex as a plain local in rescue.rb, and
+    `elements_match? = arr[:refit_check]` is a SyntaxError that nothing caught
+    until ruby -c ran over the written file.
+    """
+    global _LOCAL_HEXES
+    if _LOCAL_HEXES is None:
+        _LOCAL_HEXES = set()
+        # `h = ...` and `a, h = ...`, but never `==`, `!=`, `<=`, `>=`, `=>`.
+        assign = re.compile(r"(?<![=!<>])\b(_[0-9a-f]{8})\s*(?:,[^=\n]*?)?=(?!=|~)")
+        for src in baseline_sources().values():
+            code = code_only(src)
+            _LOCAL_HEXES |= set(assign.findall(code))
+            for params in re.findall(r"\bdef\s+\S+\s*\(([^)]*)\)|\|([^|\n]*)\|",
+                                     code):
+                _LOCAL_HEXES |= {t for t in param_names(params[0] or params[1]
+                                                        or "")
+                                 if HEX.match(t)}
+    return _LOCAL_HEXES
+
+
 _METHOD_HEXES: set[str] | None = None
 
 
@@ -291,6 +369,9 @@ def validate(mapping: dict[str, object]) -> list[str]:
             elif nm[-1] in "?!" and h in ivar_hexes():
                 errs.append(f"{h} -> {nm}: hex nay con la @ivar, ten khong "
                             f"duoc co '{nm[-1]}' o cuoi")
+            elif nm[-1] in "?!" and h in local_hexes():
+                errs.append(f"{h} -> {nm}: hex nay con la bien cuc bo / tham "
+                            f"so, ten khong duoc co '{nm[-1]}' o cuoi")
 
     for rel, src in sorted(baseline_sources().items()):
         here = set(HEX_ANY.findall(src)) & set(mapping)
@@ -333,8 +414,16 @@ def validate(mapping: dict[str, object]) -> list[str]:
         # `{ |_x, _x, _y| ... }` meaning "ignore the first two"; dropping the
         # underscore turns a legal file into a SyntaxError, and only ruby -c
         # catches it, after the fact.
+        # Only a name in PARAMETER POSITION counts. Both patterns below match
+        # more than parameter lists -- `|` pairs up with the nearest `|`, which
+        # on `a || b` or a ternary is not a block at all, and `([^)]*)` runs on
+        # into a default value -- so the capture is parsed before it is judged.
+        # Counting raw hex instead reported two lists that were legal Ruby:
+        # `(stream, len = "...#{stream.bytesize}")`, where the repeat is a
+        # default value reading an earlier parameter, and a stretch of ternary
+        # between two `|` operators holding @ivars, which cannot be parameters.
         for params in re.findall(r"\bdef\s+\S+\s*\(([^)]*)\)|\|([^|\n]*)\|", code):
-            toks = HEX_ANY.findall(params[0] or params[1] or "")
+            toks = param_names(params[0] or params[1] or "")
             for h in {t for t in toks if toks.count(t) > 1} & here:
                 for nm in sorted(all_names(mapping[h])):
                     if not nm.startswith("_"):
@@ -369,7 +458,61 @@ def validate(mapping: dict[str, object]) -> list[str]:
                     errs.append(f"{rel}:{lo + 1} ({mname}): {seen[nm]} va {h} "
                                 f"cung nhan ten {nm}")
                 seen[nm] = h
+
+    errs += same_module_clashes(mapping)
     return errs
+
+
+def same_module_clashes(mapping: dict[str, object]) -> list[str]:
+    """Two hexes DEFINED in one module must not take the same name.
+
+    Ruby reopens a module across files, so `module KSU::Back` in toiuu/back.rb
+    and in toiuuvan/back.rb is ONE module. Two `def`s with one name there is
+    not a clash the parser reports: the second silently replaces the first and
+    a method disappears.
+
+    This is the only rail here that can delete behaviour rather than break the
+    build, and it is the one no other check sees -- `ruby -c` is happy,
+    verify_structure only masks identifiers so the shapes still match, and
+    verify_graph resolves the call because the NAME still exists. 2.3.2 ships
+    the superseded Vietnamese-named units beside their English rewrites and
+    both halves reopen the same module, so carrying one 2.1.5 name onto both
+    sides collapsed 160 pairs of distinct methods into 160 single ones.
+
+    The per-body rail above cannot see it: these two `def`s are in different
+    files, and nothing smaller than the module is the right scope to check.
+    """
+    ns_re = re.compile(r"^(\s*)(?:module|class)\s+([A-Za-z0-9_:]+)")
+    def_re = re.compile(r"^(\s*)def\s+(self\.)?(_[0-9a-f]{8})")
+    seen: dict[tuple, set] = defaultdict(set)
+    for rel, src in sorted(baseline_sources().items()):
+        stack: list[tuple[int, str]] = []
+        for line in code_only(src).splitlines():
+            m = ns_re.match(line)
+            if m:
+                indent = len(m.group(1))
+                while stack and stack[-1][0] >= indent:
+                    stack.pop()
+                stack.append((indent, m.group(2)))
+                continue
+            d = def_re.match(line)
+            if not d:
+                continue
+            spec = mapping.get(d.group(3))
+            nm = None if spec is None else name_for(spec, rel, None)
+            if nm is None:
+                continue
+            ns = "::".join(n for _, n in stack) or "(top)"
+            seen[(ns, bool(d.group(2)), nm)].add((d.group(3), rel))
+
+    out = []
+    for (ns, is_self, nm), hits in sorted(seen.items()):
+        if len({h for h, _ in hits}) < 2:
+            continue
+        where = ", ".join(f"{h} o {f}" for h, f in sorted(hits))
+        out.append(f"{ns}.{'self.' if is_self else ''}{nm}: hai def trong cung "
+                   f"mot module cung nhan ten nay -- {where}")
+    return out
 
 
 def apply(mapping: dict[str, object], dry_run: bool) -> tuple[int, int]:

@@ -1,0 +1,4319 @@
+# Sinh boi tools/dexuat.py -- ten theo KIEU DU LIEU, suy tu tap
+# method goi len tung hex trong tung pham vi. Chay lai se GHI DE:
+# muon sua mot ten thi dat lai o ten.yml, dung sua o day.
+ten:
+  _002c78c0:
+    "ksu_vn/method/chongbay/shape.rb#_350dd247": arr2
+  _007bc4b8:
+    "ksu_vn/system/setting.rb#export_online": str4
+    "ksu_vn/system/setting.rb#import_online": str4
+    "ksu_vn/utils/nesting/engine.rb#_541c1583": str
+    "ksu_vn/utils/preset.rb#_075ae565": str3
+  _007e1cc1:
+    "ksu_vn/utils/nesting/edit.rb#_59205066": edge2
+  _00ad0ce5:
+    "ksu_vn/method/themtam.rb#_ad557b93": arr
+    "ksu_vn/method/toiuuvan.rb#_687e1def": arr2
+    "ksu_vn/utils/sheet/bottom.rb#_7a7a9a52": arr
+  _00d551f6:
+    "ksu_vn/method/themtam.rb#_1668ae28": grp2
+  _0131394b:
+    "ksu_vn/method/xeptam/collide.rb#_af0cebe5": arr2
+    "ksu_vn/utils/nesting/bilan.rb#_faecb1ca": arr2
+  _013437e4:
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": flag2
+  _0135d7db:
+    "ksu_vn/method/themtam.rb#_aa983a67": arr6
+  _017bb9af: arr
+  _018757e1: flag
+  _02493448:
+    "ksu_vn/utils/preset/field.rb#_1cbe116a": arr
+  _025ef33f:
+    "ksu_vn/method/toiuuvan/postproc.rb#_0579a704": arr2
+    "ksu_vn/method/xeptam/nfp.rb#_71109d80": arr
+    "ksu_vn/method/xeptam/nfp.rb#_7f9a6edc": arr3
+    "ksu_vn/method/xuatdxf.rb#_de24fd0f": arr2
+    "ksu_vn/method/xuatdxf/entry.rb#_97443b71": arr4
+    "ksu_vn/utils/geom.rb#_35c2c696": arr6
+  _02f45a69: flag2
+  _02ff2060:
+    "ksu_vn/utils/view.rb#_feb12e90": arr
+  _0308611d: arr2
+  _032e5729:
+    "ksu_vn/method/netcatcuoi/resize.rb#_ff3778ab": arr4
+  _032f963e:
+    "ksu_vn/utils/cutting/loop.rb#_c52ad8bc": arr
+  _03af875a:
+    "ksu_vn/method/nesting/launch.rb#_f75e3e4f": h
+    "ksu_vn/utils/nesting/optimize.rb#_ea6f582c": arr2
+  _03d703fa:
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": arr7
+  _03eebd20:
+    "ksu_vn/utils/cutting.rb#_4eeae396": face2
+  _04076958:
+    "ksu_vn/method/xeptam/nfp.rb#_16ff81f7": pt
+    "ksu_vn/utils/sheet/overlay.rb#_52d3437f": num
+  _04585a56:
+    "ksu_vn/method/xeptam/collide.rb#_4237de17": h
+    "ksu_vn/method/xeptam/push.rb#_7f17a5c5": h
+  _047ee18e:
+    "ksu_vn/utils/view.rb#_47eba6dd": arr
+    "ksu_vn/utils/view.rb#_c5f21c57": arr
+  _048a4176:
+    "ksu_vn/utils/label.rb#_1f249426": flag
+  _04a28e9d:
+    "ksu_vn/method/toiuuvan.rb#_d0431df5": arr5
+  _05708e1c:
+    "ksu_vn/method/themtam.rb#_5c6a1c61": str
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": str2
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": str
+  _059f0286:
+    "ksu_vn/utils/cutting/loop.rb#_8c4d4bd1": arr3
+  _05c18602:
+    "ksu_vn/utils/nesting/pack.rb#_26b5a6fd": arr
+  _05dea37f: arr3
+  _0638a063:
+    "ksu_vn/method/toiuuvan/engine.rb#_57ce2a46": arr6
+  _06550974:
+    "ksu_vn/utils/view/widget.rb#_7b770b82": pt
+  _06b9ac53:
+    "ksu_vn/method/xeptam/mirror.rb#_34fc866b": tr
+  _072578ef:
+    "ksu_vn/method/themtam.rb#_5c6a1c61": str2
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": str
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": str2
+    "ksu_vn/utils/sheet/bottom.rb#_c7decd32": str
+  _0743c4be:
+    "ksu_vn/utils/flip.rb#_88b3c357": ents
+  _0782d74a: flag3
+  _0789007a:
+    "ksu_vn/method/xeptam/arrange.rb#_35f2e047": vec
+    "ksu_vn/method/xeptam/arrange.rb#_650fb422": grp
+    "ksu_vn/method/xeptam/arrange.rb#_925b0a97": grp
+  _07ec14bb: arr4
+  _08248783:
+    "ksu_vn/method/themtam.rb#_844eb55a": flag
+  _0845fb1d:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_a95ae5a0": num
+  _0850aa4d:
+    "ksu_vn/method/toiuuvan/engine.rb#_0c084a37": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_2cf6d3a4": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_6e065d2e": arr4
+    "ksu_vn/utils/nesting/pack.rb#_26b5a6fd": h
+  _08c7c8d9:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": arr5
+    "ksu_vn/method/xeptam/push.rb#_2bff4638": arr2
+  _0959596a:
+    "ksu_vn/main.rb#_06b07406": arr2
+  _098cbd23:
+    "ksu_vn/method/xeptam.rb#draw": flag3
+  _099d79c7:
+    "ksu_vn/utils/nesting/pack.rb#_26b5a6fd": num2
+  _09d74620:
+    "ksu_vn/method/toiuuvan/postproc.rb#_086b9b67": flag
+  _0a01051a:
+    "ksu_vn/method/netcatcuoi/resize.rb#_786ab544": arr3
+  _0a3334e9: arr5
+  _0a6c011e: arr6
+  _0a82436a:
+    "ksu_vn/method/nesting.rb#_37275936": flag
+    "ksu_vn/method/nesting/draw.rb#_146dab1a": arr2
+    "ksu_vn/utils/sheet/overlay.rb#_3f34706e": flag
+  _0a83cc7f:
+    "ksu_vn/utils/pdf/build.rb#_5b6279e8": str3
+  _0add0792: str
+  _0b238aa0:
+    "ksu_vn/method/xeptam/collide.rb#_788720c1": tr2
+    "ksu_vn/utils/preset/field.rb#_3420d496": flag4
+  _0b5993a8:
+    "ksu_vn/method/xuatdxf/geom.rb#_2d01dec4": pt3
+  _0b6ebc49:
+    "ksu_vn/method/thongke/xuat.rb#_beb63a90": str
+  _0bfd1b5f:
+    "ksu_vn/utils/nesting/pack.rb#_311385c4": ents
+  _0c2ff740: arr7
+  _0c32403e:
+    "ksu_vn/utils/preset/field.rb#_a4b56c31": str
+    "ksu_vn/utils/preset/field.rb#_cbadd90f": num
+  _0c4e039f:
+    "ksu_vn/method/toiuuvan/engine.rb#_fa87e7fb": arr8
+    "ksu_vn/method/xeptam/collide.rb#_25080947": num6
+  _0c7298e2: flag4
+  _0c8f8471:
+    "ksu_vn/method/xuatdxf/entry.rb#_97443b71": arr3
+  _0cd596cc:
+    "ksu_vn/utils/quet.rb#_b3bfd2a3": tr
+  _0cf61a71:
+    "ksu_vn/method/nesting/simplify.rb#_578e7a65": num
+    "ksu_vn/utils/cutting.rb#_4eeae396": vec
+  _0da67863:
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": flag
+    "ksu_vn/method/xeptam/mirror.rb#_34966ae4": flag
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": flag
+  _0e5be259:
+    "ksu_vn/utils/sheet/overlay.rb#_3f34706e": num
+  _0e6f8149:
+    "ksu_vn/method/chontam/pick.rb#_24c54f2a": num
+  _0ea755ac:
+    "ksu_vn/utils/nesting/edit.rb#_e510938c": num
+  _0ebc64e8:
+    "ksu_vn/method/chongbay.rb#_ca5cd64b": arr
+  _0ec5afd0:
+    "ksu_vn/utils/font.rb#_09901ac3": arr2
+  _0fbd0d63: flag5
+  _0fca771c:
+    "ksu_vn/method/xeptam/group.rb#_5e44e341": arr2
+  _10e57a6a:
+    "ksu_vn/utils/sheet/bottom.rb#_a9a86c81": pt
+  _110cc191:
+    "ksu_vn/method/chongbay.rb#_82f140a1": num5
+  _1126105e:
+    "ksu_vn/utils/label.rb#_d04b583b": bb
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr5
+  _114e129b:
+    "ksu_vn/method/chontam/pick.rb#_788720c1": pt
+    "ksu_vn/method/xeptam/collide.rb#_e8c0ca6d": pt
+  _1177d803:
+    "ksu_vn/utils/view.rb#_16162af2": pt
+  _117833de:
+    "ksu_vn/method/chongbay/shape.rb#_0758608c": arr2
+    "ksu_vn/method/chontam/pick.rb#_24c54f2a": arr
+    "ksu_vn/method/chontam/pick.rb#_788720c1": arr
+    "ksu_vn/method/chontam/pick.rb#_94a6f47d": arr2
+    "ksu_vn/method/nesting.rb#_703c6ac2": arr
+    "ksu_vn/method/nesting/collect.rb#_75fab3ca": arr
+    "ksu_vn/method/nesting/draw.rb#_2827207b": num
+    "ksu_vn/method/nesting/launch.rb#_49dd846c": arr
+    "ksu_vn/method/nesting/launch.rb#_f75e3e4f": str
+    "ksu_vn/method/nesting/simplify.rb#_877aa5f8": num
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_245e1bad": pt3
+    "ksu_vn/method/netcatcuoi/resize.rb#_0f1bcb43": arr
+    "ksu_vn/method/themtam.rb#_aa983a67": pt4
+    "ksu_vn/method/themtam.rb#_ec568b6f": grp2
+    "ksu_vn/method/toiuuvan/postproc.rb#_06a8054e": arr3
+    "ksu_vn/method/toiuuvan/postproc.rb#_c4f153fd": arr5
+    "ksu_vn/method/xeptam/nfp.rb#_1b979deb": num
+    "ksu_vn/method/xuatdxf.rb#_de24fd0f": arr
+    "ksu_vn/method/xuatdxf/entry.rb#_30057963": str2
+    "ksu_vn/method/xuatdxf/entry.rb#_97443b71": arr
+    "ksu_vn/method/xuatdxf/geom.rb#_074e3371": arr
+    "ksu_vn/utils/cutting.rb#_4605a894": arr2
+    "ksu_vn/utils/cutting.rb#_f4ee2773": face
+    "ksu_vn/utils/geom.rb#_19da360c": pt3
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr13
+    "ksu_vn/utils/nesting/optimize.rb#_5709b6da": arr
+    "ksu_vn/utils/preset/field.rb#_e3e0aee7": arr
+    "ksu_vn/utils/preset/store.rb#_a5c0536b": arr2
+    "ksu_vn/utils/sheet/mark.rb#_6fb26883": pt
+    "ksu_vn/utils/sheet/overlay.rb#_52d3437f": pt
+    "ksu_vn/utils/view.rb#_47eba6dd": pt2
+    "ksu_vn/utils/view.rb#_680b8c64": pt
+    "ksu_vn/utils/view.rb#_9a653fdf": arr
+    "ksu_vn/utils/view.rb#_f84a7879": pt
+    "ksu_vn/utils/view/widget.rb#_9fe8525a": arr2
+  _1184c55e: flag6
+  _11ac6e3c: arr8
+  _11d17dc7:
+    "ksu_vn/main.rb#reload": str
+    "ksu_vn/method/thongke/xuat.rb#_713c8e2b": arr
+    "ksu_vn/method/thongke/xuat.rb#_b3b2dea9": arr
+  _11e8ceb9:
+    "ksu_vn/method/chongbay.rb#_8784e3f2": tr
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": tr
+    "ksu_vn/utils/nesting/edit.rb#_0aa2d773": tr
+  _12895835:
+    "ksu_vn/method/intem/scan.rb#_f0ab79c9": arr
+  _12a60140:
+    "ksu_vn/utils/flip.rb#_493d532c": ents2
+  _12c2aad5:
+    "ksu_vn/utils/nesting/pack.rb#_cb9d8021": arr3
+  _130a8af3:
+    "ksu_vn/method/xeptam/collide.rb#_25080947": num4
+  _13c3e774:
+    "ksu_vn/utils/flip.rb#_88b3c357": grp2
+  _13e431e7:
+    "ksu_vn/utils/nesting/edit.rb#_03018fe6": ents
+    "ksu_vn/utils/nesting/edit.rb#_0d3c3d2a": ents
+  _13ffc4e7:
+    "ksu_vn/main.rb#reload": arr
+  _14123e7c:
+    "ksu_vn/method/xeptam/arrange.rb#_14a635d9": grp
+    "ksu_vn/method/xeptam/arrange.rb#_35f2e047": flag
+  _146c17dc:
+    "ksu_vn/utils/cutting/detail.rb#_565a278d": grp
+  _1476b4ab:
+    "ksu_vn/utils/nesting/edit.rb#_59205066": edge
+  _14cca613:
+    "ksu_vn/method/xeptam/push.rb#_726c65ba": flag
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": flag
+  _14d6d9a2:
+    "ksu_vn/method/xephang.rb#_38252db1": arr4
+    "ksu_vn/utils/sheet/reorder.rb#_0da19c14": arr3
+  _14ea4fab:
+    "ksu_vn/method/toiuuvan/postproc.rb#_38bca22d": num
+  _152f9385:
+    "ksu_vn/method/nesting/draw.rb#_49fac9a3": tr2
+    "ksu_vn/utils/label.rb#_8010294b": tr
+    "ksu_vn/utils/preset.rb#_075ae565": str
+  _15cb29cb:
+    "ksu_vn/method/nesting/collect.rb#_6f88583c": face
+    "ksu_vn/method/nesting/collect.rb#_dd36ed49": face
+    "ksu_vn/utils/cutting.rb#_e1fe716e": flag
+    "ksu_vn/utils/cutting/detail.rb#_babeb881": arr2
+    "ksu_vn/utils/cutting/detail.rb#_d7ae9520": vec2
+  _15d8a420:
+    "ksu_vn/method/toiuuvan/engine.rb#_603ba9c4": arr3
+  _15e17cf3:
+    "ksu_vn/method/xeptam/push.rb#_c7b0bc62": bb
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": bb
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": bb
+  _1608dd7e:
+    "ksu_vn/utils/view.rb#_c9d9f590": num
+  _16298e7f:
+    "ksu_vn/utils/view/widget.rb#_9fe8525a": arr3
+  _164352a8:
+    "ksu_vn/utils/sheet/mark.rb#_4909e1a7": bb
+  _1652157f:
+    "ksu_vn/utils/cutting/detail.rb#_fc91f51b": tr
+  _166f46eb:
+    "ksu_vn/utils/flip.rb#_493d532c": tr2
+    "ksu_vn/utils/sheet/mark.rb#_1c44e717": pt
+  _1679abb0:
+    "ksu_vn/utils/preset/mode.rb#_bd804f80": arr
+  _16e40e5e:
+    "ksu_vn/method/xuatdxf/entry.rb#_30057963": h
+  _176bd2aa:
+    "ksu_vn/method/xuatdxf/geom.rb#_2d01dec4": pt4
+  _1783986a:
+    "ksu_vn/utils/preset/field.rb#_3420d496": flag
+  _1798446e:
+    "ksu_vn/method/chongbay/shape.rb#_37ca7a0d": pt3
+    "ksu_vn/method/chongbay/shape.rb#_5410b01c": pt3
+    "ksu_vn/method/chongbay/shape.rb#_79405863": pt
+    "ksu_vn/method/chongbay/shape.rb#_8ad2ec35": pt
+    "ksu_vn/method/chongbay/shape.rb#_9608e031": pt
+    "ksu_vn/method/chongbay/shape.rb#_9aaf7055": pt
+    "ksu_vn/method/thongke/quet.rb#_6f6e03c6": pt
+    "ksu_vn/method/xuatdxf/geom.rb#_2d01dec4": pt
+    "ksu_vn/method/xuatdxf/geom.rb#_826c9296": pt2
+    "ksu_vn/utils/cutting/detail.rb#_0f0ed6ac": pt2
+  _17bc241b:
+    "ksu_vn/method/themtam.rb#_42a83442": flag2
+  _17bd3b32: h2
+  _17c875c2:
+    "ksu_vn/method/netcatcuoi/resize.rb#_0183b2c7": arr
+  _17eb3548:
+    "ksu_vn/utils/pdf/build.rb#_5b6279e8": arr
+    "ksu_vn/utils/pdf/build.rb#_5f966f9e": arr
+    "ksu_vn/utils/pdf/build.rb#_b3b2dea9": arr
+  _17ebdc32:
+    "ksu_vn/method/chongbay.rb#_b7735d5c": num2
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": flag
+    "ksu_vn/method/netcatcuoi/resize.rb#_23b18b68": num2
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": num2
+    "ksu_vn/utils/nesting/pack.rb#_311385c4": num
+    "ksu_vn/utils/pdf/svg.rb#_03c7ad56": num
+    "ksu_vn/utils/pdf/svg.rb#_70442812": num
+    "ksu_vn/utils/sheet/mark.rb#_1c44e717": num
+    "ksu_vn/utils/view/query.rb#_bbaa2919": num5
+  _17fa94cb: flag7
+  _18365126:
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": grp4
+    "ksu_vn/utils/cutting/detail.rb#_fc91f51b": grp2
+  _1890c36d:
+    "ksu_vn/utils/nesting/corner.rb#_bca72a10": arr3
+    "ksu_vn/utils/view.rb#_3f56417e": pt
+  _18bac9b5: flag8
+  _193b8e94:
+    "ksu_vn/utils/cutting/detail.rb#_1dc9fdac": arr
+    "ksu_vn/utils/cutting/detail.rb#_5edc6938": arr
+  _198729a5:
+    "ksu_vn/utils/preset/field.rb#_3420d496": pt
+  _19a12bd7:
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": arr
+  _19aff247:
+    "ksu_vn/utils/nesting/corner.rb#_e4f850f5": num4
+  _19fe881a:
+    "ksu_vn/method/xeptam/push.rb#compute_push_back": num
+  _1a4249c1:
+    "ksu_vn/method/xuatdxf/geom.rb#_826c9296": num
+  _1a58a48e:
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": num2
+  _1ad66abe:
+    "ksu_vn/method/thongke/phukien.rb#_ad8e91ed": arr4
+  _1b06e0b8:
+    "ksu_vn/utils/sheet/bottom.rb#_1cc9607d": tr
+  _1b423cff:
+    "ksu_vn/method/nesting/simplify.rb#_03ea1bb7": num
+  _1b7b7b4f:
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": arr4
+    "ksu_vn/utils/view/widget.rb#_9fe8525a": arr
+  _1bba05d9:
+    "ksu_vn/method/xeptam/mirror.rb#_7ceb2cd7": arr3
+    "ksu_vn/utils/cutting/loop.rb#_58ea2028": arr
+    "ksu_vn/utils/geom.rb#_35c2c696": arr7
+  _1beacd56:
+    "ksu_vn/method/themtam.rb#_844eb55a": arr2
+    "ksu_vn/method/toiuuvan/postproc.rb#_003ab64b": arr4
+    "ksu_vn/method/xeptam/push.rb#_2bff4638": arr4
+  _1c3a2132: flag9
+  _1c86d9dc:
+    "ksu_vn/method/themtam.rb#_5c6a1c61": arr2
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": arr2
+  _1ca99657:
+    "ksu_vn/method/xeptam/collide.rb#_af0cebe5": arr
+    "ksu_vn/utils/nesting/bilan.rb#_faecb1ca": arr
+  _1caa2ddd:
+    "ksu_vn/method/toiuuvan/engine.rb#_fa87e7fb": arr5
+  _1cbf0229:
+    "ksu_vn/method/xeptam/arrange.rb#_63b8ba0b": num2
+    "ksu_vn/method/xeptam/nfp.rb#_16ff81f7": arr2
+  _1d34ab11:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_a95ae5a0": arr2
+    "ksu_vn/utils/nesting/corner.rb#_e22a9dc4": bb
+    "ksu_vn/utils/view.rb#_49bdeaba": pt
+    "ksu_vn/utils/view.rb#_c9d9f590": arr
+    "ksu_vn/utils/view/query.rb#_bbaa2919": arr3
+  _1d78e444:
+    "ksu_vn/utils/cutting/loop.rb#_3a1d2466": arr
+    "ksu_vn/utils/cutting/loop.rb#_93cdf1dd": h
+  _1d7997eb:
+    "ksu_vn/method/toiuuvan/postproc.rb#_c4f153fd": h
+  _1dc6660d:
+    "ksu_vn/utils/label.rb#_31e99a8d": grp2
+  _1e250f1a:
+    "ksu_vn/method/toiuuvan/postproc.rb#_003ab64b": h2
+  _1e3f9e75:
+    "ksu_vn/method/xuatdxf/entry.rb#_f8552d5f": num4
+  _1e505048:
+    "ksu_vn/utils/cutting.rb#_e4e88386": num
+  _1ec4570f:
+    "ksu_vn/utils/cutting/detail.rb#_0f0ed6ac": vec
+  _1ef38b80: arr9
+  _1ef58509:
+    "ksu_vn/method/xeptam/nfp.rb#_cc303760": arr4
+  _1f153aeb:
+    "ksu_vn/method/caidat.rb#_53b46751": str3
+  _1f38709a:
+    "ksu_vn/method/xeptam.rb#onMouseMove": arr4
+    "ksu_vn/method/xeptam/arrange.rb#_63b8ba0b": pt3
+  _1f44a9f5:
+    "ksu_vn/method/nesting/simplify.rb#_578e7a65": arr2
+  _1f647ed2:
+    "ksu_vn/utils/view.rb#_f4ffc79c": h
+  _1f950a9b:
+    "ksu_vn/method/nesting/collect.rb#_2c9761fb": bb2
+    "ksu_vn/utils/cutting.rb#_548357b4": bb2
+    "ksu_vn/utils/label.rb#_665bc239": pt
+  _1fd50927:
+    "ksu_vn/utils/pdf/svg.rb#_35736656": arr
+  _1fd62348:
+    "ksu_vn/method/thongke/phukien.rb#_b4768d27": h
+  _1fdd0bba:
+    "ksu_vn/utils/label.rb#_d04b583b": num
+  _1ff4eb71:
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": flag
+  _204e57f4:
+    "ksu_vn/utils/cutting.rb#_2a224ca0": str
+    "ksu_vn/utils/cutting.rb#_c374c8ee": str
+  _207473ab:
+    "ksu_vn/method/thongke.rb#_3f9829f0": str2
+    "ksu_vn/method/thongke/xuat.rb#_1709e79b": arr
+    "ksu_vn/method/xuatdxf.rb#_9477a3c4": arr
+  _208980b2:
+    "ksu_vn/utils/nesting/avail.rb#_7b408093": h
+  _209e7001:
+    "ksu_vn/utils/nesting/optimize.rb#_ea6f582c": arr5
+    "ksu_vn/utils/nesting/pack.rb#_a2f525ce": arr3
+  _20bf5295:
+    "ksu_vn/method/chongbay/shape.rb#_37ca7a0d": pt
+    "ksu_vn/method/chongbay/shape.rb#_5410b01c": pt
+    "ksu_vn/method/chongbay/shape.rb#_9707d4ab": pt2
+    "ksu_vn/method/chongbay/shape.rb#_cbad055a": pt
+    "ksu_vn/method/chontam/pick.rb#_3fd8e206": num
+    "ksu_vn/method/intem/scan.rb#_a8e56783": arr
+    "ksu_vn/method/nesting/draw.rb#_127808db": bb
+    "ksu_vn/method/nesting/simplify.rb#_877aa5f8": arr
+    "ksu_vn/method/nesting/simplify.rb#_92674c1b": arr
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": arr4
+    "ksu_vn/method/netcatcuoi.rb#_c6224ad4": pt2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_245e1bad": pt2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_5d1a5ed6": pt
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": arr
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_acfeef55": pt2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_f89911a7": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_fb89e43a": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_ff3778ab": arr
+    "ksu_vn/method/themtam.rb#_aa983a67": pt2
+    "ksu_vn/method/toiuuvan/engine.rb#_6e065d2e": arr2
+    "ksu_vn/method/xeptam/arrange.rb#_13997cbc": num
+    "ksu_vn/method/xeptam/collide.rb#_56bc8e10": arr
+    "ksu_vn/method/xeptam/collide.rb#_fae0f9b7": arr2
+    "ksu_vn/method/xeptam/drag.rb#_ecb07074": arr
+    "ksu_vn/method/xeptam/nfp.rb#_8c307bb8": pt
+    "ksu_vn/method/xeptam/nfp.rb#_db5a8bb4": arr3
+    "ksu_vn/method/xeptam/nfp.rb#_f5c19a2b": arr
+    "ksu_vn/method/xeptam/push.rb#_726c65ba": arr3
+    "ksu_vn/method/xuatdxf/dxf.rb#_8557b708": num
+    "ksu_vn/method/xuatdxf/entry.rb#_727b63c7": pt2
+    "ksu_vn/method/xuatdxf/entry.rb#_f8552d5f": pt2
+    "ksu_vn/method/xuatdxf/geom.rb#_694b4b2c": num
+    "ksu_vn/method/xuatdxf/geom.rb#_b33d5052": vec
+    "ksu_vn/utils/cutting.rb#_9e23459c": num
+    "ksu_vn/utils/cutting/loop.rb#_885e1003": pt
+    "ksu_vn/utils/cutting/loop.rb#_a225c103": pt
+    "ksu_vn/utils/geom.rb#_0c8b8a0e": pt
+    "ksu_vn/utils/geom.rb#_0c91518b": pt2
+    "ksu_vn/utils/geom.rb#_19da360c": pt2
+    "ksu_vn/utils/geom.rb#_35c2c696": arr4
+    "ksu_vn/utils/geom.rb#_5666a38f": arr
+    "ksu_vn/utils/nesting/bilan.rb#_72edd259": arr
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": arr3
+    "ksu_vn/utils/nesting/corner.rb#_3b0c3409": arr
+    "ksu_vn/utils/nesting/corner.rb#_3caaabb9": arr2
+    "ksu_vn/utils/nesting/corner.rb#_5d9dd503": arr
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": pt2
+    "ksu_vn/utils/nesting/corner.rb#_ebae3e53": arr2
+    "ksu_vn/utils/nesting/corner.rb#_edec0f70": arr2
+    "ksu_vn/utils/quet.rb#_b4479c25": arr
+    "ksu_vn/utils/quet.rb#_ba29ba89": arr
+    "ksu_vn/utils/sheet/bottom.rb#_7a7a9a52": grp
+    "ksu_vn/utils/view.rb#_3f56417e": pt2
+    "ksu_vn/utils/view.rb#_410b0b4e": pt2
+    "ksu_vn/utils/view.rb#_4cf5a89a": arr
+    "ksu_vn/utils/view/query.rb#_bbaa2919": pt
+  _211fda27:
+    "ksu_vn/utils/cutting.rb#_e4e88386": num2
+  _21900894:
+    "ksu_vn/utils/sheet/bottom.rb#_7a7a9a52": arr2
+  _219e95de:
+    "ksu_vn/method/xeptam/drag.rb#_50ab81be": tr
+  _21a59ec3:
+    "ksu_vn/method/chongbay/shape.rb#_e2cd305f": flag2
+    "ksu_vn/method/xuatdxf/geom.rb#_826c9296": vec6
+    "ksu_vn/utils/geom.rb#sat_mtv": flag
+  _21bc1e4c:
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": grp3
+  _21eae3f6: arr10
+  _2212bc7e:
+    "ksu_vn/method/xuatdxf/geom.rb#_edae44a3": model
+  _223cc36c:
+    "ksu_vn/method/netcatcuoi.rb#_ca2351da": tr
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_5d1a5ed6": tr
+    "ksu_vn/method/themtam.rb#_0895e188": tr
+  _2266e384: vec2
+  _22866a7a: arr11
+  _22a24b6c:
+    "ksu_vn/method/caidat.rb#_e7bdbdf6": arr2
+  _22fb97d1:
+    "ksu_vn/method/xeptam/mirror.rb#_51c9eb3d": vec
+  _23007e34:
+    "ksu_vn/method/chongbay.rb#_e0f60d52": arr3
+    "ksu_vn/method/netcatcuoi.rb#_ca2351da": grp
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_5d1a5ed6": grp
+    "ksu_vn/method/thongke/quet.rb#_6f6e03c6": grp
+    "ksu_vn/method/toiuuvan/engine.rb#_57ce2a46": arr5
+    "ksu_vn/method/toiuuvan/postproc.rb#_06a8054e": arr5
+    "ksu_vn/method/toiuuvan/postproc.rb#_b0b73b9f": arr
+    "ksu_vn/method/xuatdxf.rb#_4db09033": arr
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": grp2
+    "ksu_vn/utils/cutting/detail.rb#_fc91f51b": grp
+    "ksu_vn/utils/cutting/loop.rb#_02ce5169": model
+    "ksu_vn/utils/label.rb#_6dc55f15": grp
+    "ksu_vn/utils/nesting/edit.rb#_34135bd8": grp
+  _230f1ed4:
+    "ksu_vn/method/nesting/launch.rb#_3f9829f0": flag
+    "ksu_vn/method/thongke.rb#_3f9829f0": flag
+    "ksu_vn/method/thongke/xuat.rb#_a105a0f4": arr3
+  _2314552a:
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr14
+  _2326e2d7:
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": str2
+  _23435646:
+    "ksu_vn/utils/nesting/pack.rb#_311385c4": tr3
+    "ksu_vn/utils/nesting/pack.rb#_a2f525ce": tr2
+  _23505ef9:
+    "ksu_vn/method/chongbay.rb#_1bc00fe0": arr
+    "ksu_vn/method/chongbay.rb#_3eaeabb1": arr
+    "ksu_vn/method/chongbay.rb#_5fb18040": arr2
+    "ksu_vn/method/chongbay.rb#_66232386": arr2
+    "ksu_vn/method/chongbay.rb#_6bf6eaa1": arr
+    "ksu_vn/method/chongbay.rb#_7c247492": arr2
+    "ksu_vn/method/chongbay.rb#_8f0a8c81": arr
+    "ksu_vn/method/chongbay.rb#_a72e7349": arr
+    "ksu_vn/method/chongbay.rb#_b278661f": arr3
+    "ksu_vn/method/chongbay.rb#_c8f21829": arr
+    "ksu_vn/method/chongbay.rb#_d855ea50": arr
+    "ksu_vn/method/chongbay.rb#_de1ac9fc": arr
+    "ksu_vn/method/chongbay.rb#_f674b1ec": arr2
+    "ksu_vn/method/chongbay.rb#_fc784101": arr2
+    "ksu_vn/method/chongbay.rb#deactivate": arr
+    "ksu_vn/method/chongbay.rb#draw": arr2
+    "ksu_vn/method/chongbay/assign.rb#_25307500": arr
+    "ksu_vn/method/chongbay/assign.rb#_2868a9dd": arr
+    "ksu_vn/method/chongbay/assign.rb#_3e0b10ba": arr
+    "ksu_vn/method/chongbay/assign.rb#_563cf113": arr
+    "ksu_vn/method/chongbay/assign.rb#_67c06000": arr
+    "ksu_vn/method/chongbay/assign.rb#_79743880": str
+    "ksu_vn/method/chongbay/assign.rb#_bd503ff9": arr
+    "ksu_vn/method/chongbay/shape.rb#_01ec2304": arr
+    "ksu_vn/method/chongbay/shape.rb#_0b275c6f": arr
+    "ksu_vn/method/chongbay/shape.rb#_12d6c6da": arr
+    "ksu_vn/method/chongbay/shape.rb#_1554008b": arr
+    "ksu_vn/method/chongbay/shape.rb#_1b2a0395": arr
+    "ksu_vn/method/chongbay/shape.rb#_1b630104": arr
+    "ksu_vn/method/chongbay/shape.rb#_2f6fa959": arr
+    "ksu_vn/method/chongbay/shape.rb#_2f962e33": arr
+    "ksu_vn/method/chongbay/shape.rb#_350dd247": arr
+    "ksu_vn/method/chongbay/shape.rb#_3b54361a": arr
+    "ksu_vn/method/chongbay/shape.rb#_50dde264": arr
+    "ksu_vn/method/chongbay/shape.rb#_76eb912d": arr
+    "ksu_vn/method/chongbay/shape.rb#_9aaf7055": arr
+    "ksu_vn/method/chongbay/shape.rb#_a2ff747d": arr3
+    "ksu_vn/method/chongbay/shape.rb#_aa7d9ce5": arr
+    "ksu_vn/method/chongbay/shape.rb#_c097c81d": arr
+    "ksu_vn/method/chongbay/shape.rb#_d6fe2338": arr
+    "ksu_vn/method/chongbay/shape.rb#_e2a7df81": pt
+    "ksu_vn/method/chongbay/shape.rb#_e2cd305f": arr
+    "ksu_vn/method/chongbay/shape.rb#_edb9e8bb": arr
+    "ksu_vn/method/chongbay/shape.rb#_f9c10539": arr
+    "ksu_vn/method/chongbay/shape.rb#_fd0f50e4": arr
+    "ksu_vn/method/chontam/pick.rb#_24c54f2a": pt2
+    "ksu_vn/method/intem/scan.rb#_16028ecb": arr4
+    "ksu_vn/method/intem/scan.rb#_9ec31362": arr2
+    "ksu_vn/method/intem/scan.rb#_d8a5a5cb": pt
+    "ksu_vn/method/intem/scan.rb#_f0ab79c9": pt2
+    "ksu_vn/method/intem/scan.rb#_f0de9fe3": arr
+    "ksu_vn/method/nesting.rb#_1670b0bf": arr
+    "ksu_vn/method/nesting.rb#_6406c961": arr2
+    "ksu_vn/method/nesting.rb#_d9b1612c": arr
+    "ksu_vn/method/nesting/collect.rb#_b0282735": arr
+    "ksu_vn/method/nesting/draw.rb#_127808db": pt
+    "ksu_vn/method/nesting/draw.rb#_13398956": arr4
+    "ksu_vn/method/nesting/draw.rb#_49fac9a3": arr
+    "ksu_vn/method/nesting/draw.rb#_a086bafa": pt
+    "ksu_vn/method/nesting/draw.rb#_b520a871": arr
+    "ksu_vn/method/nesting/simplify.rb#_03ea1bb7": arr
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": arr3
+    "ksu_vn/method/netcatcuoi.rb#_93f5a81b": bb
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_3431a152": pt
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": pt
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_f89911a7": pt
+    "ksu_vn/method/netcatcuoi/resize.rb#_3066d644": bb
+    "ksu_vn/method/netcatcuoi/resize.rb#_ae3af84a": pt
+    "ksu_vn/method/themtam.rb#_26cf11cf": arr
+    "ksu_vn/method/themtam.rb#_6ae58d17": arr
+    "ksu_vn/method/themtam.rb#_aa983a67": pt
+    "ksu_vn/method/toiuuvan.rb#_687e1def": vec
+    "ksu_vn/method/toiuuvan/engine.rb#_23d70e90": arr2
+    "ksu_vn/method/toiuuvan/engine.rb#_46279528": arr3
+    "ksu_vn/method/toiuuvan/engine.rb#_57ce2a46": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_9f684ec0": pt
+    "ksu_vn/method/toiuuvan/engine.rb#_d3de41b2": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_f573a61c": arr
+    "ksu_vn/method/toiuuvan/postproc.rb#_0579a704": pt
+    "ksu_vn/method/toiuuvan/postproc.rb#_1998c7d5": pt
+    "ksu_vn/method/toiuuvan/postproc.rb#_c4f153fd": arr
+    "ksu_vn/method/toiuuvan/postproc.rb#_cc51eebc": arr
+    "ksu_vn/method/xeptam/arrange.rb#_650fb422": vec
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": pt
+    "ksu_vn/method/xeptam/collide.rb#_56bc8e10": pt
+    "ksu_vn/method/xeptam/collide.rb#_5ac34e7b": pt
+    "ksu_vn/method/xeptam/collide.rb#_769da8ec": ents
+    "ksu_vn/method/xeptam/collide.rb#_af0cebe5": pt
+    "ksu_vn/method/xeptam/collide.rb#_c2ef690d": arr3
+    "ksu_vn/method/xeptam/collide.rb#_fae0f9b7": arr
+    "ksu_vn/method/xeptam/drag.rb#_33aae7c4": vec
+    "ksu_vn/method/xeptam/drag.rb#_8f5311bb": pt
+    "ksu_vn/method/xeptam/drag.rb#_98834989": vec
+    "ksu_vn/method/xeptam/drag.rb#_afb25a1e": grp
+    "ksu_vn/method/xeptam/drag.rb#_ecb07074": pt
+    "ksu_vn/method/xeptam/group.rb#_53dbfe89": grp
+    "ksu_vn/method/xeptam/group.rb#_8515206a": grp
+    "ksu_vn/method/xeptam/group.rb#_cfa0e40d": vec
+    "ksu_vn/method/xeptam/mirror.rb#_101ef2e3": pt
+    "ksu_vn/method/xeptam/mirror.rb#_78d29daa": vec
+    "ksu_vn/method/xeptam/mirror.rb#_7ceb2cd7": arr2
+    "ksu_vn/method/xeptam/nfp.rb#_3b7ac698": arr3
+    "ksu_vn/method/xeptam/nfp.rb#_3ea4c8e4": arr
+    "ksu_vn/method/xeptam/nfp.rb#_7f9a6edc": pt
+    "ksu_vn/method/xeptam/nfp.rb#_b4c1b27a": arr3
+    "ksu_vn/method/xeptam/nfp.rb#_cc303760": arr5
+    "ksu_vn/method/xeptam/nfp.rb#_d0de1f0f": arr
+    "ksu_vn/method/xeptam/nfp.rb#_f5c19a2b": arr2
+    "ksu_vn/method/xeptam/push.rb#_3ea06bed": grp
+    "ksu_vn/method/xeptam/push.rb#_5dc6e713": pt
+    "ksu_vn/method/xuatdxf/dxf.rb#_8557b708": pt
+    "ksu_vn/method/xuatdxf/entry.rb#_30057963": arr
+    "ksu_vn/method/xuatdxf/entry.rb#_97443b71": pt
+    "ksu_vn/method/xuatdxf/scan.rb#_89a2e173": arr2
+    "ksu_vn/method/xuatdxf/scan.rb#_c65c0a0a": pt
+    "ksu_vn/method/xuatdxf/scan.rb#_daa2f929": arr2
+    "ksu_vn/system/setting.rb#_5098bf42": arr
+    "ksu_vn/system/setting.rb#delete_preset": arr
+    "ksu_vn/system/setting.rb#save_preset": arr
+    "ksu_vn/utils/chuanhoa.rb#_daaf9412": num
+    "ksu_vn/utils/cutting.rb#_4605a894": pt3
+    "ksu_vn/utils/cutting/detail.rb#_0d18c046": arr
+    "ksu_vn/utils/cutting/detail.rb#_c6e26747": pt2
+    "ksu_vn/utils/flip.rb#_14af3a7c": grp
+    "ksu_vn/utils/geom.rb#_0c8b8a0e": pt3
+    "ksu_vn/utils/geom.rb#_0c91518b": pt3
+    "ksu_vn/utils/geom.rb#_1a71cf37": pt
+    "ksu_vn/utils/geom.rb#_35c2c696": pt
+    "ksu_vn/utils/geom.rb#_63a66557": pt
+    "ksu_vn/utils/geom.rb#_71d9e5d3": pt
+    "ksu_vn/utils/geom.rb#_a82acccd": pt
+    "ksu_vn/utils/geom.rb#_fc888960": pt
+    "ksu_vn/utils/label.rb#_55943665": grp
+    "ksu_vn/utils/label.rb#_681febe3": pt
+    "ksu_vn/utils/label.rb#_89cdc81b": pt
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr7
+    "ksu_vn/utils/nesting.rb#_3f068781": arr
+    "ksu_vn/utils/nesting/avail.rb#_5818f219": pt
+    "ksu_vn/utils/nesting/bilan.rb#_24863b11": pt
+    "ksu_vn/utils/nesting/bilan.rb#_72edd259": pt
+    "ksu_vn/utils/nesting/bilan.rb#_faecb1ca": pt
+    "ksu_vn/utils/nesting/corner.rb#_0f9a4df9": pt
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": grp
+    "ksu_vn/utils/nesting/corner.rb#_3caaabb9": arr3
+    "ksu_vn/utils/nesting/corner.rb#_5b41ad8b": pt
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": grp
+    "ksu_vn/utils/nesting/corner.rb#_b869e241": arr2
+    "ksu_vn/utils/nesting/corner.rb#_be99d528": arr2
+    "ksu_vn/utils/nesting/corner.rb#_ebae3e53": arr3
+    "ksu_vn/utils/nesting/corner.rb#_edec0f70": arr4
+    "ksu_vn/utils/nesting/optimize.rb#_ea6f582c": arr4
+    "ksu_vn/utils/preset/store.rb#_9a9b090d": arr
+    "ksu_vn/utils/preset/store.rb#_ec928958": arr
+    "ksu_vn/utils/sheet/bottom.rb#_de0a88d4": num
+    "ksu_vn/utils/sheet/bottom.rb#_e4bb5453": grp2
+    "ksu_vn/utils/sheet/mark.rb#_05bd8a7e": pt
+    "ksu_vn/utils/sheet/mark.rb#_4909e1a7": pt
+    "ksu_vn/utils/sheet/overlay.rb#_3f34706e": pt2
+    "ksu_vn/utils/sheet/reorder.rb#_09ce1072": arr
+    "ksu_vn/utils/view.rb#_b35f2f05": grp2
+    "ksu_vn/utils/view.rb#_b80737a7": arr
+    "ksu_vn/utils/view.rb#_f4ffc79c": grp
+    "ksu_vn/utils/view/query.rb#_bbaa2919": pt3
+  _236d145c: flag10
+  _2388639c:
+    "ksu_vn/utils/label.rb#_8010294b": arr
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr6
+    "ksu_vn/utils/label.rb#_e2846c62": h
+  _245b6d52:
+    "ksu_vn/method/xephang.rb#_38252db1": h
+  _24a18c56:
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": pt
+  _24c16403:
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": num4
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": num6
+  _24c6e76d:
+    "ksu_vn/method/caidat.rb#_53b46751": str2
+    "ksu_vn/system/setting.rb#_59fa8401": str5
+    "ksu_vn/system/setting.rb#import_online": flag
+  _24e0aa27:
+    "ksu_vn/method/xeptam/push.rb#_c7b0bc62": tr
+  _24eac4c4:
+    "ksu_vn/method/xeptam/collide.rb#_11075c77": arr2
+    "ksu_vn/method/xeptam/collide.rb#_25080947": arr
+    "ksu_vn/method/xeptam/collide.rb#_4237de17": arr3
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": arr4
+    "ksu_vn/method/xeptam/collide.rb#_c6c7c535": arr2
+    "ksu_vn/method/xeptam/collide.rb#_fae0f9b7": arr3
+    "ksu_vn/method/xeptam/collide.rb#_fb706f65": arr
+    "ksu_vn/method/xeptam/nfp.rb#_16ff81f7": arr3
+    "ksu_vn/method/xeptam/nfp.rb#_4ec2a6e7": arr
+    "ksu_vn/method/xeptam/push.rb#_726c65ba": arr
+    "ksu_vn/method/xeptam/push.rb#_7f17a5c5": arr2
+    "ksu_vn/method/xeptam/push.rb#compute_push_back": arr2
+  _251f02bf:
+    "ksu_vn/utils/label.rb#_d5ca0b39": num
+  _25425385:
+    "ksu_vn/method/toiuuvan/postproc.rb#_003ab64b": arr3
+    "ksu_vn/method/toiuuvan/postproc.rb#_06a8054e": arr4
+    "ksu_vn/utils/pdf/build.rb#_b3b2dea9": arr3
+  _2558cfe2:
+    "ksu_vn/method/themtam.rb#_eb2b4ec7": tr
+  _259b63ed:
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": num8
+  _2657bbf4:
+    "ksu_vn/method/intem/scan.rb#_6eef93f0": num
+  _26a014fb:
+    "ksu_vn/utils/pdf/svg.rb#_5966e1de": flag2
+  _26e573b5:
+    "ksu_vn/utils/cutting/detail.rb#_fc91f51b": arr
+  _27593994:
+    "ksu_vn/method/xeptam.rb#draw": vec
+  _27846c89:
+    "ksu_vn/method/xeptam/collide.rb#_1adb886a": str
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": str
+  _27ad6fcd:
+    "ksu_vn/method/xeptam/push.rb#_2bff4638": vec2
+    "ksu_vn/method/xeptam/push.rb#_d1eefbfb": pt
+  _27ca2b3f:
+    "ksu_vn/method/nesting/draw.rb#_ce93a4c7": arr
+  _286c6273:
+    "ksu_vn/method/xuatdxf.rb#_4db09033": str2
+  _2879b2a0:
+    "ksu_vn/utils/view/query.rb#_5f44dc53": arr
+  _28d159f6:
+    "ksu_vn/utils/cutting/detail.rb#_5edc6938": num2
+  _28d1b79f:
+    "ksu_vn/utils/flip.rb#_ace51b7b": tr
+  _28d2af22:
+    "ksu_vn/utils/view.rb#_47eba6dd": arr2
+    "ksu_vn/utils/view.rb#_c5f21c57": arr2
+  _291004ca: flag11
+  _2913a9cb:
+    "ksu_vn/method/intem.rb#_612cc3a2": arr
+    "ksu_vn/utils/cutting.rb#_0d45a147": arr
+    "ksu_vn/utils/cutting.rb#_2a224ca0": arr2
+    "ksu_vn/utils/cutting.rb#_c374c8ee": arr3
+  _29cde5c9:
+    "ksu_vn/utils/preset/store.rb#_08233e30": str
+    "ksu_vn/utils/preset/store.rb#_7d8dbd25": str
+    "ksu_vn/utils/sheet/reorder.rb#_54e81c4a": str
+  _29fd5a19:
+    "ksu_vn/utils/cutting/loop.rb#_3a1d2466": arr2
+  _2a0c2e50:
+    "ksu_vn/method/nesting/collect.rb#_b0282735": h
+    "ksu_vn/method/nesting/launch.rb#_d1ef9374": h
+    "ksu_vn/method/xuatdxf.rb#_4db09033": arr2
+    "ksu_vn/utils/chuanhoa.rb#_37eed696": h
+    "ksu_vn/utils/cutting.rb#_c374c8ee": h
+  _2a592c9e:
+    "ksu_vn/utils/nesting/avail.rb#_5818f219": num6
+  _2a763763:
+    "ksu_vn/utils/cutting/detail.rb#_d7ae9520": pt
+  _2b25f50a:
+    "ksu_vn/method/xeptam/push.rb#_2bff4638": h
+  _2b615a10: arr12
+  _2b76e681:
+    "ksu_vn/utils/label.rb#_1f249426": grp2
+  _2b961201:
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": arr
+  _2be26990:
+    "ksu_vn/method/chontam/pick.rb#_d426c5bf": arr2
+  _2c334475:
+    "ksu_vn/method/chongbay.rb#_598211fd": arr2
+  _2cb52d46:
+    "ksu_vn/method/chongbay/assign.rb#_2840517f": grp
+    "ksu_vn/method/nesting/draw.rb#_a086bafa": grp
+    "ksu_vn/method/xuatdxf/scan.rb#_530b02a3": grp
+    "ksu_vn/utils/cutting/detail.rb#_736ee8c9": str
+    "ksu_vn/utils/cutting/detail.rb#_76f5a256": vec
+    "ksu_vn/utils/nesting/edit.rb#_0d3c3d2a": flag2
+    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": model
+  _2cf18878:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": flag2
+    "ksu_vn/utils/label.rb#_d5ca0b39": flag
+  _2d1ad59f:
+    "ksu_vn/method/netcatcuoi/resize.rb#_3066d644": num4
+  _2d53bc8c:
+    "ksu_vn/method/xeptam/mirror.rb#_34fc866b": vec
+    "ksu_vn/method/xeptam/mirror.rb#_951e1123": grp
+  _2d70c57e:
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": flag2
+  _2da5aec5:
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": num5
+  _2dae17d5:
+    "ksu_vn/method/toiuuvan/engine.rb#_46279528": arr5
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": arr7
+  _2df329ff:
+    "ksu_vn/method/chongbay/shape.rb#_3b54361a": arr2
+  _2dfb9b22:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_52c178c0": arr2
+  _2e24bbed:
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr2
+  _2e7b63f7:
+    "ksu_vn/method/xeptam/arrange.rb#_14a635d9": vec
+  _2ecd529b:
+    "ksu_vn/method/chongbay.rb#_c57c2729": arr
+    "ksu_vn/utils/geom.rb#_8bddc18c": flag
+    "ksu_vn/utils/nesting.rb#_5cbb0f7e": flag
+    "ksu_vn/utils/view/query.rb#_d4f88666": flag
+  _2f26dd39:
+    "ksu_vn/method/toiuuvan/engine.rb#_6e065d2e": arr3
+    "ksu_vn/method/toiuuvan/engine.rb#_ae6cb680": arr
+  _2f3325c7:
+    "ksu_vn/method/xeptam/push.rb#_e099da59": num3
+    "ksu_vn/utils/font.rb#_634b4336": num2
+  _2f34fce2:
+    "ksu_vn/utils/cutting.rb#_c374c8ee": flag
+  _2f683801:
+    "ksu_vn/method/themtam.rb#_650afd59": grp
+    "ksu_vn/method/themtam.rb#_a761a084": tr
+    "ksu_vn/utils/nesting/edit.rb#_0d3c3d2a": grp
+  _2f96710f:
+    "ksu_vn/method/netcatcuoi/resize.rb#_81184680": flag
+  _2fc612ca:
+    "ksu_vn/utils/sheet/mark.rb#_05bd8a7e": arr3
+  _3005d68b:
+    "ksu_vn/method/xuatdxf/scan.rb#_c65c0a0a": arr
+    "ksu_vn/utils/cutting/detail.rb#_2d2b3dcc": arr
+  _302d7f8d:
+    "ksu_vn/utils/view/widget.rb#_7b770b82": pt2
+  _3035049d:
+    "ksu_vn/method/xuatdxf/geom.rb#_826c9296": vec5
+  _30982070:
+    "ksu_vn/utils/cutting/detail.rb#_32f2e5fc": arr
+  _30a49af3:
+    "ksu_vn/method/chongbay/shape.rb#_d27891a3": num
+    "ksu_vn/method/netcatcuoi/resize.rb#_81184680": num3
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": num
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": num3
+    "ksu_vn/utils/sheet/reorder.rb#_babc606e": pt
+  _30c95f2b:
+    "ksu_vn/method/xeptam/drag.rb#_98834989": num
+  _30cdb251:
+    "ksu_vn/utils/cutting/detail.rb#_0f0ed6ac": pt4
+  _30fe1d49:
+    "ksu_vn/method/gannhan.rb#_b3bfd2a3": grp2
+    "ksu_vn/method/nesting/draw.rb#_42f184ce": grp
+    "ksu_vn/utils/preset/field.rb#_3420d496": num
+  _310b620e:
+    "ksu_vn/method/chontam/pick.rb#_08a03619": grp
+    "ksu_vn/method/chontam/pick.rb#_6d620197": grp
+    "ksu_vn/method/gannhan.rb#_7e760d59": grp
+    "ksu_vn/method/xeptam/collide.rb#_788720c1": grp
+    "ksu_vn/method/xeptam/group.rb#_3d3943dc": grp
+  _3125dfd3:
+    "ksu_vn/utils/cutting.rb#_4eeae396": vec2
+    "ksu_vn/utils/label.rb#_665bc239": vec2
+  _31ba9da7:
+    "ksu_vn/utils/sheet/bottom.rb#_c7decd32": arr
+  _3231dcda:
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": flag2
+  _3260a571:
+    "ksu_vn/method/xeptam/nfp.rb#_8c307bb8": num3
+  _328d126b:
+    "ksu_vn/utils/label.rb#_fd0b7a5f": str2
+  _32998202:
+    "ksu_vn/method/thongke/phukien.rb#_702c1707": arr
+  _32ad2c3e:
+    "ksu_vn/utils/pdf/ttf.rb#_19412587": num
+  _32d27741:
+    "ksu_vn/utils/nesting/pack.rb#_311385c4": grp
+    "ksu_vn/utils/nesting/pack.rb#_a2f525ce": grp
+  _33570e10:
+    "ksu_vn/method/toiuuvan/engine.rb#_57ce2a46": flag
+  _335fe101:
+    "ksu_vn/method/toiuuvan/engine.rb#_ae6cb680": num2
+    "ksu_vn/utils/nesting/optimize.rb#_ea6f582c": num2
+  _33742cce:
+    "ksu_vn/utils/cutting/detail.rb#_565a278d": tr
+  _338214b3:
+    "ksu_vn/utils/geom.rb#sat_mtv": arr
+  _33aa68d7:
+    "ksu_vn/method/xuatdxf/geom.rb#_826c9296": flag
+    "ksu_vn/method/xuatdxf/geom.rb#_b33d5052": num
+    "ksu_vn/utils/nesting/edit.rb#_7276832b": pt
+  _33c34f08:
+    "ksu_vn/method/xeptam.rb#draw": mat
+    "ksu_vn/method/xeptam/mirror.rb#_f42544d1": flag
+    "ksu_vn/utils/view/query.rb#_68d4bb38": mat
+    "ksu_vn/utils/view/widget.rb#_cfad422a": mat
+  _33c64f52:
+    "ksu_vn/method/xeptam/nfp.rb#_8c307bb8": num2
+  _33f52d3e:
+    "ksu_vn/method/toiuuvan/postproc.rb#_8f10bac2": arr4
+    "ksu_vn/method/xeptam/collide.rb#_79fb30a5": vec
+    "ksu_vn/utils/nesting/bilan.rb#_d090233d": vec
+    "ksu_vn/utils/nesting/corner.rb#_0f9a4df9": arr
+    "ksu_vn/utils/view.rb#_16162af2": arr
+  _3408f0ee:
+    "ksu_vn/utils/geom.rb#_8bddc18c": num
+  _341445a3:
+    "ksu_vn/method/xeptam/drag.rb#_ecb07074": arr5
+  _34dd541d:
+    "ksu_vn/method/thongke/phukien.rb#_ad8e91ed": arr6
+  _34e372d8:
+    "ksu_vn/method/chongbay.rb#_82f140a1": num3
+    "ksu_vn/method/chongbay/shape.rb#_01ec2304": num2
+    "ksu_vn/method/chongbay/shape.rb#_0758608c": num2
+    "ksu_vn/method/chongbay/shape.rb#_9608e031": num2
+    "ksu_vn/method/chontam/pick.rb#_24c54f2a": arr3
+  _3529959a:
+    "ksu_vn/method/themtam.rb#_650afd59": vec
+    "ksu_vn/method/xeptam/arrange.rb#_14a635d9": pt
+    "ksu_vn/method/xeptam/collide.rb#_25080947": vec
+    "ksu_vn/method/xeptam/collide.rb#_fae0f9b7": vec
+    "ksu_vn/utils/nesting/corner.rb#_8961a36f": tr
+  _35984758:
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": pt2
+  _35aaaec4:
+    "ksu_vn/utils/label.rb#_d04b583b": arr
+  _35af0c84:
+    "ksu_vn/utils/cutting/loop.rb#_3a1d2466": arr7
+    "ksu_vn/utils/cutting/loop.rb#_93cdf1dd": h2
+  _35b1b769:
+    "ksu_vn/method/xeptam/collide.rb#_25080947": num3
+  _35fed0fe:
+    "ksu_vn/method/intem/scan.rb#_6aba4c5e": pt
+    "ksu_vn/method/nesting/draw.rb#_a086bafa": pt2
+    "ksu_vn/method/netcatcuoi.rb#_a9ca2ebd": num
+    "ksu_vn/method/toiuuvan/postproc.rb#_11554dfd": pt2
+    "ksu_vn/utils/font.rb#_1589cfd8": flag
+    "ksu_vn/utils/label.rb#_d04b583b": pt
+  _36090099:
+    "ksu_vn/utils/cutting/detail.rb#_32f2e5fc": arr6
+  _3628fb71:
+    "ksu_vn/method/themtam.rb#_844eb55a": arr
+    "ksu_vn/method/themtam.rb#_d0b68421": arr
+    "ksu_vn/method/thongke/phukien.rb#_ad8e91ed": h
+    "ksu_vn/method/toiuuvan/postproc.rb#_06a8054e": arr
+  _368f7a3f: pt
+  _3749d3a8: pt2
+  _37572bc9:
+    "ksu_vn/method/toiuuvan.rb#_687e1def": pt
+  _37726bbf: flag12
+  _37eb6552:
+    "ksu_vn/method/toiuuvan/postproc.rb#_8f10bac2": arr3
+  _381d1670:
+    "ksu_vn/method/intem/scan.rb#_84c87104": num
+    "ksu_vn/method/intem/scan.rb#_fd63a357": num
+    "ksu_vn/method/nesting.rb#_6406c961": arr
+    "ksu_vn/method/themtam.rb#_27632a1f": arr
+    "ksu_vn/method/themtam.rb#_5c6a1c61": arr
+    "ksu_vn/method/themtam.rb#_844eb55a": arr3
+    "ksu_vn/method/themtam.rb#_f76c691a": arr
+    "ksu_vn/method/thongke/tonghop.rb#_bc0f9e7f": h2
+    "ksu_vn/method/thongke/xuat.rb#_31eafa5f": arr2
+    "ksu_vn/method/thongke/xuat.rb#_4ae1e5d9": arr
+    "ksu_vn/method/toiuuvan.rb#_687e1def": arr
+    "ksu_vn/method/toiuuvan.rb#_d0431df5": arr
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": arr
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr16
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": arr2
+    "ksu_vn/utils/preset/field.rb#_a4b56c31": arr
+    "ksu_vn/utils/sheet.rb#_eb757cfe": arr
+    "ksu_vn/utils/sheet/bottom.rb#_b86cee12": arr
+  _39341bf8:
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": arr3
+  _3968981b:
+    "ksu_vn/method/xuatdxf/scan.rb#_cdd54f61": flag
+  _396b8871: flag13
+  _398ab02e:
+    "ksu_vn/method/xeptam/push.rb#_3ea06bed": bb
+  _3a2ef4ad:
+    "ksu_vn/method/xephang.rb#_38252db1": num
+    "ksu_vn/utils/nesting/corner.rb#_39ad1aa8": flag
+    "ksu_vn/utils/nesting/corner.rb#_bca72a10": flag
+  _3a349daf:
+    "ksu_vn/method/xeptam/arrange.rb#_14a635d9": grp3
+  _3a67d5a8:
+    "ksu_vn/utils/sheet/bottom.rb#_b86cee12": arr2
+  _3a75d551:
+    "ksu_vn/method/thongke/phukien.rb#_ad8e91ed": arr7
+  _3b0c94d6:
+    "ksu_vn/utils/sheet/bottom.rb#_f74b0a99": grp2
+  _3b649f58:
+    "ksu_vn/main.rb#_06b07406": arr
+  _3b76d3c7:
+    "ksu_vn/method/xeptam/nfp.rb#_db5a8bb4": num2
+    "ksu_vn/utils/label.rb#_9f608530": num
+    "ksu_vn/utils/nesting/engine.rb#_96ff6f1e": num
+    "ksu_vn/utils/nesting/engine.rb#_da0b701e": arr
+  _3b8d4426:
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": arr5
+    "ksu_vn/method/toiuuvan/engine.rb#_f573a61c": flag2
+    "ksu_vn/method/toiuuvan/engine.rb#_fa87e7fb": arr7
+    "ksu_vn/method/toiuuvan/postproc.rb#_0579a704": arr4
+  _3ba1ad97:
+    "ksu_vn/utils/cutting.rb#_e4e88386": num3
+  _3bb60166:
+    "ksu_vn/method/intem/scan.rb#_84c87104": arr2
+    "ksu_vn/method/intem/scan.rb#_f0ab79c9": edge
+  _3bcc879e:
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": flag5
+  _3c2fe7c5:
+    "ksu_vn/method/nesting/simplify.rb#_578e7a65": arr3
+  _3c8ec851:
+    "ksu_vn/method/xuatdxf.rb#_319513d3": str
+  _3cc0311c: num
+  _3d063c82:
+    "ksu_vn/utils/sheet/mark.rb#_5134c34c": num
+  _3d34edc5:
+    "ksu_vn/method/themtam.rb#_0895e188": tr2
+    "ksu_vn/method/toiuuvan/back.rb#_3fccea3f": vec2
+    "ksu_vn/method/toiuuvan/back.rb#_51c9eb3d": tr2
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": tr
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": tr
+  _3d5567c7:
+    "ksu_vn/method/xeptam/collide.rb#_4237de17": num2
+  _3df9f02b:
+    "ksu_vn/method/toiuuvan/postproc.rb#_38bca22d": arr
+  _3e16cff8:
+    "ksu_vn/utils/pdf/svg.rb#_5966e1de": flag
+  _3e42ee5c: arr13
+  _3e4ac9ea:
+    "ksu_vn/utils/sheet.rb#_32121b6c": arr
+  _3e7613f3:
+    "ksu_vn/method/netcatcuoi.rb#_1bba59fa": num2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_a95ae5a0": num2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_f89911a7": num
+    "ksu_vn/method/toiuuvan/postproc.rb#_c5297436": num
+    "ksu_vn/utils/nesting/pack.rb#_311385c4": num4
+    "ksu_vn/utils/sheet/overlay.rb#_52d3437f": num2
+  _3ecb1d4c: num2
+  _3ecf3dcf:
+    "ksu_vn/method/nesting/draw.rb#_13398956": grp
+    "ksu_vn/utils/cutting/detail.rb#_736ee8c9": grp
+    "ksu_vn/utils/flip.rb#_493d532c": ents
+  _3ed98ec5:
+    "ksu_vn/utils/nesting/engine.rb#_54396b88": str2
+  _3ee83fed:
+    "ksu_vn/method/xeptam/push.rb#_726c65ba": h3
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": h2
+  _3fe5a2db:
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": pt2
+  _400629fe:
+    "ksu_vn/utils/label.rb#_6dc55f15": str
+    "ksu_vn/utils/nesting/corner.rb#_152b1493": arr2
+  _4035f243:
+    "ksu_vn/method/toiuuvan/back.rb#_80a13590": vec
+    "ksu_vn/method/xeptam/mirror.rb#_80a13590": vec
+  _405c3f80:
+    "ksu_vn/utils/label.rb#_8cfbee10": arr
+    "ksu_vn/utils/pdf/svg.rb#_ba290b30": arr
+  _40b8227b:
+    "ksu_vn/utils/pdf/build.rb#_5b6279e8": str
+  _40b967e5:
+    "ksu_vn/main.rb#_bfea22ac": str
+    "ksu_vn/method/nesting/collect.rb#_b0282735": str
+    "ksu_vn/method/nesting/launch.rb#_d1ef9374": str
+    "ksu_vn/method/netcatcuoi.rb#_8e3f5229": str
+    "ksu_vn/method/netcatcuoi/resize.rb#_77984365": arr
+    "ksu_vn/method/thongke/phukien.rb#_b4768d27": pt
+    "ksu_vn/method/thongke/tonghop.rb#_b0ef3e99": num
+    "ksu_vn/method/thongke/tonghop.rb#_ba2a62ec": str
+    "ksu_vn/method/toiuuvan/postproc.rb#_38bca22d": num2
+    "ksu_vn/method/toiuuvan/postproc.rb#_cce35269": tr
+    "ksu_vn/method/xeptam.rb#_3d509e12": str
+    "ksu_vn/method/xeptam.rb#_d522abbf": str
+    "ksu_vn/method/xeptam/push.rb#_0b16f3d7": num
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": flag
+    "ksu_vn/system/addon.rb#_0a181799": str
+    "ksu_vn/system/addon.rb#_1e968b99": str
+    "ksu_vn/system/addon.rb#_adadc739": str
+    "ksu_vn/system/addon.rb#_be9c1865": str
+    "ksu_vn/system/addon.rb#_ec4a0d75": str2
+    "ksu_vn/system/setting.rb#_59fa8401": str
+    "ksu_vn/system/setting.rb#_d522abbf": str
+    "ksu_vn/system/setting.rb#export_online": str2
+    "ksu_vn/system/setting.rb#import_online": str2
+    "ksu_vn/utils/preset.rb#_ee38bd31": str
+    "ksu_vn/utils/preset/field.rb#_a4b56c31": str2
+    "ksu_vn/utils/preset/store.rb#_4e617b18": str
+  _40da70b3:
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": vec
+    "ksu_vn/method/xeptam/mirror.rb#_34966ae4": vec
+    "ksu_vn/method/xeptam/mirror.rb#_34fc866b": grp
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": vec
+  _40fbbf90:
+    "ksu_vn/method/nesting.rb#_dea868ae": arr
+  _4135c5ab:
+    "ksu_vn/method/caidat.rb#_53b46751": str4
+  _4179a7d9:
+    "ksu_vn/method/xeptam/drag.rb#_98834989": num2
+  _419b7d17:
+    "ksu_vn/utils/cutting.rb#_d53db8b7": str
+  _41f9e27a:
+    "ksu_vn/utils/sheet/bottom.rb#_a9a86c81": vec2
+  _420b950c:
+    "ksu_vn/method/chongbay.rb#_5fb18040": flag
+  _42372563: flag14
+  _42782d97: grp
+  _42ab4a53: arr14
+  _42cc54ba: flag15
+  _42d875fc:
+    "ksu_vn/method/xeptam/nfp.rb#_00adeb53": arr3
+  _42f69984:
+    "ksu_vn/method/nesting.rb#_1c49df09": h
+    "ksu_vn/method/nesting.rb#_1d6910c1": h
+    "ksu_vn/utils/nesting/edit.rb#_09897742": h
+  _435e9c11:
+    "ksu_vn/method/xeptam/collide.rb#_11075c77": arr
+    "ksu_vn/method/xeptam/collide.rb#_19030d1a": arr
+    "ksu_vn/method/xeptam/collide.rb#_4237de17": arr4
+    "ksu_vn/method/xeptam/collide.rb#_fae0f9b7": arr4
+    "ksu_vn/method/xeptam/push.rb#_7f17a5c5": arr3
+    "ksu_vn/method/xeptam/push.rb#compute_push_back": arr3
+  _43b1a57b:
+    "ksu_vn/method/toiuuvan/engine.rb#_6e065d2e": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_ae6cb680": arr2
+  _43b96068:
+    "ksu_vn/method/xeptam/arrange.rb#_14a635d9": str2
+  _43cd1441:
+    "ksu_vn/method/netcatcuoi.rb#_d204c38c": arr2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_3431a152": num
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": num2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_b9371681": num2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_c839dc19": num
+  _43e8612a:
+    "ksu_vn/utils/sheet/reorder.rb#_a1f566de": arr
+  _4456a31c:
+    "ksu_vn/method/themtam.rb#_ad557b93": arr2
+  _4458973d:
+    "ksu_vn/utils/nesting/edit.rb#_03018fe6": tr2
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": tr
+  _44798e5e: h3
+  _44c81c02:
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr15
+  _44e1b7ca:
+    "ksu_vn/method/toiuuvan/engine.rb#_fa87e7fb": flag
+    "ksu_vn/utils/nesting/optimize.rb#_8942d360": num2
+  _44e9e27f:
+    "ksu_vn/method/thongke/xuat.rb#_b662a89c": flag
+  _45f9250e: arr15
+  _461cc253:
+    "ksu_vn/method/chongbay.rb#_ca5cd64b": arr2
+    "ksu_vn/method/chongbay/assign.rb#_3e0b10ba": arr4
+  _46300933:
+    "ksu_vn/utils/font.rb#_1f6a7db1": arr
+    "ksu_vn/utils/font.rb#_99977387": arr
+  _4689a9a4:
+    "ksu_vn/system/setting.rb#_59fa8401": str6
+  _4697ca89:
+    "ksu_vn/method/nesting/draw.rb#_2a453897": num2
+    "ksu_vn/method/toiuuvan/engine.rb#_2cf6d3a4": arr2
+    "ksu_vn/method/toiuuvan/engine.rb#_6d7a71cf": flag2
+    "ksu_vn/method/xeptam/collide.rb#_5ac34e7b": flag
+    "ksu_vn/utils/nesting/bilan.rb#_24863b11": flag
+  _46a085c4: num3
+  _46dd1afc:
+    "ksu_vn/method/xeptam/arrange.rb#_63b8ba0b": pt2
+    "ksu_vn/method/xeptam/collide.rb#_25080947": pt2
+  _46f82dab:
+    "ksu_vn/method/xeptam/push.rb#_726c65ba": flag3
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": flag3
+  _47503c34:
+    "ksu_vn/method/nesting/collect.rb#_75fab3ca": arr2
+    "ksu_vn/method/nesting/launch.rb#_e3264765": arr
+    "ksu_vn/utils/nesting/optimize.rb#_5709b6da": arr2
+  _47572069: flag16
+  _475ad3b1:
+    "ksu_vn/utils/nesting/corner.rb#_8961a36f": arr2
+  _475af877:
+    "ksu_vn/method/xeptam/arrange.rb#_14a635d9": str
+  _477c927d:
+    "ksu_vn/method/chongbay/shape.rb#_0758608c": arr3
+    "ksu_vn/method/chongbay/shape.rb#_1b630104": flag
+    "ksu_vn/method/chongbay/shape.rb#_5410b01c": flag
+    "ksu_vn/method/chongbay/shape.rb#_e2cd305f": flag
+    "ksu_vn/method/intem/scan.rb#_16028ecb": arr
+    "ksu_vn/method/thongke.rb#_6b7e9fae": arr
+    "ksu_vn/method/xeptam/nfp.rb#_16ff81f7": arr
+    "ksu_vn/method/xeptam/nfp.rb#_f5c19a2b": num
+    "ksu_vn/method/xeptam/push.rb#_5dc6e713": arr3
+    "ksu_vn/utils/cutting.rb#_0e86ff85": flag
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr
+    "ksu_vn/utils/nesting.rb#_adddebbe": arr4
+    "ksu_vn/utils/nesting/bilan.rb#_4bed79e1": arr3
+    "ksu_vn/utils/nesting/corner.rb#_7edd7b75": num
+    "ksu_vn/utils/nesting/corner.rb#_b869e241": arr4
+    "ksu_vn/utils/nesting/pack.rb#_42d7b73b": arr3
+    "ksu_vn/utils/pdf/ttf.rb#_07bc5978": flag
+  _47828201:
+    "ksu_vn/method/toiuuvan/back.rb#_3fccea3f": grp
+    "ksu_vn/method/toiuuvan/back.rb#_51c9eb3d": grp
+    "ksu_vn/method/toiuuvan/back.rb#_76d37ecf": vec
+    "ksu_vn/utils/sheet/bottom.rb#_624d6a0f": grp2
+    "ksu_vn/utils/sheet/mark.rb#_1c44e717": vec
+  _4821bd00:
+    "ksu_vn/method/chongbay/shape.rb#_e817297d": num
+  _485b4fee:
+    "ksu_vn/method/nesting.rb#_37275936": arr3
+  _4881f62c:
+    "ksu_vn/method/nesting/collect.rb#_2c9761fb": arr
+    "ksu_vn/utils/cutting.rb#_548357b4": arr
+    "ksu_vn/utils/cutting.rb#_e1fe716e": arr
+    "ksu_vn/utils/label.rb#_1f249426": arr
+    "ksu_vn/utils/label.rb#_681febe3": arr
+    "ksu_vn/utils/label.rb#_89cdc81b": arr
+  _488638cf:
+    "ksu_vn/utils/nesting.rb#_adddebbe": arr2
+  _48ede02b:
+    "ksu_vn/utils/sheet/mark.rb#_5134c34c": flag
+  _494df68f:
+    "ksu_vn/method/toiuuvan/postproc.rb#_003ab64b": h
+  _499fa4a5:
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": str
+    "ksu_vn/method/nesting/draw.rb#_49fac9a3": arr2
+    "ksu_vn/method/nesting/draw.rb#_b520a871": arr2
+    "ksu_vn/method/nesting/draw.rb#_e8139901": arr
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": str
+    "ksu_vn/utils/nesting/optimize.rb#_5709b6da": str
+    "ksu_vn/utils/sheet/reorder.rb#_1c053f87": str2
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": str
+    "ksu_vn/utils/sheet/reorder.rb#_edd17adf": str
+    "ksu_vn/utils/sheet/reorder.rb#_f4f71a73": str3
+  _49a75e73:
+    "ksu_vn/method/themtam.rb#_42a83442": flag
+  _49a83294:
+    "ksu_vn/utils/nesting/pack.rb#_a2f525ce": arr2
+  _49b559de:
+    "ksu_vn/method/toiuuvan.rb#_d0431df5": arr2
+    "ksu_vn/method/toiuuvan.rb#_ea9e841c": arr
+  _49fd085d:
+    "ksu_vn/utils/cutting/detail.rb#_736ee8c9": ents2
+    "ksu_vn/utils/view.rb#_75700580": grp2
+  _4a020be8:
+    "ksu_vn/utils/sheet/overlay.rb#_3f34706e": tr
+  _4a11002c:
+    "ksu_vn/utils/label.rb#_681febe3": grp
+  _4a30fee0: num4
+  _4a7d3cee:
+    "ksu_vn/method/xeptam.rb#draw": flag
+  _4ad785e5: str2
+  _4af9b35e:
+    "ksu_vn/method/chongbay/shape.rb#_9ce21378": arr
+  _4afc8948:
+    "ksu_vn/system/update.rb#_c658dab4": str
+    "ksu_vn/system/update.rb#restore_from_backup": str
+  _4b1804e3:
+    "ksu_vn/utils/cutting/detail.rb#_0f0ed6ac": pt
+  _4b18c797:
+    "ksu_vn/method/themtam.rb#_aa983a67": arr3
+  _4b335c8d: num5
+  _4b5062bc:
+    "ksu_vn/method/toiuuvan/back.rb#_6982016d": vec
+    "ksu_vn/method/xeptam/mirror.rb#_6982016d": vec
+    "ksu_vn/utils/sheet/mark.rb#_555efb37": grp
+  _4bcb6213:
+    "ksu_vn/method/chongbay.rb#_29b62f37": num4
+    "ksu_vn/method/intem/scan.rb#_6aba4c5e": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_57ce2a46": num2
+    "ksu_vn/method/xeptam/collide.rb#_1adb886a": num
+    "ksu_vn/utils/nesting/avail.rb#_128f4b25": arr
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": arr2
+    "ksu_vn/utils/sheet/overlay.rb#_cca9777a": arr2
+  _4bfaa449:
+    "ksu_vn/utils/cutting.rb#_4605a894": arr4
+  _4c00abc5:
+    "ksu_vn/utils/nesting/corner.rb#_19df3e1d": arr3
+    "ksu_vn/utils/nesting/corner.rb#_39ad1aa8": arr2
+  _4c606aca:
+    "ksu_vn/method/toiuuvan.rb#_d0431df5": arr3
+    "ksu_vn/method/toiuuvan/postproc.rb#_b54811d0": arr
+  _4c960928: num6
+  _4cc7283d:
+    "ksu_vn/method/xephang.rb#_38252db1": arr3
+  _4d42fcfd: h4
+  _4d482429:
+    "ksu_vn/utils/view/query.rb#_5f44dc53": arr3
+    "ksu_vn/utils/view/query.rb#_bbaa2919": arr2
+  _4d87bf0a:
+    "ksu_vn/method/intem/scan.rb#_1391721f": arr3
+    "ksu_vn/method/intem/scan.rb#_9ec31362": arr3
+    "ksu_vn/method/intem/scan.rb#_d8a5a5cb": arr
+    "ksu_vn/method/nesting.rb#_1670b0bf": arr3
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_3431a152": arr4
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": arr9
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_a95ae5a0": arr4
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_f89911a7": arr3
+    "ksu_vn/method/netcatcuoi/resize.rb#_b6a93f39": arr3
+    "ksu_vn/method/toiuuvan/engine.rb#_46279528": arr10
+    "ksu_vn/method/toiuuvan/engine.rb#_57ce2a46": arr3
+    "ksu_vn/method/toiuuvan/postproc.rb#_c5297436": arr3
+    "ksu_vn/method/xeptam/collide.rb#_5ac34e7b": arr2
+    "ksu_vn/method/xeptam/collide.rb#_79fb30a5": arr
+    "ksu_vn/method/xeptam/mirror.rb#_83ee7e20": arr3
+    "ksu_vn/utils/cutting.rb#_4605a894": arr6
+    "ksu_vn/utils/cutting/detail.rb#_736ee8c9": arr2
+    "ksu_vn/utils/cutting/loop.rb#_11354767": arr
+    "ksu_vn/utils/cutting/loop.rb#_17304a20": arr
+    "ksu_vn/utils/cutting/loop.rb#_3a1d2466": arr5
+    "ksu_vn/utils/cutting/loop.rb#_8c4d4bd1": arr2
+    "ksu_vn/utils/nesting/bilan.rb#_24863b11": arr2
+    "ksu_vn/utils/nesting/bilan.rb#_d090233d": arr
+  _4dd2bf01:
+    "ksu_vn/method/nesting/draw.rb#_a086bafa": pt3
+    "ksu_vn/method/thongke/quet.rb#_5ed6d59c": vec
+    "ksu_vn/method/toiuuvan/postproc.rb#_11554dfd": pt3
+    "ksu_vn/utils/cutting.rb#_c374c8ee": num
+    "ksu_vn/utils/font.rb#_1589cfd8": flag2
+    "ksu_vn/utils/nesting/edit.rb#_c5ab406d": num
+    "ksu_vn/utils/nesting/optimize.rb#_b24fc92d": num
+  _4defd5ea:
+    "ksu_vn/utils/sheet/bottom.rb#_de0a88d4": flag
+  _4df70509:
+    "ksu_vn/method/xeptam/drag.rb#_6036fd14": flag
+  _4e044a5e: flag17
+  _4e637e12: arr16
+  _4e80230a:
+    "ksu_vn/method/intem/scan.rb#_16028ecb": tr
+    "ksu_vn/method/intem/scan.rb#_503b4f27": tr
+  _4edf163f:
+    "ksu_vn/utils/sheet/reorder.rb#_06da7172": arr2
+  _4ee58c26: arr17
+  _4effcb0e:
+    "ksu_vn/method/nesting.rb#_ce4b1e4e": arr
+    "ksu_vn/method/nesting/collect.rb#_33959628": flag
+    "ksu_vn/method/nesting/launch.rb#_d1ef9374": arr
+  _4f68e6f4:
+    "ksu_vn/method/xeptam/nfp.rb#_db5a8bb4": arr2
+    "ksu_vn/method/xuatdxf/geom.rb#_826c9296": pt4
+  _4f78e4c3: flag18
+  _4f891f00:
+    "ksu_vn/method/xeptam/arrange.rb#_650fb422": ents
+  _4fb511c1:
+    "ksu_vn/method/nesting/collect.rb#_41789749": num
+    "ksu_vn/method/thongke/xuat.rb#_a105a0f4": str
+    "ksu_vn/utils/nesting/engine.rb#_96ff6f1e": num4
+    "ksu_vn/utils/pdf/build.rb#_5f966f9e": num
+  _4fcf5547:
+    "ksu_vn/method/chontam/pick.rb#_416f815d": num
+    "ksu_vn/method/intem/scan.rb#_16028ecb": num
+    "ksu_vn/method/intem/scan.rb#_3171d1ff": num
+    "ksu_vn/method/intem/scan.rb#_503b4f27": num
+    "ksu_vn/utils/cutting/detail.rb#_0f0ed6ac": num2
+  _4fe8e0d9:
+    "ksu_vn/method/netcatcuoi/resize.rb#_3066d644": num2
+  _500adc69:
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": bb
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": bb2
+  _502cd779:
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": num
+  _50694d55:
+    "ksu_vn/method/netcatcuoi.rb#onLButtonDown": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_6126236a": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_bb230f13": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_e0f60d52": arr
+  _506e8e1a:
+    "ksu_vn/method/chontam/pick.rb#_319513d3": arr
+    "ksu_vn/method/chontam/pick.rb#_720fed6e": arr
+    "ksu_vn/method/chontam/pick.rb#_94a6f47d": arr
+    "ksu_vn/method/chontam/pick.rb#_d94409b2": arr
+    "ksu_vn/method/chontam/pick.rb#_e0b932ea": arr2
+  _50c679ce:
+    "ksu_vn/method/netcatcuoi/resize.rb#_8964db66": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_d82a1555": arr
+    "ksu_vn/method/thongke/xuat.rb#_278dd154": arr2
+    "ksu_vn/method/thongke/xuat.rb#_46b90971": arr2
+    "ksu_vn/method/thongke/xuat.rb#_7fb3dc0f": arr
+    "ksu_vn/method/thongke/xuat.rb#_e4092e6c": arr
+    "ksu_vn/utils/cutting/loop.rb#_0d6c2197": arr
+    "ksu_vn/utils/flip.rb#_14af3a7c": arr
+    "ksu_vn/utils/nesting/edit.rb#_0aa2d773": arr
+    "ksu_vn/utils/nesting/engine.rb#_da0b701e": arr2
+    "ksu_vn/utils/nesting/optimize.rb#_a57a9962": arr3
+    "ksu_vn/utils/sheet/reorder.rb#_3e79d579": arr3
+  _51528003:
+    "ksu_vn/method/xeptam/push.rb#_726c65ba": flag4
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": flag4
+  _51b6acfc:
+    "ksu_vn/method/chongbay.rb#_e0f60d52": arr2
+  _51d53976:
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": num
+    "ksu_vn/method/xeptam/arrange.rb#_63b8ba0b": num5
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": pt3
+  _520f4d71:
+    "ksu_vn/method/themtam.rb#_1668ae28": arr
+  _522c64aa:
+    "ksu_vn/method/xeptam/nfp.rb#_4ec2a6e7": pt
+  _52366ecd:
+    "ksu_vn/utils/sheet/reorder.rb#_0da19c14": flag
+  _52510de8:
+    "ksu_vn/utils/font.rb#_09901ac3": arr3
+  _5286ae3e:
+    "ksu_vn/utils/sheet/bottom.rb#_7a7a9a52": h
+  _52a3a8fc:
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": h
+  _52e89e53:
+    "ksu_vn/method/chongbay.rb#_b7735d5c": num
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": flag2
+    "ksu_vn/method/netcatcuoi/resize.rb#_23b18b68": num3
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": num3
+    "ksu_vn/utils/nesting/pack.rb#_311385c4": num2
+    "ksu_vn/utils/pdf/svg.rb#_03c7ad56": num2
+    "ksu_vn/utils/pdf/svg.rb#_70442812": num2
+    "ksu_vn/utils/view/query.rb#_bbaa2919": num7
+  _52f912ed:
+    "ksu_vn/method/nesting/collect.rb#_2c9761fb": vec
+    "ksu_vn/utils/label.rb#_665bc239": vec
+  _53083c81:
+    "ksu_vn/method/thongke/xuat.rb#_b662a89c": flag2
+  _5317f9bd:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_a95ae5a0": num3
+    "ksu_vn/method/netcatcuoi/resize.rb#_81184680": num
+    "ksu_vn/method/xuatdxf/entry.rb#_de556708": flag
+    "ksu_vn/utils/geom.rb#_0c91518b": num3
+    "ksu_vn/utils/geom.rb#_a82acccd": num
+    "ksu_vn/utils/view/query.rb#_bbaa2919": num2
+  _53962504:
+    "ksu_vn/method/intem/scan.rb#_6eef93f0": arr
+  _53cf87d3: arr18
+  _541ecb84:
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": vec2
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": vec2
+  _54538e67:
+    "ksu_vn/utils/label.rb#_8010294b": bb
+  _54628f2a:
+    "ksu_vn/utils/flip.rb#_493d532c": tr
+  _54dbe557:
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": num5
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": num10
+  _550d14f4:
+    "ksu_vn/method/xeptam/drag.rb#_7fd07e0b": pt
+  _55327ca4:
+    "ksu_vn/method/xeptam/nfp.rb#_db5a8bb4": arr
+    "ksu_vn/method/xuatdxf/geom.rb#_826c9296": pt3
+  _55999bd5:
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": str
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": str
+  _55bd877f:
+    "ksu_vn/utils/cutting.rb#_4605a894": vec2
+    "ksu_vn/utils/cutting/detail.rb#_32f2e5fc": vec2
+  _56199528:
+    "ksu_vn/utils/label.rb#_89cdc81b": vec
+  _56b5c32b:
+    "ksu_vn/utils/sheet/reorder.rb#_ef09a8a7": str
+  _56bfeb4a:
+    "ksu_vn/method/themtam.rb#_9478d701": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_46279528": arr7
+    "ksu_vn/method/toiuuvan/postproc.rb#_61e17503": arr
+    "ksu_vn/method/xeptam/collide.rb#_25080947": pt
+    "ksu_vn/method/xeptam/collide.rb#_c2ef690d": arr
+    "ksu_vn/method/xeptam/mirror.rb#_7ceb2cd7": arr
+    "ksu_vn/utils/label.rb#_55943665": arr2
+    "ksu_vn/utils/view/query.rb#_788affef": arr
+  _56e929af:
+    "ksu_vn/method/xeptam.rb#onMouseMove": arr5
+  _56eed28a:
+    "ksu_vn/method/thongke/tonghop.rb#_bc0f9e7f": arr2
+    "ksu_vn/method/thongke/xuat.rb#_278dd154": arr
+    "ksu_vn/utils/label.rb#_d5ca0b39": num2
+  _5700590d:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_a95ae5a0": num4
+    "ksu_vn/method/netcatcuoi/resize.rb#_81184680": num2
+    "ksu_vn/method/xuatdxf/entry.rb#_de556708": flag2
+    "ksu_vn/utils/geom.rb#_0c91518b": num4
+    "ksu_vn/utils/geom.rb#_a82acccd": num2
+    "ksu_vn/utils/view/query.rb#_bbaa2919": num3
+  _571bafae:
+    "ksu_vn/system/update.rb#_14768127": flag
+  _571dd585:
+    "ksu_vn/utils/nesting/corner.rb#_bb9d9306": arr8
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": vec
+  _5734858e: arr19
+  _5762d307: arr20
+  _57fbc96c:
+    "ksu_vn/utils/geom.rb#_0c91518b": num2
+  _58259b16:
+    "ksu_vn/utils/cutting.rb#_4eeae396": vec4
+  _58367016:
+    "ksu_vn/utils/pdf/build.rb#_70d6149d": arr
+    "ksu_vn/utils/pdf/svg.rb#_0eb2a5fc": arr
+    "ksu_vn/utils/pdf/svg.rb#_3c7812cc": arr
+    "ksu_vn/utils/pdf/svg.rb#_af903e02": arr
+  _58383aed:
+    "ksu_vn/main.rb#reload": arr2
+    "ksu_vn/method/chongbay.rb#_d855ea50": num
+    "ksu_vn/method/nesting.rb#_d9b1612c": h
+    "ksu_vn/method/toiuuvan/engine.rb#_57ce2a46": h
+    "ksu_vn/method/xuatdxf/scan.rb#_530b02a3": num
+  _58ad5bf3:
+    "ksu_vn/system/setting.rb#export_online": str
+    "ksu_vn/system/setting.rb#import_online": str
+  _58af306d:
+    "ksu_vn/method/nesting/draw.rb#_4afb97a0": num
+    "ksu_vn/method/netcatcuoi/resize.rb#_23b18b68": num
+    "ksu_vn/method/toiuuvan/postproc.rb#_11554dfd": num
+    "ksu_vn/method/xeptam/collide.rb#_56bc8e10": num
+    "ksu_vn/method/xeptam/push.rb#_5dc6e713": num
+    "ksu_vn/method/xeptam/push.rb#_726c65ba": num3
+    "ksu_vn/utils/nesting/avail.rb#_5818f219": num2
+    "ksu_vn/utils/nesting/bilan.rb#_4bed79e1": num3
+    "ksu_vn/utils/nesting/bilan.rb#_72edd259": num
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": num4
+    "ksu_vn/utils/nesting/corner.rb#_1a89b477": num
+  _592e6453: arr21
+  _59a866cd:
+    "ksu_vn/method/toiuuvan.rb#_d0431df5": arr6
+  _59f3b500: pt3
+  _5a1769c4:
+    "ksu_vn/utils/sheet/reorder.rb#_a7db4c18": arr
+  _5a444817: flag19
+  _5a9bed40:
+    "ksu_vn/utils/cutting.rb#_4eeae396": face3
+  _5aa03478:
+    "ksu_vn/system/update.rb#_c658dab4": str2
+    "ksu_vn/system/update.rb#restore_from_backup": str2
+  _5ac7f835:
+    "ksu_vn/method/netcatcuoi/resize.rb#_81184680": flag2
+  _5b685cdb: flag20
+  _5ba41f9c:
+    "ksu_vn/utils/nesting.rb#_adddebbe": arr
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": arr2
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": arr2
+    "ksu_vn/utils/nesting/pack.rb#_43d2bd40": arr4
+  _5bad91a4:
+    "ksu_vn/method/nesting/collect.rb#_33959628": arr
+    "ksu_vn/method/nesting/launch.rb#_d1ef9374": arr2
+    "ksu_vn/method/nesting/launch.rb#_e3264765": arr3
+  _5bfbe176: h5
+  _5c18625a:
+    "ksu_vn/method/nesting/collect.rb#_dd36ed49": arr4
+    "ksu_vn/method/nesting/draw.rb#_2354b03d": arr3
+    "ksu_vn/method/nesting/draw.rb#_a086bafa": arr2
+    "ksu_vn/method/nesting/draw.rb#_e3d864eb": arr3
+    "ksu_vn/method/thongke/phukien.rb#_8e279a49": arr
+    "ksu_vn/method/thongke/phukien.rb#_b11e949a": arr
+    "ksu_vn/utils/cutting/detail.rb#_ec4daffb": arr
+    "ksu_vn/utils/nesting/optimize.rb#_8942d360": arr
+  _5c3d9aeb:
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": num
+  _5c63e60a:
+    "ksu_vn/method/chontam.rb#onLButtonUp": arr
+    "ksu_vn/method/gannhan.rb#onLButtonUp": arr
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": arr7
+    "ksu_vn/method/xeptam/nfp.rb#_71109d80": arr2
+    "ksu_vn/method/xeptam/nfp.rb#_cc303760": arr2
+    "ksu_vn/method/xeptam/push.rb#_5dc6e713": arr2
+    "ksu_vn/utils/nesting/bilan.rb#_4bed79e1": arr2
+    "ksu_vn/utils/nesting/corner.rb#_84160c85": arr2
+    "ksu_vn/utils/nesting/corner.rb#_b869e241": arr3
+    "ksu_vn/utils/nesting/corner.rb#_bb9d9306": arr5
+  _5c9457bc:
+    "ksu_vn/method/xeptam/arrange.rb#_63b8ba0b": num4
+  _5d54b916:
+    "ksu_vn/utils/pdf/build.rb#_5b6279e8": str2
+  _5d585089: pt4
+  _5d5ef3ce:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_70785283": h
+  _5d7600b1:
+    "ksu_vn/utils/label.rb#_8010294b": pt
+  _5d8dc00c:
+    "ksu_vn/method/xeptam/mirror.rb#_951e1123": arr
+  _5db71303:
+    "ksu_vn/utils/cutting/detail.rb#_0f0ed6ac": arr2
+    "ksu_vn/utils/cutting/detail.rb#_32f2e5fc": vec
+  _5dc196df:
+    "ksu_vn/utils/font.rb#_068ebc81": flag
+    "ksu_vn/utils/font.rb#_1ff4cc8f": flag
+    "ksu_vn/utils/font.rb#_68c3d347": flag2
+  _5e141e08:
+    "ksu_vn/method/xeptam/push.rb#_3ea06bed": tr2
+  _5e1807c9:
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": pt
+  _5e2eccab:
+    "ksu_vn/method/toiuuvan/engine.rb#_fa87e7fb": arr2
+  _5e92325e:
+    "ksu_vn/method/xeptam/arrange.rb#_14a635d9": grp4
+  _5ea74fa4:
+    "ksu_vn/utils/sheet.rb#_eb757cfe": arr2
+  _5ec460ae:
+    "ksu_vn/utils/label.rb#_e2846c62": num
+  _5eca5ab7:
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr8
+  _5f1111bd:
+    "ksu_vn/method/xuatdxf.rb#_4db09033": str3
+  _5f1bf224:
+    "ksu_vn/method/nesting/draw.rb#_e8139901": arr3
+  _5f47af8c:
+    "ksu_vn/utils/preset/field.rb#_1cbe116a": flag
+  _5f86612c: num7
+  _5fa5d258:
+    "ksu_vn/method/xeptam/collide.rb#_c2ef690d": arr2
+  _5fb96e91:
+    "ksu_vn/utils/cutting/loop.rb#_11354767": num
+    "ksu_vn/utils/cutting/loop.rb#_885e1003": num
+    "ksu_vn/utils/nesting/bilan.rb#_4bed79e1": num2
+  _5fc24f6c:
+    "ksu_vn/method/thongke/phukien.rb#_52cf7ee0": arr2
+    "ksu_vn/method/thongke/phukien.rb#_5663289b": arr2
+    "ksu_vn/method/thongke/phukien.rb#_669c75c3": arr
+    "ksu_vn/method/thongke/phukien.rb#_9aac0439": arr
+    "ksu_vn/method/thongke/phukien.rb#_ad8e91ed": arr3
+    "ksu_vn/method/thongke/phukien.rb#_b4768d27": arr
+    "ksu_vn/method/thongke/quet.rb#_a2796101": arr
+    "ksu_vn/method/thongke/tonghop.rb#_984ac2f3": flag
+  _60000b16:
+    "ksu_vn/method/chongbay/shape.rb#_37ca7a0d": num2
+    "ksu_vn/method/chongbay/shape.rb#_5410b01c": num3
+    "ksu_vn/method/chongbay/shape.rb#_9608e031": num4
+    "ksu_vn/method/netcatcuoi.rb#_d5a5cc33": num2
+  _6008fe85: flag21
+  _601d4c10:
+    "ksu_vn/utils/sheet/mark.rb#_5134c34c": flag2
+  _603fe9bb:
+    "ksu_vn/utils/nesting/optimize.rb#_ea6f582c": arr7
+    "ksu_vn/utils/nesting/pack.rb#_cb9d8021": arr4
+  _6058e4be:
+    "ksu_vn/method/toiuuvan/engine.rb#_46279528": arr2
+  _60c90df6:
+    "ksu_vn/utils/sheet/bottom.rb#_b86cee12": pt
+  _61216733:
+    "ksu_vn/utils/cutting/detail.rb#_0f0ed6ac": vec2
+  _61582cf7:
+    "ksu_vn/method/xeptam/push.rb#compute_push_back": num2
+  _61737c67: arr22
+  _61a0def8: arr23
+  _61a9cb42:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": flag
+    "ksu_vn/utils/sheet/bottom.rb#_de0a88d4": arr2
+  _61ae2763:
+    "ksu_vn/method/chongbay/shape.rb#_d01131b1": arr
+    "ksu_vn/method/nesting/launch.rb#_e3264765": arr5
+  _620facc9:
+    "ksu_vn/method/xeptam/arrange.rb#_c81485d5": str
+    "ksu_vn/utils/label.rb#_d04b583b": bb2
+  _621a105c:
+    "ksu_vn/utils/nesting/corner.rb#_ebae3e53": num
+  _6236851b:
+    "ksu_vn/method/nesting/collect.rb#_dd36ed49": tr2
+    "ksu_vn/utils/cutting/detail.rb#_ec4daffb": tr
+    "ksu_vn/utils/label.rb#_8010294b": pt2
+  _62bcf3a6:
+    "ksu_vn/utils/sheet/mark.rb#_5134c34c": flag3
+  _62c358e9:
+    "ksu_vn/utils/preset/store.rb#_9a9b090d": arr2
+  _63175d25:
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": num4
+  _63261078:
+    "ksu_vn/utils/preset/field.rb#_3420d496": arr
+  _6339d7fc:
+    "ksu_vn/utils/preset/store.rb#_9a9b090d": arr4
+  _63629225:
+    "ksu_vn/method/chongbay.rb#_3a61d45b": pt
+    "ksu_vn/method/chongbay.rb#_8784e3f2": pt
+    "ksu_vn/method/chongbay/shape.rb#_9707d4ab": pt3
+    "ksu_vn/method/chongbay/shape.rb#_c097c81d": pt
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": arr3
+    "ksu_vn/method/intem/scan.rb#_fd63a357": pt
+    "ksu_vn/method/nesting/simplify.rb#_578e7a65": arr6
+    "ksu_vn/method/toiuuvan/engine.rb#_46279528": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_57ce2a46": arr2
+    "ksu_vn/method/toiuuvan/engine.rb#_7714f91b": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_81d80555": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_9f684ec0": arr
+    "ksu_vn/method/toiuuvan/postproc.rb#_0579a704": arr
+    "ksu_vn/method/toiuuvan/postproc.rb#_11554dfd": pt
+    "ksu_vn/method/toiuuvan/postproc.rb#_1998c7d5": arr
+    "ksu_vn/method/toiuuvan/postproc.rb#_c5297436": arr
+    "ksu_vn/method/xeptam/drag.rb#_98834989": pt2
+    "ksu_vn/utils/cutting/detail.rb#_c6e26747": pt
+    "ksu_vn/utils/quet.rb#_4fbe9584": pt
+    "ksu_vn/utils/sheet.rb#_32121b6c": flag
+    "ksu_vn/utils/sheet.rb#_71ed53b5": pt
+    "ksu_vn/utils/sheet.rb#_b5c26fa3": bb
+    "ksu_vn/utils/view.rb#_7dc20cfd": pt
+    "ksu_vn/utils/view/query.rb#_5f44dc53": pt
+    "ksu_vn/utils/view/widget.rb#_9fe8525a": pt
+  _646e380c:
+    "ksu_vn/method/themtam.rb#_5958c66f": flag
+  _649add0e:
+    "ksu_vn/method/nesting/launch.rb#_e3264765": arr2
+  _64b46638:
+    "ksu_vn/method/chongbay/shape.rb#_26d5057d": arr
+    "ksu_vn/utils/sheet/reorder.rb#_3e79d579": arr2
+  _64b59385:
+    "ksu_vn/method/xeptam/collide.rb#_4237de17": num
+    "ksu_vn/utils/geom.rb#_0c91518b": num
+  _64e7aa65: arr24
+  _651cde9a: h6
+  _651e8e15:
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": tr
+  _65570dfe:
+    "ksu_vn/method/xuatdxf/entry.rb#_97443b71": arr2
+    "ksu_vn/utils/geom.rb#_35c2c696": arr3
+    "ksu_vn/utils/nesting/corner.rb#_39ad1aa8": arr
+    "ksu_vn/utils/nesting/corner.rb#_bb9d9306": arr3
+    "ksu_vn/utils/nesting/corner.rb#_bca72a10": arr
+    "ksu_vn/utils/nesting/pack.rb#_42d7b73b": arr2
+  _65c48df1:
+    "ksu_vn/method/xeptam/collide.rb#_25080947": pt3
+  _662c8081:
+    "ksu_vn/utils/font.rb#_dd2e11ae": num
+  _66b73b0c:
+    "ksu_vn/utils/sheet/bottom.rb#_a9a86c81": vec
+  _66bfd332:
+    "ksu_vn/utils/nesting/pack.rb#_26b5a6fd": num
+  _66e44f64:
+    "ksu_vn/utils/label.rb#_55943665": arr
+    "ksu_vn/utils/sheet/overlay.rb#_604b5da7": arr
+    "ksu_vn/utils/sheet/overlay.rb#_cca9777a": arr
+  _66efbfde: h7
+  _6711f9a7:
+    "ksu_vn/method/xuatdxf/scan.rb#_7c10a028": arr
+    "ksu_vn/method/xuatdxf/scan.rb#_daa2f929": arr
+    "ksu_vn/utils/pdf/build.rb#_5f966f9e": h
+  _6771db1b:
+    "ksu_vn/utils/sheet.rb#_eb757cfe": arr6
+  _679029a9:
+    "ksu_vn/utils/cutting.rb#_4605a894": h2
+    "ksu_vn/utils/cutting/detail.rb#_32f2e5fc": h
+  _67e5fc67:
+    "ksu_vn/method/gannhan.rb#_66203d05": flag
+    "ksu_vn/method/toiuuvan/postproc.rb#_b9664cc7": flag
+    "ksu_vn/utils/view.rb#_9a653fdf": flag
+  _68165b06:
+    "ksu_vn/method/xuatdxf/entry.rb#_f60dec30": num
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": num
+  _6823cb31:
+    "ksu_vn/method/chongbay/assign.rb#_2840517f": str
+    "ksu_vn/method/chongbay/assign.rb#_481463cd": str
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": arr4
+    "ksu_vn/method/nesting.rb#_e61a0b91": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_7714f91b": arr2
+    "ksu_vn/method/xeptam/mirror.rb#_83ee7e20": num
+    "ksu_vn/method/xuatdxf/scan.rb#_530b02a3": str
+    "ksu_vn/utils/cutting/detail.rb#_b39e8694": mat
+    "ksu_vn/utils/nesting/corner.rb#_152b1493": arr
+    "ksu_vn/utils/nesting/corner.rb#_1a89b477": arr2
+    "ksu_vn/utils/pdf/svg.rb#_03c7ad56": arr
+    "ksu_vn/utils/pdf/svg.rb#_165ba7d1": arr
+    "ksu_vn/utils/pdf/svg.rb#_ed365aa2": arr
+    "ksu_vn/utils/sheet/bottom.rb#_25324bd3": str
+    "ksu_vn/utils/sheet/reorder.rb#_1c053f87": str
+    "ksu_vn/utils/view/widget.rb#_68298f42": arr
+    "ksu_vn/utils/view/widget.rb#_6ced5498": arr
+  _68c252d4:
+    "ksu_vn/utils/view/query.rb#_5f44dc53": arr2
+  _68cbfb72:
+    "ksu_vn/utils/font.rb#_68c3d347": flag
+  _68dedb04: flag22
+  _6967f87f:
+    "ksu_vn/utils/label.rb#_8010294b": bb2
+  _697c6208:
+    "ksu_vn/utils/pdf/build.rb#_b3b2dea9": h2
+  _69f82dc0:
+    "ksu_vn/method/nesting/collect.rb#_dd36ed49": tr
+  _6a989d41:
+    "ksu_vn/method/toiuuvan/back.rb#_a7fa30d2": tr
+  _6aa0df92:
+    "ksu_vn/system/setting.rb#_59fa8401": str4
+  _6afb38d1:
+    "ksu_vn/utils/cutting/detail.rb#_c6e26747": arr2
+  _6b66c353:
+    "ksu_vn/utils/nesting/pack.rb#_311385c4": tr2
+  _6b66c404:
+    "ksu_vn/utils/nesting/pack.rb#_42d7b73b": arr5
+  _6ba5cb7d:
+    "ksu_vn/utils/label.rb#_665bc239": face
+  _6be8cda0:
+    "ksu_vn/method/toiuuvan/engine.rb#_46279528": arr4
+    "ksu_vn/method/toiuuvan/engine.rb#_7714f91b": flag
+    "ksu_vn/method/toiuuvan/engine.rb#_f573a61c": arr2
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": pt
+  _6cb97bdb:
+    "ksu_vn/method/chongbay.rb#_cdfdcddb": arr
+    "ksu_vn/method/chongbay.rb#_d2f99de2": arr
+    "ksu_vn/method/chontam.rb#_cdfdcddb": arr
+    "ksu_vn/method/chontam.rb#_d2f99de2": arr
+    "ksu_vn/method/danhsovan.rb#_cdfdcddb": arr
+    "ksu_vn/method/danhsovan.rb#_d2f99de2": arr
+    "ksu_vn/method/gannhan.rb#_cdfdcddb": arr
+    "ksu_vn/method/gannhan.rb#_d2f99de2": arr
+    "ksu_vn/method/intem.rb#_cdfdcddb": arr
+    "ksu_vn/method/intem.rb#_d2f99de2": arr
+    "ksu_vn/method/nesting.rb#_cdfdcddb": arr
+    "ksu_vn/method/nesting.rb#_d2f99de2": arr
+    "ksu_vn/method/netcatcuoi.rb#_cdfdcddb": arr
+    "ksu_vn/method/netcatcuoi.rb#_d2f99de2": arr
+    "ksu_vn/method/themtam.rb#_cdfdcddb": arr
+    "ksu_vn/method/themtam.rb#_d2f99de2": arr
+    "ksu_vn/method/toiuuvan.rb#_cdfdcddb": arr
+    "ksu_vn/method/toiuuvan.rb#_d2f99de2": arr
+    "ksu_vn/method/xephang.rb#_cdfdcddb": arr
+    "ksu_vn/method/xephang.rb#_d2f99de2": arr
+    "ksu_vn/method/xeptam.rb#_cdfdcddb": arr
+    "ksu_vn/method/xeptam.rb#_d2f99de2": arr
+    "ksu_vn/method/xuatdxf.rb#_cdfdcddb": arr
+    "ksu_vn/method/xuatdxf.rb#_d2f99de2": arr
+    "ksu_vn/system/setting.rb#_cdfdcddb": arr
+    "ksu_vn/system/setting.rb#_d2f99de2": arr
+  _6ce51da7: flag23
+  _6d80df8f:
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": num5
+  _6d9d946b:
+    "ksu_vn/utils/nesting/optimize.rb#_ea6f582c": arr3
+  _6dae9812:
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": bb3
+    "ksu_vn/method/xeptam/mirror.rb#_34966ae4": bb
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": bb
+  _6e1da4f9:
+    "ksu_vn/method/chontam.rb#_28d52c56": arr
+  _6ed78998:
+    "ksu_vn/utils/sheet.rb#_192c3ea3": ents
+  _6f4dad2a:
+    "ksu_vn/utils/nesting/edit.rb#_0d3c3d2a": flag
+  _6f965fd5:
+    "ksu_vn/method/thongke/xuat.rb#_beb63a90": str2
+  _6facb951:
+    "ksu_vn/method/toiuuvan/postproc.rb#_003ab64b": arr5
+  _701b1cf4:
+    "ksu_vn/utils/sheet/bottom.rb#_7c7845a7": grp
+  _7043876e:
+    "ksu_vn/method/chongbay.rb#_82f140a1": num2
+    "ksu_vn/method/chongbay/shape.rb#_01ec2304": num
+    "ksu_vn/method/chongbay/shape.rb#_0758608c": num
+    "ksu_vn/method/chongbay/shape.rb#_9608e031": num
+    "ksu_vn/method/chontam/pick.rb#_24c54f2a": arr2
+  _70678eec:
+    "ksu_vn/method/nesting/draw.rb#_2827207b": arr
+    "ksu_vn/utils/font.rb#_1f6a7db1": arr3
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr4
+  _708fd9c9:
+    "ksu_vn/method/xeptam/push.rb#_726c65ba": h2
+  _70ae78a0:
+    "ksu_vn/utils/nesting/corner.rb#_edec0f70": num2
+  _70b58852: flag24
+  _70bb0001: num8
+  _71342106:
+    "ksu_vn/utils/nesting/edit.rb#_03018fe6": tr
+  _715b8136:
+    "ksu_vn/method/nesting/draw.rb#_146dab1a": flag
+    "ksu_vn/method/xuatdxf.rb#_4db09033": h
+    "ksu_vn/method/xuatdxf.rb#_c57d63ae": arr
+    "ksu_vn/method/xuatdxf/scan.rb#_89a2e173": h
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": flag
+  _716370f2:
+    "ksu_vn/utils/nesting/avail.rb#_dcc298e6": num
+  _71795d8d:
+    "ksu_vn/utils/flip.rb#_27d937b2": arr
+  _71ac50d9:
+    "ksu_vn/utils/nesting/corner.rb#_39ad1aa8": num
+    "ksu_vn/utils/nesting/corner.rb#_bca72a10": num
+  _71d1b6fe:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_f89911a7": arr6
+  _71f900d2:
+    "ksu_vn/utils/sheet/bottom.rb#_7c7845a7": arr
+  _71fa56a2:
+    "ksu_vn/utils/nesting/corner.rb#_152b1493": arr4
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": arr
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": arr
+  _7210113a:
+    "ksu_vn/method/nesting/collect.rb#_b3aa40f8": arr
+    "ksu_vn/method/xeptam/push.rb#_726c65ba": h
+    "ksu_vn/utils/nesting.rb#_f8ae6697": flag
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": h
+    "ksu_vn/utils/nesting/pack.rb#_43d2bd40": flag
+  _7210927e:
+    "ksu_vn/method/thongke/quet.rb#_dfa1578b": arr3
+  _7292a87e:
+    "ksu_vn/method/toiuuvan/back.rb#_a7fa30d2": tr2
+  _72acd221:
+    "ksu_vn/utils/nesting/corner.rb#_7edd7b75": num3
+  _72b8adf0:
+    "ksu_vn/utils/nesting/pack.rb#_311385c4": tr
+  _72c03682:
+    "ksu_vn/utils/view/query.rb#_e66c6a7a": arr
+  _72c1da8e:
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": edge
+  _72dda7be:
+    "ksu_vn/method/thongke/xuat.rb#_713c8e2b": str
+  _72faa8fa:
+    "ksu_vn/method/nesting/simplify.rb#_578e7a65": arr5
+  _73016d5f:
+    "ksu_vn/utils/sheet/reorder.rb#_09ce1072": arr2
+  _7303da6a:
+    "ksu_vn/method/intem/scan.rb#_cbfbfd78": arr4
+  _735880d7: flag25
+  _739df81a:
+    "ksu_vn/method/chongbay/shape.rb#_d1cfc672": pt
+    "ksu_vn/method/chontam.rb#_7596df47": vec
+    "ksu_vn/method/chontam/pick.rb#_34feb22a": vec
+    "ksu_vn/method/chontam/pick.rb#_4a670cfd": vec
+    "ksu_vn/method/chontam/pick.rb#_4d27616b": grp
+    "ksu_vn/method/chontam/pick.rb#_68d73ae7": grp
+    "ksu_vn/method/chontam/pick.rb#_7c845e31": vec
+    "ksu_vn/method/chontam/pick.rb#_9277e941": grp
+    "ksu_vn/method/chontam/pick.rb#_ab38749c": vec
+    "ksu_vn/method/chontam/pick.rb#_ce0f89bb": vec
+    "ksu_vn/method/gannhan.rb#_b3bfd2a3": grp
+    "ksu_vn/method/gannhan.rb#_e33f3af2": vec
+    "ksu_vn/method/intem/scan.rb#_16028ecb": grp
+    "ksu_vn/method/intem/scan.rb#_3171d1ff": grp
+    "ksu_vn/method/intem/scan.rb#_503b4f27": grp
+    "ksu_vn/method/intem/scan.rb#_cbfbfd78": grp2
+    "ksu_vn/method/intem/scan.rb#_d8a5a5cb": edge
+    "ksu_vn/method/intem/scan.rb#_e12462c7": grp
+    "ksu_vn/method/nesting.rb#_1d6910c1": vec
+    "ksu_vn/method/nesting/collect.rb#_17ee8011": grp
+    "ksu_vn/method/nesting/collect.rb#_2409a439": grp
+    "ksu_vn/method/nesting/collect.rb#_a1ffed00": grp
+    "ksu_vn/method/nesting/draw.rb#_2a453897": grp
+    "ksu_vn/method/nesting/draw.rb#_e85e6194": grp2
+    "ksu_vn/method/nesting/draw.rb#_fc78e970": grp
+    "ksu_vn/method/nesting/launch.rb#_1582b880": vec
+    "ksu_vn/method/nesting/simplify.rb#_578e7a65": arr
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_5d1a5ed6": arr3
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_70785283": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_78f40bb3": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_b6a93f39": arr2
+    "ksu_vn/method/themtam.rb#_1668ae28": grp
+    "ksu_vn/method/themtam.rb#_3f9f6f46": grp
+    "ksu_vn/method/themtam.rb#_81e51cdb": edge
+    "ksu_vn/method/themtam.rb#_aa983a67": edge
+    "ksu_vn/method/thongke/phukien.rb#_69e049e3": grp
+    "ksu_vn/method/thongke/quet.rb#_3f3406d2": edge
+    "ksu_vn/method/thongke/quet.rb#_632310a6": grp
+    "ksu_vn/method/thongke/quet.rb#_6c3c87ed": grp
+    "ksu_vn/method/thongke/quet.rb#_a2796101": grp
+    "ksu_vn/method/thongke/tonghop.rb#_11e34195": grp
+    "ksu_vn/method/toiuuvan/postproc.rb#_003ab64b": arr
+    "ksu_vn/method/toiuuvan/postproc.rb#_06a8054e": arr2
+    "ksu_vn/method/toiuuvan/postproc.rb#_38bca22d": arr4
+    "ksu_vn/method/toiuuvan/postproc.rb#_8f10bac2": arr
+    "ksu_vn/method/toiuuvan/postproc.rb#_c4f153fd": arr2
+    "ksu_vn/method/toiuuvan/postproc.rb#_cc51eebc": arr2
+    "ksu_vn/method/xuatdxf.rb#_1cb4f865": grp
+    "ksu_vn/method/xuatdxf.rb#_319513d3": arr
+    "ksu_vn/method/xuatdxf/entry.rb#_30057963": arr2
+    "ksu_vn/method/xuatdxf/entry.rb#_3161186f": arr
+    "ksu_vn/method/xuatdxf/entry.rb#_8b1edfc4": arr
+    "ksu_vn/method/xuatdxf/entry.rb#_97443b71": arr5
+    "ksu_vn/method/xuatdxf/geom.rb#_c73c2639": edge
+    "ksu_vn/method/xuatdxf/scan.rb#_7c10a028": edge2
+    "ksu_vn/method/xuatdxf/scan.rb#_89a2e173": arr
+    "ksu_vn/utils/chuanhoa.rb#_eb869462": face
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": grp
+    "ksu_vn/utils/cutting.rb#_0e630d78": grp
+    "ksu_vn/utils/cutting.rb#_4605a894": edge
+    "ksu_vn/utils/cutting.rb#_902d666b": grp
+    "ksu_vn/utils/cutting.rb#_f4ee2773": edge
+    "ksu_vn/utils/cutting/detail.rb#_32f2e5fc": edge
+    "ksu_vn/utils/cutting/detail.rb#_3d0d50be": grp
+    "ksu_vn/utils/cutting/detail.rb#_45c7b853": grp
+    "ksu_vn/utils/cutting/detail.rb#_736ee8c9": grp2
+    "ksu_vn/utils/cutting/detail.rb#_81410e9d": edge
+    "ksu_vn/utils/cutting/detail.rb#_b873fd5b": grp
+    "ksu_vn/utils/cutting/detail.rb#_babeb881": edge
+    "ksu_vn/utils/cutting/detail.rb#_e0fa5164": ents
+    "ksu_vn/utils/cutting/loop.rb#_0d6c2197": vec
+    "ksu_vn/utils/cutting/loop.rb#_0dde888a": grp
+    "ksu_vn/utils/cutting/loop.rb#_17304a20": edge
+    "ksu_vn/utils/cutting/loop.rb#_66365b6a": grp
+    "ksu_vn/utils/flip.rb#_493d532c": grp
+    "ksu_vn/utils/flip.rb#_cae3470a": grp
+    "ksu_vn/utils/flip.rb#_f861bd92": grp
+    "ksu_vn/utils/font.rb#_09901ac3": arr
+    "ksu_vn/utils/font.rb#_1589cfd8": arr
+    "ksu_vn/utils/font.rb#_1ff4cc8f": arr
+    "ksu_vn/utils/font.rb#_df558da5": arr
+    "ksu_vn/utils/label.rb#_137e2915": grp
+    "ksu_vn/utils/label.rb#_31e99a8d": grp
+    "ksu_vn/utils/label.rb#_59cd0397": grp
+    "ksu_vn/utils/label.rb#_5f641d51": grp
+    "ksu_vn/utils/label.rb#_bf88ab49": arr
+    "ksu_vn/utils/label.rb#_de472479": vec
+    "ksu_vn/utils/nesting.rb#_04e870e5": arr
+    "ksu_vn/utils/nesting/edit.rb#_6ff875b1": grp
+    "ksu_vn/utils/nesting/edit.rb#_916665cc": grp
+    "ksu_vn/utils/nesting/edit.rb#_d7b62fb6": grp
+    "ksu_vn/utils/nesting/optimize.rb#_b24fc92d": grp
+    "ksu_vn/utils/quet.rb#_b3bfd2a3": grp
+    "ksu_vn/utils/sheet.rb#_192c3ea3": pt
+    "ksu_vn/utils/sheet/bottom.rb#_334c3374": grp
+    "ksu_vn/utils/sheet/bottom.rb#_624d6a0f": grp
+    "ksu_vn/utils/sheet/bottom.rb#_b40b317a": grp
+    "ksu_vn/utils/sheet/bottom.rb#_be87b887": grp
+    "ksu_vn/utils/sheet/bottom.rb#_c7decd32": grp
+    "ksu_vn/utils/sheet/bottom.rb#_ed46427a": grp
+    "ksu_vn/utils/sheet/bottom.rb#_fff06578": grp
+    "ksu_vn/utils/sheet/mark.rb#_055546e5": grp2
+    "ksu_vn/utils/sheet/overlay.rb#_3f34706e": arr
+    "ksu_vn/utils/sheet/overlay.rb#_604b5da7": grp2
+    "ksu_vn/utils/sheet/overlay.rb#_6959424f": grp2
+    "ksu_vn/utils/sheet/overlay.rb#_cca9777a": grp
+    "ksu_vn/utils/sheet/reorder.rb#_3e79d579": arr
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": grp2
+    "ksu_vn/utils/view.rb#_b35f2f05": grp
+    "ksu_vn/utils/view.rb#_c78ffdfe": grp
+    "ksu_vn/utils/view.rb#_f4ffc79c": arr
+  _73ceb1e2: pt5
+  _73dc38ac:
+    "ksu_vn/method/chongbay.rb#_8784e3f2": grp
+    "ksu_vn/method/chontam/pick.rb#_827d4a81": flag
+    "ksu_vn/method/chontam/pick.rb#_e0b932ea": grp
+    "ksu_vn/method/intem/scan.rb#_6aba4c5e": grp
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": grp
+    "ksu_vn/method/intem/scan.rb#_9ec31362": grp
+    "ksu_vn/method/intem/scan.rb#_acf1b201": grp
+    "ksu_vn/method/nesting.rb#_d9cba3b0": arr
+    "ksu_vn/method/nesting/draw.rb#_42f184ce": grp3
+    "ksu_vn/method/nesting/draw.rb#_ce93a4c7": grp
+    "ksu_vn/method/netcatcuoi.rb#_ca2351da": grp2
+    "ksu_vn/method/netcatcuoi.rb#_ca5147c6": grp
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_52c178c0": grp
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_5d1a5ed6": grp2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_70785283": vec
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_cca954c3": grp
+    "ksu_vn/method/netcatcuoi/resize.rb#_0183b2c7": grp
+    "ksu_vn/method/themtam.rb#_4736e3ff": vec
+    "ksu_vn/method/themtam.rb#_5771caa6": grp
+    "ksu_vn/method/themtam.rb#_68ad34e6": vec
+    "ksu_vn/method/themtam.rb#_de7745a2": grp
+    "ksu_vn/method/themtam.rb#_eb2b4ec7": grp
+    "ksu_vn/method/themtam.rb#_ec568b6f": grp
+    "ksu_vn/method/themtam.rb#_f5891d4d": grp
+    "ksu_vn/method/thongke/quet.rb#_4bc2cd42": grp
+    "ksu_vn/method/thongke/xuat.rb#_46b90971": arr
+    "ksu_vn/method/thongke/xuat.rb#_4ae1e5d9": arr2
+    "ksu_vn/method/toiuuvan/back.rb#_6982016d": grp
+    "ksu_vn/method/toiuuvan/back.rb#_a7fa30d2": grp
+    "ksu_vn/method/toiuuvan/back.rb#_e1ab909e": vec
+    "ksu_vn/method/toiuuvan/engine.rb#_603ba9c4": arr5
+    "ksu_vn/method/toiuuvan/postproc.rb#_545a8b49": grp
+    "ksu_vn/method/toiuuvan/postproc.rb#_a815fdc9": grp
+    "ksu_vn/method/toiuuvan/postproc.rb#_aeea1f26": grp
+    "ksu_vn/method/toiuuvan/postproc.rb#_cce35269": grp
+    "ksu_vn/method/xeptam.rb#draw": vec3
+    "ksu_vn/method/xeptam/arrange.rb#_068698fa": vec
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": grp
+    "ksu_vn/method/xeptam/collide.rb#_1adb886a": grp
+    "ksu_vn/method/xeptam/collide.rb#_b5081b56": vec
+    "ksu_vn/method/xeptam/drag.rb#_50ab81be": grp
+    "ksu_vn/method/xeptam/drag.rb#_59c48478": vec
+    "ksu_vn/method/xeptam/drag.rb#_b1cd7015": grp
+    "ksu_vn/method/xeptam/drag.rb#_cfe1b27c": vec
+    "ksu_vn/method/xeptam/mirror.rb#_4f4ecb72": vec
+    "ksu_vn/method/xeptam/mirror.rb#_5647c92c": grp
+    "ksu_vn/method/xeptam/mirror.rb#_68d76957": grp
+    "ksu_vn/method/xeptam/mirror.rb#_6982016d": vec2
+    "ksu_vn/method/xeptam/mirror.rb#_89bccf8d": vec
+    "ksu_vn/method/xeptam/mirror.rb#_8e5202c8": vec
+    "ksu_vn/method/xeptam/mirror.rb#_951e1123": grp3
+    "ksu_vn/method/xeptam/mirror.rb#_9b91a3d7": vec
+    "ksu_vn/method/xeptam/mirror.rb#_a70d673b": grp
+    "ksu_vn/method/xeptam/push.rb#_0b16f3d7": vec
+    "ksu_vn/method/xeptam/push.rb#_2bff4638": vec
+    "ksu_vn/method/xeptam/push.rb#_c7b0bc62": grp
+    "ksu_vn/method/xeptam/push.rb#_d1eefbfb": grp
+    "ksu_vn/method/xuatdxf.rb#_1cb4f865": grp2
+    "ksu_vn/utils/cutting/detail.rb#_d5fbd5fe": grp
+    "ksu_vn/utils/cutting/loop.rb#_50566427": grp
+    "ksu_vn/utils/cutting/loop.rb#_645a9a41": grp
+    "ksu_vn/utils/flip.rb#_14af3a7c": grp2
+    "ksu_vn/utils/flip.rb#_493d532c": grp2
+    "ksu_vn/utils/flip.rb#_af3684d3": grp
+    "ksu_vn/utils/nesting/avail.rb#_5e02b98b": vec
+    "ksu_vn/utils/nesting/avail.rb#_ba1c7e14": grp
+    "ksu_vn/utils/nesting/avail.rb#_c27df7e2": vec
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": grp
+    "ksu_vn/utils/nesting/bilan.rb#_c84801ce": grp
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": grp2
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": grp2
+    "ksu_vn/utils/nesting/edit.rb#_0aa2d773": grp
+    "ksu_vn/utils/nesting/edit.rb#_82fdde5b": grp
+    "ksu_vn/utils/nesting/optimize.rb#_4800f149": grp
+    "ksu_vn/utils/nesting/optimize.rb#_5709b6da": grp
+    "ksu_vn/utils/nesting/optimize.rb#_ea460feb": grp
+    "ksu_vn/utils/sheet.rb#_192c3ea3": vec
+    "ksu_vn/utils/sheet.rb#_6036fd14": grp
+    "ksu_vn/utils/sheet/bottom.rb#_1cc9607d": grp
+    "ksu_vn/utils/sheet/bottom.rb#_334c3374": grp2
+    "ksu_vn/utils/sheet/bottom.rb#_545c7915": grp
+    "ksu_vn/utils/sheet/bottom.rb#_6a1dc0a6": grp
+    "ksu_vn/utils/sheet/bottom.rb#_7b0a38ee": grp
+    "ksu_vn/utils/sheet/bottom.rb#_b86cee12": grp
+    "ksu_vn/utils/sheet/bottom.rb#_de0a88d4": grp
+    "ksu_vn/utils/sheet/bottom.rb#_e4bb5453": grp
+    "ksu_vn/utils/sheet/bottom.rb#_e5a1cf0e": grp
+    "ksu_vn/utils/sheet/bottom.rb#_e9938e09": grp
+    "ksu_vn/utils/sheet/bottom.rb#_f583511f": grp
+    "ksu_vn/utils/sheet/mark.rb#_055546e5": grp
+    "ksu_vn/utils/sheet/mark.rb#_6fb26883": grp
+    "ksu_vn/utils/sheet/mark.rb#_bc2f12d0": grp
+    "ksu_vn/utils/sheet/overlay.rb#_3f34706e": grp
+    "ksu_vn/utils/sheet/overlay.rb#_5f706ccc": grp
+    "ksu_vn/utils/sheet/overlay.rb#_604b5da7": grp
+    "ksu_vn/utils/sheet/overlay.rb#_6959424f": grp
+    "ksu_vn/utils/sheet/overlay.rb#_6b7112b2": grp
+    "ksu_vn/utils/sheet/reorder.rb#_95b1662c": grp
+    "ksu_vn/utils/sheet/reorder.rb#_a1f566de": grp
+    "ksu_vn/utils/sheet/reorder.rb#_c989e8e4": grp
+    "ksu_vn/utils/sheet/reorder.rb#_f4f71a73": grp
+    "ksu_vn/utils/view.rb#_75700580": grp
+    "ksu_vn/utils/view.rb#_f4ffc79c": grp3
+  _74407d5d:
+    "ksu_vn/method/xeptam/arrange.rb#_35f2e047": vec2
+    "ksu_vn/method/xeptam/arrange.rb#_650fb422": grp2
+    "ksu_vn/method/xeptam/arrange.rb#_925b0a97": grp2
+  _745ed521:
+    "ksu_vn/system/update.rb#_14768127": str2
+  _7461946d:
+    "ksu_vn/utils/sheet/reorder.rb#_a7db4c18": h
+  _74bdbe69:
+    "ksu_vn/method/nesting/draw.rb#_2827207b": arr2
+    "ksu_vn/method/nesting/draw.rb#_e3d864eb": arr2
+    "ksu_vn/method/xuatdxf/geom.rb#_4e8cbee3": arr2
+    "ksu_vn/method/xuatdxf/geom.rb#_c73c2639": arr2
+  _751d7779:
+    "ksu_vn/method/toiuuvan/postproc.rb#_086b9b67": tr2
+  _75359a7d:
+    "ksu_vn/method/themtam.rb#_aa983a67": num2
+    "ksu_vn/method/xeptam/collide.rb#_19030d1a": num
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": flag
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": num9
+    "ksu_vn/utils/view/query.rb#_bbaa2919": num4
+  _75d44b9b:
+    "ksu_vn/method/chongbay.rb#_a72e7349": arr3
+    "ksu_vn/method/chongbay.rb#_de1ac9fc": arr4
+    "ksu_vn/method/chongbay/shape.rb#_12d6c6da": arr3
+  _76152733:
+    "ksu_vn/method/chontam/pick.rb#_9744ab6f": arr
+    "ksu_vn/method/chontam/pick.rb#_fc54e5ac": arr
+  _769d0bb8: flag26
+  _76ee3d2c:
+    "ksu_vn/method/chontam/pick.rb#_5e1e3d1e": arr
+    "ksu_vn/method/intem/scan.rb#_84c87104": arr
+    "ksu_vn/method/intem/scan.rb#_fd63a357": arr2
+    "ksu_vn/method/nesting.rb#_100230bb": arr
+    "ksu_vn/method/nesting/draw.rb#_e8139901": arr4
+    "ksu_vn/method/thongke/xuat.rb#_a105a0f4": arr
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": arr2
+    "ksu_vn/method/xeptam/collide.rb#_9b1924b8": h
+    "ksu_vn/method/xeptam/collide.rb#_fae0f9b7": arr6
+    "ksu_vn/method/xeptam/drag.rb#_ecb07074": arr2
+    "ksu_vn/method/xeptam/mirror.rb#_101ef2e3": arr
+    "ksu_vn/method/xeptam/mirror.rb#_b01ddcaf": arr
+    "ksu_vn/method/xeptam/mirror.rb#_ee68e33c": arr
+    "ksu_vn/method/xeptam/push.rb#_2bff4638": arr
+    "ksu_vn/utils/cutting.rb#_b344f39a": arr
+    "ksu_vn/utils/label.rb#_bf88ab49": arr2
+    "ksu_vn/utils/nesting/corner.rb#_19df3e1d": h
+    "ksu_vn/utils/nesting/corner.rb#_5b41ad8b": h
+    "ksu_vn/utils/nesting/corner.rb#_84160c85": arr3
+    "ksu_vn/utils/nesting/corner.rb#_d59e252b": h
+  _772aa6d7:
+    "ksu_vn/method/themtam.rb#_0895e188": bb
+  _772eae98:
+    "ksu_vn/method/nesting/collect.rb#_dd36ed49": flag
+    "ksu_vn/method/nesting/draw.rb#_2a453897": num
+    "ksu_vn/method/toiuuvan/engine.rb#_2cf6d3a4": arr3
+    "ksu_vn/method/toiuuvan/engine.rb#_57ce2a46": num
+    "ksu_vn/method/toiuuvan/engine.rb#_6d7a71cf": flag
+    "ksu_vn/method/xeptam/collide.rb#_5ac34e7b": flag2
+    "ksu_vn/utils/nesting/bilan.rb#_24863b11": flag2
+  _779e8154:
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": str3
+  _77c6d783:
+    "ksu_vn/utils/nesting/corner.rb#_bb9d9306": arr6
+  _77db59ee:
+    "ksu_vn/method/themtam.rb#_ec568b6f": tr
+    "ksu_vn/utils/sheet.rb#_6036fd14": tr
+  _77f0e5c5:
+    "ksu_vn/method/xeptam/arrange.rb#_63b8ba0b": arr
+  _77f58275: flag27
+  _78849128: num9
+  _78a49930:
+    "ksu_vn/utils/preset/store.rb#_a5c0536b": arr
+  _78cf8e0b:
+    "ksu_vn/main.rb#_06b07406": str
+    "ksu_vn/main.rb#_531da62c": str
+    "ksu_vn/method/chongbay.rb#_32415d7c": arr
+    "ksu_vn/method/chontam.rb#_32415d7c": arr
+    "ksu_vn/method/danhsovan.rb#_32415d7c": arr
+    "ksu_vn/method/gannhan.rb#_32415d7c": arr
+    "ksu_vn/method/intem.rb#_3f9829f0": str
+    "ksu_vn/method/nesting.rb#_6f0e8d0f": arr
+    "ksu_vn/method/nesting/launch.rb#_3f9829f0": str
+    "ksu_vn/method/netcatcuoi.rb#_32415d7c": arr
+    "ksu_vn/method/themtam.rb#_32415d7c": arr
+    "ksu_vn/method/thongke.rb#_3f9829f0": str
+    "ksu_vn/method/thongke/tonghop.rb#_b0ef3e99": num2
+    "ksu_vn/method/toiuuvan.rb#_32415d7c": arr
+    "ksu_vn/method/xephang.rb#_32415d7c": arr
+    "ksu_vn/method/xeptam.rb#_32415d7c": arr
+    "ksu_vn/method/xeptam/collide.rb#_2e48526e": grp
+    "ksu_vn/method/xuatdxf.rb#_3f9829f0": str
+    "ksu_vn/method/xuatdxf/entry.rb#_30057963": str
+    "ksu_vn/system/addon.rb#_ec4a0d75": str
+    "ksu_vn/utils/font.rb#_634b4336": num3
+    "ksu_vn/utils/font.rb#_dd2e11ae": num3
+  _78d1fc53:
+    "ksu_vn/utils/preset/field.rb#_f0b1b18f": arr
+  _79a71467:
+    "ksu_vn/utils/sheet/bottom.rb#_6fc47f07": arr
+  _79d48c0c:
+    "ksu_vn/method/xuatdxf/geom.rb#_4e8cbee3": arr
+    "ksu_vn/method/xuatdxf/geom.rb#_c73c2639": arr3
+  _79d7983e:
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": pt2
+  _7a505af7:
+    "ksu_vn/method/toiuuvan/postproc.rb#_c4f153fd": grp
+    "ksu_vn/utils/nesting/corner.rb#_8961a36f": grp
+  _7a6a79fb:
+    "ksu_vn/utils/view/widget.rb#_1f46ddf6": flag
+    "ksu_vn/utils/view/widget.rb#_cfad422a": flag
+  _7a7d205b:
+    "ksu_vn/utils/preset/store.rb#_663cb739": num
+  _7ab92208:
+    "ksu_vn/utils/nesting/corner.rb#_bb9d9306": arr4
+  _7acd0c42:
+    "ksu_vn/method/chontam/pick.rb#_0a50b01c": h
+    "ksu_vn/method/chontam/pick.rb#_3fd8e206": arr
+    "ksu_vn/method/chontam/pick.rb#_4d27616b": h
+    "ksu_vn/method/chontam/pick.rb#_e0b932ea": arr
+    "ksu_vn/method/nesting/launch.rb#_1582b880": arr
+    "ksu_vn/method/nesting/launch.rb#_e3264765": h
+    "ksu_vn/method/thongke.rb#_3f9829f0": str3
+    "ksu_vn/method/thongke/quet.rb#_7d7ee175": arr
+    "ksu_vn/method/xephang.rb#_38252db1": arr5
+    "ksu_vn/method/xeptam/collide.rb#_2e48526e": h
+    "ksu_vn/method/xeptam/collide.rb#_b5081b56": h
+    "ksu_vn/utils/sheet/reorder.rb#_0da19c14": arr5
+    "ksu_vn/utils/sheet/reorder.rb#_35319a70": arr4
+    "ksu_vn/utils/sheet/reorder.rb#_93b123c4": arr
+    "ksu_vn/utils/sheet/reorder.rb#_a7db4c18": arr3
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": arr5
+    "ksu_vn/utils/view.rb#_c78ffdfe": arr
+    "ksu_vn/utils/view.rb#_f4ffc79c": h2
+  _7ad94e21:
+    "ksu_vn/method/toiuuvan/engine.rb#_603ba9c4": num
+  _7af78bca:
+    "ksu_vn/method/chongbay.rb#_48656b5c": arr
+    "ksu_vn/utils/flip.rb#_f3b20dc8": h2
+    "ksu_vn/utils/nesting/edit.rb#_0d3c3d2a": h2
+    "ksu_vn/utils/sheet/bottom.rb#_a9a86c81": h
+  _7b079005:
+    "ksu_vn/utils/nesting/engine.rb#_96ff6f1e": num3
+  _7b2c77b4:
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": grp
+  _7b306d33:
+    "ksu_vn/utils/sheet/mark.rb#_5134c34c": num2
+  _7b5e1745:
+    "ksu_vn/utils/nesting/corner.rb#_8961a36f": tr2
+  _7b905c3b:
+    "ksu_vn/utils/label.rb#_665bc239": flag2
+    "ksu_vn/utils/label.rb#_681febe3": vec2
+  _7ba7dc30:
+    "ksu_vn/method/toiuuvan/engine.rb#_fa87e7fb": flag2
+  _7bc6163e: num10
+  _7bf167fa: arr25
+  _7c5404a5:
+    "ksu_vn/utils/cutting.rb#_ed27edff": tr
+    "ksu_vn/utils/cutting/loop.rb#_17304a20": tr
+    "ksu_vn/utils/cutting/loop.rb#_8c4d4bd1": tr
+    "ksu_vn/utils/cutting/loop.rb#_bbe79cfa": tr
+  _7c8f4914:
+    "ksu_vn/utils/nesting/corner.rb#_e4f850f5": num3
+  _7c9925c7:
+    "ksu_vn/method/nesting/draw.rb#_2354b03d": arr
+    "ksu_vn/method/nesting/draw.rb#_e8139901": h
+    "ksu_vn/utils/flip.rb#_8e99ab0c": arr2
+    "ksu_vn/utils/flip.rb#_f3b20dc8": h
+    "ksu_vn/utils/nesting/edit.rb#_0d3c3d2a": h
+  _7d0e7180:
+    "ksu_vn/method/xeptam/drag.rb#_e427aa26": grp
+    "ksu_vn/utils/nesting/edit.rb#_0d3c3d2a": grp2
+  _7d22d216: arr26
+  _7d753141: flag28
+  _7db26778:
+    "ksu_vn/utils/view.rb#_0b8e9c29": mat
+  _7db4c267: num11
+  _7e2557de:
+    "ksu_vn/utils/label.rb#_bf88ab49": vec
+    "ksu_vn/utils/nesting/edit.rb#_f84d71f4": vec
+  _7e48d1c7: arr27
+  _7e53f420:
+    "ksu_vn/method/intem/scan.rb#_1391721f": arr2
+    "ksu_vn/method/xephang.rb#_38252db1": str
+    "ksu_vn/utils/label.rb#_d5ca0b39": flag2
+    "ksu_vn/utils/sheet/bottom.rb#_de0a88d4": arr3
+  _7ed122ce:
+    "ksu_vn/method/thongke/quet.rb#_632310a6": arr
+    "ksu_vn/method/thongke/quet.rb#_7d7ee175": h
+    "ksu_vn/method/xeptam/group.rb#_8515206a": h
+    "ksu_vn/utils/view.rb#_b35f2f05": h
+  _7f4cfb48:
+    "ksu_vn/method/toiuuvan/engine.rb#_57ce2a46": arr7
+    "ksu_vn/method/xeptam/push.rb#_2bff4638": arr3
+    "ksu_vn/utils/nesting.rb#_989392fa": arr
+    "ksu_vn/utils/nesting.rb#_f8ae6697": arr4
+    "ksu_vn/utils/nesting/pack.rb#_cb9d8021": flag
+  _7f732059:
+    "ksu_vn/utils/label.rb#_665bc239": model2
+  _7fa7d8df: flag29
+  _7fb38d0b:
+    "ksu_vn/utils/pdf/svg.rb#_5966e1de": num
+  _7fb9f595:
+    "ksu_vn/utils/label.rb#_89cdc81b": flag2
+  _7fe9d779:
+    "ksu_vn/utils/geom.rb#_8bddc18c": num4
+  _7ffc6f10: flag30
+  _802d9ba3:
+    "ksu_vn/method/xeptam/drag.rb#_f97c64c2": flag
+  _803407cf:
+    "ksu_vn/utils/cutting.rb#_4605a894": pt4
+  _80b9a549:
+    "ksu_vn/method/nesting.rb#_ce4b1e4e": flag
+  _812c854b: arr28
+  _81548e16:
+    "ksu_vn/utils/preset/field.rb#_72271107": flag
+  _81855e0d: arr29
+  _81ae0973:
+    "ksu_vn/utils/cutting/loop.rb#_7db17b8e": num
+  _8200475f: h8
+  _8242598f:
+    "ksu_vn/method/toiuuvan/engine.rb#_603ba9c4": num2
+  _827c2aec:
+    "ksu_vn/utils/cutting/detail.rb#_babeb881": bb
+  _82825d9e:
+    "ksu_vn/utils/view.rb#_c9d9f590": num2
+  _8291eb29: arr30
+  _82a21a55:
+    "ksu_vn/method/themtam.rb#_0895e188": vec
+    "ksu_vn/method/toiuuvan/back.rb#_51c9eb3d": vec
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": vec3
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": vec3
+  _831395d1:
+    "ksu_vn/method/xeptam/push.rb#compute_push_back": flag
+  _83cb6460:
+    "ksu_vn/main.rb#_e8e15308": arr3
+    "ksu_vn/utils/cutting.rb#_d53db8b7": arr
+    "ksu_vn/utils/sheet/reorder.rb#_06da7172": arr
+  _83de8247:
+    "ksu_vn/method/intem/scan.rb#_16028ecb": arr5
+    "ksu_vn/method/xeptam/push.rb#_5dc6e713": arr
+    "ksu_vn/utils/nesting/bilan.rb#_4bed79e1": arr
+    "ksu_vn/utils/nesting/corner.rb#_84160c85": arr4
+    "ksu_vn/utils/nesting/corner.rb#_b869e241": arr
+    "ksu_vn/utils/preset/field.rb#_cbadd90f": num2
+  _83f184ae:
+    "ksu_vn/method/thongke/phukien.rb#_5663289b": arr
+  _84259f74: str3
+  _847ae4f0:
+    "ksu_vn/method/themtam.rb#onLButtonDown": arr
+    "ksu_vn/utils/cutting/detail.rb#_32f2e5fc": arr4
+    "ksu_vn/utils/sheet/bottom.rb#_7a7a9a52": arr3
+    "ksu_vn/utils/sheet/bottom.rb#_de0a88d4": arr
+  _84aff668: h9
+  _84bc556b: flag31
+  _84cd7345:
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": pt3
+  _84ef6afa:
+    "ksu_vn/method/toiuuvan/postproc.rb#_cc51eebc": arr3
+  _85ead5df: arr31
+  _863404dd:
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": arr
+  _866dc766:
+    "ksu_vn/method/xeptam.rb#onMouseMove": flag
+  _872020c5:
+    "ksu_vn/method/toiuuvan/postproc.rb#_c4f153fd": num
+  _876b461e:
+    "ksu_vn/method/chontam/pick.rb#_0a50b01c": arr2
+    "ksu_vn/method/chontam/pick.rb#_20decd88": arr
+    "ksu_vn/method/chontam/pick.rb#_416f815d": arr2
+    "ksu_vn/method/chontam/pick.rb#_46f413d0": arr2
+    "ksu_vn/method/chontam/pick.rb#_824298f7": arr
+    "ksu_vn/method/nesting/draw.rb#_42f184ce": ents
+  _87b37363:
+    "ksu_vn/method/xuatdxf/geom.rb#_2d01dec4": vec2
+  _87bdf791:
+    "ksu_vn/utils/cutting/loop.rb#_3a1d2466": arr4
+  _87c24d83:
+    "ksu_vn/method/thongke/phukien.rb#_01be8e47": h2
+  _87da8017:
+    "ksu_vn/method/netcatcuoi/resize.rb#_ae3af84a": arr2
+    "ksu_vn/method/netcatcuoi/resize.rb#_ff3778ab": arr3
+  _88097773:
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": num2
+  _8810354a: h10
+  _883fe22e:
+    "ksu_vn/method/chongbay.rb#_29b62f37": num2
+  _884463de:
+    "ksu_vn/method/xeptam/collide.rb#_788720c1": tr
+    "ksu_vn/utils/nesting/bilan.rb#_c84801ce": tr
+    "ksu_vn/utils/nesting/edit.rb#_0aa2d773": tr2
+    "ksu_vn/utils/sheet.rb#_6036fd14": tr2
+    "ksu_vn/utils/sheet.rb#_9cf2f273": tr
+    "ksu_vn/utils/sheet/overlay.rb#_3f34706e": tr2
+    "ksu_vn/utils/view.rb#_f4ffc79c": tr
+  _884dee16:
+    "ksu_vn/method/nesting/launch.rb#_49dd846c": h
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": h3
+    "ksu_vn/utils/flip.rb#_493d532c": tr3
+  _88817caf:
+    "ksu_vn/method/nesting/draw.rb#_49fac9a3": tr
+  _88b769fd:
+    "ksu_vn/utils/cutting/detail.rb#_0f0ed6ac": num
+  _8904ee37:
+    "ksu_vn/method/themtam.rb#_650afd59": arr
+  _892e5ea9:
+    "ksu_vn/method/intem/scan.rb#_6aba4c5e": ents
+    "ksu_vn/method/intem/scan.rb#_acf1b201": ents
+  _893483e5:
+    "ksu_vn/method/chongbay.rb#_29b62f37": num
+  _89406f28:
+    "ksu_vn/method/toiuuvan/postproc.rb#_38bca22d": arr2
+  _89bad203:
+    "ksu_vn/method/toiuuvan.rb#_ea9e841c": flag
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": pt
+  _89bc654b:
+    "ksu_vn/utils/view/query.rb#_68d4bb38": num2
+    "ksu_vn/utils/view/widget.rb#_0561785c": num
+  _8a2a0205:
+    "ksu_vn/method/xeptam/arrange.rb#_eb5d9ecb": num
+  _8a2a4def:
+    "ksu_vn/method/xeptam/push.rb#_2bff4638": num
+  _8a52ae64:
+    "ksu_vn/method/chontam/pick.rb#_68d73ae7": h
+    "ksu_vn/method/chontam/pick.rb#_9277e941": h
+    "ksu_vn/method/chontam/pick.rb#_ab38749c": h
+    "ksu_vn/method/chontam/pick.rb#_ce0f89bb": h
+    "ksu_vn/method/intem/scan.rb#_e12462c7": arr4
+    "ksu_vn/method/themtam.rb#_596e474d": h
+    "ksu_vn/method/themtam.rb#_f5891d4d": h
+    "ksu_vn/method/xuatdxf.rb#_319513d3": h3
+    "ksu_vn/utils/pdf/ttf.rb#_19412587": h
+    "ksu_vn/utils/pdf/ttf.rb#_31c28be0": h
+  _8a8bcc65:
+    "ksu_vn/utils/label.rb#_665bc239": face2
+  _8b26fc6e:
+    "ksu_vn/method/nesting/simplify.rb#_578e7a65": arr4
+  _8b56e7b9:
+    "ksu_vn/utils/label.rb#_6dc55f15": str2
+  _8b757da4:
+    "ksu_vn/method/thongke/tonghop.rb#_ba2a62ec": h
+    "ksu_vn/utils/view.rb#_75700580": tr
+  _8b814601: arr32
+  _8c6c071c:
+    "ksu_vn/method/toiuuvan/engine.rb#_fa87e7fb": arr4
+  _8c8dc963:
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": num7
+  _8c9f4751:
+    "ksu_vn/method/toiuuvan/back.rb#_51c9eb3d": grp3
+    "ksu_vn/method/xeptam/mirror.rb#_51c9eb3d": grp
+  _8ca157d6:
+    "ksu_vn/method/toiuuvan/engine.rb#_ae6cb680": num
+    "ksu_vn/utils/nesting/optimize.rb#_ea6f582c": num
+  _8cb1e90d:
+    "ksu_vn/utils/nesting/edit.rb#_03018fe6": grp
+  _8cff4586:
+    "ksu_vn/method/xeptam/push.rb#_726c65ba": flag2
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": flag2
+  _8d05dd56:
+    "ksu_vn/method/themtam.rb#_aa983a67": num
+  _8d1358a8: pt6
+  _8d2258de:
+    "ksu_vn/utils/font.rb#_1f6a7db1": arr2
+  _8d4b5b1c: flag32
+  _8d6c12c4: arr33
+  _8d947f1b:
+    "ksu_vn/method/xeptam/group.rb#_5e44e341": arr
+    "ksu_vn/utils/pdf/build.rb#_5b6279e8": arr2
+  _8dc42485:
+    "ksu_vn/method/xeptam/mirror.rb#_43486b4a": arr
+  _8ddd8c6f:
+    "ksu_vn/method/xuatdxf/entry.rb#_f60dec30": num2
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": num2
+  _8e1605cf:
+    "ksu_vn/utils/cutting.rb#_4eeae396": face
+  _8e1e444f: vec3
+  _8e4ff4d0:
+    "ksu_vn/utils/cutting/detail.rb#_736ee8c9": arr3
+  _8e587281:
+    "ksu_vn/method/xeptam/collide.rb#_af0cebe5": num2
+    "ksu_vn/method/xeptam/nfp.rb#_db5a8bb4": num4
+    "ksu_vn/utils/nesting/bilan.rb#_faecb1ca": num2
+  _8e9672dc: h11
+  _8efb6d27:
+    "ksu_vn/utils/label.rb#_d5ca0b39": pt
+  _8f541478:
+    "ksu_vn/system/update.rb#_14768127": str
+  _8f9c2c6b:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_acfeef55": num
+  _8fcfd8de:
+    "ksu_vn/method/xuatdxf/geom.rb#_074e3371": flag
+    "ksu_vn/method/xuatdxf/geom.rb#_4e8cbee3": flag
+    "ksu_vn/utils/nesting/engine.rb#_96ff6f1e": num2
+  _90281de9:
+    "ksu_vn/method/chongbay/shape.rb#_0758608c": arr
+    "ksu_vn/utils/cutting.rb#_f4ee2773": arr
+    "ksu_vn/utils/cutting/loop.rb#_3a1d2466": arr3
+  _9035d0e7:
+    "ksu_vn/method/chongbay/assign.rb#_563cf113": str
+    "ksu_vn/utils/label.rb#_1f249426": str
+  _904653f5:
+    "ksu_vn/utils/sheet.rb#_eb757cfe": arr5
+  _9083bf93: flag33
+  _911dab46: flag34
+  _91255867:
+    "ksu_vn/method/themtam.rb#_ad557b93": flag
+    "ksu_vn/method/toiuuvan.rb#_687e1def": grp
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": h2
+    "ksu_vn/utils/cutting/detail.rb#_babeb881": arr
+    "ksu_vn/utils/sheet/bottom.rb#_591fc23a": h
+    "ksu_vn/utils/sheet/reorder.rb#_0da19c14": arr4
+    "ksu_vn/utils/sheet/reorder.rb#_35319a70": arr2
+    "ksu_vn/utils/sheet/reorder.rb#_3e79d579": arr4
+    "ksu_vn/utils/sheet/reorder.rb#_95b1662c": arr
+    "ksu_vn/utils/sheet/reorder.rb#_a7db4c18": arr4
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": arr3
+  _9139e52d:
+    "ksu_vn/method/xuatdxf.rb#_319513d3": h2
+  _9139f75b:
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": arr2
+  _91753b62:
+    "ksu_vn/utils/geom.rb#_8bddc18c": num3
+  _918f38c1:
+    "ksu_vn/utils/cutting/detail.rb#_32f2e5fc": arr3
+  _9190ea3c: flag35
+  _9195f5ac:
+    "ksu_vn/method/themtam.rb#_42a83442": h
+    "ksu_vn/method/themtam.rb#_650afd59": arr2
+    "ksu_vn/method/themtam.rb#_eb2b4ec7": arr2
+  _91a9e4ba:
+    "ksu_vn/utils/flip.rb#_88b3c357": grp
+  _91f1f152:
+    "ksu_vn/method/nesting/collect.rb#_2c9761fb": bb
+    "ksu_vn/utils/cutting.rb#_548357b4": bb
+    "ksu_vn/utils/label.rb#_665bc239": pt2
+  _9200eabc:
+    "ksu_vn/method/chontam/pick.rb#_24c54f2a": pt
+    "ksu_vn/utils/sheet/overlay.rb#_3f34706e": pt
+  _921c371c:
+    "ksu_vn/method/themtam.rb#_42a83442": arr
+    "ksu_vn/method/xeptam/mirror.rb#_78d29daa": h
+    "ksu_vn/utils/nesting/edit.rb#_82fdde5b": h
+    "ksu_vn/utils/sheet/bottom.rb#_e4bb5453": h
+  _9225aae0:
+    "ksu_vn/method/xeptam/nfp.rb#_00adeb53": arr4
+  _9289490a:
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": h
+  _92a1b5b0:
+    "ksu_vn/utils/cutting/loop.rb#_bbe79cfa": arr2
+  _92c2d423:
+    "ksu_vn/method/themtam.rb#_650afd59": bb
+    "ksu_vn/utils/cutting/detail.rb#_736ee8c9": tr3
+  _92d0c6f4:
+    "ksu_vn/utils/flip.rb#_ace51b7b": grp3
+  _92e82d32:
+    "ksu_vn/method/netcatcuoi.rb#_d204c38c": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_fec87097": arr
+    "ksu_vn/utils/nesting/optimize.rb#_8942d360": num
+  _93188890:
+    "ksu_vn/method/intem/scan.rb#_e12462c7": str
+  _9349c5d0:
+    "ksu_vn/utils/label.rb#_1f249426": arr2
+  _936e8d94:
+    "ksu_vn/method/xeptam/push.rb#_e099da59": num2
+  _93a88f0d:
+    "ksu_vn/method/chongbay/assign.rb#_67c06000": flag
+  _93bc4084:
+    "ksu_vn/method/chongbay/shape.rb#_1b2a0395": arr2
+    "ksu_vn/method/chongbay/shape.rb#_2f6fa959": arr3
+  _93eb7d17:
+    "ksu_vn/utils/cutting.rb#_4605a894": arr
+  _942e4331:
+    "ksu_vn/method/chongbay/shape.rb#_e2cd305f": num
+  _9443323e:
+    "ksu_vn/utils/geom.rb#_0c91518b": arr2
+  _94bcd2c1:
+    "ksu_vn/method/nesting/draw.rb#_e8139901": flag3
+  _94f858eb:
+    "ksu_vn/method/xeptam/push.rb#_e099da59": arr
+  _9528f94b:
+    "ksu_vn/utils/label.rb#_665bc239": flag3
+  _953f3a4a:
+    "ksu_vn/method/netcatcuoi.rb#_d204c38c": arr3
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_3431a152": num2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": num
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_b9371681": num3
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_c839dc19": num2
+  _953fe221: flag36
+  _95d692a9:
+    "ksu_vn/method/toiuuvan/postproc.rb#_c4f153fd": arr4
+    "ksu_vn/method/toiuuvan/postproc.rb#_cc51eebc": arr4
+  _95dc2465:
+    "ksu_vn/method/chongbay.rb#_a72e7349": arr4
+    "ksu_vn/method/chongbay/shape.rb#_12d6c6da": arr2
+  _962d19b8:
+    "ksu_vn/method/xeptam/drag.rb#_903c1e24": vec
+    "ksu_vn/utils/flip.rb#_88b3c357": vec
+  _964335cf:
+    "ksu_vn/utils/cutting/detail.rb#_0f0ed6ac": pt3
+  _964b8c0f:
+    "ksu_vn/method/xeptam/drag.rb#_50ab81be": pt
+  _96993539:
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": pt3
+    "ksu_vn/utils/view.rb#_66e14707": bb
+  _96a0096b:
+    "ksu_vn/method/chongbay.rb#_de1ac9fc": arr3
+  _9710d820:
+    "ksu_vn/method/chongbay.rb#_a72e7349": arr2
+    "ksu_vn/method/chongbay.rb#_ca5cd64b": arr3
+    "ksu_vn/method/chongbay.rb#_cd86f285": arr
+    "ksu_vn/method/chongbay.rb#draw": arr
+    "ksu_vn/method/chongbay/assign.rb#_3e0b10ba": arr2
+    "ksu_vn/method/chongbay/assign.rb#_91d00075": arr2
+    "ksu_vn/method/chongbay/shape.rb#_37ca7a0d": pt2
+    "ksu_vn/method/chongbay/shape.rb#_5410b01c": pt2
+    "ksu_vn/method/chongbay/shape.rb#_9707d4ab": pt
+    "ksu_vn/method/chongbay/shape.rb#_cbad055a": pt2
+    "ksu_vn/method/chontam/pick.rb#_3fd8e206": num2
+    "ksu_vn/method/intem/scan.rb#_a8e56783": arr2
+    "ksu_vn/method/nesting/collect.rb#_b33d5052": vec
+    "ksu_vn/method/nesting/simplify.rb#_877aa5f8": arr2
+    "ksu_vn/method/nesting/simplify.rb#_92674c1b": arr2
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": arr6
+    "ksu_vn/method/netcatcuoi.rb#_c6224ad4": pt
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_245e1bad": pt
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_5d1a5ed6": pt2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_acfeef55": pt
+    "ksu_vn/method/themtam.rb#_aa983a67": pt3
+    "ksu_vn/method/xeptam/mirror.rb#_c949afeb": pt
+    "ksu_vn/method/xeptam/nfp.rb#_8c307bb8": pt2
+    "ksu_vn/method/xeptam/nfp.rb#_db5a8bb4": arr4
+    "ksu_vn/method/xuatdxf/entry.rb#_727b63c7": pt
+    "ksu_vn/method/xuatdxf/entry.rb#_f8552d5f": pt
+    "ksu_vn/method/xuatdxf/geom.rb#_b33d5052": vec2
+    "ksu_vn/utils/cutting.rb#_2a224ca0": arr
+    "ksu_vn/utils/cutting.rb#_9e23459c": num2
+    "ksu_vn/utils/cutting.rb#_c374c8ee": arr2
+    "ksu_vn/utils/cutting/loop.rb#_885e1003": pt2
+    "ksu_vn/utils/cutting/loop.rb#_a225c103": pt2
+    "ksu_vn/utils/font.rb#_dd2e11ae": num2
+    "ksu_vn/utils/geom.rb#_0c8b8a0e": pt2
+    "ksu_vn/utils/geom.rb#_0c91518b": pt
+    "ksu_vn/utils/geom.rb#_19da360c": pt
+    "ksu_vn/utils/geom.rb#_35c2c696": arr5
+    "ksu_vn/utils/geom.rb#_5666a38f": arr2
+    "ksu_vn/utils/nesting.rb#_fbf7e391": num
+    "ksu_vn/utils/nesting/corner.rb#_3caaabb9": arr
+    "ksu_vn/utils/nesting/corner.rb#_5d9dd503": num
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": pt
+    "ksu_vn/utils/nesting/corner.rb#_ebae3e53": arr
+    "ksu_vn/utils/nesting/corner.rb#_edec0f70": arr
+    "ksu_vn/utils/pdf/svg.rb#_03c7ad56": num3
+    "ksu_vn/utils/quet.rb#_b4479c25": arr2
+    "ksu_vn/utils/quet.rb#_ba29ba89": arr2
+    "ksu_vn/utils/view.rb#_3f56417e": pt3
+    "ksu_vn/utils/view.rb#_410b0b4e": pt
+    "ksu_vn/utils/view/query.rb#_bbaa2919": pt2
+  _971b0904: h12
+  _972803c5:
+    "ksu_vn/main.rb#_531da62c": h
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr12
+  _9729889d: arr34
+  _9745b70d:
+    "ksu_vn/method/xuatdxf/entry.rb#_30057963": h2
+  _97888a25:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_b9371681": arr
+  _97947004: arr35
+  _97ca313f: str4
+  _97d9692b:
+    "ksu_vn/utils/view.rb#_47eba6dd": arr3
+    "ksu_vn/utils/view.rb#_c5f21c57": arr3
+  _982cda75:
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": vec
+  _98790b13:
+    "ksu_vn/method/chongbay/shape.rb#_76eb912d": arr2
+  _98a50f29:
+    "ksu_vn/method/nesting/draw.rb#_13398956": arr2
+    "ksu_vn/method/xeptam/nfp.rb#_3b7ac698": arr
+    "ksu_vn/method/xeptam/nfp.rb#_5762df6e": vec
+    "ksu_vn/method/xeptam/nfp.rb#_8c9066f6": arr
+    "ksu_vn/method/xeptam/nfp.rb#_b4c1b27a": arr2
+    "ksu_vn/method/xeptam/nfp.rb#_cc303760": arr6
+    "ksu_vn/method/xeptam/nfp.rb#_d0de1f0f": arr2
+    "ksu_vn/method/xeptam/nfp.rb#_f5c19a2b": arr3
+    "ksu_vn/utils/nesting/corner.rb#_84160c85": arr
+    "ksu_vn/utils/nesting/corner.rb#_bb9d9306": arr
+    "ksu_vn/utils/nesting/corner.rb#_bca72a10": arr2
+    "ksu_vn/utils/nesting/corner.rb#_edec0f70": arr3
+    "ksu_vn/utils/view/widget.rb#_7e5fcbd6": arr
+  _98d8ed7f:
+    "ksu_vn/utils/preset/field.rb#_3420d496": flag2
+  _98e6f169:
+    "ksu_vn/utils/sheet/bottom.rb#_b86cee12": vec
+  _99491fe1:
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": arr5
+  _995842c2:
+    "ksu_vn/utils/cutting/detail.rb#_736ee8c9": tr
+    "ksu_vn/utils/cutting/detail.rb#_d7ae9520": tr2
+  _99c91617:
+    "ksu_vn/method/netcatcuoi.rb#_1bba59fa": num
+    "ksu_vn/method/netcatcuoi.rb#_d204c38c": num
+    "ksu_vn/method/xeptam/collide.rb#_56bc8e10": num2
+    "ksu_vn/method/xeptam/collide.rb#_5ac34e7b": num
+    "ksu_vn/utils/font.rb#_1f6a7db1": num2
+    "ksu_vn/utils/nesting/avail.rb#_5818f219": num
+    "ksu_vn/utils/nesting/bilan.rb#_24863b11": num
+    "ksu_vn/utils/nesting/bilan.rb#_72edd259": num2
+    "ksu_vn/utils/pdf/svg.rb#_5966e1de": num2
+    "ksu_vn/utils/pdf/svg.rb#_b4479c25": num
+    "ksu_vn/utils/preset/mode.rb#_95607d04": num
+  _99f27439: pt7
+  _9a5525a8:
+    "ksu_vn/method/nesting/launch.rb#_e3264765": arr4
+    "ksu_vn/method/xuatdxf/scan.rb#_cdd54f61": str2
+    "ksu_vn/utils/chuanhoa.rb#_2c97975b": mat
+    "ksu_vn/utils/chuanhoa.rb#_eb869462": arr
+    "ksu_vn/utils/cutting.rb#_0d45a147": str
+    "ksu_vn/utils/sheet/reorder.rb#_f4f71a73": str2
+  _9a8f8b14: h13
+  _9aa4dce4: arr36
+  _9aa80a84:
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": bb2
+    "ksu_vn/method/xeptam/mirror.rb#_34966ae4": bb3
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": bb3
+  _9acecc6a:
+    "ksu_vn/method/xeptam/arrange.rb#_63b8ba0b": pt
+  _9b11088e:
+    "ksu_vn/method/toiuuvan/engine.rb#_fa87e7fb": arr9
+    "ksu_vn/method/xeptam/collide.rb#_25080947": num7
+  _9b13454c:
+    "ksu_vn/method/toiuuvan/engine.rb#_46279528": arr8
+  _9b5c4751:
+    "ksu_vn/method/xeptam/collide.rb#_9004d10e": arr
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr11
+  _9b5d6803:
+    "ksu_vn/method/xeptam/mirror.rb#_43486b4a": tr
+  _9b67c55d:
+    "ksu_vn/method/intem/scan.rb#_9ec31362": arr
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_3431a152": arr3
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": arr7
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_f89911a7": arr4
+    "ksu_vn/method/xeptam/collide.rb#_5ac34e7b": arr
+    "ksu_vn/method/xeptam/mirror.rb#_83ee7e20": arr
+    "ksu_vn/utils/nesting/bilan.rb#_24863b11": arr
+  _9b84c914:
+    "ksu_vn/method/chongbay/shape.rb#_37ca7a0d": num
+    "ksu_vn/method/chongbay/shape.rb#_3c222d84": num
+    "ksu_vn/method/chongbay/shape.rb#_5410b01c": num2
+    "ksu_vn/method/chongbay/shape.rb#_9608e031": num3
+    "ksu_vn/method/netcatcuoi.rb#_d5a5cc33": num
+  _9ba1a361:
+    "ksu_vn/method/netcatcuoi.rb#_1bba59fa": num4
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_a95ae5a0": num5
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_f89911a7": num2
+    "ksu_vn/method/toiuuvan/postproc.rb#_c5297436": num2
+    "ksu_vn/utils/nesting/pack.rb#_311385c4": num3
+    "ksu_vn/utils/sheet/mark.rb#_801295a3": arr
+    "ksu_vn/utils/sheet/overlay.rb#_52d3437f": num3
+  _9bf547ef:
+    "ksu_vn/method/xeptam/collide.rb#_af0cebe5": num
+    "ksu_vn/method/xeptam/nfp.rb#_db5a8bb4": num3
+    "ksu_vn/utils/nesting/bilan.rb#_faecb1ca": num
+  _9c34511a:
+    "ksu_vn/utils/nesting/corner.rb#_8961a36f": vec
+  _9c375c76:
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": flag3
+  _9ceec064: h14
+  _9cf479eb:
+    "ksu_vn/utils/flip.rb#_75c1461c": vec
+  _9d0002b5:
+    "ksu_vn/method/toiuuvan/postproc.rb#_086b9b67": tr
+    "ksu_vn/utils/nesting/pack.rb#_a2f525ce": tr
+  _9d031de6:
+    "ksu_vn/method/nesting/launch.rb#_e534023c": arr
+    "ksu_vn/utils/chuanhoa.rb#_2c97975b": arr
+    "ksu_vn/utils/chuanhoa.rb#_37eed696": arr
+    "ksu_vn/utils/cutting.rb#_9e23459c": arr
+    "ksu_vn/utils/cutting/detail.rb#_32f2e5fc": arr5
+    "ksu_vn/utils/cutting/detail.rb#_bd804591": arr
+    "ksu_vn/utils/nesting/corner.rb#_8961a36f": arr3
+  _9d4e0536:
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr10
+  _9d6ca446:
+    "ksu_vn/utils/sheet/mark.rb#_05bd8a7e": arr4
+  _9d8b43d7:
+    "ksu_vn/method/thongke/xuat.rb#_a105a0f4": num
+  _9dbd0455:
+    "ksu_vn/utils/font.rb#_1f6a7db1": flag
+  _9dcbc6c4:
+    "ksu_vn/method/chongbay.rb#_173f13a3": arr
+    "ksu_vn/method/chongbay.rb#_3a61d45b": arr
+    "ksu_vn/method/chongbay.rb#_598211fd": arr
+    "ksu_vn/method/chongbay.rb#_5c33d153": arr4
+    "ksu_vn/method/chongbay.rb#_66232386": arr
+    "ksu_vn/method/chongbay.rb#_82f140a1": arr
+    "ksu_vn/method/chongbay.rb#_b278661f": arr2
+    "ksu_vn/method/chongbay.rb#_b7735d5c": arr
+    "ksu_vn/method/chongbay.rb#_e0f60d52": arr
+    "ksu_vn/method/chongbay.rb#_ec8e6cb8": arr
+    "ksu_vn/method/chongbay.rb#_f674b1ec": arr
+    "ksu_vn/method/chongbay.rb#_fc784101": arr
+    "ksu_vn/method/chongbay/shape.rb#_e2a7df81": arr
+    "ksu_vn/method/nesting/collect.rb#_dd36ed49": arr2
+    "ksu_vn/method/netcatcuoi.rb#_0ed68c30": arr3
+    "ksu_vn/method/netcatcuoi.rb#_1bba59fa": arr
+    "ksu_vn/method/netcatcuoi.rb#_93f5a81b": arr
+    "ksu_vn/method/netcatcuoi.rb#_c34290e2": arr
+    "ksu_vn/method/netcatcuoi.rb#_c6224ad4": arr2
+    "ksu_vn/method/netcatcuoi.rb#_ca2351da": arr
+    "ksu_vn/method/netcatcuoi.rb#_ca5147c6": arr
+    "ksu_vn/method/netcatcuoi.rb#deactivate": arr
+    "ksu_vn/method/netcatcuoi.rb#onLButtonDown": arr2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_52c178c0": arr3
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_5d1a5ed6": arr2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_a95ae5a0": arr3
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_f89911a7": arr2
+    "ksu_vn/method/netcatcuoi/resize.rb#_0183b2c7": arr2
+    "ksu_vn/method/netcatcuoi/resize.rb#_14e05dda": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_8810a0b1": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_ae3af84a": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_e4147f27": arr
+    "ksu_vn/method/themtam.rb#_27632a1f": arr3
+    "ksu_vn/method/themtam.rb#_5244f367": arr
+    "ksu_vn/method/themtam.rb#_68ad34e6": arr
+    "ksu_vn/method/themtam.rb#_f76c691a": arr2
+    "ksu_vn/method/thongke/quet.rb#_3f3406d2": arr
+    "ksu_vn/method/thongke/quet.rb#_6f6e03c6": arr
+    "ksu_vn/method/thongke/quet.rb#_dfa1578b": arr
+    "ksu_vn/method/thongke/tonghop.rb#_9404be8f": arr
+    "ksu_vn/method/thongke/tonghop.rb#_ba2a62ec": arr
+    "ksu_vn/method/toiuuvan.rb#_23ea970c": arr
+    "ksu_vn/method/toiuuvan.rb#_37011ad2": arr
+    "ksu_vn/method/toiuuvan.rb#_71b7600f": arr
+    "ksu_vn/method/toiuuvan.rb#_8c688891": arr
+    "ksu_vn/method/toiuuvan.rb#_a42dd0f4": arr
+    "ksu_vn/method/toiuuvan.rb#_ce5c626c": arr
+    "ksu_vn/method/toiuuvan.rb#_fb7c57bd": arr
+    "ksu_vn/method/toiuuvan.rb#draw": arr
+    "ksu_vn/method/toiuuvan/postproc.rb#_086b9b67": arr3
+    "ksu_vn/method/toiuuvan/postproc.rb#_11554dfd": arr
+    "ksu_vn/method/toiuuvan/postproc.rb#_c5297436": arr2
+    "ksu_vn/method/toiuuvan/postproc.rb#_cce35269": arr
+    "ksu_vn/method/xeptam.rb#draw": arr2
+    "ksu_vn/method/xeptam/arrange.rb#_068698fa": arr
+    "ksu_vn/method/xeptam/arrange.rb#_13997cbc": arr
+    "ksu_vn/method/xeptam/arrange.rb#_4203d0bf": arr
+    "ksu_vn/method/xeptam/arrange.rb#_71b7600f": arr
+    "ksu_vn/method/xeptam/arrange.rb#_c81485d5": arr
+    "ksu_vn/method/xeptam/arrange.rb#_eb5d9ecb": arr4
+    "ksu_vn/method/xeptam/collide.rb#_285eca92": arr
+    "ksu_vn/method/xeptam/collide.rb#_769da8ec": arr
+    "ksu_vn/method/xeptam/collide.rb#_b5081b56": arr
+    "ksu_vn/method/xeptam/drag.rb#_1e2e7709": arr
+    "ksu_vn/method/xeptam/drag.rb#_30c1f1e6": arr
+    "ksu_vn/method/xeptam/drag.rb#_6036fd14": arr
+    "ksu_vn/method/xeptam/drag.rb#_eed07b86": arr
+    "ksu_vn/method/xeptam/drag.rb#_f3bdae07": arr
+    "ksu_vn/method/xeptam/drag.rb#_f861bd92": arr
+    "ksu_vn/method/xeptam/mirror.rb#_6982016d": arr
+    "ksu_vn/method/xeptam/push.rb#_0b16f3d7": arr2
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": arr2
+    "ksu_vn/method/xuatdxf/scan.rb#_cdd54f61": arr
+    "ksu_vn/utils/cutting.rb#_4605a894": arr5
+    "ksu_vn/utils/cutting/detail.rb#_c6e26747": arr
+    "ksu_vn/utils/cutting/detail.rb#_d7ae9520": arr
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": arr3
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": arr3
+    "ksu_vn/utils/nesting/optimize.rb#_4800f149": arr
+    "ksu_vn/utils/nesting/optimize.rb#_a57a9962": arr
+    "ksu_vn/utils/nesting/pack.rb#_9f6369c5": arr
+    "ksu_vn/utils/nesting/pack.rb#_f6a599ef": arr
+    "ksu_vn/utils/view.rb#_919af578": arr
+    "ksu_vn/utils/view.rb#_e519e18d": arr
+  _9deb3cee:
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": arr9
+    "ksu_vn/method/toiuuvan/engine.rb#_f573a61c": flag4
+    "ksu_vn/utils/sheet/mark.rb#_05bd8a7e": arr2
+  _9e7965ef: h15
+  _9e7e08c6:
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": arr10
+    "ksu_vn/method/toiuuvan/engine.rb#_f573a61c": flag
+    "ksu_vn/method/toiuuvan/engine.rb#_fa87e7fb": arr6
+    "ksu_vn/method/toiuuvan/postproc.rb#_0579a704": arr3
+  _9ec58bc0: arr37
+  _9f104630: pt8
+  _9fc34c7c:
+    "ksu_vn/method/toiuuvan/back.rb#_3fccea3f": bb
+    "ksu_vn/method/toiuuvan/back.rb#_51c9eb3d": bb
+    "ksu_vn/utils/sheet/mark.rb#_5134c34c": bb
+  _9fc90b21: arr38
+  _9fda117b:
+    "ksu_vn/method/chongbay.rb#_2a4b97cf": bb
+    "ksu_vn/method/chongbay.rb#_74d49eb4": bb
+  _9ff17664:
+    "ksu_vn/method/intem.rb#_ca3f45aa": arr2
+    "ksu_vn/utils/pdf/build.rb#_70d6149d": arr2
+    "ksu_vn/utils/pdf/build.rb#_b3b2dea9": arr2
+  _a00c269a:
+    "ksu_vn/utils/sheet.rb#_eb757cfe": num
+  _a02a20d7:
+    "ksu_vn/utils/cutting.rb#_4605a894": arr3
+  _a02cc14d:
+    "ksu_vn/method/xeptam/nfp.rb#_3ea4c8e4": arr6
+  _a07eb6f2:
+    "ksu_vn/method/themtam.rb#_5c6a1c61": tr
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": tr2
+  _a0976be2:
+    "ksu_vn/method/netcatcuoi/resize.rb#_ae3af84a": num
+  _a0b27b57:
+    "ksu_vn/method/chongbay/shape.rb#_2f6fa959": arr2
+    "ksu_vn/method/chongbay/shape.rb#_9ce21378": arr2
+    "ksu_vn/method/chontam.rb#_0ea29105": arr
+    "ksu_vn/method/chontam/pick.rb#_20decd88": arr2
+    "ksu_vn/method/chontam/pick.rb#_6a98efb9": arr
+    "ksu_vn/method/chontam/pick.rb#_824298f7": arr2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_245e1bad": arr2
+    "ksu_vn/method/xeptam.rb#onMouseMove": arr2
+    "ksu_vn/method/xeptam/drag.rb#_2171a7c6": arr
+    "ksu_vn/method/xeptam/mirror.rb#_37011ad2": arr
+    "ksu_vn/method/xeptam/push.rb#_726c65ba": arr2
+    "ksu_vn/utils/cutting/loop.rb#_c52ad8bc": flag
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": arr
+    "ksu_vn/utils/nesting/bilan.rb#_c84801ce": arr
+    "ksu_vn/utils/preset.rb#_075ae565": str2
+  _a0fa0fca:
+    "ksu_vn/method/chongbay/shape.rb#_2f6fa959": num
+    "ksu_vn/method/chongbay/shape.rb#_8ad2ec35": num
+    "ksu_vn/method/chongbay/shape.rb#_e2cd305f": num2
+    "ksu_vn/method/netcatcuoi.rb#_d5a5cc33": num3
+    "ksu_vn/method/netcatcuoi/resize.rb#_3066d644": num
+    "ksu_vn/method/netcatcuoi/resize.rb#_ff3778ab": num
+    "ksu_vn/method/xeptam/arrange.rb#_13997cbc": num2
+    "ksu_vn/method/xeptam/collide.rb#_fae0f9b7": num
+    "ksu_vn/method/xeptam/push.rb#_726c65ba": num2
+    "ksu_vn/utils/geom.rb#_a404e7b6": num
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": num2
+    "ksu_vn/utils/nesting/corner.rb#_8961a36f": num
+  _a15a3aa9: flag37
+  _a165adc5:
+    "ksu_vn/system/update.rb#_7b0f29c1": str2
+    "ksu_vn/system/update.rb#_c658dab4": str4
+    "ksu_vn/system/update.rb#restore_from_backup": str4
+  _a1bcdfba:
+    "ksu_vn/method/xeptam/push.rb#compute_push_back": h2
+  _a1bf6a3a:
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": num4
+  _a1feba73:
+    "ksu_vn/utils/pdf/build.rb#_b3b2dea9": h
+  _a21660ae: flag38
+  _a25a4b9f: pt9
+  _a2921a03:
+    "ksu_vn/method/chongbay/assign.rb#_3e0b10ba": arr3
+    "ksu_vn/method/chontam.rb#_806c93bf": flag
+    "ksu_vn/method/intem/scan.rb#_1391721f": flag
+    "ksu_vn/system/setting.rb#_7314dc1a": flag
+    "ksu_vn/utils/cutting/loop.rb#_6a1213a6": arr
+    "ksu_vn/utils/sheet/reorder.rb#_0da19c14": num
+  _a2a2833f:
+    "ksu_vn/method/chongbay/assign.rb#_91d00075": arr
+  _a30b0487: num12
+  _a3468ceb:
+    "ksu_vn/method/chongbay/shape.rb#_12d6c6da": h
+    "ksu_vn/utils/view.rb#_b80737a7": arr2
+  _a38de4cc:
+    "ksu_vn/method/xeptam/push.rb#_d1eefbfb": tr
+  _a3e82f76:
+    "ksu_vn/method/intem/scan.rb#_84c87104": str
+  _a40a251d:
+    "ksu_vn/utils/flip.rb#_ace51b7b": tr3
+  _a40b0a8b:
+    "ksu_vn/main.rb#_bfea22ac": str2
+    "ksu_vn/method/caidat.rb#_53b46751": str
+    "ksu_vn/system/addon.rb#_68de4054": str
+    "ksu_vn/system/setting.rb#_59fa8401": str3
+    "ksu_vn/system/setting.rb#_7622f59b": str
+    "ksu_vn/system/setting.rb#_e6c4e018": str
+  _a46bb2b4:
+    "ksu_vn/method/toiuuvan/engine.rb#_46279528": num
+    "ksu_vn/method/toiuuvan/postproc.rb#_62eca5db": h
+    "ksu_vn/utils/nesting/corner.rb#_152b1493": arr5
+    "ksu_vn/utils/nesting/corner.rb#_1a89b477": arr3
+  _a4757a8c:
+    "ksu_vn/utils/preset/store.rb#_9a9b090d": arr3
+  _a4a6f5e8:
+    "ksu_vn/method/thongke/xuat.rb#_a105a0f4": arr2
+  _a4ab9a59:
+    "ksu_vn/method/chongbay.rb#_5fb18040": arr
+    "ksu_vn/method/chontam/pick.rb#_1db77630": num
+    "ksu_vn/method/chontam/pick.rb#_827d4a81": num
+    "ksu_vn/method/gannhan.rb#_b9550635": grp
+    "ksu_vn/method/nesting.rb#activate": arr2
+    "ksu_vn/method/nesting/draw.rb#_13398956": arr
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": num
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_b9371681": num
+    "ksu_vn/method/toiuuvan.rb#_c211b5aa": arr2
+    "ksu_vn/method/toiuuvan/engine.rb#_14184f07": arr
+    "ksu_vn/method/toiuuvan/postproc.rb#_d93740da": arr
+    "ksu_vn/method/xeptam/nfp.rb#_db5a8bb4": num
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": arr4
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": grp3
+    "ksu_vn/utils/font.rb#_1f6a7db1": num
+    "ksu_vn/utils/nesting/optimize.rb#_a57a9962": arr2
+    "ksu_vn/utils/nesting/pack.rb#_9f6369c5": arr2
+    "ksu_vn/utils/pdf/svg.rb#_0eb2a5fc": num
+    "ksu_vn/utils/view/widget.rb#_d7b85203": num
+  _a4b4118b:
+    "ksu_vn/method/xeptam/collide.rb#_4237de17": pt
+    "ksu_vn/method/xeptam/push.rb#compute_push_back": pt
+  _a4beb817:
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": arr8
+    "ksu_vn/method/toiuuvan/engine.rb#_f573a61c": flag3
+    "ksu_vn/utils/sheet/mark.rb#_05bd8a7e": arr
+  _a5361053:
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": arr9
+  _a57f29f0:
+    "ksu_vn/method/xeptam/collide.rb#_c6c7c535": num
+    "ksu_vn/method/xuatdxf/entry.rb#_727b63c7": arr
+    "ksu_vn/utils/font.rb#_1ff4cc8f": flag2
+    "ksu_vn/utils/preset/field.rb#_3420d496": flag3
+  _a5b357b0:
+    "ksu_vn/utils/label.rb#_8010294b": tr2
+  _a61080eb:
+    "ksu_vn/method/nesting/collect.rb#_17ee8011": flag
+  _a665d212: flag39
+  _a6d5a081:
+    "ksu_vn/method/xeptam/mirror.rb#_951e1123": h
+  _a6d77e71:
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": arr10
+    "ksu_vn/method/xeptam/nfp.rb#_00adeb53": arr
+    "ksu_vn/method/xeptam/nfp.rb#_3ea4c8e4": arr3
+  _a6f96fae:
+    "ksu_vn/method/toiuuvan/postproc.rb#_c4f153fd": arr3
+    "ksu_vn/utils/nesting/corner.rb#_8961a36f": arr
+  _a70fe650:
+    "ksu_vn/method/xeptam.rb#draw": arr4
+  _a7334ede:
+    "ksu_vn/utils/pdf/build.rb#_5f966f9e": arr2
+  _a7a105c1:
+    "ksu_vn/method/thongke/phukien.rb#_ad8e91ed": arr
+  _a80e1aae:
+    "ksu_vn/method/netcatcuoi/resize.rb#_81184680": num5
+  _a83c0449:
+    "ksu_vn/method/toiuuvan/engine.rb#_6d7a71cf": arr
+  _a8511360:
+    "ksu_vn/method/chongbay/shape.rb#_76eb912d": h
+    "ksu_vn/method/intem/scan.rb#_d8a5a5cb": h
+    "ksu_vn/method/intem/scan.rb#_e12462c7": arr2
+    "ksu_vn/method/intem/scan.rb#_f0ab79c9": h
+    "ksu_vn/method/nesting/collect.rb#_17ee8011": arr
+    "ksu_vn/method/themtam.rb#_27632a1f": arr2
+    "ksu_vn/method/thongke/quet.rb#_632310a6": arr2
+    "ksu_vn/method/xeptam/nfp.rb#_a6cf3d0d": h
+    "ksu_vn/method/xuatdxf/geom.rb#_c73c2639": h
+    "ksu_vn/method/xuatdxf/scan.rb#_7c10a028": h
+    "ksu_vn/utils/cutting.rb#_f4ee2773": h
+    "ksu_vn/utils/cutting/loop.rb#_11354767": h
+    "ksu_vn/utils/label.rb#_137e2915": h
+    "ksu_vn/utils/label.rb#_59cd0397": arr
+    "ksu_vn/utils/label.rb#_ad1aab84": h
+    "ksu_vn/utils/nesting/edit.rb#_916665cc": h
+    "ksu_vn/utils/sheet/reorder.rb#_35319a70": arr3
+  _a8541d1a:
+    "ksu_vn/method/chongbay.rb#onLButtonDown": arr
+  _a8598197:
+    "ksu_vn/utils/sheet/reorder.rb#_5ccbf9ec": str
+    "ksu_vn/utils/sheet/reorder.rb#_f4f71a73": str
+  _a86d40bb: flag40
+  _a8d0c622:
+    "ksu_vn/method/toiuuvan/back.rb#_6982016d": ents
+    "ksu_vn/method/xeptam/mirror.rb#_6982016d": ents
+    "ksu_vn/method/xeptam/mirror.rb#_951e1123": grp2
+    "ksu_vn/method/xuatdxf/geom.rb#_4e8cbee3": arr3
+    "ksu_vn/utils/cutting/detail.rb#_565a278d": vec
+    "ksu_vn/utils/cutting/detail.rb#_d5fbd5fe": grp2
+  _a8f568df:
+    "ksu_vn/method/toiuuvan/postproc.rb#_086b9b67": arr
+  _a8fe6136:
+    "ksu_vn/utils/sheet/bottom.rb#_6fc47f07": num
+  _a925e834:
+    "ksu_vn/method/chongbay/shape.rb#_a2ff747d": arr2
+    "ksu_vn/utils/preset/store.rb#_a5c0536b": arr3
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": grp
+  _a931c145:
+    "ksu_vn/method/xuatdxf/scan.rb#_cdd54f61": num
+  _a960670e:
+    "ksu_vn/utils/preset.rb#_5c31bb6b": str
+  _a9620145:
+    "ksu_vn/utils/preset/field.rb#_a4b56c31": flag
+  _a96c0e35:
+    "ksu_vn/method/intem.rb#_612cc3a2": arr3
+    "ksu_vn/method/intem.rb#_ca3f45aa": arr
+    "ksu_vn/utils/pdf/build.rb#_b3b2dea9": arr4
+  _a970b679:
+    "ksu_vn/method/intem/scan.rb#_16028ecb": num2
+    "ksu_vn/method/xuatdxf/scan.rb#_daa2f929": pt
+    "ksu_vn/utils/cutting/detail.rb#_d7ae9520": tr
+  _aa31c3e9: flag41
+  _aa87e279:
+    "ksu_vn/utils/flip.rb#_8e99ab0c": arr
+    "ksu_vn/utils/flip.rb#_f3b20dc8": arr
+    "ksu_vn/utils/nesting/edit.rb#_0d3c3d2a": arr
+  _aaa0e848:
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": flag2
+    "ksu_vn/method/xeptam/mirror.rb#_34966ae4": flag2
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": flag2
+  _ab1d7afa: flag42
+  _ab593548:
+    "ksu_vn/method/chontam/pick.rb#_cb453c89": ents
+    "ksu_vn/method/xephang.rb#_38252db1": arr
+    "ksu_vn/method/xeptam/arrange.rb#_4daa2bb0": arr
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": arr5
+    "ksu_vn/utils/sheet/bottom.rb#_591fc23a": h2
+    "ksu_vn/utils/sheet/bottom.rb#_de0a88d4": arr4
+    "ksu_vn/utils/sheet/reorder.rb#_0da19c14": arr
+    "ksu_vn/utils/sheet/reorder.rb#_35319a70": arr
+    "ksu_vn/utils/sheet/reorder.rb#_3e79d579": h
+    "ksu_vn/utils/sheet/reorder.rb#_93b123c4": h
+    "ksu_vn/utils/sheet/reorder.rb#_95b1662c": arr2
+    "ksu_vn/utils/sheet/reorder.rb#_a7db4c18": h2
+    "ksu_vn/utils/sheet/reorder.rb#_b867334a": arr
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": arr
+  _ab6965af:
+    "ksu_vn/utils/cutting.rb#_4605a894": num
+  _ab761236:
+    "ksu_vn/method/toiuuvan/back.rb#_51c9eb3d": tr
+    "ksu_vn/method/xeptam/mirror.rb#_34fc866b": arr2
+  _ab9e3493:
+    "ksu_vn/method/nesting/draw.rb#_49fac9a3": grp3
+  _ac0e988f: flag43
+  _ac50d81f:
+    "ksu_vn/utils/label.rb#_d04b583b": str
+  _ac5a369d:
+    "ksu_vn/utils/nesting/corner.rb#_e4f850f5": num2
+  _aca3c0d8: flag44
+  _ad0247e2:
+    "ksu_vn/method/xuatdxf/geom.rb#_826c9296": vec4
+  _ad024fb0:
+    "ksu_vn/utils/nesting.rb#_adddebbe": arr3
+  _ad02b761:
+    "ksu_vn/utils/sheet.rb#_2181c447": arr
+  _ad07fd49:
+    "ksu_vn/method/toiuuvan/engine.rb#_57ce2a46": arr4
+  _ad186be6:
+    "ksu_vn/utils/nesting/corner.rb#_1a89b477": h
+  _ad1ad2d8:
+    "ksu_vn/utils/nesting/engine.rb#_54396b88": str
+  _ad99ee54:
+    "ksu_vn/utils/nesting/edit.rb#_03018fe6": tr3
+  _ae6c9d82:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_cca954c3": arr
+    "ksu_vn/method/xeptam.rb#onLButtonUp": arr
+    "ksu_vn/method/xeptam/drag.rb#_78c88320": arr
+    "ksu_vn/method/xeptam/mirror.rb#_101ef2e3": arr2
+    "ksu_vn/method/xeptam/mirror.rb#_9b91a3d7": arr
+  _ae8ca2d6:
+    "ksu_vn/utils/pdf/build.rb#_b3b2dea9": num
+  _aeb18298:
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": num4
+  _af7506d0: h16
+  _b001814b: h17
+  _b00c554d: arr39
+  _b040280c:
+    "ksu_vn/method/themtam.rb#_0895e188": grp
+    "ksu_vn/method/themtam.rb#_d0b68421": vec2
+    "ksu_vn/method/themtam.rb#_edc53964": vec3
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": grp3
+  _b08b2660:
+    "ksu_vn/method/chongbay.rb#_8784e3f2": arr2
+    "ksu_vn/utils/nesting/optimize.rb#_3fe7c4d4": arr
+    "ksu_vn/utils/view.rb#_7dc20cfd": arr
+  _b09af5f8: h18
+  _b1189fd0: h19
+  _b161fef6:
+    "ksu_vn/utils/sheet/mark.rb#_6fb26883": pt2
+  _b16ecc8f:
+    "ksu_vn/utils/cutting/detail.rb#_babeb881": h
+  _b1ada75c:
+    "ksu_vn/method/xeptam/mirror.rb#_951e1123": arr2
+  _b20ba520:
+    "ksu_vn/utils/sheet/bottom.rb#_b86cee12": arr4
+  _b291d2f0:
+    "ksu_vn/method/intem/scan.rb#_cbfbfd78": arr2
+  _b2ee0ccd:
+    "ksu_vn/method/chongbay.rb#_8784e3f2": flag
+    "ksu_vn/method/chontam.rb#_7596df47": flag
+    "ksu_vn/method/chontam/pick.rb#_720fed6e": flag
+    "ksu_vn/method/chontam/pick.rb#_ab38749c": num
+    "ksu_vn/method/chontam/pick.rb#_ce0f89bb": num
+    "ksu_vn/method/chontam/pick.rb#_e0b932ea": num
+    "ksu_vn/method/nesting/draw.rb#_e3d864eb": arr4
+    "ksu_vn/method/themtam.rb#_5c6a1c61": num
+    "ksu_vn/utils/label.rb#_55943665": flag
+    "ksu_vn/utils/nesting/edit.rb#_c5ab406d": num2
+    "ksu_vn/utils/nesting/optimize.rb#_3fe7c4d4": flag
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": num2
+    "ksu_vn/utils/pdf/ttf.rb#_df898927": flag
+  _b3114ca4:
+    "ksu_vn/method/xeptam/collide.rb#_25080947": num2
+  _b326c670:
+    "ksu_vn/method/nesting/draw.rb#_e8139901": flag2
+  _b3597f15:
+    "ksu_vn/utils/view/query.rb#_cb5b532d": arr
+    "ksu_vn/utils/view/widget.rb#_57f11b0a": arr
+  _b41d3c30: arr40
+  _b41d8800:
+    "ksu_vn/method/intem/scan.rb#_d8a5a5cb": arr3
+    "ksu_vn/method/nesting/collect.rb#_dd36ed49": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_46279528": arr6
+    "ksu_vn/method/toiuuvan/engine.rb#_fa87e7fb": arr10
+    "ksu_vn/method/toiuuvan/postproc.rb#_0579a704": arr5
+    "ksu_vn/method/xuatdxf/scan.rb#_7c10a028": face
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": grp
+    "ksu_vn/utils/cutting/detail.rb#_736ee8c9": arr
+    "ksu_vn/utils/cutting/loop.rb#_3a1d2466": arr6
+    "ksu_vn/utils/cutting/loop.rb#_8c4d4bd1": arr
+    "ksu_vn/utils/cutting/loop.rb#_bbe79cfa": arr
+  _b43d53b9:
+    "ksu_vn/utils/nesting/avail.rb#_5818f219": num3
+  _b46d21be:
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": pt3
+  _b4c22dac:
+    "ksu_vn/utils/nesting/corner.rb#_1a89b477": h2
+  _b4cde2af:
+    "ksu_vn/utils/sheet/bottom.rb#_a9a86c81": grp2
+  _b4ce762b:
+    "ksu_vn/method/xeptam/push.rb#_726c65ba": num
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": num
+  _b4dc09ff: arr41
+  _b50e13ad:
+    "ksu_vn/method/xeptam/nfp.rb#_cc303760": arr3
+  _b5605def: flag45
+  _b57e5a96:
+    "ksu_vn/method/nesting.rb#_3ac6e0c3": num2
+    "ksu_vn/method/xuatdxf/geom.rb#_826c9296": pt
+  _b5d8a328:
+    "ksu_vn/utils/view/query.rb#_afda41d4": flag
+  _b60bceb4:
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": tr
+  _b61ab0e8:
+    "ksu_vn/method/xeptam/nfp.rb#_3ea4c8e4": arr5
+  _b649743e: arr42
+  _b670c257:
+    "ksu_vn/method/chongbay/assign.rb#_563cf113": str2
+  _b77459d6:
+    "ksu_vn/method/thongke/phukien.rb#_ad8e91ed": arr2
+  _b7895eba:
+    "ksu_vn/method/intem.rb#_612cc3a2": arr2
+  _b79e997a: num13
+  _b7a68ed3:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_cca954c3": bb
+    "ksu_vn/method/themtam.rb#_ec568b6f": bb
+    "ksu_vn/utils/sheet.rb#_6036fd14": bb
+    "ksu_vn/utils/sheet/bottom.rb#_1cc9607d": bb
+  _b7e518c7:
+    "ksu_vn/method/nesting/collect.rb#_dd36ed49": arr3
+    "ksu_vn/utils/cutting/detail.rb#_350fe02d": arr
+    "ksu_vn/utils/cutting/detail.rb#_d7ae9520": arr2
+  _b7e9acbc:
+    "ksu_vn/method/nesting/draw.rb#_49fac9a3": grp
+    "ksu_vn/method/nesting/draw.rb#_e85e6194": grp
+    "ksu_vn/utils/cutting/detail.rb#_32f2e5fc": grp
+    "ksu_vn/utils/nesting/bilan.rb#_956479e4": num3
+  _b7e9dc43:
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": flag3
+    "ksu_vn/utils/nesting/corner.rb#_f18896f1": flag
+  _b879ab4b: arr43
+  _b8e20090:
+    "ksu_vn/utils/cutting/loop.rb#_3a1d2466": arr8
+    "ksu_vn/utils/cutting/loop.rb#_93cdf1dd": h3
+  _b8f3387b:
+    "ksu_vn/method/xuatdxf/scan.rb#_7c10a028": h2
+    "ksu_vn/utils/cutting/loop.rb#_3a1d2466": h
+    "ksu_vn/utils/label.rb#_55943665": h
+    "ksu_vn/utils/pdf/build.rb#_5b6279e8": h
+    "ksu_vn/utils/pdf/build.rb#_bcb977ef": arr
+    "ksu_vn/utils/pdf/svg.rb#_5966e1de": flag3
+  _b9296bcc:
+    "ksu_vn/utils/view/widget.rb#_0561785c": pt
+  _b98eb823:
+    "ksu_vn/method/toiuuvan/postproc.rb#_003ab64b": arr2
+  _b9d0be9c: flag46
+  _b9dfd839: pt10
+  _b9e6ceb0:
+    "ksu_vn/utils/flip.rb#_ace51b7b": grp2
+  _ba6ab9f4: num14
+  _ba97e686:
+    "ksu_vn/method/intem/scan.rb#_acf1b201": arr
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": arr
+    "ksu_vn/utils/sheet.rb#_192c3ea3": edge
+    "ksu_vn/utils/sheet.rb#_2181c447": edge
+    "ksu_vn/utils/sheet.rb#_9728a3d1": vec
+    "ksu_vn/utils/sheet.rb#_ba804f88": vec
+    "ksu_vn/utils/sheet/bottom.rb#_a9a86c81": grp
+    "ksu_vn/utils/sheet/reorder.rb#_babc606e": grp
+    "ksu_vn/utils/sheet/reorder.rb#_edd17adf": grp
+  _bab07d34:
+    "ksu_vn/method/xeptam.rb#draw": mat3
+  _bab891ae:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": arr4
+  _baba3a46: flag47
+  _bac06280:
+    "ksu_vn/method/xuatdxf/entry.rb#_f8552d5f": num3
+  _bae3562b:
+    "ksu_vn/method/chongbay.rb#_2a4b97cf": bb2
+    "ksu_vn/method/chongbay.rb#_74d49eb4": bb2
+    "ksu_vn/method/chongbay/shape.rb#_faee8634": arr
+  _bb09dbe4: flag48
+  _bb226770:
+    "ksu_vn/utils/sheet/reorder.rb#_a7db4c18": arr2
+  _bbb4e2fb:
+    "ksu_vn/method/xeptam/push.rb#_0b16f3d7": arr
+  _bc4cbb32: h20
+  _bc691cfa:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_f89911a7": arr7
+  _bd0102dd:
+    "ksu_vn/method/toiuuvan/postproc.rb#_086b9b67": arr2
+    "ksu_vn/method/toiuuvan/postproc.rb#_38bca22d": arr3
+    "ksu_vn/utils/nesting/corner.rb#_7edd7b75": arr
+  _bd39e444:
+    "ksu_vn/method/themtam.rb#_3d0d70ad": vec
+    "ksu_vn/method/themtam.rb#_5c6a1c61": grp2
+    "ksu_vn/method/themtam.rb#_844eb55a": vec
+    "ksu_vn/method/themtam.rb#_a761a084": grp
+    "ksu_vn/method/themtam.rb#_d0b68421": vec
+    "ksu_vn/method/themtam.rb#_edc53964": vec
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": grp2
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": grp2
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": grp
+    "ksu_vn/utils/nesting/edit.rb#_d78e0ff0": grp
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": grp2
+    "ksu_vn/utils/sheet/bottom.rb#_f74b0a99": grp
+  _bd3ecedb: h21
+  _bd4ed6ed:
+    "ksu_vn/utils/nesting/optimize.rb#_ea6f582c": arr6
+  _bdeed129:
+    "ksu_vn/utils/nesting/optimize.rb#_ea6f582c": arr
+    "ksu_vn/utils/nesting/pack.rb#_cb9d8021": arr2
+  _be0d0bcb:
+    "ksu_vn/method/themtam.rb#_5c6a1c61": arr4
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": arr4
+    "ksu_vn/utils/sheet/bottom.rb#_b86cee12": arr3
+  _be3eec50:
+    "ksu_vn/method/chongbay/shape.rb#_a2ff747d": arr
+  _bee12dda:
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": h3
+    "ksu_vn/method/intem/scan.rb#_cbfbfd78": arr
+  _bee48682:
+    "ksu_vn/utils/view.rb#_680b8c64": arr
+  _beecfd43: arr44
+  _befb1922:
+    "ksu_vn/utils/pdf/svg.rb#_3c7812cc": arr2
+  _bf3bd302:
+    "ksu_vn/method/xuatdxf/geom.rb#_826c9296": vec3
+  _bf7dda96:
+    "ksu_vn/method/xeptam.rb#draw": mat2
+  _bf8df1c8:
+    "ksu_vn/utils/nesting/edit.rb#_916665cc": arr2
+  _bfb2ced5:
+    "ksu_vn/method/intem/scan.rb#_e12462c7": arr3
+  _c010617a:
+    "ksu_vn/system/update.rb#_7b0f29c1": str
+    "ksu_vn/system/update.rb#_c658dab4": str3
+    "ksu_vn/system/update.rb#restore_from_backup": str3
+  _c084bc86:
+    "ksu_vn/method/xeptam.rb#draw": arr3
+  _c0a22aac:
+    "ksu_vn/method/toiuuvan/postproc.rb#_003ab64b": h3
+  _c0c2b1a0:
+    "ksu_vn/utils/nesting/optimize.rb#_ea6f582c": arr8
+  _c0d710fb:
+    "ksu_vn/utils/cutting/detail.rb#_565a278d": pt
+  _c11be090:
+    "ksu_vn/method/nesting.rb#_37275936": arr2
+  _c19ea358: arr45
+  _c202dc58:
+    "ksu_vn/utils/cutting/detail.rb#_736ee8c9": tr2
+  _c231ec3f:
+    "ksu_vn/method/intem.rb#_6028b1be": str
+  _c23805f8:
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": arr6
+    "ksu_vn/method/xeptam/nfp.rb#_3ea4c8e4": arr2
+    "ksu_vn/method/xeptam/nfp.rb#_cc303760": arr
+  _c23b4229: flag49
+  _c251ed79:
+    "ksu_vn/method/netcatcuoi/resize.rb#_81184680": pt
+  _c25fe281:
+    "ksu_vn/method/themtam.rb#_aa983a67": arr2
+  _c266db8e:
+    "ksu_vn/method/thongke/phukien.rb#_01be8e47": h
+  _c26c4dbb:
+    "ksu_vn/method/netcatcuoi/resize.rb#_81184680": num4
+  _c2aff4a6:
+    "ksu_vn/utils/view.rb#_680b8c64": arr2
+  _c2f46e08:
+    "ksu_vn/method/chongbay/shape.rb#_3a0a8322": str
+    "ksu_vn/method/toiuuvan/postproc.rb#_75f2a016": str2
+  _c3157715:
+    "ksu_vn/method/xeptam/collide.rb#_4237de17": arr2
+  _c355c08b:
+    "ksu_vn/method/xeptam/arrange.rb#_14a635d9": grp2
+    "ksu_vn/method/xeptam/arrange.rb#_35f2e047": flag2
+  _c3574320:
+    "ksu_vn/method/xuatdxf/geom.rb#_826c9296": vec
+  _c399fd42:
+    "ksu_vn/method/nesting.rb#_d9b1612c": arr4
+  _c3ae4d1c:
+    "ksu_vn/utils/nesting/pack.rb#_cb9d8021": arr
+  _c3e68880: flag50
+  _c3fe882b:
+    "ksu_vn/method/xeptam/collide.rb#_4237de17": pt2
+  _c41450bb:
+    "ksu_vn/method/thongke/xuat.rb#_a105a0f4": num2
+  _c4166156:
+    "ksu_vn/utils/sheet/mark.rb#_d74b35bb": grp
+  _c477bd6e:
+    "ksu_vn/method/xeptam/collide.rb#_25080947": num
+    "ksu_vn/utils/nesting/avail.rb#_128f4b25": num2
+    "ksu_vn/utils/nesting/pack.rb#_f6a599ef": num
+    "ksu_vn/utils/sheet/mark.rb#_801295a3": flag
+  _c4ac47fb: num15
+  _c4ba5837:
+    "ksu_vn/method/chongbay/shape.rb#_990148f1": arr
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": arr6
+    "ksu_vn/method/xeptam/mirror.rb#_83ee7e20": arr2
+    "ksu_vn/utils/font.rb#_09901ac3": arr4
+    "ksu_vn/utils/font.rb#_1ff4cc8f": arr2
+  _c520310e:
+    "ksu_vn/method/nesting/draw.rb#_a086bafa": arr
+    "ksu_vn/method/thongke/quet.rb#_1310153c": h
+    "ksu_vn/method/thongke/quet.rb#_32be1d4b": arr
+    "ksu_vn/method/thongke/tonghop.rb#_11e34195": arr
+    "ksu_vn/method/thongke/tonghop.rb#_ba2a62ec": arr2
+    "ksu_vn/method/xuatdxf/geom.rb#_c73c2639": arr4
+    "ksu_vn/utils/cutting.rb#_902d666b": arr
+    "ksu_vn/utils/cutting/detail.rb#_0f0ed6ac": arr
+    "ksu_vn/utils/cutting/detail.rb#_cac16f40": num
+  _c5391bbd:
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": vec2
+  _c553cae2:
+    "ksu_vn/method/toiuuvan/postproc.rb#_28a699c9": flag
+  _c5c1fc8e:
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": pt
+    "ksu_vn/method/xeptam/mirror.rb#_34966ae4": pt
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": pt
+  _c60adb84: flag51
+  _c67b4511:
+    "ksu_vn/utils/pdf/svg.rb#_3c7812cc": str
+    "ksu_vn/utils/pdf/svg.rb#_5966e1de": arr
+  _c67b66f5:
+    "ksu_vn/method/chontam/pick.rb#_0a50b01c": arr
+  _c68b535d: h22
+  _c6a2e828:
+    "ksu_vn/method/xeptam/drag.rb#_afb25a1e": tr2
+  _c6dfd687: arr46
+  _c6e0991f:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_5d1a5ed6": arr
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": arr8
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_f89911a7": arr5
+    "ksu_vn/method/netcatcuoi/resize.rb#_b6a93f39": arr
+  _c723bcc4:
+    "ksu_vn/method/chongbay.rb#_7c247492": arr
+    "ksu_vn/method/chongbay.rb#_b278661f": arr
+    "ksu_vn/method/nesting.rb#_ce4b1e4e": arr2
+    "ksu_vn/method/nesting.rb#activate": arr
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_52c178c0": arr
+    "ksu_vn/method/toiuuvan.rb#_c211b5aa": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_0c084a37": num
+    "ksu_vn/method/toiuuvan/engine.rb#_14184f07": arr2
+    "ksu_vn/method/toiuuvan/engine.rb#_603ba9c4": arr4
+    "ksu_vn/method/toiuuvan/postproc.rb#_a815fdc9": arr
+    "ksu_vn/method/toiuuvan/postproc.rb#_d93740da": arr2
+    "ksu_vn/method/xeptam/drag.rb#_4ec1b153": arr
+    "ksu_vn/method/xeptam/drag.rb#_c1caf616": arr
+    "ksu_vn/method/xeptam/group.rb#_c927d51a": arr
+    "ksu_vn/utils/cutting/detail.rb#_975e7df6": arr
+    "ksu_vn/utils/nesting/optimize.rb#_0e909b87": arr
+    "ksu_vn/utils/nesting/optimize.rb#_ea6f582c": num3
+    "ksu_vn/utils/nesting/pack.rb#_9f6369c5": arr3
+  _c7528123:
+    "ksu_vn/method/netcatcuoi.rb#_8e3f5229": str2
+  _c7812468:
+    "ksu_vn/utils/sheet/mark.rb#_5134c34c": flag5
+    "ksu_vn/utils/sheet/mark.rb#_801295a3": flag2
+  _c782ecee:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_cca954c3": flag2
+  _c7e2aa19:
+    "ksu_vn/utils/sheet.rb#_9cf2f273": pt
+  _c7f042b4:
+    "ksu_vn/method/intem/scan.rb#_1391721f": arr
+    "ksu_vn/method/nesting.rb#activate": arr3
+  _c8292a80: h23
+  _c8295e45:
+    "ksu_vn/utils/nesting/corner.rb#_bb9d9306": arr7
+  _c83158f4:
+    "ksu_vn/method/xeptam.rb#draw": flag2
+  _c8345d21:
+    "ksu_vn/method/themtam.rb#_d0b68421": flag
+  _c8526c9d:
+    "ksu_vn/utils/geom.rb#_8bddc18c": num2
+  _c8895ee9:
+    "ksu_vn/utils/view.rb#_f84a7879": pt3
+  _c8a81183:
+    "ksu_vn/method/xeptam/push.rb#compute_push_back": h
+  _c8dfdf6f: arr47
+  _c8fad845:
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": num
+  _c94a200b:
+    "ksu_vn/method/thongke/phukien.rb#_ad8e91ed": arr8
+  _c9fa72f2:
+    "ksu_vn/method/chontam.rb#_a436f886": arr
+    "ksu_vn/method/nesting.rb#_1670b0bf": arr2
+    "ksu_vn/method/netcatcuoi.rb#_c6224ad4": arr
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_245e1bad": arr
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_a95ae5a0": arr
+    "ksu_vn/method/toiuuvan/engine.rb#_57ce2a46": arr8
+    "ksu_vn/method/xeptam/nfp.rb#_7f9a6edc": arr
+    "ksu_vn/utils/cutting.rb#_4605a894": face
+    "ksu_vn/utils/geom.rb#_1a71cf37": arr
+    "ksu_vn/utils/geom.rb#_35c2c696": h
+    "ksu_vn/utils/geom.rb#_63a66557": arr
+    "ksu_vn/utils/geom.rb#_71d9e5d3": arr
+    "ksu_vn/utils/geom.rb#_8bddc18c": arr
+    "ksu_vn/utils/geom.rb#_a82acccd": arr
+    "ksu_vn/utils/geom.rb#_fc888960": arr
+    "ksu_vn/utils/label.rb#_d5ca0b39": face
+    "ksu_vn/utils/nesting/edit.rb#_916665cc": arr
+  _ca0993d6:
+    "ksu_vn/method/chontam/pick.rb#_08a03619": str
+    "ksu_vn/method/chontam/pick.rb#_6d620197": str
+    "ksu_vn/method/intem/scan.rb#_3171d1ff": str
+    "ksu_vn/method/intem/scan.rb#_503b4f27": str
+    "ksu_vn/method/xuatdxf/scan.rb#_7c10a028": str
+    "ksu_vn/utils/cutting.rb#_0e630d78": str
+    "ksu_vn/utils/cutting/detail.rb#_b873fd5b": arr
+    "ksu_vn/utils/label.rb#_31e99a8d": str
+    "ksu_vn/utils/nesting/corner.rb#_7edd7b75": num2
+    "ksu_vn/utils/nesting/edit.rb#_916665cc": str
+  _ca444417: num16
+  _ca649120: str5
+  _ca880b43:
+    "ksu_vn/utils/flip.rb#_ace51b7b": tr2
+  _ca93b965:
+    "ksu_vn/utils/flip.rb#_88b3c357": vec2
+  _cad7a40b:
+    "ksu_vn/utils/flip.rb#_88b3c357": ents2
+  _cadf1e7e:
+    "ksu_vn/method/xeptam/mirror.rb#_34fc866b": arr
+  _cae42ac9:
+    "ksu_vn/utils/cutting.rb#_4eeae396": face4
+  _cafb32d8:
+    "ksu_vn/method/netcatcuoi.rb#_93f5a81b": arr2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_b9371681": arr4
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_cca954c3": flag
+    "ksu_vn/method/netcatcuoi/resize.rb#_ae3af84a": arr3
+    "ksu_vn/method/netcatcuoi/resize.rb#_e4147f27": arr2
+    "ksu_vn/utils/nesting/corner.rb#_19df3e1d": arr2
+    "ksu_vn/utils/nesting/corner.rb#_bca72a10": arr4
+    "ksu_vn/utils/nesting/corner.rb#_d59e252b": arr2
+  _cafb77fc: arr48
+  _cb6d7db9:
+    "ksu_vn/method/xeptam/arrange.rb#_63b8ba0b": num
+  _cb7c87f2: arr49
+  _cb8fe7be: arr50
+  _cbb1c46a:
+    "ksu_vn/method/nesting/draw.rb#_49fac9a3": arr3
+    "ksu_vn/method/nesting/draw.rb#_e8139901": arr2
+  _cbb4a6c4:
+    "ksu_vn/method/thongke/phukien.rb#_8e279a49": h
+    "ksu_vn/method/thongke/phukien.rb#_b11e949a": h
+    "ksu_vn/method/thongke/phukien.rb#_b4768d27": h2
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": num
+    "ksu_vn/utils/sheet/reorder.rb#_3e79d579": num
+  _cc2599da:
+    "ksu_vn/method/xeptam/mirror.rb#_34fc866b": bb2
+  _cc3a14c1:
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": num3
+  _cc532e69:
+    "ksu_vn/method/chongbay.rb#_29b62f37": num3
+  _cc5c4f5c:
+    "ksu_vn/method/chongbay.rb#_8784e3f2": arr
+    "ksu_vn/method/xeptam/collide.rb#_0feae552": arr
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": arr8
+    "ksu_vn/method/xeptam/collide.rb#_c6c7c535": arr
+  _cc6501e1:
+    "ksu_vn/method/toiuuvan/postproc.rb#_06a8054e": vec
+  _cca79903:
+    "ksu_vn/method/xeptam/collide.rb#_fae0f9b7": arr5
+    "ksu_vn/method/xeptam/push.rb#compute_push_back": arr
+  _ccd97f11:
+    "ksu_vn/method/xuatdxf.rb#_1cb4f865": arr
+  _cd21b913:
+    "ksu_vn/method/themtam.rb#_3d0d70ad": grp
+    "ksu_vn/method/themtam.rb#_650afd59": grp2
+  _cd6029df:
+    "ksu_vn/method/chongbay/shape.rb#_5410b01c": num
+    "ksu_vn/method/intem/scan.rb#_6eef93f0": arr2
+    "ksu_vn/method/nesting/launch.rb#_e3264765": str
+    "ksu_vn/method/xeptam/nfp.rb#_8c307bb8": num
+    "ksu_vn/method/xuatdxf/entry.rb#_727b63c7": num
+    "ksu_vn/method/xuatdxf/entry.rb#_f8552d5f": num
+    "ksu_vn/utils/cutting.rb#_c374c8ee": arr
+    "ksu_vn/utils/font.rb#_634b4336": num
+    "ksu_vn/utils/geom.rb#_0c8b8a0e": num
+    "ksu_vn/utils/label.rb#_fd0b7a5f": str
+    "ksu_vn/utils/nesting/edit.rb#_1dc94a7d": num
+    "ksu_vn/utils/pdf/svg.rb#_03c7ad56": arr3
+    "ksu_vn/utils/sheet/reorder.rb#_09ce1072": str
+    "ksu_vn/utils/sheet/reorder.rb#_35319a70": str
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": str2
+    "ksu_vn/utils/view.rb#_410b0b4e": num
+    "ksu_vn/utils/view.rb#_ec07b26f": num
+    "ksu_vn/utils/view.rb#_f84a7879": num
+    "ksu_vn/utils/view/query.rb#_bbaa2919": num
+  _cd897ff2:
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr3
+  _ce2722e2:
+    "ksu_vn/utils/cutting/detail.rb#_32f2e5fc": arr2
+  _ce362ea8:
+    "ksu_vn/utils/sheet/reorder.rb#_35319a70": flag
+  _ce3977da: arr51
+  _ce8b6de9:
+    "ksu_vn/method/chongbay.rb#_cdfdcddb": arr2
+    "ksu_vn/method/chongbay.rb#_d2f99de2": arr2
+    "ksu_vn/method/chontam.rb#_cdfdcddb": arr2
+    "ksu_vn/method/chontam.rb#_d2f99de2": arr2
+    "ksu_vn/method/danhsovan.rb#_cdfdcddb": arr2
+    "ksu_vn/method/danhsovan.rb#_d2f99de2": arr2
+    "ksu_vn/method/gannhan.rb#_cdfdcddb": arr2
+    "ksu_vn/method/gannhan.rb#_d2f99de2": arr2
+    "ksu_vn/method/intem.rb#_cdfdcddb": arr2
+    "ksu_vn/method/intem.rb#_d2f99de2": arr2
+    "ksu_vn/method/nesting.rb#_cdfdcddb": arr2
+    "ksu_vn/method/nesting.rb#_d2f99de2": arr2
+    "ksu_vn/method/netcatcuoi.rb#_cdfdcddb": arr2
+    "ksu_vn/method/netcatcuoi.rb#_d2f99de2": arr2
+    "ksu_vn/method/themtam.rb#_cdfdcddb": arr2
+    "ksu_vn/method/themtam.rb#_d2f99de2": arr2
+    "ksu_vn/method/toiuuvan.rb#_cdfdcddb": arr2
+    "ksu_vn/method/toiuuvan.rb#_d2f99de2": arr2
+    "ksu_vn/method/xephang.rb#_cdfdcddb": arr2
+    "ksu_vn/method/xephang.rb#_d2f99de2": arr2
+    "ksu_vn/method/xeptam.rb#_cdfdcddb": arr2
+    "ksu_vn/method/xeptam.rb#_d2f99de2": arr2
+    "ksu_vn/method/xuatdxf.rb#_cdfdcddb": arr2
+    "ksu_vn/method/xuatdxf.rb#_d2f99de2": arr2
+    "ksu_vn/system/setting.rb#_cdfdcddb": arr2
+    "ksu_vn/system/setting.rb#_d2f99de2": arr2
+  _cea5e419:
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": num2
+  _cefe7468: arr52
+  _cf164d97:
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": arr6
+  _cf24d944:
+    "ksu_vn/utils/cutting/detail.rb#_350fe02d": grp
+    "ksu_vn/utils/cutting/detail.rb#_d7ae9520": vec
+  _cf493766: flag52
+  _cf5e8884:
+    "ksu_vn/method/toiuuvan/engine.rb#_fa87e7fb": arr3
+  _cfa7f637:
+    "ksu_vn/method/thongke/quet.rb#_3f3406d2": vec
+  _d03c667e: arr53
+  _d046ee9a:
+    "ksu_vn/utils/sheet/bottom.rb#_885a777e": vec2
+  _d0a341c6:
+    "ksu_vn/method/themtam.rb#_0895e188": bb2
+    "ksu_vn/method/toiuuvan/back.rb#_3fccea3f": bb2
+    "ksu_vn/method/xeptam/mirror.rb#_34fc866b": bb
+    "ksu_vn/utils/sheet/mark.rb#_5134c34c": bb2
+  _d0ed3d7d:
+    "ksu_vn/method/nesting/draw.rb#_13398956": arr3
+    "ksu_vn/method/nesting/draw.rb#_e3d864eb": arr
+    "ksu_vn/method/thongke/quet.rb#_dfa1578b": arr2
+    "ksu_vn/method/thongke/tonghop.rb#_9404be8f": arr2
+    "ksu_vn/method/thongke/tonghop.rb#_ba2a62ec": arr3
+    "ksu_vn/method/xuatdxf/scan.rb#_b3bfd2a3": arr3
+  _d1218d33:
+    "ksu_vn/utils/cutting/detail.rb#_56b0abb5": arr
+    "ksu_vn/utils/cutting/detail.rb#_babeb881": arr3
+  _d1712ff3: flag53
+  _d1ea58e7:
+    "ksu_vn/method/chontam/pick.rb#_08a03619": grp2
+    "ksu_vn/method/chontam/pick.rb#_6d620197": grp2
+    "ksu_vn/method/xuatdxf/scan.rb#_7c10a028": grp
+    "ksu_vn/utils/cutting.rb#_0e630d78": grp2
+    "ksu_vn/utils/label.rb#_31e99a8d": grp3
+    "ksu_vn/utils/nesting/edit.rb#_916665cc": grp2
+  _d1f11c4b:
+    "ksu_vn/method/themtam.rb#_3d0d70ad": vec2
+    "ksu_vn/method/themtam.rb#_5c6a1c61": grp
+    "ksu_vn/method/themtam.rb#_edc53964": vec2
+  _d1f407c3: flag54
+  _d261536b: arr54
+  _d2f66529:
+    "ksu_vn/method/themtam.rb#_0895e188": grp2
+    "ksu_vn/utils/sheet/reorder.rb#_a7db4c18": h3
+  _d34fbd8a:
+    "ksu_vn/method/xeptam/group.rb#_8515206a": h2
+  _d35a1ce9:
+    "ksu_vn/method/themtam.rb#_aa983a67": arr
+    "ksu_vn/method/xuatdxf/geom.rb#_4e8cbee3": arr4
+    "ksu_vn/method/xuatdxf/geom.rb#_c73c2639": arr
+    "ksu_vn/method/xuatdxf/scan.rb#_7c10a028": arr3
+  _d36eb0f3:
+    "ksu_vn/utils/nesting/avail.rb#_5818f219": num5
+  _d3c9960f:
+    "ksu_vn/utils/cutting/loop.rb#_8c4d4bd1": flag
+  _d41bb15d:
+    "ksu_vn/method/netcatcuoi.rb#_d204c38c": pt
+    "ksu_vn/utils/cutting/loop.rb#_be46bc4b": pt
+  _d45630d6:
+    "ksu_vn/utils/quet.rb#_4fbe9584": pt2
+  _d4a205ac:
+    "ksu_vn/method/nesting/draw.rb#_e8139901": grp
+    "ksu_vn/method/nesting/draw.rb#_e85e6194": grp3
+    "ksu_vn/utils/sheet/reorder.rb#_babc606e": grp2
+  _d500215c:
+    "ksu_vn/method/xeptam/push.rb#_7f17a5c5": arr
+  _d50571be:
+    "ksu_vn/utils/cutting/detail.rb#_b873fd5b": arr2
+  _d533ec26:
+    "ksu_vn/method/chontam/pick.rb#_3fd8e206": str
+    "ksu_vn/method/intem/scan.rb#_84c87104": grp
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": grp2
+    "ksu_vn/method/intem/scan.rb#_cbfbfd78": grp
+    "ksu_vn/method/intem/scan.rb#_fd63a357": grp
+    "ksu_vn/method/nesting.rb#_3ac6e0c3": num
+    "ksu_vn/method/nesting/draw.rb#_e85e6194": arr
+    "ksu_vn/method/thongke/phukien.rb#_01be8e47": arr
+    "ksu_vn/method/thongke/quet.rb#_1310153c": grp
+    "ksu_vn/method/thongke/tonghop.rb#_bc0f9e7f": h
+    "ksu_vn/method/toiuuvan/engine.rb#_603ba9c4": arr2
+    "ksu_vn/method/toiuuvan/engine.rb#_fa87e7fb": arr
+    "ksu_vn/utils/cutting/loop.rb#_66365b6a": grp2
+    "ksu_vn/utils/label.rb#_1f249426": grp
+    "ksu_vn/utils/nesting/pack.rb#_42d7b73b": arr
+  _d53673d2: arr55
+  _d53ad96a: num17
+  _d53add2b:
+    "ksu_vn/method/themtam.rb#_ad557b93": arr3
+  _d570f863: arr56
+  _d5c6c833:
+    "ksu_vn/method/xeptam.rb#draw": vec2
+    "ksu_vn/utils/view.rb#_7dc20cfd": pt2
+  _d5cf9db6:
+    "ksu_vn/utils/view/query.rb#_68d4bb38": num
+  _d5f2f673:
+    "ksu_vn/utils/nesting/optimize.rb#_ea460feb": arr
+  _d6439c88:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": flag3
+  _d6680ef6: grp2
+  _d669734c:
+    "ksu_vn/utils/cutting.rb#_4605a894": h
+  _d6883866:
+    "ksu_vn/utils/label.rb#_89cdc81b": flag
+  _d6f11a0e:
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": arr
+  _d6f1f558:
+    "ksu_vn/method/thongke/phukien.rb#_52cf7ee0": arr
+  _d759e2a3:
+    "ksu_vn/method/toiuuvan.rb#_687e1def": str
+  _d76367a6:
+    "ksu_vn/utils/cutting/detail.rb#_babeb881": vec
+  _d78fef2c:
+    "ksu_vn/utils/preset/field.rb#_a4b56c31": str3
+    "ksu_vn/utils/preset/field.rb#_c12c6abc": str
+    "ksu_vn/utils/preset/field.rb#_ed786a35": str
+  _d7a919eb: arr57
+  _d89f0ecc:
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": bb4
+    "ksu_vn/method/xeptam/mirror.rb#_34966ae4": bb2
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": bb4
+  _d8cbf54e:
+    "ksu_vn/method/thongke/xuat.rb#_7144b643": arr
+  _d95b36b5:
+    "ksu_vn/method/netcatcuoi/resize.rb#_3066d644": num3
+  _d972b41d:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_f89911a7": arr8
+  _d9ae26bb:
+    "ksu_vn/method/thongke/tonghop.rb#_11e34195": h
+  _d9e58772:
+    "ksu_vn/utils/cutting/detail.rb#_5edc6938": num
+    "ksu_vn/utils/label.rb#_8010294b": num
+  _da358df8:
+    "ksu_vn/method/chongbay.rb#_de1ac9fc": arr2
+  _da369350:
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": h2
+    "ksu_vn/method/intem/scan.rb#_cbfbfd78": arr3
+    "ksu_vn/method/intem/scan.rb#_e12462c7": arr
+  _da6590c6: flag55
+  _daafd655:
+    "ksu_vn/method/xuatdxf/geom.rb#_2d01dec4": vec
+    "ksu_vn/utils/label.rb#_665bc239": flag
+    "ksu_vn/utils/label.rb#_681febe3": vec
+  _db8b2976:
+    "ksu_vn/method/intem/scan.rb#_fd63a357": arr
+    "ksu_vn/method/xuatdxf/geom.rb#_2d01dec4": pt2
+  _dbaa4a66:
+    "ksu_vn/utils/sheet/reorder.rb#_a7db4c18": flag
+  _dbfc5099:
+    "ksu_vn/utils/nesting.rb#_adddebbe": arr5
+  _dc050c0b: num18
+  _dc132bae:
+    "ksu_vn/method/chongbay/shape.rb#_3a0a8322": str2
+    "ksu_vn/method/toiuuvan/postproc.rb#_75f2a016": str
+  _dc176291:
+    "ksu_vn/utils/cutting.rb#_4605a894": pt
+  _dc546f05:
+    "ksu_vn/method/netcatcuoi/resize.rb#_786ab544": arr2
+  _dc7bac27:
+    "ksu_vn/utils/geom.rb#_35c2c696": arr
+  _dcd13e53:
+    "ksu_vn/utils/sheet/reorder.rb#_3e79d579": arr5
+  _dce0f03d:
+    "ksu_vn/method/intem/scan.rb#_1391721f": h
+    "ksu_vn/method/intem/scan.rb#_d8a5a5cb": arr2
+  _dcf020c7: h24
+  _dd054cbb:
+    "ksu_vn/utils/label.rb#_efa8b7d4": num
+  _dd2487dc:
+    "ksu_vn/method/xeptam/collide.rb#_4237de17": arr
+  _dd28a566:
+    "ksu_vn/utils/nesting/pack.rb#_a2f525ce": arr
+  _dd3cb4bd: h25
+  _dd6468a7:
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": arr2
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": pt
+  _ddbd086b:
+    "ksu_vn/method/xeptam.rb#onMouseMove": arr
+  _de0a87f4:
+    "ksu_vn/method/xeptam/collide.rb#_25080947": num5
+    "ksu_vn/utils/nesting/avail.rb#_128f4b25": num
+    "ksu_vn/utils/nesting/pack.rb#_f6a599ef": num2
+    "ksu_vn/utils/sheet/mark.rb#_801295a3": flag3
+  _de9a0c17:
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": num12
+  _dea7cfbd:
+    "ksu_vn/method/chongbay.rb#_5c33d153": arr3
+    "ksu_vn/method/chongbay/shape.rb#_e2a7df81": arr3
+    "ksu_vn/method/intem/scan.rb#_16028ecb": arr2
+    "ksu_vn/method/nesting/draw.rb#_127808db": arr
+    "ksu_vn/method/netcatcuoi.rb#_0ed68c30": arr
+    "ksu_vn/method/netcatcuoi.rb#_c6224ad4": num
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_3431a152": arr
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": arr3
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_b9371681": arr2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_c839dc19": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_ae3af84a": arr4
+    "ksu_vn/method/themtam.rb#_5244f367": arr2
+    "ksu_vn/method/themtam.rb#_aa983a67": arr4
+    "ksu_vn/method/toiuuvan.rb#_ce5c626c": arr2
+    "ksu_vn/method/xeptam/arrange.rb#_c81485d5": arr3
+    "ksu_vn/method/xeptam/arrange.rb#_eb5d9ecb": arr2
+    "ksu_vn/method/xeptam/drag.rb#_ecb07074": arr3
+    "ksu_vn/utils/font.rb#_df558da5": arr2
+    "ksu_vn/utils/geom.rb#_63a66557": arr3
+    "ksu_vn/utils/nesting.rb#_3f068781": arr3
+    "ksu_vn/utils/nesting.rb#_f8ae6697": arr2
+    "ksu_vn/utils/nesting/corner.rb#_be99d528": arr3
+    "ksu_vn/utils/nesting/pack.rb#_43d2bd40": arr2
+    "ksu_vn/utils/quet.rb#_4fbe9584": arr
+    "ksu_vn/utils/view.rb#_a113d793": arr2
+  _debfff23:
+    "ksu_vn/method/thongke/phukien.rb#_ad8e91ed": arr5
+  _ded7ddd2:
+    "ksu_vn/utils/label.rb#_5f641d51": arr
+    "ksu_vn/utils/label.rb#_89cdc81b": arr2
+  _df054874:
+    "ksu_vn/utils/preset/mode.rb#_bd804f80": num
+  _dfc49700:
+    "ksu_vn/method/themtam.rb#_d0b68421": flag2
+  _e094a579:
+    "ksu_vn/utils/nesting/optimize.rb#_ea460feb": arr2
+  _e11e9dcc:
+    "ksu_vn/method/toiuuvan/back.rb#_80a13590": num
+    "ksu_vn/method/xeptam/mirror.rb#_80a13590": num
+  _e16a3f5a:
+    "ksu_vn/method/chongbay.rb#_5c33d153": arr2
+    "ksu_vn/method/chongbay/shape.rb#_e2a7df81": arr2
+    "ksu_vn/method/intem/scan.rb#_16028ecb": arr3
+    "ksu_vn/method/nesting/draw.rb#_127808db": arr2
+    "ksu_vn/method/netcatcuoi.rb#_0ed68c30": arr2
+    "ksu_vn/method/netcatcuoi.rb#_c6224ad4": num2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_3431a152": arr2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": arr2
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_b9371681": arr3
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_c839dc19": arr2
+    "ksu_vn/method/netcatcuoi/resize.rb#_ae3af84a": arr5
+    "ksu_vn/method/netcatcuoi/resize.rb#_ff3778ab": arr2
+    "ksu_vn/method/themtam.rb#_5244f367": arr3
+    "ksu_vn/method/themtam.rb#_aa983a67": arr5
+    "ksu_vn/method/toiuuvan.rb#_ce5c626c": arr3
+    "ksu_vn/method/xeptam/arrange.rb#_c81485d5": arr2
+    "ksu_vn/method/xeptam/arrange.rb#_eb5d9ecb": arr3
+    "ksu_vn/method/xeptam/drag.rb#_ecb07074": arr4
+    "ksu_vn/utils/geom.rb#_63a66557": arr2
+    "ksu_vn/utils/label.rb#_9f608530": arr
+    "ksu_vn/utils/label.rb#_efa8b7d4": arr
+    "ksu_vn/utils/nesting.rb#_3f068781": arr2
+    "ksu_vn/utils/nesting.rb#_f8ae6697": arr3
+    "ksu_vn/utils/nesting/corner.rb#_be99d528": arr4
+    "ksu_vn/utils/nesting/pack.rb#_43d2bd40": arr3
+    "ksu_vn/utils/quet.rb#_4fbe9584": arr2
+    "ksu_vn/utils/sheet.rb#_eb757cfe": arr3
+    "ksu_vn/utils/view.rb#_a113d793": arr
+  _e17f53e7:
+    "ksu_vn/method/toiuuvan/engine.rb#_7714f91b": arr3
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": arr4
+  _e1a73e79: arr58
+  _e1bcd3fa:
+    "ksu_vn/system/setting.rb#_7314dc1a": h
+  _e1f38b43: arr59
+  _e1fe1982: tr
+  _e25dbacd:
+    "ksu_vn/method/xeptam/push.rb#_2bff4638": flag
+  _e2947d11:
+    "ksu_vn/method/themtam.rb#_aa983a67": num3
+    "ksu_vn/method/xeptam/collide.rb#_19030d1a": num2
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": flag2
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": num11
+    "ksu_vn/utils/view/query.rb#_bbaa2919": num6
+  _e2b5ea25:
+    "ksu_vn/method/chongbay/assign.rb#_0c3fd272": str
+    "ksu_vn/method/chongbay/assign.rb#_79743880": str2
+    "ksu_vn/method/xuatdxf/scan.rb#_530b02a3": str2
+    "ksu_vn/utils/sheet/reorder.rb#_09ce1072": str2
+    "ksu_vn/utils/sheet/reorder.rb#_3e79d579": str
+    "ksu_vn/utils/sheet/reorder.rb#_54e81c4a": str2
+  _e2b5ffff:
+    "ksu_vn/method/chongbay/shape.rb#_1b2a0395": flag
+    "ksu_vn/method/chongbay/shape.rb#_76eb912d": flag
+  _e2e8ed58:
+    "ksu_vn/utils/nesting/corner.rb#_19ffeb75": arr4
+  _e301e038:
+    "ksu_vn/utils/sheet/reorder.rb#_a7db4c18": arr5
+  _e379daea:
+    "ksu_vn/utils/sheet.rb#_eb757cfe": arr4
+  _e3cbb528:
+    "ksu_vn/method/xephang.rb#_38252db1": arr2
+    "ksu_vn/utils/sheet/reorder.rb#_0da19c14": arr2
+  _e42aacd5:
+    "ksu_vn/method/chontam/pick.rb#_5dc0e0f4": num
+  _e4433a14:
+    "ksu_vn/utils/cutting/detail.rb#_fc91f51b": pt
+  _e468bc35:
+    "ksu_vn/method/thongke/xuat.rb#_31eafa5f": arr
+  _e47f42f9:
+    "ksu_vn/method/chontam/pick.rb#_319513d3": arr3
+    "ksu_vn/method/chontam/pick.rb#_4a670cfd": arr
+  _e4812a30: flag56
+  _e482deab:
+    "ksu_vn/method/xeptam/nfp.rb#_b4c1b27a": num
+  _e4e21066:
+    "ksu_vn/method/themtam.rb#_5c6a1c61": arr3
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": arr3
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": arr3
+  _e4eb7bdf:
+    "ksu_vn/utils/nesting/corner.rb#_be99d528": arr
+  _e5039170: arr60
+  _e50af3b7:
+    "ksu_vn/method/netcatcuoi/resize.rb#_786ab544": arr
+    "ksu_vn/method/xeptam/drag.rb#_78c88320": h
+  _e553aac1: arr61
+  _e6386be2:
+    "ksu_vn/method/toiuuvan/engine.rb#_603ba9c4": arr
+    "ksu_vn/utils/nesting/corner.rb#_edec0f70": num
+  _e64bdf77:
+    "ksu_vn/method/xuatdxf/geom.rb#_edae44a3": str
+  _e69c14dc: num19
+  _e6a54b5e:
+    "ksu_vn/method/netcatcuoi/resize.rb#_3066d644": num5
+  _e6c6b87d:
+    "ksu_vn/utils/view/widget.rb#_68298f42": pt
+  _e6fd0d43:
+    "ksu_vn/method/xuatdxf/entry.rb#_f8552d5f": arr
+  _e76e0098:
+    "ksu_vn/method/chongbay/assign.rb#_25307500": h
+    "ksu_vn/method/chongbay/assign.rb#_2868a9dd": arr3
+    "ksu_vn/method/chontam/pick.rb#_416f815d": arr
+    "ksu_vn/method/chontam/pick.rb#_46f413d0": arr
+    "ksu_vn/method/chontam/pick.rb#_5dc0e0f4": arr
+    "ksu_vn/method/chontam/pick.rb#_68d73ae7": arr
+    "ksu_vn/method/chontam/pick.rb#_9277e941": arr
+    "ksu_vn/method/chontam/pick.rb#_d426c5bf": arr
+    "ksu_vn/utils/nesting/pack.rb#_42d7b73b": arr4
+  _e78b407a:
+    "ksu_vn/utils/nesting/optimize.rb#_7421c614": num
+  _e7945da1:
+    "ksu_vn/system/setting.rb#_59fa8401": str2
+    "ksu_vn/system/setting.rb#_65fba2b1": str
+    "ksu_vn/system/setting.rb#_970f3d31": str
+  _e7a6a88b:
+    "ksu_vn/method/chontam/pick.rb#_319513d3": arr2
+    "ksu_vn/method/chontam/pick.rb#_34feb22a": arr
+  _e801d93d:
+    "ksu_vn/utils/view.rb#_47eba6dd": pt
+    "ksu_vn/utils/view.rb#_c5f21c57": pt
+  _e8649a72:
+    "ksu_vn/method/xeptam/push.rb#_2bff4638": flag2
+    "ksu_vn/method/xeptam/push.rb#_e099da59": num
+  _e8a26895:
+    "ksu_vn/method/nesting.rb#_100230bb": flag
+    "ksu_vn/method/nesting.rb#_d9b1612c": arr3
+    "ksu_vn/method/nesting/draw.rb#_e8139901": flag
+    "ksu_vn/method/toiuuvan/engine.rb#_23d70e90": arr
+  _e8f09dee:
+    "ksu_vn/method/nesting/draw.rb#_13398956": grp2
+    "ksu_vn/method/nesting/draw.rb#_4afb97a0": arr
+    "ksu_vn/method/nesting/draw.rb#_7da9d41e": grp
+    "ksu_vn/method/nesting/draw.rb#_842b28a8": grp
+    "ksu_vn/utils/view.rb#_f4ffc79c": grp2
+  _e9009aa0:
+    "ksu_vn/method/xuatdxf/entry.rb#_f8552d5f": num2
+  _e923aa80:
+    "ksu_vn/method/caidat.rb#_e7bdbdf6": arr
+  _e93b1f5c:
+    "ksu_vn/method/intem/scan.rb#_9e1d7ab3": num2
+    "ksu_vn/method/xeptam/arrange.rb#_63b8ba0b": num3
+  _e9562172:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_662cf545": flag4
+  _e9673629:
+    "ksu_vn/utils/sheet/mark.rb#_4909e1a7": bb2
+  _e984cc9f:
+    "ksu_vn/utils/nesting/corner.rb#_e4f850f5": num
+  _e994459a:
+    "ksu_vn/method/themtam.rb#_eb2b4ec7": tr2
+  _e9b99ede: arr62
+  _ea078b4b:
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": num2
+  _ea23acd1:
+    "ksu_vn/method/xeptam.rb#_32415d7c": num
+  _ea58c957: pt11
+  _eab3e9a3: flag57
+  _eb2d6009:
+    "ksu_vn/utils/geom.rb#_35c2c696": arr2
+  _eb4826cf:
+    "ksu_vn/method/themtam.rb#_ec568b6f": arr
+    "ksu_vn/utils/sheet.rb#_6036fd14": arr
+  _eb74e883:
+    "ksu_vn/method/xeptam/nfp.rb#_a6cf3d0d": arr
+  _ebffc3f1:
+    "ksu_vn/method/chontam/pick.rb#_24c54f2a": num2
+  _ec1e5122:
+    "ksu_vn/method/nesting/draw.rb#_2354b03d": arr2
+  _ec551fb3:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_245e1bad": num
+    "ksu_vn/utils/nesting/corner.rb#_edec0f70": num3
+  _ecd227ab:
+    "ksu_vn/utils/nesting/edit.rb#_03018fe6": grp2
+  _ed21e073: arr63
+  _ed233739:
+    "ksu_vn/utils/label.rb#_89cdc81b": vec2
+  _ed57e432:
+    "ksu_vn/utils/cutting/loop.rb#_bbe79cfa": arr3
+  _ed895e78: flag58
+  _ed95c69c: flag59
+  _eda5d6c9: arr64
+  _ee0680b5:
+    "ksu_vn/utils/cutting/detail.rb#_5edc6938": arr2
+    "ksu_vn/utils/label.rb#_a233e68c": grp
+  _ee63bedc:
+    "ksu_vn/utils/nesting/avail.rb#_5818f219": num4
+  _ee6c3375:
+    "ksu_vn/method/toiuuvan.rb#_d0431df5": arr4
+  _eec6e4f9: arr65
+  _f012522d:
+    "ksu_vn/utils/sheet/reorder.rb#_bb66defe": h
+  _f02ec4af:
+    "ksu_vn/utils/preset/field.rb#_a4a34f6b": pt
+  _f0cb8730:
+    "ksu_vn/method/xeptam/arrange.rb#_650fb422": ents2
+  _f0cc4bb4:
+    "ksu_vn/utils/cutting/detail.rb#_fc91f51b": tr2
+  _f0f0685d: flag60
+  _f10b777c:
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": grp4
+    "ksu_vn/utils/sheet/bottom.rb#_b86cee12": grp2
+  _f1683966:
+    "ksu_vn/utils/cutting.rb#_0e86ff85": arr
+    "ksu_vn/utils/cutting.rb#_4eeae396": arr
+  _f18056aa: pt12
+  _f1afbfb2:
+    "ksu_vn/method/xuatdxf/geom.rb#_826c9296": vec2
+  _f1eb242f:
+    "ksu_vn/method/xeptam/drag.rb#_0c18ca96": str
+  _f2139e8f:
+    "ksu_vn/method/xuatdxf.rb#_4db09033": str
+  _f2166b43:
+    "ksu_vn/method/toiuuvan/back.rb#_51c9eb3d": grp2
+    "ksu_vn/utils/sheet/bottom.rb#_6fc47f07": vec
+    "ksu_vn/utils/sheet/bottom.rb#_885a777e": vec
+    "ksu_vn/utils/sheet/bottom.rb#_be87b887": vec
+    "ksu_vn/utils/sheet/mark.rb#_1c44e717": grp
+  _f279e14f:
+    "ksu_vn/utils/label.rb#_d04b583b": num2
+  _f2ec1094:
+    "ksu_vn/method/toiuuvan.rb#onLButtonDown": arr
+  _f36e7176: num20
+  _f3b19fae: pt13
+  _f3f7e94f:
+    "ksu_vn/method/xeptam.rb#draw": arr5
+  _f40a6e21:
+    "ksu_vn/method/chongbay.rb#_82f140a1": num4
+  _f455f5fc: h26
+  _f4d6023c:
+    "ksu_vn/method/chongbay.rb#_5c33d153": arr
+    "ksu_vn/method/chongbay.rb#_82f140a1": num
+    "ksu_vn/method/xeptam/arrange.rb#_eb5d9ecb": arr
+    "ksu_vn/utils/cutting/detail.rb#_81410e9d": pt
+    "ksu_vn/utils/sheet/mark.rb#_05bd8a7e": num
+  _f4dc3a1d:
+    "ksu_vn/method/intem/scan.rb#_f0ab79c9": pt
+    "ksu_vn/method/nesting/simplify.rb#_03ea1bb7": arr2
+    "ksu_vn/method/toiuuvan/postproc.rb#_8f10bac2": arr2
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": arr
+    "ksu_vn/method/xeptam/nfp.rb#_3b7ac698": arr2
+    "ksu_vn/method/xeptam/nfp.rb#_7f9a6edc": arr2
+    "ksu_vn/method/xeptam/nfp.rb#_b4c1b27a": arr
+    "ksu_vn/utils/cutting.rb#_4605a894": pt2
+    "ksu_vn/utils/geom.rb#_a82acccd": pt2
+    "ksu_vn/utils/nesting.rb#_f8ae6697": arr
+    "ksu_vn/utils/nesting/bilan.rb#_4bed79e1": num
+    "ksu_vn/utils/nesting/corner.rb#_19df3e1d": arr
+    "ksu_vn/utils/nesting/corner.rb#_bb9d9306": arr2
+    "ksu_vn/utils/nesting/corner.rb#_d59e252b": arr
+    "ksu_vn/utils/nesting/pack.rb#_43d2bd40": arr
+  _f4e5de67:
+    "ksu_vn/method/themtam.rb#_5c6a1c61": tr2
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": tr3
+  _f4ea2550:
+    "ksu_vn/utils/nesting/pack.rb#_311385c4": vec
+  _f555f3f8:
+    "ksu_vn/main.rb#_e8e15308": arr2
+    "ksu_vn/method/toiuuvan/engine.rb#_603ba9c4": flag
+    "ksu_vn/utils/nesting/optimize.rb#_0e909b87": num
+  _f55d80e6:
+    "ksu_vn/method/chongbay/assign.rb#_2840517f": num
+    "ksu_vn/method/chongbay/assign.rb#_563cf113": num
+    "ksu_vn/method/xuatdxf/scan.rb#_530b02a3": num2
+  _f5cfda29:
+    "ksu_vn/utils/view/widget.rb#_6f6f632e": pt
+  _f5d6894f:
+    "ksu_vn/utils/sheet/bottom.rb#_be87b887": str
+  _f6058e54:
+    "ksu_vn/method/themtam.rb#_ad557b93": arr4
+    "ksu_vn/method/themtam.rb#_de7745a2": arr
+    "ksu_vn/method/themtam.rb#_eb2b4ec7": arr
+    "ksu_vn/method/xuatdxf/scan.rb#_7c10a028": arr2
+  _f60ff7e2:
+    "ksu_vn/utils/cutting/loop.rb#_17304a20": num
+    "ksu_vn/utils/cutting/loop.rb#_bbe79cfa": num
+  _f678c59e: h27
+  _f7522701:
+    "ksu_vn/method/themtam.rb#_5c6a1c61": pt
+    "ksu_vn/method/xeptam/arrange.rb#_6d5f8614": pt
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": pt2
+  _f7ec1e13:
+    "ksu_vn/method/xeptam/push.rb#compute_push_back": flag2
+  _f84d12fb:
+    "ksu_vn/method/thongke/tonghop.rb#_bc0f9e7f": arr
+  _f87973a4:
+    "ksu_vn/utils/geom.rb#_0c91518b": arr
+  _f8d6ba4a:
+    "ksu_vn/utils/label.rb#_665bc239": model
+  _f8fb54ef:
+    "ksu_vn/utils/view.rb#_f84a7879": pt2
+  _f91b8aa0:
+    "ksu_vn/utils/sheet/mark.rb#_5134c34c": flag4
+  _f94e787e:
+    "ksu_vn/utils/flip.rb#_ace51b7b": grp
+  _f9b6255d:
+    "ksu_vn/method/chongbay/assign.rb#_2868a9dd": str
+  _f9e9781a:
+    "ksu_vn/method/toiuuvan/back.rb#_3fccea3f": vec
+    "ksu_vn/method/toiuuvan/back.rb#_76d37ecf": grp
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": grp
+    "ksu_vn/method/toiuuvan/back.rb#_80a13590": vec2
+    "ksu_vn/method/xeptam/mirror.rb#_7a34db91": grp2
+    "ksu_vn/method/xeptam/mirror.rb#_80a13590": vec2
+  _f9ef6e71: flag61
+  _f9f6c063:
+    "ksu_vn/method/thongke/phukien.rb#_b4768d27": h3
+  _fa09db7b:
+    "ksu_vn/method/intem/scan.rb#_fd63a357": arr3
+  _fa0f99b2:
+    "ksu_vn/method/xeptam/nfp.rb#_3ea4c8e4": arr4
+  _fa20dd85: h28
+  _facbe376:
+    "ksu_vn/method/chongbay/assign.rb#_2868a9dd": arr2
+    "ksu_vn/method/chongbay/assign.rb#_563cf113": grp
+    "ksu_vn/utils/nesting/edit.rb#_339f1198": model
+  _fad5e49d:
+    "ksu_vn/method/nesting/launch.rb#_e3264765": str2
+  _fae1d475:
+    "ksu_vn/method/nesting/collect.rb#_dd36ed49": tr4
+    "ksu_vn/method/nesting/simplify.rb#_c71fe5d3": arr2
+    "ksu_vn/method/thongke/quet.rb#_6f6e03c6": tr
+    "ksu_vn/method/xeptam.rb#onMouseMove": arr3
+    "ksu_vn/method/xeptam/drag.rb#_50ab81be": arr
+    "ksu_vn/method/xeptam/drag.rb#_98834989": pt
+    "ksu_vn/method/xeptam/mirror.rb#_52bcd343": pt
+    "ksu_vn/utils/cutting/detail.rb#_975e7df6": vec
+    "ksu_vn/utils/cutting/detail.rb#_ec4daffb": vec
+    "ksu_vn/utils/label.rb#_665bc239": vec3
+    "ksu_vn/utils/nesting/optimize.rb#_8942d360": pt
+    "ksu_vn/utils/nesting/optimize.rb#_dbb01f34": vec
+  _fae41a9d:
+    "ksu_vn/main.rb#_4769e383": arr
+  _fb1dad7b:
+    "ksu_vn/utils/pdf/build.rb#_b3b2dea9": arr5
+  _fb64fc8b:
+    "ksu_vn/utils/sheet.rb#_9cf2f273": pt2
+  _fb911615:
+    "ksu_vn/utils/nesting/corner.rb#_9f2bb75c": flag
+  _fb918622:
+    "ksu_vn/method/xeptam.rb#draw": arr
+  _fc250e62:
+    "ksu_vn/method/xeptam.rb#draw": mat4
+  _fc35762e:
+    "ksu_vn/main.rb#_e8e15308": arr
+    "ksu_vn/method/intem/scan.rb#_a1ae3880": str
+    "ksu_vn/utils/sheet/reorder.rb#_06da7172": str
+  _fc4680ec:
+    "ksu_vn/method/themtam.rb#_0895e188": pt
+  _fc620c6f:
+    "ksu_vn/utils/label.rb#_d5ca0b39": arr9
+    "ksu_vn/utils/nesting/corner.rb#_19df3e1d": arr4
+    "ksu_vn/utils/nesting/corner.rb#_d59e252b": arr3
+  _fc6aca1b: flag62
+  _fc86b171:
+    "ksu_vn/system/setting.rb#export_online": str3
+    "ksu_vn/system/setting.rb#import_online": str3
+  _fc9e313f:
+    "ksu_vn/utils/nesting/corner.rb#_152b1493": arr3
+    "ksu_vn/utils/nesting/corner.rb#_1a89b477": arr
+    "ksu_vn/utils/nesting/corner.rb#_ee8cdc0b": arr
+  _fca10ace:
+    "ksu_vn/utils/nesting/optimize.rb#_0e909b87": h
+  _fcbc95c3:
+    "ksu_vn/method/netcatcuoi/resize.rb#_3066d644": arr
+    "ksu_vn/method/netcatcuoi/resize.rb#_ae3af84a": arr6
+    "ksu_vn/method/toiuuvan.rb#_687e1def": ents
+    "ksu_vn/method/xeptam/drag.rb#_78c88320": arr2
+    "ksu_vn/utils/nesting/corner.rb#_1a89b477": arr4
+    "ksu_vn/utils/view.rb#_b80737a7": arr3
+  _fcdaca47:
+    "ksu_vn/method/nesting/collect.rb#_dd36ed49": tr3
+  _fcdd440f: flag63
+  _fdb496e4:
+    "ksu_vn/utils/pdf/svg.rb#_03c7ad56": arr2
+  _fdb55b7d:
+    "ksu_vn/method/xuatdxf.rb#_319513d3": h
+  _fdf8527b:
+    "ksu_vn/utils/cutting.rb#_4eeae396": vec3
+  _fe334575:
+    "ksu_vn/method/xeptam/collide.rb#_4a014121": arr11
+    "ksu_vn/method/xeptam/nfp.rb#_00adeb53": arr2
+    "ksu_vn/method/xeptam/nfp.rb#_3ea4c8e4": arr7
+    "ksu_vn/method/xeptam/nfp.rb#_feb4bde1": arr
+  _fe39b69f:
+    "ksu_vn/utils/view.rb#_2873a79b": arr
+    "ksu_vn/utils/view.rb#_49bdeaba": arr
+    "ksu_vn/utils/view.rb#_ec07b26f": arr
+  _fe7b627f: h29
+  _fe8ae798:
+    "ksu_vn/method/xuatdxf.rb#_4db09033": str4
+    "ksu_vn/method/xuatdxf.rb#_de24fd0f": flag
+  _fea16e8e:
+    "ksu_vn/method/gannhan.rb#_8692db05": arr
+    "ksu_vn/method/nesting.rb#_37275936": arr
+    "ksu_vn/method/nesting.rb#_38a1edc5": arr
+    "ksu_vn/method/nesting.rb#_3ac6e0c3": arr
+    "ksu_vn/method/nesting.rb#_402c7fb0": arr
+    "ksu_vn/method/nesting.rb#_7a0c567a": arr
+    "ksu_vn/method/nesting.rb#_d9b1612c": arr2
+    "ksu_vn/method/nesting.rb#_d9cba3b0": arr2
+    "ksu_vn/method/nesting/draw.rb#_146dab1a": arr
+  _fed6e589:
+    "ksu_vn/utils/view/query.rb#_bbaa2919": arr
+  _feea5d89: pt14
+  _ff1b4430:
+    "ksu_vn/method/toiuuvan/engine.rb#_46279528": arr9
+    "ksu_vn/utils/label.rb#_d04b583b": flag
+  _ff7cc044:
+    "ksu_vn/method/netcatcuoi/lastcut.rb#_f89911a7": arr9
+  _ff8708f8:
+    "ksu_vn/method/xuatdxf/scan.rb#_cdd54f61": str
+  _fff96392:
+    "ksu_vn/method/xeptam/push.rb#compute_push_back": arr4

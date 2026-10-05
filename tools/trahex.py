@@ -26,7 +26,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from kscommon import ROOT, code_only  # noqa: E402
 from datten import body_ranges, load_dicts  # noqa: E402
 
-BASELINE = "c45104c"
+BASELINE = "e72d0b2"
+# The release before this one. 2.3.2 did NOT re-obfuscate everything, so the
+# audit has to know which build a hex came from -- see audit() below.
+PREV_BASELINE = "c45104c"
 IDENT = re.compile(r"[@$]?[A-Za-z_]\w*[?!]?")
 HEX = re.compile(r"\A_[0-9a-f]{8}\Z")
 
@@ -124,13 +127,42 @@ def scopes(hx: str, moc: str) -> int:
     return 0
 
 
+_PREV_HEXES: set[str] | None = None
+
+
+def prev_release_hexes() -> set[str]:
+    """Every hex the PREVIOUS release's obfuscation produced."""
+    global _PREV_HEXES
+    if _PREV_HEXES is None:
+        out = subprocess.run(["git", "ls-tree", "-r", "--name-only",
+                              PREV_BASELINE, "--", "ksu_vn"], cwd=ROOT,
+                             capture_output=True, text=True)
+        _PREV_HEXES = set()
+        for rel in out.stdout.split():
+            if not rel.endswith(".rb"):
+                continue
+            src = subprocess.run(["git", "show", f"{PREV_BASELINE}:{rel}"],
+                                 cwd=ROOT, capture_output=True, text=True,
+                                 encoding="utf-8", errors="replace").stdout
+            _PREV_HEXES |= set(re.findall(r"_[0-9a-f]{8}\b", src))
+    return _PREV_HEXES
+
+
 def audit(moc: str) -> int:
     """Invert the dictionary: which global names come from more than one hex.
 
-    The obfuscator mapped name -> hex once for the whole tree, so the inverse of
-    a correct dictionary is a function -- one name, one hex. Per-scope naming
-    breaks the other direction on purpose (one hex becomes `arr` here and `pt`
-    there, because that hex really does hold both), but never this one.
+    The obfuscator maps name -> hex once per BUILD, so the inverse of a correct
+    dictionary is a function -- one name, one hex. Per-scope naming breaks the
+    other direction on purpose (one hex becomes `arr` here and `pt` there,
+    because that hex really does hold both), but never this one.
+
+    2.3.2 carries two of those mappings, which is why the count is split below.
+    The units it superseded -- toiuuvan*, netcatcuoi*, danhsovan -- ship
+    verbatim from the 2.1.5 build and keep 100 % of their 2.1.5 hexes, while
+    the files new in 2.3.2 share 0 % with 2.1.5. A word the author used in both
+    halves therefore has one hex in each, and that is not an error: it is two
+    builds of the same source. Only two hexes from the SAME build can be a
+    mistake, so only those are reported as one.
 
     Only GLOBAL entries are judged. A scoped entry claims nothing but the type a
     variable holds in one body, and dexuat.py hands the same short root to a
@@ -145,14 +177,32 @@ def audit(moc: str) -> int:
         if isinstance(spec, str):
             by_name.setdefault(spec, []).append(h)
     dup = {n: hs for n, hs in by_name.items() if len(hs) > 1}
+
+    prev = prev_release_hexes()
+    cross: dict[str, list[str]] = {}
+    inside: dict[str, list[str]] = {}
+    for n, hs in dup.items():
+        seen: dict[str, int] = {}
+        for h in hs:
+            key = "2.1.5" if h in prev else "2.3.2"
+            seen[key] = seen.get(key, 0) + 1
+        (inside if max(seen.values()) > 1 else cross)[n] = hs
+
     print(f"soat {len(by_name)} ten toan cuc: "
-          f"{len(dup)} ten den tu nhieu hon mot hex\n")
-    for n, hs in sorted(dup.items()):
-        print(f"  {n:<24} {', '.join(sorted(hs))}")
-    if dup:
-        print("\nMoi dong tren la mot loi: bat bien noi mot ten ung voi dung"
-              "\nmot hex. Doc lai bang chung roi doi mot ben sang ten khac.")
-    return 1 if dup else 0
+          f"{len(dup)} ten den tu nhieu hon mot hex")
+    print(f"  {len(cross):>4} ten moi hex mot DOT LAM ROI khac nhau"
+          f"  -- khong phai loi")
+    print(f"  {len(inside):>4} ten co hai hex trong CUNG mot dot"
+          f"  -- phai doc lai\n")
+    for n, hs in sorted(inside.items()):
+        tag = ", ".join(f"{h}({'2.1.5' if h in prev else '2.3.2'})"
+                        for h in sorted(hs))
+        print(f"  {n:<24} {tag}")
+    if inside:
+        print("\nMoi dong tren la mot loi: trong MOT dot lam roi, trinh bao ve"
+              "\nanh xa ten -> hex dung mot lan, nen hai hex cung dot khong the"
+              "\ncung mang mot tu. Doc lai bang chung roi doi mot ben.")
+    return 1 if inside else 0
 
 
 def main() -> int:

@@ -1,74 +1,425 @@
 # Sinh boi tools/motten.py -- ten mot tu chuoi con sot lai.
 # SOAT MAT roi hay chep sang ten.yml; file nay khong duoc ap thang.
 ten:
-  _0a1c9ee6: umax
-  _0dde888a: outer
-  _0ef23977: partner
-  _10270e02: x2
-  _16a0db87: sheet
-  _1837f222: umax
-  _1add3f22: bbox
-  _1dbbb3bc: x1
-  _262dad3d: bbox
-  _30e8f323: entity
-  _33c34f08: face_color
-  _3798bfa1: panel
-  _44c34410: transform
-  _477c927d: entity
-  _4dab96a3: umin
+  _02a166fd: size
+  _04113f8e: src
+  _0488319a: pts
+  _06c10425: choice
+  _08df77aa: model
+  _0973d2a2: rot
+  _0a2eb43e: bbox
+  _0a621fa3: label
+  _0a7165c9: pid
+  _0ba78b93: van
+  _0cfd7c2b: y
+  _0e1e2ea8: bbox
+  _0f1bcb43: center
+  _126ba8ce: progress
+  _17a25ff9: bbox
+  _1acf2d40: ents
+  _1c3ee2ac: kind
+  _1d2d18b7: outer
+  _1d3fe3d0: reversed
+  _1d75ddb6: fill
+  _1e20ae8e: y2
+  _1e59517f: file
+  _1e78b863: percent
+  _20416ada: layer
+  _21bb6a31: hover
+  _22a7607e: excluded
+  _250a50d9: segments
+  _2763c3ca: t
+  _27f59084: bottom
+  _281145cc: line_width
+  _288d8690: cycle
+  _2970dc1f: warnings
+  _29bbaf5f: feed
+  _29c60454: instance
+  _29fd9c65: shape_tol_mm
+  _2cad0207: members
+  _2def036f: folder
+  _2fab8ac1: ok
+  _30c4d2df: polygons
+  _34186752: borders
+  _366debc9: e
+  _3a507d99: layer_map
+  _3c5a1066: id
+  _3ce0c341: z
+  _3d31bd1b: outer
+  _3fffe226: length
+  _40b84de7: path
+  _40de2708: radius_mm
+  _419b0a72: id
+  _41f82561: pts
+  _43c970b4: points
+  _44b3078b: quantity
+  _46b63b3b: points
+  _46cf995f: center
+  _47b4bac5: reason
+  _48a8a14b: tangent_in
+  _4b983665: ly_do
+  _4c31fe66: bbox
+  _4c406b6f: cell
+  _4c865150: cells
+  _4cb40ee3: members
+  _4d5b2140: post
+  _4f9de245: keys
+  _506bc226: bbox
   _513b6595: pts
-  _529cefc7: panel
-  _572f7fb0: materials
-  _5733aff5: bbox
-  _58383aed: rank
-  _73dc38ac: sheet
-  _7525a050: transform
-  _77445f53: x1
-  _788affef: tris
-  _838f9d06: layer
-  _85458193: len
-  _867c021a: x2
-  _884dee16: on
-  _9e68ab19: partner
-  _a1bf6a3a: height
-  _a8bdc7d4: materials
-  _a8d0c622: back
-  _b0018280: parts
-  _b2ee0ccd: idx
-  _b3bfd2a3: materials
-  _b87879ab: umin
-  _ba97e686: lock_open
-  _be87b887: bottom
-  _c279ca2b: tris
-  _c9fa72f2: loop
-  _d14b3aa1: start_local
-  _d1ef5b91: sheet
-  _d5e8442b: outer
-  _df234764: panel
-  _e0acc7ff: transform
-  _e71c0db2: umin
-  _e8649a72: y1
-  _e9d24615: id
+  _51969f67: sheet_w
+  _531c2ab3: x
+  _543936a0: sig
+  _5464881e: material_key
+  _59a71570: lead_shift_mm
+  _5dc41444: group_start
+  _5e179248: hover
+  _5fda926c: quantity
+  _607c5494: layer
+  _62ef82e9: rows
+  _64868c52: sampled
+  _668aad9d: border
+  _6836424d: origin
+  _6849e728: ramp_point
+  _6925c553: paths
+  _6af38b2c: point
+  _6b46392e: z
+  _6b494a47: grid
+  _6f0173f7: lead_shift_mm
+  _70959c11: target
+  _73c8eaf6: end_i
+  _75c3e080: block
+  _779a0078: length
+  _78a28f92: outer
+  _7a362ab2: thickness
+  _808d4fb5: holes
+  _8141925d: additive
+  _81b421e5: elems
+  _82b8e725: sheet
+  _8390956f: token
+  _8745391f: cell_size
+  _896ac75d: index
+  _896c4eb5: gr
+  _8a15fd29: materials
+  _94b570bf: sheet
+  _955fc8ab: fmt
+  _95bc0527: u
+  _9710d820: v
+  _9bfd28e0: end_index
+  _9ccdb468: place
+  _9db83345: phan
+  _9f1d1de9: index
+  _9fc8ea11: title
+  _a31cca46: src
+  _a3f626c2: sample_tol_mm
+  _a40afc07: x1
+  _a4286a6a: cells
+  _a53fcec5: thickness_mm
+  _a6dbb548: panel
+  _a8cd15b1: error
+  _aa67bd07: at
+  _ab759bff: vectors
+  _ad5570ce: block
+  _ae3d7015: cells
+  _af4f9ada: hull
+  _b0565266: metrics
+  _b0c97240: x2
+  _b2ce8033: instance
+  _b8b91d06: moves
+  _ba792234: distance
+  _ba969b17: poly
+  _bc0dc9c4: key
+  _be1c5d10: pid
+  _c4453a68: end_i
+  _c65c0a0a: pts
+  _c777b949: nesting
+  _c8a1a3c9: items
+  _ca3a7dba: panel
+  _cab2c36f: target
+  _cdf88032: tones
+  _d0e2f6ec: first
+  _d1d4c1a4: transform
+  _d2b91715: first
+  _d395e9f8: layer
+  _d533ec26: part_data
+  _d61658e0: sheets
+  _d68d6453: y1
+  _d859cc92: read_timeout
+  _d8f723f6: quantity
+  _d9b8dd5e: polys
+  _da7a2fa2: ok
+  _df507b9e: panel
+  _dfa78933: name
+  _dfe2f35b: additive
+  _e277ccde: gr
+  _e3033102: flat_index
+  _e60566a7: base_tr
+  _e7ccbe04: start_i
+  _e8a95da6: entity
+  _e9301909: start_i
+  _ea0a22f8: label3d
+  _ebb014c3: status
+  _eddc6cdd: font
+  _eeb49264: type_set
+  _f4581382: pts
+  _f67efdcd: van
+  _f782b757: segment_index
+  _fa7290d0: metadata
+  _fd94fc8e: ten
+  _fe4f3a12: renumber
 
 # Phieu lech -- de trong co chu y.
 mau_thuan:
-  _00ef0ab9:   # {'v0': 2, 'v1': 2}
-  _0eb2a5fc:   # {'outer': 3, 'polygon': 2}
-  _1808a2e9:   # {'color': 1, 'warning_color': 1}
-  _27846c89:   # {'closed': 1, 'border': 1}
-  _4fbe9584:   # {'lx': 4, 'ly': 4, 'w': 3, 'h': 3, 'box': 2, 'rot': 1, 'bbox': 1}
+  _021fb828:   # {'panel': 1, 'source_sheet': 1, 'bbox': 1}
+  _042404e7:   # {'panel': 2, 'sheet': 2}
+  _0572c9cd:   # {'id': 1, 'moves': 1, 'job': 1, 'key': 1}
+  _05b497c8:   # {'partner': 1, 'front': 1}
+  _061f41f4:   # {'count': 1, 'found': 1, 'partner': 1}
+  _0864775c:   # {'origin': 1, 'has_bottom': 1, 'bottom': 3}
+  _0a6fe10c:   # {'h': 5, 'bh': 1, 'height': 4}
+  _0c502f23:   # {'code1': 1, 'code2': 1, 'code3': 1}
+  _0d6b8add:   # {'s': 2, 'e': 2, 'c': 1, 'ccw': 2, 'type': 1, 'full_circle': 1}
+  _0d861f12:   # {'elems': 1, 'rail_check': 1}
+  _0f11251b:   # {'size': 7, 'width': 2, 'height': 1}
+  _105d9ed2:   # {'path': 1, 'layer': 1}
+  _1123b581:   # {'v0': 2, 'v1': 2}
+  _11efe8e4:   # {'eid': 1, 'part_id': 1, 'two': 1, 'part_data': 2, 'rows': 1, 'w': 2, 'h': 2, 'panel': 1, 'source_sheet': 1, 'bbox': 1}
+  _12edb4b7:   # {'notes': 1, 'colors': 1, 'key': 1, 'gen': 3, 'rid': 1, 'layer': 1}
+  _13b63df0:   # {'danh_sach': 1, 'ok': 1, 'errors': 1}
+  _148d9a5b:   # {'top': 1, 'settings': 3}
+  _15768a95:   # {'writer_done': 1, 'elems': 1}
+  _15cf3d7e:   # {'clockwise': 2, 'ccw': 1}
+  _1602bc51:   # {'entry': 2, 'sheet': 1}
+  _1b4eee3f:   # {'hi': 2, 'v': 1, 'ye': 1}
+  _1ccce4fb:   # {'w': 1, 'width_mm': 1}
+  _1d5e7795:   # {'points': 6, 'pts': 2}
+  _21f34437:   # {'arrow_size': 1, 'arrow_padding': 1}
+  _23505ef9:   # {'x1': 2, 'x2': 2, 'y1': 2, 'y2': 2, 'p': 2}
+  _25425385:   # {'kids': 1, 'children': 1}
+  _256c1c9c:   # {'left': 1, 'right': 1}
+  _270064c3:   # {'distance_check': 1, 'source_check': 1, 'preview': 1, 'region_watch': 2, 'guard': 1, 'rail_check': 1, 'final_check': 1}
+  _27014431:   # {'names': 2, 'layer': 1, 'root_sheet_names': 1}
+  _27846c89:   # {'closed': 1, 'border': 1, 'is_border': 1}
+  _2820ff2a:   # {'v': 1, 'hi': 2, 'xe': 1}
+  _2ae35bad:   # {'ccw': 3, 'expect_ccw': 1}
+  _2b2f7e5d:   # {'points': 3, 'top_corners': 1, 'start': 1, 'finish': 1, 'source_points': 1, 'x': 2, 'y': 2, 'pts': 5, 'outer': 1}
+  _2c7baf78:   # {'point_to': 1, 'e': 1, 'to_index': 1, 'to': 1}
+  _2d59af86:   # {'kids': 1, 'children': 1}
+  _321af09d:   # {'back_face': 1, 'partner': 1, 'back': 1}
+  _323ef0cf:   # {'min': 1, 'max': 1}
+  _32ba6d12:   # {'layer_map': 1, 'layer_order': 1, 'layer_notes': 1, 'layers': 3}
+  _32d745dd:   # {'x1': 1, 'x2': 1, 'x': 2, 'lx': 2}
+  _338cd6fa:   # {'margins': 1, 'x': 1, 'y': 1, 'size': 1}
+  _34e2321b:   # {'x': 1, 'y': 1}
+  _354e0ff6:   # {'len': 1, 'area': 3}
+  _3628fb71:   # {'unit': 1, 'p': 1, 'kids': 1, 'area': 2}
+  _368daca8:   # {'index': 1, 'idx': 1}
+  _3718aa1d:   # {'finish': 2, 'start': 2}
+  _38ef4a40:   # {'bulge': 1, 'max_bulge_mm': 1}
+  _39a3a28d:   # {'unit': 1, 'p': 1, 'kids': 1, 'area': 2}
+  _3cf156ab:   # {'size': 1, 'font': 1}
+  _3df9f02b:   # {'panel': 1, 'src': 1, 'bbox': 1, 'kids': 1, 'refx': 1, 'refy': 1, 'virtual': 1}
+  _402c4083:   # {'top': 1, 'tool_index': 1, 'layer_map': 1, 'lenh': 1}
+  _406a674c:   # {'entry': 2, 'sheet': 1, 'x': 2, 'y': 2}
+  _46a085c4:   # {'bw': 1, 'bh': 1, 'w': 2}
+  _478f03da:   # {'sheet_number': 2, 'so': 4, 'number': 2, 'dong': 2}
+  _481ccbec:   # {'tab_trai': 1, 'an_layer_trong': 1, 'hien_duong_dao': 1}
+  _499355c6:   # {'tag_colors': 1, 'colors': 2}
+  _4b6705e5:   # {'path': 2, 'base': 3, 'track': 1}
+  _4c5f33d5:   # {'start_point': 1, 'align_error_mm': 1}
+  _4d4ef574:   # {'van': 1, 'xmin': 1, 'ymin': 1, 'xmax': 1, 'ymax': 1}
+  _4fbe9584:   # {'lx': 4, 'ly': 4, 'w': 2, 'h': 2, 'box': 2, 'rot': 1}
+  _50694d55:   # {'sheet': 1, 'points': 1}
+  _52a3a8fc:   # {'mat': 1, 'name': 1}
+  _53418ffb:   # {'pw': 1, 'ph': 1, 'rot': 1, 'w': 1, 'h': 1}
+  _53e651f8:   # {'thickness_issues': 1, 'blocked_sheets': 1, 'danh_sach': 1}
+  _54c4f9e6:   # {'s': 1, 'e': 1}
+  _55019123:   # {'min_x': 1, 'max_x': 1, 'min_y': 1, 'max_y': 1}
+  _59bbde96:   # {'sheets': 6, 'total': 1, 'sheet': 2}
+  _5aaad06a:   # {'path': 3, 'offset_xy': 1}
+  _5b58134b:   # {'s': 3, 'e': 3, 'c': 1}
+  _5ba8b366:   # {'ccw': 1, 'delta_mm': 1}
+  _5c95e377:   # {'key': 1, 'names': 1, 'ops': 1, 'base': 1, 'data': 2, 'upm': 1, 'num_hm': 1}
+  _5d24831c:   # {'two': 1, 'slots': 1}
+  _5d5d62fb:   # {'turn': 1, 'clockwise': 1}
+  _5d622ba6:   # {'do_dam_mat_xem_truoc': 1, 'do_dam_net_xem_truoc': 1}
+  _5e3d3d99:   # {'layer': 1, 'src': 1}
+  _5f417064:   # {'label': 2, 'src_vertex': 1, 'ten': 5, 'group_label': 1}
+  _5f936613:   # {'elems': 1, 'bridge_mends': 1, 'tangent_mends': 1}
   _5fb96e91:   # {'len': 1, 'area': 1}
-  _6823cb31:   # {'x': 1, 'y': 1}
-  _79582570:   # {'divider': 1, 'border': 1}
-  _7bb04226:   # {'xmin': 1, 'ymin': 1, 'xmax': 1, 'ymax': 1}
+  _60ad8660:   # {'source_sheet': 2, 'panel': 1, 'bbox': 1}
+  _6129e547:   # {'pts': 1, 'outer': 1}
+  _623a4f3f:   # {'parent': 2, 'z': 3}
+  _6247e194:   # {'folded_arc': 1, 'collapsed': 2}
+  _63629225:   # {'part': 1, 'panel': 1, 'sheet': 1, 'two_sided': 1, 'rotatable': 1}
+  _640480a7:   # {'tangent_out': 2, 'x': 1, 'y': 1}
+  _65d1e346:   # {'work_face': 1, 'back_face': 1, 'mat': 1}
+  _6833dd49:   # {'center': 1, 'sweep': 1, 's': 2, 'e': 2, 'c': 1}
+  _6aedeffa:   # {'plan': 3, 'x': 2, 'y': 2, 'i': 1, 'j': 1, 'clockwise': 1, 'plan_points': 1}
+  _6b389d7a:   # {'s': 1, 'first': 2, 'ccw': 1, 'rect': 1, 'y': 1}
+  _6bdde958:   # {'so': 1, 'end_index': 1, 'lines': 1, 'count_by_length': 1}
+  _6be8cda0:   # {'rx': 1, 'ry': 1}
+  _6c2b9f84:   # {'segments': 1, 'polylines': 1}
+  _6c73e089:   # {'rank': 3, 'vertex_order': 1}
+  _6dab0c11:   # {'from': 1, 'to': 1, 'length': 1}
+  _6dd27878:   # {'s': 2, 'e': 2}
+  _6ddd424c:   # {'index_map': 1, 'external_index_map': 1}
+  _70e8f17a:   # {'s': 2, 'e': 2, 'point': 4, 'x': 2, 'y': 2}
+  _739df81a:   # {'edge': 1, 'lx': 2, 'ly': 2, 'w': 2, 'h': 2, 'lead': 1, 'area': 1, 'closed': 1, 'bd': 1, 'p': 1, 's': 1, 'v': 1, 'b': 1, 'pts': 1}
+  _73dc38ac:   # {'instance': 4, 'sheet': 6}
+  _765c65ac:   # {'s': 1, 'ccw': 1}
+  _76946371:   # {'source_s': 1, 's': 6, 't': 1, 'start_local': 2}
+  _77fee308:   # {'layer_name': 2, 'layer': 3}
+  _78875996:   # {'panel': 3, 'sheet': 1, 'lead': 1, 'entry': 1, 'w': 1, 'h': 1, 'bbox': 1}
+  _78cf8e0b:   # {'name': 3, 'key': 1}
+  _794139c0:   # {'ten_tren': 1, 'ten_duoi': 1, 'ten_trai': 1, 'ten_phai': 1, 'ten_chung': 1, 'text': 2}
+  _799e566e:   # {'h': 1, 'height_mm': 1}
+  _7a14dd80:   # {'folded_arcs': 1, 'collapse': 1}
+  _7ac0a07c:   # {'e': 1, 'finish': 2, 'x': 2, 'y': 2, 'length': 1}
+  _7cf4f7b9:   # {'board_id': 1, 'part_id': 1}
   _7ebf0e82:   # {'v': 1, 'hi': 2, 'xe': 1}
-  _8c6c071c:   # {'pts': 1, 'outer': 1}
-  _93188890:   # {'code_n1': 1, 'code1': 1, 'code2': 1, 'code3': 1}
-  _9a5525a8:   # {'mat': 2, 'material': 1}
-  _b4479c25:   # {'points': 1, 'large_size': 1, 'small_size': 1, 'rect': 2}
+  _7eef3593:   # {'y': 1, 'dy': 1, 'cy': 1}
+  _7ef63655:   # {'min_x': 1, 'max_x': 1, 'min_y': 1, 'max_y': 1}
+  _7f376ad0:   # {'lock_open': 1, 'dim': 3, 'offset_vector': 1}
+  _81c2b77f:   # {'part': 1, 'panel': 1, 'sheet': 1, 'two_sided': 1, 'rotatable': 1, 'center': 1, 'sx': 1, 'sy': 1, 'sz': 1}
+  _8230d3b9:   # {'tag': 1, 'nesting': 1, 'board': 1, 'part': 1, 'name': 9, 'file': 2, 'ten': 1, 'post': 4, 'kieu': 2, 'label': 1}
+  _82361099:   # {'parts': 1, 'flat': 1}
+  _8553ef34:   # {'align_tol_mm': 1, 'max_allowed': 1, 'tolerance_mm': 2}
+  _8794f78f:   # {'chieu_rong_toi_da': 1, 'kc_tren': 1, 'kc_duoi': 1, 'kc_trai': 1, 'kc_phai': 1, 'paper': 1}
+  _8864cc62:   # {'start': 1, 'finish': 1, 'source_points': 1, 'points': 5, 'x': 2, 'y': 2, 'pts': 1}
+  _89897823:   # {'edge': 1, 'entity': 2, 'source_e': 1, 'e': 4, 'src': 4, 'lx': 2, 'ly': 2, 'w': 2, 'h': 2, 'lead': 1, 'area': 1, 'instance': 1, 'end_local': 2, 'gr': 1, 'type': 1}
+  _89b2a450:   # {'w': 5, 'bw': 1, 'width': 2}
+  _8a923ba1:   # {'in_tem_dan_canh': 1, 'eb_cfg': 1}
+  _8b4b1649:   # {'viec': 1, 'part_border': 1, 'parts': 1}
+  _8bc4f7d3:   # {'fill': 2, 'holes': 1}
+  _8ce23a3b:   # {'closed': 1, 'border': 1, 'is_border': 2}
+  _8e3fca8c:   # {'u0': 2, 'u1': 2}
+  _9232fecd:   # {'lx': 3, 'ly': 3, 'w': 3, 'h': 3, 'box': 2, 'rot': 1, 'bbox': 1}
+  _925b31fd:   # {'candidates': 1, 'external_map': 1, 'nesting_map': 1, 'roots_map': 1, 'thu_muc': 1, 'skipped_layers': 1, 'nhom': 1, 'sheet_total': 1, 'cut_side': 1, 'lead_shift_mm': 1, 'valid': 1}
+  _9328baa5:   # {'path': 6, 'kind': 1, 'tool': 1, 'entry_style': 1, 'closed': 1, 'start_xy': 1, 'layer': 5, 'file': 2, 'toolpath_xy': 1, 'original_path': 1}
+  _9331eec6:   # {'radius_mm': 16, 'radius': 7, 'wanted_r_mm': 2, 'x': 1, 'i': 1, 'tool_radius': 1, 'tool_r_mm': 5}
+  _938db078:   # {'part_id': 1, 'id': 2}
+  _945ac34d:   # {'sheet': 1, 'points': 1}
+  _94d0ec30:   # {'cx': 1, 'cy': 1}
+  _95686d4f:   # {'strict': 1, 'fallback': 1}
+  _95ab051c:   # {'y1': 1, 'y2': 1, 'spacing_mm': 1}
+  _99b739cb:   # {'loop': 1, 'outer': 2}
+  _99c91617:   # {'y1': 1, 'y2': 1}
+  _9b65e825:   # {'points': 1, 'large_size': 1, 'small_size': 1, 'rect': 2}
+  _9b94b671:   # {'layer': 1, 'closed': 1, 'entity': 1}
+  _9db6c64c:   # {'lx': 2, 'ly': 2}
+  _9dcbc6c4:   # {'thickness': 1, 'name': 1, 'material': 1, 'board_thickness': 1, 'id': 1, 'bottom': 1}
+  _9edf9416:   # {'so': 1, 'files': 1}
+  _9f00578a:   # {'do_day_van': 3, 'thickness': 1}
+  _9fe6030e:   # {'thuoc_tinh_dan_canh': 1, 'dan_canh_meta': 1}
+  _a08fbad6:   # {'face': 1, 'back_face': 1}
+  _a13613c1:   # {'is_part_b': 1, 'name': 1}
+  _a1e0269f:   # {'prefix': 1, 'row': 1}
+  _a36c6309:   # {'point_from': 1, 's': 1, 'from': 1}
+  _a4273029:   # {'sum_data': 2, 'list_intersect': 1, 'list_statistical_object': 1, 'list_edgeband': 1}
+  _a4390149:   # {'holes': 1, 'polygon': 1, 'outer': 1, 'loops': 1}
+  _a46bb2b4:   # {'panel': 1, 'sheet': 1, 'lead': 1, 'entry': 1}
+  _a5ffa708:   # {'len': 1, 'y2': 1}
+  _a6bbf688:   # {'vat_lieu': 2, 'name': 1}
+  _a7159cec:   # {'s': 1, 'bbox': 1, 'e': 2, 'x': 2, 'y': 2}
+  _a8f568df:   # {'panel': 2, 'bbox': 2, 'w': 2, 'h': 2}
+  _a924ed29:   # {'width': 1, 'min_width': 1}
+  _aa46af53:   # {'bridge_mend_count': 1, 'bridge_mends': 1}
+  _abd1ed8b:   # {'nest_edit_offset': 1, 'elems': 1}
+  _ac3b3b9d:   # {'tr': 1, 'transform': 1}
+  _ac4ed97e:   # {'path': 4, 'toolpath_xy': 2}
+  _ac8cbbc7:   # {'instance': 12, 'sheet': 18, 'id': 2, 'name': 3, 'path_key': 1, 'boards': 1, 'vectors': 1, 'nesting_id': 1, 'sheet_name': 1, 'done': 1}
+  _adbab0bd:   # {'loi': 2, 'line': 1}
+  _ae33cb3f:   # {'pending': 2, 'excluded': 1, 'found': 1}
+  _aed1c5f7:   # {'y1': 1, 'y2': 1, 'gap': 2, 'khoang': 1, 'spacing_mm': 1}
+  _b30c52f8:   # {'p0': 1, 'p1': 1, 'name': 1, 'kind': 1, 'w': 2, 'h': 2, 'v1': 1, 'panel': 1, 'source_sheet': 1, 'bbox': 1}
+  _b335ce8f:   # {'x': 1, 'y': 1}
+  _b49c7091:   # {'ord': 1, 'az': 1, 'num_hm': 1}
+  _b50c5695:   # {'path': 1, 'closed': 1}
   _b51d21a5:   # {'hi': 2, 'v': 1, 'ye': 1}
-  _cd6029df:   # {'top': 1, 'max_y': 1}
-  _d7a5f5f5:   # {'left': 1, 'right': 1}
+  _b6176c15:   # {'sum_data': 2, 'list_intersect': 1, 'list_statistical_object': 1, 'list_edgeband': 1}
+  _b79e8f01:   # {'length': 1, 'width': 1}
+  _b7d2a364:   # {'elems': 2, 'start_err_mm': 1}
+  _b91e11c2:   # {'joint_move_mm': 1, 'center_shift': 1}
+  _b9dafa47:   # {'type': 2, 'key': 2, 'name': 2, 'thickness': 1}
+  _ba4c55ab:   # {'fill': 2, 'outer': 1, 'holes': 2}
+  _ba79fb04:   # {'so_layer_tu': 1, 'so_layer_den': 1, 'co_bang_mau': 1, 'co_so_thu_tu': 1}
+  _ba97e686:   # {'w': 1, 'h': 1}
+  _baaffb7f:   # {'c': 4, 'end_point': 1, 'on': 1, 'rot': 1, 'kw': 1, 'pts': 1, 'center': 1, 'x': 3}
+  _bc423d46:   # {'p0': 1, 'x': 1, 'y': 1, 'width': 1}
+  _bc61432c:   # {'index': 1, 'center': 1, 'row': 4, 'total': 2, 'board_count': 2, 'nhom': 1, 'b': 1, 'start_refs': 1, 'lead_shift_mm': 1, 'layer': 1, 'point': 2, 'type': 1, 'parts': 1, 'cells': 1, 'sub': 1}
+  _bc9133af:   # {'lo': 2, 'v': 1, 'ys': 1, 'min_y': 2, 'max_y': 2, 'y1': 2, 'y2': 1, 'y0': 1}
+  _bd0102dd:   # {'source_sheet': 3, 'panel': 1, 'bbox': 1}
+  _bd7bf87a:   # {'label_override': 1, 'tangent_align': 1}
+  _bf36edc7:   # {'error': 2, 'ly_do': 1}
+  _bfd42dae:   # {'group': 1, 'name': 1, 'gr': 1, 'x': 1, 'y': 1}
+  _c1aed048:   # {'panel': 1, 'bbox': 1, 'w': 1, 'h': 1}
+  _c2148d5e:   # {'x1': 1, 'x2': 1}
+  _c4211bcd:   # {'material': 1, 'thickness_mm': 1, 'parts': 1}
+  _c42edfce:   # {'grooves': 1, 'gname': 1}
+  _c5c795d7:   # {'color': 1, 'warning_color': 1}
+  _c67a7fd6:   # {'edge': 1, 'src': 1, 'end_index': 1}
+  _c6e9e223:   # {'ascent': 1, 'descent': 1}
+  _c836f364:   # {'v': 2, 'rank': 1, 'side': 1, 'base_color': 1, 'e': 1, 'bbox': 1, 's': 2, 'start': 1}
+  _c8378bbe:   # {'orient': 2, 'w': 1, 'h': 1, 'rot': 1}
+  _c86c0371:   # {'th': 2, 'height': 1}
+  _c89bffc0:   # {'latch_side': 1, 'latch_seq': 1, 'latch_row': 1, 'latch_tag': 1, 'id': 1, 'bottom': 1, 'outer_index': 1, 'cutting_lines': 1, 'edge_band_lines': 1, 'edge_band_desc': 1, 'thickness': 1, 'name': 2, 'board_thickness': 1, 'fields': 1, 'kind': 1}
+  _c94a475c:   # {'c': 13, 'arc_origin_mm': 2, 'center': 8, 'i': 2, 'j': 2, 'x': 1, 'y': 1, 'center_mm': 3}
+  _c9cee24f:   # {'x': 1, 'y': 1}
+  _ca23e05b:   # {'c': 1, 'radius_mm': 1, 'src_start': 1, 'src_end': 1, 'src_point_count': 1, 'radial_mm': 1, 'bulge_mm': 1, 'sweep_deg': 1}
+  _ca8ab93b:   # {'up_face': 1, 'up': 1}
+  _cde72bf5:   # {'color': 2, 'face_color': 1}
+  _cefe7468:   # {'bh': 1, 'bw': 1, 'h': 2}
+  _cf873454:   # {'e': 1, 'x': 1, 'y': 1, 'rect': 1}
+  _cf9f52d8:   # {'clockwise': 1, 'sweep': 2}
+  _d026bb2a:   # {'width': 2, 'height': 1}
+  _d14b3aa1:   # {'id': 1, 'key': 1, 'mat': 1, 'w': 1, 'h': 1, 'x': 1, 'y': 1, 'bottom': 1, 'parts': 1, 'ents': 1}
+  _d1a8a6ac:   # {'elem_lock': 4, 'lock': 8}
+  _d3fb9c5b:   # {'x': 1, 'y': 1, 's': 1, 'e': 1, 'c': 1}
+  _d51b4ab3:   # {'rotatable': 1, 'two_sided': 1, 'members': 1, 'panels': 1, 'area': 1, 'kid_entries': 1}
+  _d5362565:   # {'layer_map': 2, 'cutter_by_id': 1, 'cutter_by_no': 1, 'layer_order': 2}
+  _d5b3640b:   # {'text_size': 1, 'ts': 1}
+  _d696648d:   # {'min_x': 1, 'max_x': 1, 'min_y': 1, 'max_y': 1}
+  _d6d6bb22:   # {'rx': 1, 'ry': 1}
+  _d7127ff1:   # {'gouge': 1, 'xy': 1}
+  _d7e0ae7c:   # {'lx': 3, 'ly': 3, 'x': 2, 'y': 2}
+  _d8240cb7:   # {'label': 1, 'tip': 1, 'icon': 1, 'launch': 1, 'visible': 1, 'dispatch': 1}
+  _da4ca739:   # {'p0': 1, 'p1': 1}
+  _ddfbd967:   # {'full_circle': 3, 'e': 1}
+  _dea7cfbd:   # {'y1': 2, 'y2': 2, 'lo': 2, 'v': 1, 'ys': 1}
+  _debdac30:   # {'base_color': 1, 'color': 3, 'mau_tren': 1, 'mau_duoi': 1, 'mau_trai': 1, 'mau_phai': 1, 'mau_chung': 1}
+  _e00bf5d7:   # {'mat': 2, 'material': 3}
+  _e08bdabb:   # {'origin': 1, 'x': 5, 'y': 5, 'rect': 2, 'width': 1, 'height': 2}
+  _e16a3f5a:   # {'x1': 2, 'x2': 2, 'v': 1, 'lo': 2, 'xs': 1}
+  _e2378ada:   # {'layer': 2, 'board_name': 1, 'part_name': 1, 'name': 2, 'vector': 1}
   _e25dbacd:   # {'len': 1, 'y2': 1}
-  _e84e5dc5:   # {'w': 1, 'h': 1, 'w2': 1, 'h2': 1}
-  _feb51463:   # {'az': 1, 'num_hm': 1}
+  _e366e308:   # {'panel': 1, 'src': 1, 'bbox': 1, 'kids': 1, 'refx': 1, 'refy': 1, 'virtual': 1}
+  _e412bec9:   # {'side': 6, 'cut_side': 5, 'expected_side': 1}
+  _e4f12bf3:   # {'front': 1, 'y1': 1, 'top': 1, 'bottom': 1}
+  _e507f31f:   # {'entity': 1, 'distance_mm': 1, 'first': 1, 'last': 1, 'lx': 1, 'ly': 1}
+  _e6386be2:   # {'panel': 1, 'source_sheet': 1, 'bbox': 1}
+  _e66408d5:   # {'align_tol_mm': 2, 'shape_tol_mm': 1}
+  _e81f6e07:   # {'quantity': 3, 'nest_edit_offset': 1}
+  _e9678ae3:   # {'bh': 1, 'height': 1}
+  _ea17c6ff:   # {'w': 2, 'h': 2, 'bbox': 2}
+  _eab82a8b:   # {'s': 2, 'start': 2, 'start_index': 1, 'start_xy': 1}
+  _eb120d6a:   # {'sheet': 1, 'root_sheet_name': 1}
+  _ec44b25c:   # {'tool_index': 2, 'tool_order': 2, 'tool': 1}
+  _eca45f22:   # {'sau': 2, 'z': 4}
+  _ee118252:   # {'day': 1, 'nesting_name': 1}
+  _ee94079d:   # {'left': 1, 'right': 1, 'consecutive': 1, 'depth': 1, 'parent': 1, 'candidates': 1, 'source_segments': 3, 'sheets': 2, 'elems': 1, 'rows': 3}
+  _ef8e93b0:   # {'radius': 2, 'on': 1, 'kw': 1, 'lx': 3, 'ly': 3, 'w': 1, 'h': 1}
+  _f30745b0:   # {'outer': 3, 'polygon': 5, 'region_polygon': 1}
+  _f32cfa5a:   # {'x': 1, 'dx': 1, 'cx': 1}
+  _f3b98e26:   # {'tool': 16, 'angle': 1, 'feed': 6, 'plunge': 1, 'dao': 1, 'entry_style': 1}
+  _f4f1e862:   # {'cho_phep_ghi_de': 1, 'gioi_han_kich_thuoc': 1, 'danh_so_thu_tu': 1, 'layer_theo_vung': 1, 'tu_dong_don_layer': 1, 'hien_bang_mau': 1, 'hien_so_thu_tu': 1}
+  _f4fdae1f:   # {'x1': 2, 'x2': 2, 'y1': 2, 'y2': 2, 'part': 5, 'outer': 1, 'two': 1, 'p': 2, 'panel': 4, 'label': 1, 'phan': 1}
+  _f5c5186f:   # {'ok': 1, 'failed': 2}
+  _f6cc449b:   # {'edges': 1, 'snap_edges': 1}
+  _f96d1d45:   # {'x': 1, 'y': 1}
+  _fab08cff:   # {'v': 1, 'lo': 2, 'xs': 1, 'min_x': 2, 'max_x': 2, 'empty': 1, 'x1': 2, 'x2': 1, 'x0': 1}
+  _fbc0b550:   # {'source': 2, 'file': 1}
+  _fd8d63f5:   # {'layout': 2, 'group_count': 2}
+  _fe1219a1:   # {'layer_name': 2, 'layer': 4}
+  _fe1bd296:   # {'final_boundary': 1, 'exact_touch': 1}
+  _ff485cbf:   # {'y1': 1, 'y2': 1, 'y': 2, 'center': 1, 'ly': 2}
+  _ffea2c2f:   # {'map': 1, 'ids': 1, 'index_map': 2}

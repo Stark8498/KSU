@@ -3,108 +3,69 @@
 # tenauto.yml; o day chi ghi nhung than ham ma hex phai doi sang ten khac vi
 # trong do no dung do voi mot hex khac hoac voi mot dinh danh con sot lai.
 ten:
-  _0a1c9ee6:
-    ksu_vn/method/xeptam/push.rb#_2bff4638: umax2
-  _0ef23977:
-    ksu_vn/method/xeptam/mirror.rb#_fada6d89: partner2
-  _117833de:
-    ksu_vn/method/nesting/draw.rb#_2827207b: color3
-    ksu_vn/method/nesting/draw.rb#_e3d864eb: color2
-    ksu_vn/utils/view.rb#_47eba6dd: color4
-  _1a4249c1:
-    ksu_vn/method/xuatdxf/geom.rb#_826c9296: num15
-  _1add3f22:
-    ksu_vn/utils/nesting/pack.rb#_311385c4: bbox3
-  _1b474acd:
-    ksu_vn/utils/view.rb#_b80737a7: panels2
-  _1d78e444:
-    ksu_vn/utils/cutting/loop.rb#_93cdf1dd: h21
-  _223cc36c:
-    ksu_vn/method/xeptam/mirror.rb#_43486b4a: tr5
-  _262dad3d:
-    ksu_vn/method/themtam.rb#_0895e188: bbox2
-  _2d53bc8c:
-    ksu_vn/method/xeptam/mirror.rb#_951e1123: grp6
-  _30e8f323:
-    ksu_vn/method/chontam/pick.rb#_20decd88: entity2
-    ksu_vn/method/chontam/pick.rb#_416f815d: entity3
-  _34e372d8:
-    ksu_vn/method/chongbay/shape.rb#_d5735c13: y22
-  _3798bfa1:
-    ksu_vn/utils/nesting/bilan.rb#_956479e4: panel4
-  _3c5a1066:
-    ksu_vn/system/setting.rb#_59fa8401: id2
-  _40b967e5:
-    ksu_vn/system/setting.rb#_59fa8401: key2
-    ksu_vn/system/setting.rb#_970f3d31: key3
-    ksu_vn/utils/preset/store.rb#_c3a0ce60: key4
-    ksu_vn/utils/preset/store.rb#_d522abbf: key5
-  _44c34410:
-    ksu_vn/method/chontam/pick.rb#_416f815d: transform2
-  _47828201:
-    ksu_vn/method/toiuuvan/back.rb#_51c9eb3d: tr4
-  _4a11002c:
-    ksu_vn/utils/label.rb#_681febe3: grp7
-  _4dab96a3:
-    ksu_vn/method/xeptam/push.rb#_2bff4638: umin3
-  _502cd779:
-    ksu_vn/utils/sheet/reorder.rb#_bb66defe: num17
-  _529cefc7:
+  _10fb1da2:
+    ksu_vn/utils/nesting/corner.rb#_85a7112d: corner2
+  _26af738f:
+    ksu_vn/method/giacong/arc.rb#_7390fc7f: sweep2
+    ksu_vn/method/giacong/arc.rb#_a392037c: sweep3
+  _2c7baf78:
+    ksu_vn/method/giacong/motion.rb#_67ae4821: b3
+  _3194c3e9:
+    ksu_vn/method/giacong/gcode.rb#_38048c58: axis4
+    ksu_vn/method/giacong/gcode.rb#_982fbd9d: axis2
+    ksu_vn/method/giacong/gcode.rb#_b1392e4e: axis3
+    ksu_vn/method/giacong/planner.rb#_a4a49f91: axis5
+  _368daca8:
+    ksu_vn/method/giacong/geom.rb#_3e6ac33b: ix2
+    ksu_vn/method/xeptam/push.rb#_973e5675: ix3
+  _3c248dab:
+    ksu_vn/method/giacong/worker.rb#initialize: arr45
+  _3ce0c341:
+    ksu_vn/method/giacong/canvas.rb#_a5fce86a: z2
+    ksu_vn/method/giacong/chain.rb#_333e280c: z4
+    ksu_vn/method/giacong/chain.rb#_d9ad5b64: z3
+    ksu_vn/method/giacong/gcode.rb#_55ccaa52: z5
+    ksu_vn/method/giacong/motion.rb#_c30cb5a5: z6
+  _3fffe226:
+    ksu_vn/method/giacong/arc.rb#_3f42357e: length2
+  _4653bdf2:
+    ksu_vn/method/giacong/rescue.rb#_545b0203: vec8
+    ksu_vn/method/giacong/rescue.rb#_606dad0d: vec7
+  _4e9c0be1:
+    ksu_vn/utils/nesting/overlap.rb#_f3c73d8f: m_right3
+  _5a647f35:
+    ksu_vn/method/giacong.rb#_481ccbec: key2
+    ksu_vn/method/giacong/worker.rb#_7b0cbc2c: key3
+    ksu_vn/system/setting.rb#_36653d92: key4
+    ksu_vn/system/setting.rb#_b1ac27c3: key5
+    ksu_vn/utils/preset/store.rb#_7fc04147: key6
+    ksu_vn/utils/preset/store.rb#_ed88bb03: key7
+  _6e139895:
+    ksu_vn/method/giacong/planner.rb#_ea8cf664: bb5
+  _7d5d3a34:
+    ksu_vn/method/chongbay/shape.rb#_93f0fd1d: y12
+    ksu_vn/method/chongbay/shape.rb#_cee8f9d1: y13
+  _89b2a450:
+    ksu_vn/utils/pdf/svg.rb#_8d3c9b49: w3
+    ksu_vn/utils/pdf/svg.rb#_9b65e825: w2
+  _9331eec6:
+    ksu_vn/method/giacong/arc.rb#_4b9a835b: r2
+  _a40afc07:
+    ksu_vn/method/chongbay/shape.rb#_93f0fd1d: x13
+    ksu_vn/method/chongbay/shape.rb#_cee8f9d1: x14
+  _b284b884:
+    ksu_vn/utils/nesting/overlap.rb#_f3c73d8f: panel4
+  _bfd42dae:
+    ksu_vn/utils/label.rb#_7079bfb2: grp22
+  _ca3a7dba:
     ksu_vn/method/xeptam.rb#draw: panel3
-  _52f912ed:
-    ksu_vn/utils/label.rb#_665bc239: vec8
-  _5346da19:
-    ksu_vn/method/intem/scan.rb#_9e1d7ab3: parts2
-  _562a89cf:
-    ksu_vn/method/intem/scan.rb#_9e1d7ab3: materials2
-  _5cee69e5:
-    ksu_vn/utils/nesting/pack.rb#_311385c4: dx2
-  _609d76aa:
-    ksu_vn/utils/cutting/loop.rb#_3a1d2466: ix2
-  _63629225:
-    ksu_vn/method/chongbay/shape.rb#_9707d4ab: pt6
-    ksu_vn/method/toiuuvan/engine.rb#_9f684ec0: pt8
-    ksu_vn/method/toiuuvan/postproc.rb#_0579a704: pt10
-    ksu_vn/method/toiuuvan/postproc.rb#_1998c7d5: pt11
-  _7043876e:
-    ksu_vn/method/chongbay/shape.rb#_d5735c13: x23
-  _7525a050:
-    ksu_vn/utils/nesting/edit.rb#_916665cc: transform3
-  _77445f53:
-    ksu_vn/method/chongbay/shape.rb#_37ca7a0d: x26
-    ksu_vn/method/chongbay/shape.rb#_3c222d84: x210
-    ksu_vn/method/chongbay/shape.rb#_5410b01c: x28
-    ksu_vn/method/chongbay/shape.rb#_9608e031: x25
-    ksu_vn/method/chongbay/shape.rb#_a49dca94: x27
-    ksu_vn/method/chongbay/shape.rb#_d5735c13: x24
-    ksu_vn/method/chongbay/shape.rb#_e817297d: x29
-    ksu_vn/method/netcatcuoi.rb#_d5a5cc33: x211
-    ksu_vn/method/netcatcuoi/resize.rb#_23b18b68: x214
-    ksu_vn/method/netcatcuoi/resize.rb#_3066d644: x216
-    ksu_vn/method/netcatcuoi/resize.rb#_fc31c198: x213
-    ksu_vn/method/netcatcuoi/resize.rb#_fec87097: x215
-    ksu_vn/method/netcatcuoi/resize.rb#_ff3778ab: x212
-    ksu_vn/method/toiuuvan.rb#_ce5c626c: x217
-    ksu_vn/method/xeptam/mirror.rb#_101ef2e3: x218
-    ksu_vn/utils/pdf/svg.rb#_af903e02: x219
-    ksu_vn/utils/view.rb#_0b8e9c29: x220
-  _8a52ae64:
-    ksu_vn/method/chontam/pick.rb#_68d73ae7: h9
-    ksu_vn/method/chontam/pick.rb#_9277e941: h15
-  _9289490a:
-    ksu_vn/method/intem/scan.rb#_9e1d7ab3: h16
-  _9b84c914:
-    ksu_vn/method/netcatcuoi/resize.rb#_fec87097: y23
-  _9d8b43d7:
-    ksu_vn/method/thongke/xuat.rb#_a105a0f4: num13
-  _a6d5a081:
-    ksu_vn/method/xeptam/mirror.rb#_951e1123: h19
-  _b7e9acbc:
-    ksu_vn/method/nesting/draw.rb#_e85e6194: grp5
-  _c477bd6e:
-    ksu_vn/utils/nesting/pack.rb#_311385c4: dy2
-  _cefe7468:
-    ksu_vn/method/xeptam/collide.rb#_9b1924b8: h18
-    ksu_vn/utils/nesting/pack.rb#_26b5a6fd: h23
-  _fae1d475:
-    ksu_vn/method/xeptam/drag.rb#_98834989: vec7
+  _d0088db6:
+    ksu_vn/method/nesting/launch.rb#_7c10fe07: i2
+    ksu_vn/method/toiuu.rb#_ff2bddfb: i3
+    ksu_vn/utils/nesting/corner.rb#_81795983: i4
+  _d0258341:
+    ksu_vn/method/giacong/canvas.rb#_49c18bc2: text2
+  _d0e2f6ec:
+    ksu_vn/method/giacong/gcode.rb#_94c5a531: first2
+  _eca45f22:
+    ksu_vn/utils/cutting/detail.rb#_5fb27cb4: depth2

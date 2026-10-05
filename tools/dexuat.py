@@ -126,8 +126,10 @@ def main() -> int:
 
     # tenauto.yml is this tool's own output. Reading it back as "already
     # done" would make a rerun propose almost nothing, so it is left out and
-    # regenerated whole each time.
-    mapping = load_dicts(["sinhdoi.yml", "ten.yml"])
+    # regenerated whole each time. sinhban.yml IS read: a name carried off the
+    # previous release is the author's word, and proposing a data type over it
+    # would replace something known with something merely measured.
+    mapping = load_dicts(["sinhdoi.yml", "sinhban.yml", "ten.yml"])
     done = set(mapping)
     proposals: dict[str, dict[str, str]] = defaultdict(dict)
     n_scope = n_name = 0

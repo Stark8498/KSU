@@ -1,0 +1,3674 @@
+# Sinh boi tools/sinhban.py -- ten chuyen tu cay KSU 2.1.5.
+# Moi phieu cho cac ten nay deu nhat tri.
+# `ten:` la chu tac gia go (2.1.5 giu o ten.yml/sinhdoi.yml).
+ten:
+  _0008cec3: draw_rect
+  _000bbcf7: bottom_target
+  _000dca3f: dist2_to_seg
+  _0026547b: import
+  _0037e489: jump
+  _003ab64b: cluster_parts
+  _004eced3: find_spot
+  _00a00990: id2
+  _00ec7c5e: sheet_labels
+  _00ef8993: ax
+  _01023e78: renumber_panel
+  _0120ae14: banding
+  _0131394b: poly_a
+  _01579e89: went_free
+  _016675b8: bound_here?
+  _0176b6ab: postpass_tick
+  _017cd800: inside_hole?
+  _0183b2c7: buttons
+  _01969261: refresh_now
+  _01be8e47: list_hinge
+  _01d272e5: inside_at?
+  _01f7f04d: abf_kids
+  _02125628: eix
+  _02142430: active_fn
+  _022cf37b: jobs
+  _02a166fd: size2
+  _02a1ad16: corner_index
+  _02b82ead: rx1
+  _03018fe6: move_to_sheet
+  _031ac912: prev_tog
+  _035410f9: two_face
+  _035baab0: gap2sq
+  _037adc19: prompt_activate
+  _03ae1263: can_rotate
+  _03b9c2c5: main_face_color
+  _03c6b151: layer
+  _03cf1118: draw_band
+  _03d457a4: edit_key
+  _03dfc634: radius
+  _03e31044: run_attach
+  _03f93ffe: edge
+  _04126ca8: rgb
+  _04360901: view
+  _045d470f: id_str
+  _04682f8b: preview_plan
+  _046ceece: free_rects
+  _047ba3f3: root_of
+  _0484b0f4: edgeband_list
+  _0486ceef: list_connector
+  _04998a1c: stop_labelling
+  _04a31f16: panel_fill
+  _04adac52: switch_mode
+  _04bb6b50: lowest_ix
+  _04c940f8: restore_perspective
+  _04ce3e9d: close_color_picker
+  _04e286f1: a0
+  _04eb3ae1: rotate_labels
+  _05097a0f: box2
+  _05360a36: seg_cross_t
+  _055bbac6: slot_map
+  _0572c9cd: job
+  _0574ff7a: "on"
+  _0579a704: panel_loops
+  _0594906a: used_area
+  _059911d6: b1
+  _05bdbd5e: depth_len
+  _05c18602: any_rot
+  _05c58a7e: card_alpha
+  _05db0924: update_drag
+  _05f5ca23: update_preview
+  _060f4b4f: centroid
+  _0629f867: ry1
+  _0638a063: orders
+  _065872d1: postpass_tick
+  _0659e807: xf
+  _066d5e5a: drop_id_cache
+  _06a12be0: board_like?
+  _06a8054e: movable_from_later
+  _06c10425: choice
+  _06fb7ec6: draw_mode_hint
+  _070d58e1: world_tr
+  _074805cc: place_overwrite
+  _074e3371: simplify_bulge
+  _07793a9e: screen
+  _07854d35: merge_group
+  _079fc74d: v_min
+  _07ac8b13: kind
+  _07d6adce: deg2
+  _07e5e7fc: commit
+  _07eaaf5b: dos_t
+  _08019739: gap_y
+  _080e1e07: best_e
+  _08233e30: margin_rows
+  _08371313: p_corner
+  _0864775c: bot
+  _0869f663: by0
+  _086b9b67: place_move
+  _087e83f0: last_cut?
+  _08814cba: skip
+  _08a277c5: list_statistical
+  _08cbc5c3: inv_tf
+  _08d042dc: style_memo
+  _08df77aa: model
+  _09127f42: p_pressed
+  _091b9335: base_name
+  _0934cd90: suffix
+  _0948346b: clear_screen_cache
+  _096c8c23: my
+  _09985d6c: save_last_cuts
+  _09c5f135: cols_xml
+  _09ce1072: apply_numbers
+  _09d34bf2: sub
+  _09d9dd5a: apply_case
+  _09ed3952: free_at
+  _0a0f44aa: _part
+  _0a2694fe: pack_sequence
+  _0a280b64: a3
+  _0a2ddbdd: eby
+  _0a2e2464: tf4
+  _0a361751: pminy
+  _0a363616: reset_try_cache
+  _0a56875d: reset_scan
+  _0a621fa3: disp
+  _0a66336c: cancel_cache_build
+  _0a69c089: pick_boards_in_rect
+  _0a6b403b: cross2
+  _0a6c011e: queue
+  _0a6d8438: side_from_prefix
+  _0a7165c9: pid
+  _0a764f6f: build_html
+  _0a802239: id_hash
+  _0a93abab: load_side_margins
+  _0aaa004f: txt3
+  _0aff7c5f: activate_key
+  _0b238aa0: stroke_w
+  _0b246bc2: down_y
+  _0b422640: corner_handle_at
+  _0b80f800: panels_in_box
+  _0b8b09ae: closest_on_seg
+  _0b94c0f7: group
+  _0bbb28e1: invalidate
+  _0bdf91a4: click_outside
+  _0be20d24: color
+  _0c03b0c8: edge_band_desc
+  _0c084a37: pack_plain
+  _0c15087d: obj
+  _0c328c87: button_plan
+  _0c50039f: drills
+  _0c5a9bcb: knob_r
+  _0c71240c: do_move
+  _0c84a241: hull
+  _0c8b8a0e: dist2_to_seg
+  _0c91518b: polys_overlap?
+  _0c9f4061: activations_left
+  _0ca14dae: used_area
+  _0caa77e7: order_tools
+  _0cc97bfd: ccw
+  _0ceb741f: last_cut_parts
+  _0d285fa2: reset_state
+  _0d36cc5e: draw_panel_bg
+  _0d5783e4: drop_back
+  _0d8af3e5: symax
+  _0da222bc: threshold
+  _0da2c57a: slot_rects
+  _0dbb2ec6: draw_lock
+  _0de02fc6: normalize_group
+  _0df6b9fc: label?
+  _0dfb35cf: load_overlay_settings
+  _0e1e2ea8: fld_bbox
+  _0e30cf21: vals2
+  _0e3b0c65: label_pair_at
+  _0e51fb29: percent
+  _0e562d87: apply_two_sided
+  _0e6f8149: ry
+  _0e7344a8: avail_key
+  _0e7bed62: load_all
+  _0e909b87: ensure_sheets
+  _0e9af5f9: prepare_model
+  _0ed68c30: sheet_at_screen
+  _0ef2a27d: container
+  _0f0ce717: ccw3
+  _0f11251b: size
+  _0f1bcb43: centroid_pt
+  _0f6d03f7: drop_sheet
+  _0fbc7c56: round_lengths
+  _0fdf11cb: sel
+  _0fe26c5f: sheet_under
+  _10248dd2: tidy_sheets
+  _1026a700: rotate_sel
+  _10450d85: clear_preview
+  _1053c5f0: dist
+  _1084f333: start
+  _109085a4: plan_side
+  _10ba6e79: payload2
+  _10c8d42f: drop_id_cache2
+  _10d77b2c: groups
+  _10de43c8: partner_of
+  _10fb1da2: corner
+  _1123b581: style
+  _11554dfd: errors_in_selection?
+  _117833de: color
+  _118b9038: segments
+  _11ac099d: dragging?
+  _11ad1327: write_circle
+  _11d41cdc: prev_part
+  _11e34195: list_sheet
+  _11e53c5d: bbox_top
+  _11e8ceb9: panel_tr
+  _11efe8e4: grp
+  _1228bd86: all_roots
+  _125efe52: inner_rect
+  _126ba8ce: progress
+  _12704935: a1v
+  _129cadac: back_of
+  _12a81626: box_pts
+  _12e6068a: model_dir
+  _12edb4b7: request
+  _1304a668: pack_handle
+  _1310153c: sheet_of_board
+  _1318d128: machine_id
+  _133913e5: pair
+  _133ee34f: style2
+  _13730005: nesting_root?
+  _13764272: holes
+  _137797da: modes
+  _1377d7cd: pack_two_sided
+  _138222d2: cache_finish
+  _13be0bef: label_hit
+  _14184f07: pack_all_to_corner
+  _143757f7: stop_timer
+  _1456a3ad: plan
+  _14767bd7: same_pt?
+  _148d9a5b: settings
+  _14940fd8: bounds
+  _149c4216: want
+  _14c8b135: panels_on
+  _14c95863: lasso_plan
+  _14d33a95: inst4
+  _14e05dda: begin_resize
+  _14f3d034: tr0
+  _14f72be7: usable_w
+  _1502ac44: hide_originals
+  _15150f40: enter_edit
+  _1534afc9: active_ix
+  _156474c7: ivar
+  _15657cf2: clear_twin_preview
+  _1567e64a: label_box
+  _15768669: max_sheet_no
+  _1582afc5: field_defs
+  _15c3e8fa: resp
+  _15de8eaa: point_in_part?
+  _15e9a852: unit2d
+  _1600590d: slide_dist
+  _1602bc51: slot
+  _160ad88e: draw_cross
+  _1614616b: collect_kids
+  _161ba319: url
+  _162ecd46: msg2
+  _163d59ce: preview_sel
+  _163df9b2: enter_top_view
+  _16414b66: dict
+  _164a615b: select_sheet
+  _165ba7d1: rgb
+  _165ca851: tr_b
+  _165f1558: draw_corner_handles
+  _166c1cc4: lyy0
+  _16968535: gap_for_side
+  _16ad80b6: skip1
+  _16f1ba59: next_src
+  _1709e79b: export_file
+  _170d531e: label_data
+  _171fcdd5: draw_presets
+  _172e3de9: set_status
+  _17304a20: cut_outline
+  _174b1ebc: pi
+  _175bc002: by1
+  _1779822a: rect_inside?
+  _177cf234: label_timer
+  _1798446e: p2
+  _179db7c2: last
+  _17a25ff9: bbox
+  _17a4f8f8: align
+  _17a9fe8d: rec5
+  _17baad99: draw_rect2d
+  _17ce1c70: rank_from_attr
+  _17ebdc32: px
+  _17fa94cb: m_right
+  _1800aad2: _x_bi_lan_polys
+  _180fac1c: nx
+  _184244dd: optimize_sheet
+  _18543c93: poly_a
+  _185b8ae9: limits
+  _187603b2: sheets_by_stock
+  _189b556c: row_h2
+  _189e077d: addon_data
+  _18cdd064: point_in_poly?
+  _18eb97e8: list_edgeband
+  _19207ec9: cur_pt
+  _192f6693: build_lines_group
+  _1966a4ec: reset
+  _1990614e: label_tick
+  _1998c7d5: panel_origin
+  _199decfe: up_face
+  _19b16267: compact_nfp
+  _19f19f1c: set_layer
+  _19ffeb75: plan_corner
+  _1a163d7c: needs_extra_gap?
+  _1a17a2a6: plan_score
+  _1a199b0f: pick_board_at
+  _1a32ae80: sample_axis
+  _1a400713: movable?
+  _1a458d1c: nesting
+  _1a5b001d: offset_polys
+  _1a63cbde: simplify_loop
+  _1a6b98a3: visible_fields
+  _1a736431: draw_modes
+  _1a8fe22c: tf3d
+  _1aa55513: set_binding
+  _1acf2d40: ents
+  _1af2235f: cur_rec
+  _1b08104a: hull
+  _1b450a65: field_layout
+  _1b46b2bf: mark_labeled_face
+  _1b4eee3f: y_hi2
+  _1b55fe3b: draw_switch
+  _1b5c3afc: move_sheet
+  _1b711e37: rot_poly
+  _1b725422: snap_preview
+  _1b90e49c: model_dir
+  _1ba7e2d0: tr
+  _1bafd700: hover_rec
+  _1bba59fa: load_slots_json
+  _1c247542: pick_on_plane
+  _1c329d8e: parse_indices
+  _1c4e6a41: both_front
+  _1c8d8067: material_text
+  _1c90c6a5: fmt_value
+  _1ca99657: poly_b
+  _1cac2b90: hdr_box
+  _1cb11a43: limits
+  _1cb4f865: drop_temp_layers
+  _1cbb8718: title_col2
+  _1cc9607d: world_bbox
+  _1ccce4fb: width_mm
+  _1cdba2d3: run_engine
+  _1ce7caaa: tkey
+  _1cf4a9be: instance
+  _1d0e0c9c: rels_xml
+  _1d146934: front_face
+  _1d20ebdf: cutting_group
+  _1d2d18b7: outer
+  _1d2de643: draw_borders
+  _1d4bdb92: open_window
+  _1d5e7795: pts
+  _1d75ddb6: palette
+  _1d7997eb: ctrl
+  _1d7af87b: reload_settings
+  _1d8fd56a: restore_free_mode
+  _1d9bcdf1: oy0
+  _1db00702: outline
+  _1db9fb3a: pack_plain_again
+  _1dbbb3bc: x12
+  _1dc740c5: field_colors
+  _1dc94a7d: sort_key
+  _1de47b4b: ddx
+  _1e000ab6: licensed?
+  _1e010701: select_parts
+  _1e032d4d: inset_of
+  _1e3fa60c: next_type
+  _1e62355e: hovered
+  _1e71be9d: arrow_sizes
+  _1e77347e: draw_outline
+  _1e7e9c61: handle_action
+  _1ec1f6ac: arc_octant
+  _1ec2d531: last_cut?
+  _1ee582a0: load_data
+  _1eeb83e8: switch_tool
+  _1f34a5f2: drain_jobs
+  _1f46ddf6: draw_warn_button
+  _1f4ca43e: sheet_list
+  _1faaf2b0: sheet3
+  _1fadcde3: decrypt
+  _1ff4cc8f: text_strokes
+  _2003a262: lines
+  _20106731: pt
+  _2029ac85: hover_edge
+  _20416ada: layer2
+  _2043ce68: fill_circle
+  _2045c85a: a1
+  _206bd320: cutting
+  _207282f4: view
+  _2099f5d2: usable_h
+  _20a5ae03: label_finish2
+  _20addb4e: dot
+  _20bf5295: b
+  _20c319d6: is_sect
+  _20ca4ec8: col_name
+  _20d1cce0: labelling
+  _20e6a729: back_sheet
+  _210c140d: entities_in
+  _2112b769: sel_bb
+  _21322624: center_of
+  _21387ecf: max_eb
+  _219a873c: len2sq
+  _21a20d66: usable_h
+  _21bb6a31: hover
+  _21eae3f6: rects
+  _21ebdd64: list_intersect
+  _21f17035: shift_bottoms
+  _222e0457: panel_two_color
+  _22616e9e: selected_roots
+  _2268032b: wmi
+  _22866a7a: err_pts
+  _22b9f974: rx1
+  _22d95063: rect2
+  _22fb97d1: panel2
+  _23007e34: node
+  _2366c00c: license_gate
+  _236d145c: pressing
+  _236d413a: align_to_corner
+  _236e5b98: collect_failed
+  _23724037: overwrite_at
+  _23b18b68: edge_blocked?
+  _23c1a526: free_slide
+  _23d70e90: pack_batch
+  _23daa0a2: two_sided_flags
+  _23daa580: rightmost
+  _23ea970c: draw_rect2d
+  _23f07aa1: rebuild_preview
+  _2400b4d5: sec2
+  _241250b0: label_pair_of
+  _245e1bad: simplify_loop
+  _2471b63d: src
+  _247e399b: bound_here?
+  _2482e2e8: rebind_license
+  _24863b11: loops_mid
+  _24a70c6f: push_back
+  _24c1c612: uy2
+  _24c1c69b: off_y
+  _24c6176a: convex?
+  _24c6eb99: large_size
+  _250a50d9: segments
+  _2514ca75: outer_pts_of
+  _25324bd3: sheet_no
+  _256c1c9c: cx
+  _256cdef5: drop_sheet
+  _25ba481c: txt
+  _25d3e1cb: margin_rows
+  _25fd3620: layers_txt
+  _2695dd0b: read_license
+  _26af738f: sweep
+  _26b42f98: movable_kids
+  _26f70c6b: bar
+  _26f76db2: rotated
+  _26fd30ab: slide_in
+  _2702a623: in_poly?
+  _27161c40: h
+  _271ab43e: ox
+  _27265ced: color_components
+  _272df772: apply_numbering
+  _27509183: presets2
+  _2763c3ca: thick
+  _27657ff5: space_w
+  _27846c89: is_border
+  _278dd154: cols_xml
+  _27bbfd6a: apply_order
+  _27d0d999: panel_group_color
+  _27dd4655: http_get
+  _27e67ed4: swap_sheet_type
+  _27ecfdd1: sheet_border?
+  _27f59084: bottom
+  _2808e8d4: base
+  _28110dd3: boxes_overlap?
+  _281145cc: lw
+  _2820ff2a: x_hi2
+  _28470268: ly0
+  _284a8828: tri_col
+  _2873a79b: draw_corner_handles
+  _287c315e: volume_id
+  _2894cc94: edge_bounds
+  _28a699c9: start_optimize
+  _28b4650b: row_caption
+  _29042262: keys
+  _2924baf5: tf
+  _293d0d73: gx
+  _29414776: d2x
+  _2947f9af: reorder_step
+  _29564695: copy_panels_into
+  _296e93c5: begin_drag
+  _298e1bf8: cluster_points
+  _29912042: refresh_overlays
+  _299625ab: allow_rot
+  _299837c7: conv2
+  _29befbdb: rotate_allowed?
+  _29c60454: inst5
+  _29cd4072: poly_tris
+  _2a17c1f0: part_suffix
+  _2a30959c: rank_color
+  _2a38fff6: board_index
+  _2a3cda6e: write_license
+  _2a49460f: nest_panel?
+  _2a5303e0: moved_bb
+  _2a5aa0d0: mid
+  _2ad0c895: cd1
+  _2ae35bad: ccw
+  _2af0836f: reset3
+  _2af6e40a: depth
+  _2b061327: drop_grid_cache
+  _2b17a799: ascii_name
+  _2b2688af: place_pair
+  _2b28dbe4: xref_at
+  _2b47396a: all_roots
+  _2b4b47fe: world_tr
+  _2b5bb589: save_selected_preset
+  _2b6ac1cc: edge_at
+  _2b74cb21: http_fetch
+  _2b7e2b9d: collect_cfg
+  _2b9a1087: icon
+  _2ba9997a: drop_from_selection
+  _2bc1f42b: sel_hull
+  _2bf470d1: sharp_pts
+  _2c2ee5ef: back_face2?
+  _2c4a47df: pt_key
+  _2c4b45ec: stroke_w
+  _2c4b56de: draw_hover
+  _2c5b972b: group_id_of
+  _2c5c84bd: has_last_cut?
+  _2c60071c: screen_pair
+  _2c6bd280: layer_for
+  _2c6d6ed6: theo_vung
+  _2c97975b: material_rgb
+  _2cb574aa: keep
+  _2cc4f7ce: src
+  _2cc9dbef: label_step
+  _2ce426b2: unit_to
+  _2cf0a5a6: nfp_on
+  _2cf31cc5: save_drills_desc
+  _2cf6d3a4: align_to_corner
+  _2d01dec4: arc_center
+  _2d115f82: draw_lines
+  _2d26e446: board
+  _2d57d861: buttons
+  _2d7fbd26: nfp_for
+  _2d8ef4f0: fixed
+  _2da557f6: pair_from_label
+  _2dcc5586: pack_to_corner
+  _2e064a74: itf
+  _2e113abe: small
+  _2e351df2: postpass_finish
+  _2e45eff8: erase_partner
+  _2e461205: pname
+  _2e87bab1: sx2
+  _2e8d968a: cand
+  _2e8fe335: sel_hulls
+  _2e925442: bot
+  _2e9e36aa: scan_loose
+  _2eb86cf0: draw_sweep_arrow
+  _2ed308d6: dialog_open?
+  _2f05f4ff: flat
+  _2f182f4b: moving_span
+  _2f2b57b2: modifier_down?
+  _2f428a6c: near_outline?
+  _2f5c388d: anchor_pt
+  _2f65087e: angle_between
+  _2f69e03d: material_rgb
+  _2f9cec37: load_optimize_settings
+  _2f9ef0d5: remove_sheet
+  _2faff39e: circle
+  _2fd276ee: kids_with
+  _2febc7df: sheet_grp
+  _30057963: corner_seeds
+  _302ced66: dxf_color
+  _3034e72b: rank_lasso
+  _3048fef3: axis_x
+  _304f64a3: shift_to_corner
+  _3066d644: clamp_to_panels
+  _309d5b73: descent
+  _30a49af3: start_x
+  _30a51d11: pad_id
+  _30ad2db3: bottom_for
+  _30b1e202: out
+  _30c22f18: ok
+  _30cceb4f: relabel_each
+  _30f8f017: score
+  _30fe1d49: kids
+  _30fecf9a: hover_del
+  _310eaeeb: build_panel
+  _311385c4: place_panel
+  _31154358: escape_dir
+  _3117450a: bottom_of
+  _3121db29: hull_of
+  _31281784: overlay_holes
+  _314a4d5f: load_ranks
+  _31520ee6: max
+  _3161186f: entry_for
+  _316af6ea: disk_serial
+  _316c15fd: row_size
+  _31703f3f: instance
+  _319513d3: set_selection
+  _31a659b3: ents
+  _31abbe38: draw_job
+  _31cf2b75: hit_sheet_top?
+  _31de37f1: box_w
+  _31e7c5ef: intersect_length
+  _31eafa5f: parts_sheet
+  _31f9d913: empty?
+  _321af09d: back
+  _322371f0: len_out
+  _3223d6d7: ly
+  _323ef0cf: val
+  _32415d7c: reload
+  _324935bd: origin_mm
+  _32500401: sel_sheets
+  _325ec86b: label_total
+  _3284350c: export_request
+  _32891018: lx
+  _328de04c: uy1
+  _32afa2e2: b0v
+  _32be1d4b: label_group
+  _32d745dd: x
+  _32ed5295: copy_layer
+  _3307792a: span
+  _3309e7e2: panels_in_rect
+  _334f7935: attrs_a
+  _338095a5: knob_pts
+  _338cd6fa: meta
+  _33953e76: top
+  _33a59978: ly
+  _33a88aa5: clear_license
+  _33aa68d7: deg4
+  _33bf5175: draw_loop2d
+  _33d1ed1c: eoff_y
+  _33d899af: p2
+  _33df7234: sgn
+  _33ed4845: open_dialog
+  _3413369f: caret
+  _34186752: borders
+  _3420d496: draw_fields
+  _3431a152: panel_cells
+  _343849f1: show_count
+  _343b543c: walk_pick
+  _3446bcde: digits
+  _344cb5c6: refine_on
+  _344e8320: reload_sheets
+  _3453d1c5: hair
+  _348223d9: online?
+  _34a63882: usable_w
+  _34c2cd89: track_button_hover
+  _34e2321b: num
+  _3529959a: delta
+  _354ceec5: track_panel_hover
+  _35866fcd: draw_editing_rank
+  _3597f7f9: icx
+  _35c2c696: convex_hull
+  _35da05ff: tool_key
+  _35e28d8c: prev_persp
+  _35eaf4a5: rec_by_def
+  _35fcd680: lx
+  _35fed0fe: lo
+  _3605f4de: select_group
+  _36653d92: bind_callbacks
+  _3668c330: build_snap_grid
+  _3686a0a1: save_all
+  _368daca8: ix
+  _36ce6da6: py
+  _36d8b3e1: members
+  _37011ad2: update_hover_sheets
+  _37082e9a: edge_weight
+  _3716a92f: draw_loops
+  _371a5162: part_tf
+  _3732a49d: refresh_fill_colors
+  _375e3f1f: file
+  _3761ab11: inject_addons
+  _3773cacb: dist
+  _377cf8ae: rect_of
+  _377fddf8: update_hover_sheets
+  _37865914: hdr_len
+  _378701e1: gap_face
+  _37951803: ub
+  _3799d522: panel_at
+  _37aee0a0: solve_async
+  _37dec46e: busy?
+  _37e96ea1: entry
+  _37eed696: edge_band_colors
+  _37f95db5: panel_guides
+  _3806343c: opts2
+  _380c9db0: build
+  _3844ae34: side
+  _385d9f74: data_dir
+  _386ad6c5: material_for
+  _38b05e7a: center
+  _38bca22d: try_fill
+  _38cb36f5: pack_to_row_start?
+  _38d9b629: vside
+  _38e0f0c5: ux2
+  _38ef4a40: bulge
+  _38feb1ca: pack_value
+  _39219165: touched
+  _392fc6d1: materials
+  _3946025d: cache_build
+  _3957a74f: snap_point
+  _396347f1: colors
+  _396a7c76: si
+  _396b8871: pressed
+  _3976dc8c: strip_thickness
+  _397b83d6: strict
+  _39ccfb1a: mx
+  _39d3919c: drag_end
+  _39e175ea: segments_cross?
+  _39e34851: flags2
+  _39f3428e: has_back?
+  _3a43652b: bx3
+  _3a5ef45c: off_y
+  _3a693588: by1
+  _3a7152c1: override
+  _3a74d044: node4
+  _3a930069: down_x
+  _3a9c68f7: pack_plain
+  _3a9e84bf: parts_sheet
+  _3aa64f68: x_hi
+  _3ab2658c: front_panel?
+  _3ae7d424: to_sheets
+  _3aed5e79: dragging?
+  _3b01098a: draw_polygon2d
+  _3b1b189d: curve_pts
+  _3b35d8d4: arrow_padding
+  _3b6497da: proj_t
+  _3b6f0ddc: world_tf
+  _3b76d3c7: j
+  _3b8d4426: min_x
+  _3b917509: closed_loop?
+  _3b94b22f: moved_panel
+  _3b981bf6: sheet
+  _3bda886f: shift_nfp
+  _3bf29a53: rep
+  _3bf2f06c: cy1
+  _3c174b26: cursor_for
+  _3c1ec5f7: grow_mm
+  _3c212ebb: eay
+  _3c21d1c3: chord
+  _3c4a889c: simplify_poly
+  _3c5a1066: id
+  _3c8ddcf6: normal
+  _3c8de5b3: panel_tf
+  _3c8ec851: only_keys
+  _3c90d8ca: clamp_move
+  _3c930a08: prev_perspective
+  _3c93c142: start_optimize
+  _3cdbe8f2: timer
+  _3cf156ab: ui
+  _3d19a088: finish_run
+  _3d31bd1b: outer
+  _3d3403dc: worst
+  _3d727cd5: pack_native
+  _3d753406: delete_sheet
+  _3d7c9b5b: edge
+  _3d7e4edf: pad2
+  _3d8716e0: draw_polys
+  _3d89160f: sync_back
+  _3da15afd: rect_hit?
+  _3dd8936c: sheet_recs
+  _3dfc9a94: cut_panel?
+  _3e09eebf: xor_byte
+  _3e1d5f51: hole2
+  _3e2eee15: cancel
+  _3e453efd: mx
+  _3e503214: label_ctx
+  _3e79d579: number_plan
+  _3e8c3df1: p4
+  _3e9499f6: px
+  _3ebe80f1: seg_crosses_poly?
+  _3ec6f6fd: commit_field_input
+  _3f068781: poly_bounds
+  _3f3406d2: add_edgebands
+  _3f421264: px1
+  _3f7bec59: rebuild_geom
+  _3f8c0a15: draw_button
+  _3f9829f0: handle_action
+  _3fab5d20: auto_hover
+  _3fc60686: add_mode
+  _3fccea3f: drop_from_sheet
+  _3fe7c4d4: slot_for
+  _3ff0bf90: obs
+  _3ff44ed8: large
+  _3ffee840: default
+  _401d4cf4: partners_of
+  _406a674c: slot
+  _4086a07e: set_layer
+  _409179ee: tip
+  _40b967e5: key
+  _40d043ed: reload_settings
+  _40d1ba61: gi
+  _40da70b3: back_sheet
+  _40df5350: panel
+  _41054d47: board_record
+  _41281c00: read_result
+  _413f53f3: build_overwrite_preview
+  _4164f0d2: in_plan
+  _416e5f49: in_operation
+  _41c65675: tf
+  _41e74def: parts
+  _41e883fc: send_to_dialog
+  _41f94b3e: overlaps
+  _423204c3: nfp_into
+  _42791332: uy1
+  _427a36cb: on_place_progress
+  _42983db3: panel_origin
+  _42d15a38: copy_attrs
+  _42d60de9: postpass_finish
+  _42d93168: vside
+  _42eccef8: add_buttons
+  _430abfdf: end_drag
+  _4311cee6: moving
+  _433ace62: zero_pad
+  _4342ff3f: side_of
+  _4382c9c6: lo
+  _43910408: hover_sec
+  _4391be62: corner_code
+  _43a12c4f: do_move
+  _43abb730: opt_sheet
+  _43c970b4: points
+  _43cd1441: ny
+  _43d2bd40: free_spot
+  _43de25f3: lp
+  _43e5b695: on_dialog_action
+  _43e9100a: handle_field_key
+  _441bafde: hover_overwrite
+  _44400df2: b1x
+  _44487c1f: minkowski_convex
+  _44798e5e: free_rects
+  _44a5d1aa: step_order
+  _44b3078b: v
+  _44de6472: dash
+  _44e1b7ca: ang
+  _44e516ee: job_list
+  _451af86f: bracket_hit
+  _451deb17: hole
+  _45ad24a2: poly
+  _45e9b533: license_ok?
+  _45f6233d: sheet_rec
+  _460ef7b6: clearing
+  _46272224: watched_model
+  _46279528: group_poly
+  _46300933: name_b
+  _463274cd: button_at
+  _465cb2cd: pack_to_edge
+  _46751c8f: sheet_area
+  _4689a9a4: action
+  _46a085c4: w
+  _46a6e6c4: draw_sheet_buttons
+  _46b10931: cmap_stream
+  _46b63b3b: points
+  _46b6e05a: drag_rect
+  _46b90971: workbook_xml
+  _46bc8680: panel_bbox
+  _46cf995f: centroid_pt
+  _46f282a4: round_sums
+  _47425eda: data
+  _47593deb: b
+  _476d34cb: solo
+  _477c927d: best
+  _47e1a53e: find_nesting
+  _47eba6dd: draw_brackets
+  _4800f149: collect_parts
+  _48026d7a: serial_key
+  _4806e331: select_one
+  _483db43a: draw_bands
+  _483fb9a0: build_add_buttons
+  _484b8ee1: prev_field
+  _485604e1: lv
+  _485742ca: overlay_of
+  _485f8a85: commit_rect
+  _48819827: saved_hulls
+  _4881f62c: b2
+  _488638cf: best_s
+  _488f56db: prev_type
+  _48a39ca3: off_x
+  _48cb92a4: u2
+  _48d1e09e: next_part_sheet
+  _48d2587a: panels_of
+  _48eedee8: oy2
+  _48fb0866: quad
+  _4902b6dd: pressed
+  _4913f6bf: ext_y
+  _4925ff0d: saved_free_mode
+  _49381455: edit_field
+  _49419dbf: dlg3
+  _498bb26a: select_sheet_id
+  _499355c6: parse_rows
+  _499fa4a5: sheet_type
+  _49f3acf7: simplify
+  _4a020b2a: abort_run
+  _4a309587: valid_key_format?
+  _4a40d27f: saved_hull
+  _4a69eb18: inst2
+  _4aa713ad: draw_fields
+  _4ac4c12f: deactivate_now
+  _4ada6475: handle_color
+  _4ae1e5d9: sheet_xml
+  _4ae74156: skip_layer?
+  _4ae83c96: sel_snapshot
+  _4aecf201: deactivate_error
+  _4b157f8b: trai
+  _4b29d114: err_code
+  _4b32ef0d: deactivate_now
+  _4b34a838: apply_numbers
+  _4b4abb2c: row_of
+  _4b5f6701: m_left
+  _4b6ac4b0: machine_id
+  _4b824d9e: ver
+  _4baa9c68: thick_mm
+  _4bbc314a: longest_free_y
+  _4bc29054: seen3
+  _4bc2cd42: each_sheet
+  _4bed79e1: offset_in
+  _4c0377bd: cut_outline
+  _4c0f89e3: hit_delete_button
+  _4c1037be: try_fill
+  _4c155387: row_ix
+  _4c1a61fd: attrs_b
+  _4c2c063f: build_jobs
+  _4c4084be: box_axes
+  _4c541df4: txt_w
+  _4c7ed6d8: shift_sheets
+  _4c865150: cells
+  _4cad91cf: outer_item
+  _4cb40ee3: members
+  _4cbed13a: rings
+  _4ccd80f7: a0v
+  _4ccd9eed: p3
+  _4cde1d30: number_plan
+  _4ce596b6: repeat
+  _4ce5fd59: seg_x2
+  _4cf67c39: c
+  _4d1296c0: arm
+  _4d1bd02d: layer_flags
+  _4d40a762: label_hover
+  _4d4ef574: head_off
+  _4d54f14b: prev_perspective
+  _4d629971: p1
+  _4d87bf0a: loops
+  _4da3a89b: half_width
+  _4db09033: write_dxf_files
+  _4dd2bf01: hi
+  _4ddd2590: translate
+  _4df6b4ea: in_operation
+  _4e0e7ea7: neighbor
+  _4e1433f6: prune_bottoms
+  _4e23f6d8: hit_preset
+  _4e28e9fe: suffix2
+  _4e454029: knob_x
+  _4e630862: offset
+  _4e73ad6e: kids_with
+  _4e7503c1: layer_for_side
+  _4e7778b2: merge_rects
+  _4e8cbee3: walk_arc
+  _4e9c0be1: m_right
+  _4e9ff4cb: apply_settings
+  _4ec1b153: optimize_done
+  _4ed2ca52: cells
+  _4ee22c90: save_binding
+  _4ee58c26: added
+  _4ee7de1d: container
+  _4eeae396: board_faces
+  _4f14d3dd: tri_cache
+  _4f1ac9bd: clear_cache
+  _4f2eda33: flip_label_face
+  _4f474607: dispatch
+  _4f4e2889: auto_plan
+  _4f59f5ad: cut_loops
+  _4f9464e8: panel_from_path
+  _4f9de245: keys
+  _4fb511c1: total
+  _4fbe9584: screen_box
+  _4fbee074: rebuild_dims
+  _4fc4875e: prev_sec
+  _4fcf5547: lvl
+  _4febf55d: start_caret_blink
+  _4ff91bd7: tried_keys
+  _506bc226: bbox
+  _5098bf42: apply_preset
+  _50a27dc5: nesting_root
+  _50c009d9: begin_resize
+  _510ee458: edge_band_lines
+  _511c759e: rx2
+  _5132c837: ensure_file
+  _5134c34c: mirror_pos
+  _513b6595: poly
+  _513e6514: prev_sheets
+  _5162d060: saved_offset
+  _51672078: keep_existing
+  _518f221e: bf
+  _51969f67: sheet_w
+  _519823be: sel2
+  _519ffe7a: on_progress
+  _51bea8be: dir
+  _51c2806e: clear_hover
+  _51c9eb3d: place_mirror
+  _51ca6dc8: activate_here
+  _51cd1200: sheet2
+  _51d53976: ty
+  _522da39c: p_edge
+  _522e5d07: nfp_rings
+  _523d4e34: show_originals
+  _52451b6c: pickable?
+  _525f4c34: rebuild_all
+  _52ad35be: pz
+  _52c178c0: hide_last_cuts
+  _52c97e1b: select_tool
+  _52cf7ee0: make_unique_all
+  _52d3437f: inset_of
+  _52e89e53: py
+  _530b02a3: layers_of
+  _5317f9bd: ry
+  _5346da19: parts
+  _5367f6e1: cancel_edit
+  _5383af96: to_screen
+  _5390ff50: known?
+  _53d72224: rank_drag
+  _53de0dc0: is_float
+  _541c1583: warm_up_network
+  _542fcc9f: width
+  _543936a0: sig
+  _54484fdc: ray_t
+  _545a8b49: has_last_cut?
+  _545c7915: hidden?
+  _545d4793: button_hit
+  _547bf028: offset
+  _54af693b: kb
+  _54b89119: confirm_deactivate
+  _54e62b06: segments_cross?
+  _54f8d8bb: pt0
+  _550d4fd0: overlap
+  _552ff1ee: at
+  _553acb3f: rot_tf
+  _55455d86: overlay_polygon
+  _55567533: has_id?
+  _556700aa: union_into
+  _55886a5d: merge_before_last
+  _55a8ce3f: first_cross_t
+  _55b69306: world_bbox
+  _55c9bf7d: panel_outline
+  _5621a2fc: prev_silhouettes
+  _5631802f: collect_label_polys
+  _56350aee: target_box
+  _56377efb: apply_gaps
+  _5663289b: hinge_parts
+  _5666a38f: boxes_overlap?
+  _566d9196: sheet_at_screen
+  _56897346: u1
+  _5696ba2d: len
+  _56a15e9f: write_last_cut
+  _56afdcfc: lv
+  _56f21d9e: edit_mode?
+  _5700590d: rx
+  _57016258: segs_cross?
+  _570527c4: switch_mode
+  _57057df4: ubyte
+  _573ebd53: pressed
+  _57433530: gx1
+  _57534e90: bd_back
+  _57587ef0: front_panel?
+  _5762d307: overlap_fills
+  _5762df6e: orient
+  _57651d65: id_str
+  _57843619: nest_in_holes
+  _57bfacb2: external_twin
+  _57ce2a46: flatten_polys
+  _57d0bb2b: ordered
+  _57d33c37: edgeband_row
+  _57f11b0a: draw_fill2d
+  _57f278d6: board_thickness
+  _58075ba9: view_ref
+  _5807638a: walk_to
+  _580a6a21: draw_sub_tick
+  _581f82cb: apply_saved_cfg
+  _5824ad01: main_face_color
+  _58326c5f: bulge_h
+  _58383aed: layers
+  _584ced43: best_d2x
+  _58641bc8: xi
+  _58657792: escape_hole
+  _58b58971: m_bot2
+  _58d74b67: hi
+  _58dd7fd0: z_lo
+  _58e65883: cache_text_y
+  _58fa24e3: pen
+  _5915131a: glyph_len
+  _591b05fa: base_type
+  _591bb250: hover_toggle
+  _591fc23a: sheet_maps
+  _59470542: try_resume_ix
+  _594b1c30: ok2
+  _595e1103: hover_mode_ix
+  _5966e1de: text
+  _59a3b03d: edgeband_groups
+  _59d8bb71: flip_pair
+  _5a35fc61: index_of
+  _5a3fef31: active?
+  _5a4add90: ok
+  _5a65052b: part_w
+  _5ab7f006: rect4
+  _5acc279c: panels
+  _5ae18fa7: gx
+  _5b0e5374: partner
+  _5b375b22: color_ix
+  _5b383692: compact
+  _5b416703: order
+  _5b5b758c: add_after_row
+  _5b75a7ee: swell_poly
+  _5b9b595b: sheet2
+  _5ba8b366: delta
+  _5bb1ba3b: ly1
+  _5bb3b78c: pack_fallback
+  _5c26106e: polylines
+  _5c31bb6b: load_cfg
+  _5c37d05a: hover_mode
+  _5c897e0d: sheet_dims
+  _5c95e377: data
+  _5cb20db4: id_txt
+  _5cb2b1a2: my
+  _5cbb0f7e: point_in_poly?
+  _5cbc8ce0: global_key?
+  _5cee69e5: dx
+  _5ceebc4d: long_axis
+  _5d130a92: abort_op
+  _5d1a5ed6: write_last_cut
+  _5d597663: seen2
+  _5d690575: blk
+  _5d8716e9: half
+  _5d9dd503: signed_area
+  _5dadce2d: load_ivar
+  _5dc2b387: offset_bbox
+  _5dc624bc: m_right2
+  _5dcec923: tf_axes
+  _5dd201e5: dot
+  _5df05326: set_hover_target
+  _5e02b98b: sides_for
+  _5e0b9d0f: eoff_y
+  _5e179248: hover
+  _5e21ae2c: deactivate_key
+  _5e333b0b: ents2
+  _5e3cd6c0: group_rgb
+  _5e86883a: num
+  _5e95b824: fill_of
+  _5ec39360: yi
+  _5ec8768e: badge_text
+  _5ecd143a: small_size
+  _5ed26594: write_file
+  _5ed6d59c: extent_along
+  _5f2aba2a: thin_face_corners
+  _5f2b530c: mx
+  _5f417064: lbl
+  _5f500f68: reorder_cycle
+  _5fa060c7: reload_sheets
+  _5fa3163a: start_run
+  _5fafa826: forget_sheets
+  _5fb27cb4: drill_of
+  _5fbaae98: obstacle_cache
+  _5fc24f6c: scope
+  _5fc92727: build_doc
+  _5fda926c: fld
+  _5fe6c243: busy?
+  _5fe82d24: layer_prefix
+  _5feb83d4: match
+  _5ffa637f: name_col
+  _60164eef: placements
+  _6023065b: pair_jobs
+  _6028b1be: export_request
+  _6036fd14: sheet_list
+  _603ba9c4: read_result
+  _60523b8e: cap
+  _609b042f: u1
+  _60b30819: shift_cached_polys
+  _60c23472: tr_a
+  _60cb70c0: part_re
+  _60d5023e: hover_side
+  _6109924f: license_path
+  _6126236a: hover_button
+  _6164bf36: m_bottom
+  _6171588e: place_panel
+  _61888cbd: obstacles_of
+  _61c33dfe: lx1
+  _61cba067: knob_y
+  _61e17503: build_postpass_queue
+  _6209907e: swap_sheets
+  _62352802: edgeband_meta
+  _623a4f3f: cur
+  _6247e194: collapsed2
+  _624d6a0f: top_of
+  _625ad2c1: box_touches?
+  _6291860f: find_free_rects
+  _6293dffa: pminx
+  _629733a8: a1x
+  _629f4941: two_sided_margin
+  _62a3b864: deadline
+  _62a7d4ea: check_update
+  _62c627c0: finish_run
+  _62dc8af5: deg
+  _62eca5db: merge_group
+  _62ef82e9: rows
+  _630612bf: rank_nearest_edge
+  _6319a376: xml_escape
+  _632310a6: walk_boards
+  _6339d6d9: ensure_sheets
+  _634b4336: bulge
+  _6355fff9: optimize_done
+  _635b32eb: color
+  _635de940: ccy
+  _63677f15: snap_preview
+  _6378b5d4: board?
+  _6381a0e7: half
+  _638a6168: max_board_index
+  _6399adca: face_by_cutting
+  _63a66557: bounds
+  _63b47830: root_tr
+  _63bb512f: _ix
+  _63f24b5f: ebs
+  _63ff36ed: pick_at
+  _6405ee02: sweep_b
+  _64662fb0: ry2
+  _648211d6: labels
+  _64ab27b1: group_tris
+  _64b00cda: load
+  _64f8dfd0: next_src
+  _64fde938: border_polys
+  _65375930: clear_bindings
+  _6549603a: cut_loops_of
+  _65993f3a: mode_layout
+  _65a5cd26: rebuild_sel_polys
+  _65c494ff: set_mode
+  _65c796fd: a2
+  _65d032ec: pad
+  _65d1e346: font
+  _66001cb5: msg2
+  _662cf545: merge_rects
+  _66365b6a: cutting_group
+  _663e5c62: round_sums
+  _6649e3db: line_vec
+  _6652c8a5: clear_preview2
+  _66597b16: factor
+  _6687a26e: bw2
+  _6688cd89: slot2
+  _668aad9d: border
+  _669033d9: acy
+  _669c75c3: list_intersect
+  _66af06d2: draw_poly_holes
+  _66e14707: panel_world_box
+  _6711f9a7: obj
+  _6713cf1e: hover_field
+  _672802fa: selection
+  _67416b90: step_len
+  _67b345ff: rank_plan
+  _67eb2b9b: cx1
+  _6823cb31: meta
+  _68247c22: nix
+  _6824e70c: snap_out
+  _68298f42: draw_label
+  _682cffd6: parse_color
+  _6836424d: anchor
+  _685738f3: best_plan
+  _6857d81e: end_drag
+  _68781e09: material_rows
+  _687e1def: apply_order
+  _68802243: simplify_pts
+  _689c8830: label_done
+  _68b00887: width_mm
+  _68b2a987: free_rects_of
+  _68bf3960: push_data
+  _68c3d347: half_width
+  _68d4bb38: load_colors
+  _68f47867: workbook_xml
+  _68f61339: shift
+  _6903f023: rad
+  _6923c009: z_ref
+  _693a0d88: part_re3
+  _694b4b2c: true_color_of
+  _6967ecc7: pp_vec
+  _6982016d: back_of
+  _699aeb50: tol_y
+  _699c1c20: node_key
+  _69ac8383: name_rect
+  _69acf987: icon_of
+  _69c85c52: draw_modes
+  _69db2f18: mark_corner
+  _69e049e3: abf_kids
+  _69e079d4: dest
+  _69e61c70: cam
+  _69f49702: sheets_in_rect
+  _6a2d11cf: tidy_sheets
+  _6a5f7704: in_tick
+  _6a780afa: hside
+  _6a7c5d74: oy
+  _6a7d89fd: select_many
+  _6a8d90a9: repack_sheet
+  _6aa345bd: tool_windows
+  _6ac2dc7a: restore_drag_state
+  _6ad2b1b9: run_sync
+  _6aedeffa: plan
+  _6afd7993: open_tab
+  _6b0fc309: update_status
+  _6b31f7ce: id_w
+  _6b389d7a: row0
+  _6b494a47: grid
+  _6b6b3c88: entries_cache
+  _6b7112b2: edit_offset
+  _6b795fe8: add_all
+  _6bd41595: labeled
+  _6bdde958: count_by_length
+  _6be85075: set_unit
+  _6c2b9f84: polylines
+  _6c33b8b5: under
+  _6c3c87ed: skip_root?
+  _6c437dd0: hidden?
+  _6c60d3f1: rot
+  _6c6c19b5: now
+  _6c73e089: layers
+  _6c749914: apply_preset
+  _6c885abb: cmap_fmt4
+  _6ca1915a: list_sheet
+  _6cab3dc0: free_area
+  _6cbc6663: text_extent
+  _6ce51da7: shift
+  _6d13f5ef: twins_at
+  _6d192307: ox0
+  _6d1c55fe: handle_color
+  _6d224c6c: max_h
+  _6d66c5f9: main
+  _6d7a71cf: placed_bbox
+  _6dab0c11: hit
+  _6dc22895: isolate_bad
+  _6dc55f15: label_text
+  _6dcae800: select_only
+  _6dd51dbf: lines
+  _6dd8c123: slot_for
+  _6dd8e01f: apply_moves
+  _6ddd424c: index_map
+  _6dec522c: run_pending
+  _6e065d2e: pack_two_sided
+  _6e370860: sweep_dir
+  _6e4ccfd2: bcx
+  _6e6c93db: items
+  _6e6cc169: face_axes
+  _6e72ea1c: init_modes
+  _6e7e450e: find_partner
+  _6ead39f2: rotatable
+  _6eb95bee: d2
+  _6ec921dd: gk
+  _6efd5679: xj
+  _6f0e8d0f: open
+  _6f1aa9d6: corner_deg
+  _6f2c4794: end_code
+  _6f6e03c6: board_record
+  _6f87f023: draw_holes
+  _6fa16201: force_free_mode
+  _6fa1d4a9: sheet_tr
+  _6fa751ad: in_clear
+  _6fb26883: mark_corner
+  _6fcfab52: optimize_next
+  _6ff875b1: find_nesting
+  _6ffd7326: line_plan
+  _700f96f1: ready?
+  _702c1707: intersect_length
+  _7068dedb: two_sided_set
+  _70785283: save_last_cuts
+  _7079bfb2: draw_label_on
+  _707de4d0: unescape
+  _70959c11: target
+  _7099d5bf: commit
+  _709cc19a: hi_y
+  _70a03451: on_toggle
+  _70bb0001: try_resume_ix
+  _70cf3c2f: group_id
+  _70e70c33: thick_mm
+  _70e74024: cmap
+  _70e8f17a: pt
+  _713c8e2b: write_zip
+  _7144b643: styles_xml
+  _716ec4a6: outlines
+  _719d1f1d: two_sided
+  _71ace8de: fill_colors_for
+  _71b6d10c: nearest_on_edges
+  _71b7600f: hit_delete_button
+  _71d8fea4: percent
+  _71d9e5d3: centroid
+  _71efe8a0: two_ids
+  _71f72951: bx2
+  _72154673: flatten_polys
+  _723b3363: ux2
+  _727b63c7: entry_on_edge
+  _72aa806c: arrow_size
+  _72c0a75b: long_axis
+  _72d51055: bh2
+  _72e6a109: sheet_memo
+  _72edd259: grow_poly
+  _72f8b1e9: layout_rows
+  _72f8ea2d: b2
+  _734aad3f: side_color
+  _73747000: norm_board
+  _73788293: collect_timer
+  _73878293: rot_by_material
+  _7387a37a: button_center
+  _739326d9: partners
+  _7395d460: layout_memo
+  _7397aa6d: label_rect
+  _739c6a51: read_license_file
+  _739df81a: ent
+  _73c8eaf6: end_i
+  _73dc38ac: sheet
+  _73e12589: normalize_id
+  _7421c614: drop_empty_sheets
+  _7422f8e5: oid
+  _74542f4b: local_polys
+  _74c34b47: deg3
+  _74f5abbc: pack
+  _7505b7d3: rx2
+  _750f8a05: nearest_side
+  _751197f9: color_str
+  _7525a050: transform
+  _7525a168: to_local_polys
+  _75414439: skip_face?
+  _75723f03: last_cut_group?
+  _757d2011: twins_of
+  _75a9d210: assign_ranks
+  _75b39981: trai
+  _75c3e080: blk
+  _75cf8342: list_boards
+  _75dad3a1: fits_on?
+  _75e93072: pad_x
+  _75ed1621: tb
+  _75f2a016: unpack_value
+  _7600551b: steps
+  _7622f59b: open_window
+  _76464f02: renumber_ids
+  _765f8cac: hover_label
+  _7660e130: plan_all_sides
+  _7674cc64: fast
+  _76946371: s
+  _769d0bb8: m_left
+  _76baa4cb: my2
+  _76c109a9: write_binding_key
+  _76cfe8b4: m_min
+  _76d37ecf: move_onto_sheet
+  _76fc02d0: forced_dir
+  _771229d2: ja
+  _7714f91b: prep_parts
+  _77274a32: horiz
+  _7731efce: dot_r
+  _776d2e7f: ay
+  _7796248a: curve_loops
+  _77984365: valid_key_format?
+  _779e1cb3: alpha
+  _77a9d095: len2d
+  _77b6996d: cond_met?
+  _77d1957b: margin_top
+  _781e9a72: copy_sheet_attrs
+  _7827d39f: kids
+  _78416312: clear_label_attrs
+  _7846d528: row_offset
+  _786169a2: draw_bad_rect
+  _786ab544: longest_free_y
+  _7881599c: panels_by_index
+  _78a28f92: outer_pts
+  _78b1bbe1: jp
+  _78bceed0: start2
+  _78c1ee70: fill_rect2d
+  _78cf8e0b: k
+  _78cfd27d: hover_sheet
+  _78d6e974: walk_names
+  _78dd6fab: c_from
+  _78f40bb3: edge_at
+  _790504c3: show_activation_result
+  _7916c98e: drag_x
+  _792b669b: clear_last_cuts
+  _7940b425: apply_face_materials
+  _794139c0: text
+  _794ae95c: clear_cache
+  _797f904c: a4
+  _7980296f: bracket_pts
+  _799e513f: spec
+  _799e566e: height_mm
+  _79be379e: j1
+  _79c2b93d: prev_key
+  _7a0341ab: def_name
+  _7a136547: cursor_for
+  _7a34db91: bottom_target
+  _7a67a38c: run_blk
+  _7a7a5989: plane_z
+  _7aa1af8e: z
+  _7ad94e21: oy2
+  _7ae4dac4: min_px
+  _7afbe899: source_sheet
+  _7b079005: pct
+  _7b0a38ee: stock_key
+  _7b0cbc2c: get_raw
+  _7b2b347d: confirm_deactivate
+  _7b2f9929: ux1
+  _7b30d9cd: outline_of
+  _7b408093: sides
+  _7b52ec8b: name_col
+  _7b71a66d: collect_parts
+  _7bab0bd1: on_done
+  _7bafc8a5: tf3
+  _7bb0b74c: eoff_x
+  _7be08c97: skip_op
+  _7bf062f0: edited_sheet
+  _7c01cc20: fits_in_hole?
+  _7c10a028: walk_group
+  _7c6a610f: saved_bounds
+  _7c799a47: edgeband_part?
+  _7c989895: sec_gap
+  _7ca8b21a: id_cache
+  _7cabf101: cut_center
+  _7cb12180: selected_pairs
+  _7ccadd84: swap_part_type
+  _7d1a7bd8: edge_color
+  _7d1c2cf7: rebuild_outlines
+  _7d1fe0e5: merged
+  _7d25749e: thickness_text
+  _7d26e4fd: join_loops
+  _7d3084f7: a2x
+  _7d5d3a34: y1
+  _7d6423f2: oy4
+  _7d6a26d8: entries_for
+  _7d753141: btn_joint
+  _7d7ee175: boards_by_index
+  _7d8dbd25: load_side_margins
+  _7db4c267: mode
+  _7db8163e: dz
+  _7dddad48: path
+  _7de14948: draw_overlay_fills
+  _7dee841e: btn_joint
+  _7df1f978: anchor
+  _7e1ba085: width_of
+  _7e3f099d: strokes_for
+  _7e48d1c7: sel
+  _7e76f421: symin
+  _7ea823dc: txt3
+  _7ebf0e82: x_hi2
+  _7ed0659b: online?
+  _7ed122ce: ids
+  _7ed58ed5: hit_at
+  _7eef3593: dy
+  _7f114de1: normal
+  _7f25925f: dos_d
+  _7f376ad0: ent2
+  _7f37fe93: ray_hit
+  _7f54ef4a: was_click?
+  _7f9ec132: cur_type
+  _7fb3dc0f: content_types_xml
+  _7fbb8ef6: panel_record
+  _7fc04147: get
+  _7fe54ad3: rebuild_plan
+  _7ff04bfb: restore_selection
+  _8028b156: hit_list
+  _802ac780: to_2d
+  _803eb853: collecting
+  _80427727: restore_attrs
+  _804f5435: refresh_hits
+  _8073f679: export_file
+  _807d1b30: x2
+  _808d4fb5: holes
+  _809e34bf: mark?
+  _80a08a03: cache_next_tick
+  _80a13590: sync_back
+  _80a6be36: usable_rect
+  _80f11145: add_label_stub
+  _810ba433: forward
+  _81184680: clamp_point
+  _812a531f: place_mirror
+  _81413a27: set_vcb
+  _8141925d: additive
+  _8142f14a: prev_verbose
+  _8170c287: ux1
+  _81795983: compact_simple
+  _8184b522: bx1
+  _8185b560: action
+  _81c7f63b: prev
+  _81d80555: group_id_of
+  _81e3a78e: collect_in_rect
+  _81e43e5f: loose_at
+  _81f29842: styles_xml
+  _82190c08: draw_round_rect
+  _8230d3b9: name
+  _8233e579: ly0
+  _82361099: flat
+  _823c3a0c: pick_panel_at
+  _8242598f: ox2
+  _82670c69: nfp_raw
+  _8268edf2: collect_segments
+  _826c9296: arc_at
+  _828a9f7d: draw_side_buttons
+  _829cd913: base_tr2
+  _82a3174b: prev_key
+  _82b8e725: cur_sheet
+  _82d13242: show_th
+  _82ebf10f: cache_done
+  _82fdad73: prev_sheets
+  _82fdde5b: two_sided_set
+  _830242b7: a
+  _830cc130: d
+  _83144ce1: center_off
+  _83323891: pack_batch
+  _8360149a: loops_mm
+  _838f9d06: tag
+  _8390956f: th_txt
+  _83a4c084: align_side
+  _83afc246: label_sel
+  _83b16c8e: grid_query
+  _83d4e620: band_parts
+  _841a7d7e: panel_tr
+  _841df881: draw_text_edges
+  _8436e044: cache
+  _8446f150: apply_edgeband
+  _844f2d00: disp
+  _84a0b79f: d4
+  _84aff668: tried_keys
+  _84c839b4: job_settings
+  _84d4814c: by2
+  _84dcc166: is_mark
+  _85080a6f: align
+  _851c2684: screen_rec
+  _8557b708: write_polyline
+  _8577e14b: adv
+  _859fd4ec: move_onto_sheet
+  _85a7112d: plan_corner
+  _85b17e6a: dest
+  _85fa8406: clone_to
+  _85fdf95d: placements
+  _86277c8a: drag_x
+  _86452e73: in_rect?
+  _8652c427: sbyte
+  _86717f44: layer_name
+  _867a7d4a: add_offset
+  _86863be2: open_settings
+  _86caa914: handle_quad
+  _86ce4053: poly_cache
+  _86e42e2c: sx
+  _86fc9a87: from_id
+  _87128105: drop_empty_sheets
+  _871facb3: gap
+  _872020c5: score
+  _8729502f: fsize
+  _8730e102: hi_u
+  _8734f930: p_corner
+  _87396e4a: icon_path
+  _87417f18: reg
+  _8743fd41: inst3
+  _8745391f: cell_size
+  _876fba95: tf_of
+  _87a29025: refresh_errors
+  _87b37363: d2
+  _87c2c5c9: acx
+  _87ff9b1a: hover_loose
+  _8803a55d: new_label_group
+  _880c068c: part_re2
+  _880cf585: skip2
+  _880f354b: handle_at
+  _8810a0b1: usable_rect
+  _883d09aa: snap_tol
+  _884148c3: sec3
+  _8844c6cc: ix
+  _885a777e: bottom_for
+  _885e1003: area
+  _88817caf: m_left2
+  _88a18e7e: shared_vertex
+  _88a70d4c: cross_sorter_band
+  _88bdf60f: usable_size
+  _88c59173: rect_hit?
+  _88c88189: normalize_id
+  _88f4d2bb: nest_panel?
+  _88fec204: rank_band
+  _892410fc: side
+  _892e5ea9: best_d
+  _892eb9a2: disk_id2
+  _893a0283: rings
+  _89500a9d: activation_ok?
+  _8961a36f: apply_moves
+  _8964db66: draw_free_rects
+  _896ac75d: idx
+  _896b06b4: all_sheets
+  _898e4428: saved_sel
+  _898e45cb: index_set
+  _899472d9: rotate_cfg
+  _89a2e173: export_list
+  _89a6304d: flat_ix
+  _89ac729e: upm
+  _89b2a450: w
+  _89ce8c2a: number_parts
+  _8a081680: len_a
+  _8a0ebcb5: deadline
+  _8a2a0205: isect_off
+  _8a2f0dcc: dot
+  _8a72e4fd: box_corners
+  _8a923ba1: max_eb
+  _8a937bbc: edit_offset
+  _8aac49c1: sort_by_x
+  _8ae4161f: pick_on_plane
+  _8ae750c6: d
+  _8af1a533: remove_from_selection
+  _8b1edfc4: entry_each
+  _8b1fb70a: free_spot
+  _8b2dce70: moved_enough?
+  _8b71b677: clear_caches
+  _8b757da4: acc
+  _8b88aafd: point_in?
+  _8b8b2101: container?
+  _8b92837a: opacity
+  _8ba579d6: r
+  _8bb0188d: ok2
+  _8bc3942c: out
+  _8bc4f7d3: fill
+  _8bddc18c: point_in?
+  _8be6324d: draw_label_hover
+  _8bf0982b: draw_pick
+  _8c221b50: result
+  _8c3d4c32: hside
+  _8c479fa4: down_x
+  _8c4d4bd1: outline
+  _8c61ecb6: cell_map
+  _8c688891: handle_at
+  _8c9c022d: abort_op
+  _8ca75b1d: allow_neg
+  _8ccb71e5: stop_timer
+  _8cd0eda9: clear_poly_cache
+  _8ce23a3b: is_border
+  _8ced375c: overwritable_indices
+  _8d0b2383: side_button_pt
+  _8d174d0f: sxmax
+  _8d1e0e14: track_order
+  _8d44657d: assert_license
+  _8d6022fa: th
+  _8d6669ce: parent_layer
+  _8d87b210: check_license
+  _8da65bda: seed_license_file
+  _8dac2b9a: y_hi
+  _8db3e52c: draw_cross
+  _8db46aaa: etf
+  _8e0b19f1: near_seg?
+  _8e0f9f27: lines_grp
+  _8e279a49: sum_lengths
+  _8e27dfd6: lx0
+  _8e2f02ff: off_change
+  _8e373521: selection_hull
+  _8e379a01: saved
+  _8e3c51b1: group
+  _8e3f5229: rebind_license
+  _8e47a150: a
+  _8e587281: hdr_len
+  _8e83909c: root_rels_xml
+  _8e86c5f1: band_key
+  _8e96d703: cutting
+  _8e993d41: with_license
+  _8eadb7bc: started?
+  _8ebf1f03: skip3
+  _8ed604f3: margins
+  _8ed7358f: rebuild_plan
+  _8ee70847: draw_color_chip
+  _8ee72171: sheet_no
+  _8eeb82d4: draw_faces
+  _8ef7fc63: prev_profiles
+  _8f0d3ee1: inside_rings?
+  _8f10bac2: fits_in_hole?
+  _8f25f43d: pname2
+  _8f3715dc: py1
+  _8f788667: build_command
+  _8f8b1806: inst6
+  _8fa03d92: finish_draw
+  _8fcfd8de: done
+  _8ffda7d7: run_sync
+  _8ffeaf1d: d1
+  _90133646: tidy_borders
+  _90227955: grid_key
+  _902d666b: kids_with_attr
+  _90645354: place_label
+  _9072906c: merge_band_fields
+  _90745b0f: plan_for
+  _90c7adaa: cls2
+  _90c9a44a: j0
+  _9103bdbc: drop_from_sheet
+  _911dab46: band_add
+  _911db68f: bd_front
+  _91255867: bot
+  _9139e52d: "on"
+  _917e6a05: char_w
+  _9198bacb: x_crossings
+  _919af578: hit_sheet_top?
+  _919cd7a5: local_move
+  _91d980c1: pad_v
+  _91e78506: want
+  _9215dd8a: sxmin
+  _921c6c23: sheet_rows
+  _9232fecd: screen_box
+  _9248bf92: by
+  _924fb48e: mode
+  _929ee7ed: pack_area
+  _92b06b3b: hit_button
+  _92c763eb: cb
+  _92cc3f0d: edge_blocked?
+  _92cefaf9: y
+  _92d76079: pack_key
+  _92d864e9: track_handles
+  _92e164bc: restore_perspective
+  _92fdc56c: span_v
+  _9315ac47: cfg_memo
+  _9328baa5: path
+  _9331eec6: r
+  _933bb97a: d0
+  _934241ad: run
+  _9351a42f: start_postpass
+  _93590853: free_area
+  _93718307: pick_labels_in_rect
+  _93aa2bdd: renumber_all
+  _93c239a9: license_url
+  _93cdf1dd: build_loops
+  _93d58b8e: align_tf
+  _93e50f6d: best_a
+  _93f0fd1d: seg_hits_rect?
+  _93f5a81b: panel_guides
+  _93f68fd8: dos_d
+  _9404be8f: part_data
+  _9429c362: set_binding
+  _945e1092: poly_b
+  _9463972a: activation_ok?
+  _9477a3c4: load_data
+  _9489560c: sweep_key
+  _9490f84c: saved_outlines
+  _94936cb2: apply_offset
+  _94b570bf: sheet_id
+  _94bfda84: short_side
+  _953f3a4a: nx
+  _955fc8ab: fmt
+  _95607d04: draw_mode_hint
+  _956479e4: sheet_overlaps
+  _958af171: display_name
+  _958d59e0: found
+  _95a319d5: blink_timer
+  _95ab051c: gap2
+  _95c9f846: height_mm
+  _966b6f48: label_finish
+  _9690a203: draw_overlay
+  _969cfcac: inst3
+  _96d17b98: label_fail
+  _96f23e85: entry
+  _96fd23fc: building
+  _97011c68: prev_nesting
+  _9704f450: refresh_after_optimize
+  _973e5675: clash_fills
+  _9742e041: sy2
+  _97443b71: outline_pts
+  _974a9913: label_pts
+  _975f4aa4: list_minifix
+  _9776c593: clamp_point
+  _97ac4db2: clone_bottom_sheet
+  _9802ae30: active
+  _981159c0: draw_error_dots
+  _982c8eb9: small2
+  _983c0671: ox2
+  _983e7108: build_loops
+  _984ac2f3: summary_rows
+  _984ee8f3: corner_of
+  _9896fced: cutting_gr
+  _98995933: rx1
+  _98a984d2: sweep_a
+  _98af4193: screen_pt
+  _98bea6ca: reset_try_cache
+  _98ca8234: closed
+  _98d14afa: build_partner
+  _98fcad5f: postpass_ended
+  _99188cc8: free_ix
+  _992232bd: poly
+  _995bdd77: load_colors
+  _9969a5a3: open_tool_settings
+  _9970a351: sheets_of
+  _998e8861: sx1
+  _99c91617: y
+  _99f219e0: match_hidden
+  _9a5525a8: mat
+  _9a61ff76: refresh
+  _9a7fe85c: defn
+  _9a9b090d: load_presets
+  _9aac0439: stat_objects
+  _9ac3b00c: draw_badge
+  _9ae6fb63: deg3
+  _9b13454c: sheet_h
+  _9b292b04: nlen
+  _9b48db70: min_y
+  _9b618051: add_row_label
+  _9b65e825: rect
+  _9b714c95: convex_hull
+  _9b953fed: duoi
+  _9b96bb01: layer
+  _9b9f21ce: hit?
+  _9bbece49: gtr
+  _9bd8cffe: min_margin
+  _9c089a0b: show_back
+  _9c0928e2: decode_glyph
+  _9c183420: parse_json
+  _9c20db2d: chosen
+  _9c441f20: handler
+  _9c6176fe: reset2
+  _9c766fdb: layout
+  _9c88894a: circle_pts
+  _9ca006aa: lock_rect
+  _9cb03421: drop_panel_cache
+  _9cd82151: edge_ix
+  _9ced3fcb: largest_gap
+  _9cfa4f5e: crossing
+  _9d0002b5: root_tr
+  _9d2c8b62: face_size
+  _9d3f89a0: world_box
+  _9d603e6a: new_dialog
+  _9d6d1d9b: pivot
+  _9db6c64c: box
+  _9db83345: phan
+  _9dcbc6c4: rec
+  _9dd03e5f: nfp_cache
+  _9deb3cee: hi_y
+  _9df36c71: clear_ranks
+  _9df716b4: build_grid
+  _9e1d2341: erase_sheet
+  _9e591637: name_matches?
+  _9e5f5ea1: want_ccw
+  _9e7e08c6: min_y
+  _9eaa4a29: world_tf
+  _9ec58bc0: hidden_cuts
+  _9ec79ddd: sig_of
+  _9ecf84d6: move_panel
+  _9f2bb75c: plan_edge
+  _9f4fd9d7: bnds
+  _9f6369c5: sort_by_x
+  _9f684ec0: origin_mm
+  _9fc8ea11: title
+  _9fd431df: pack_to_edge
+  _9fd56ba2: fmt
+  _9fe1f1db: saved_polys
+  _a0083dbc: bd2
+  _a01194ce: open
+  _a0162297: text
+  _a02260a6: end_resize
+  _a06dfe95: half_w2
+  _a0976be2: min_side
+  _a0a8eb27: horizontal
+  _a0b27b57: answer
+  _a0de8fea: add_sheets
+  _a0f774ec: drop_sheet_cache
+  _a0fa0fca: tol
+  _a105a0f4: cost_sheet
+  _a1305b96: collect_done
+  _a13613c1: g
+  _a16ac17e: postpass_timer
+  _a1b78bcb: best_d3
+  _a1c2994a: cancel
+  _a1e0269f: prefix
+  _a1e44f60: bx1
+  _a2087e38: ry
+  _a20bd73d: draw_outline
+  _a2110a52: draw_thick_outline
+  _a222ebaf: reopen_with_message
+  _a2373707: rotatable2
+  _a25dec7f: hide_temp_layer
+  _a2796101: expand_roots
+  _a28353f7: labelling
+  _a293a8a5: pick_mode
+  _a29c2355: unscale
+  _a2bd3a55: overwrite_hit
+  _a2dff921: restore_selected_preset
+  _a2f525ce: apply_plan
+  _a30b0487: progress
+  _a3103397: drawn_panels
+  _a313cfe2: cv
+  _a3205ec0: kind2
+  _a32b82f1: panel_under?
+  _a338385b: reset
+  _a388c573: apply_ranks
+  _a3a2614e: draw_empty_marks
+  _a3e82f76: joint
+  _a3fc0df7: panel_boxes
+  _a404e7b6: merge_near
+  _a40e17c7: scr
+  _a420f442: sheet_sig
+  _a4273029: acc2
+  _a4286a6a: build_cells
+  _a42dd0f4: draw_empty_marks
+  _a4390149: loops
+  _a45f0a95: limits_of
+  _a468a7eb: top_of
+  _a473f7a4: ebx
+  _a4937c15: box_inside?
+  _a4a7e875: mute_profiles
+  _a4ab9a59: i
+  _a4beb817: hi_x
+  _a4c8a5ba: prev_nesting
+  _a4da9aa0: stat
+  _a4daaba2: collapsed_map
+  _a4dd2feb: fields
+  _a50d5d66: flat_index
+  _a53eb5f9: build_layout
+  _a53fcec5: thickness_mm
+  _a54bea0f: circle?
+  _a57f29f0: pad_x
+  _a584bc45: seen_ids
+  _a5945526: screen_items
+  _a5a03823: world_center
+  _a5c50e7f: kids_with_attr
+  _a5dfd260: other_type
+  _a5e458a5: mat_order
+  _a61a3961: prev_pt
+  _a61c29a8: start_jobs
+  _a625a3a6: eax
+  _a6377e72: model
+  _a639e890: setup_fields
+  _a63bad11: mirror_of_tf
+  _a65e38b9: text_strokes
+  _a665d212: hover_corner
+  _a67aa746: btn_plan
+  _a6985361: th_on
+  _a6d41938: border_of
+  _a6dbb548: slot_panel
+  _a6f1c8a7: merge_cut_lines
+  _a70369e0: text_mid_y
+  _a706cb0d: dot
+  _a7092afa: restore_profiles
+  _a7159cec: b
+  _a7192d3e: first_bottom
+  _a72a3dce: dlg
+  _a7463198: with_len
+  _a77b7bb2: refresh
+  _a7c92b0b: tx
+  _a7ec2faa: forget_sheets
+  _a7fa30d2: rotate_partner
+  _a80b41fd: sel_polys
+  _a815fdc9: clear_last_cuts
+  _a8511360: seen
+  _a8611652: shx_path
+  _a877a0fa: sin_a
+  _a8bdc7d4: materials
+  _a8d0c622: back
+  _a8e568be: sides_for
+  _a90cfd18: sheet_size
+  _a9105f89: abort_labelling
+  _a9150c96: set_unit
+  _a924ed29: row_w
+  _a925e834: row0
+  _a94d146f: edge
+  _a95ae5a0: to_polylines
+  _a95eb156: k2
+  _a964579b: script
+  _a9713069: group_mates
+  _a98e1f90: hi_x
+  _a9a63d5c: p1
+  _a9aaf173: split_by_face
+  _a9b3fa70: cu
+  _a9c50fbb: part_no
+  _a9c8a766: pick_face
+  _a9ca2ebd: big_enough?
+  _a9da24d6: overwrite_panels
+  _a9e84eff: visible_chosen
+  _aa27c1a3: by_row
+  _aa54303e: ry1
+  _aa67bd07: at
+  _aa866019: best_d2x
+  _aa882630: inst2
+  _aad2202c: finish
+  _aaf0633f: limit
+  _aaf719d5: back_face2?
+  _aaf7fbc7: pack_cache
+  _ab057a21: warning_color
+  _ab2273af: swap_panels
+  _ab31af79: set_selection
+  _ab3331af: set_rank
+  _ab655ee0: rot
+  _ab6766a5: copy_and_flatten
+  _ab739f24: free_saved
+  _ab8f4433: b_hi
+  _aba4cfb8: rx2
+  _abb584d0: marks_of
+  _abc12887: sel_bounds
+  _abe2edba: tf2
+  _abf86dce: build_postpass_queue
+  _ac01179f: stat_objects
+  _ac0e988f: in_tick
+  _ac32d7df: skip_panel?
+  _ac73572a: solve_async
+  _ac86f211: seg_dist2
+  _aca3c0d8: postpass_ended
+  _acced4e6: close_later
+  _acd3610d: a_hi
+  _acf86e31: is_sel
+  _acfeef55: on_sheet_edge?
+  _ad07fd49: two_ids
+  _ad2ef517: tol_x
+  _ad361a9b: set_pen
+  _ad4f2824: cell_grid
+  _ad60e6c0: ang
+  _ad646360: label_of
+  _ad64c45d: t_slice
+  _ad6c97bd: validate_key
+  _ad707c3a: edited_sheet
+  _ad8e91ed: list_statistical
+  _ad9b3fc5: draw_add_buttons
+  _adbab0bd: axis
+  _adbd6bc9: section
+  _adc872be: drag_offset
+  _ade09203: start_from_dialog
+  _adea108b: fill_color_of
+  _ae22cdb1: parts_along
+  _ae28df42: conv
+  _ae2bb7cd: num_on
+  _ae3af84a: free_rects_of
+  _ae401c6e: b2y
+  _ae42b2f5: scan_external
+  _ae6cb680: apply_two_sided
+  _ae750226: snap_tol
+  _ae97e8a4: switch_tab
+  _ae9952ae: k2
+  _aeab559f: step_order
+  _aeb6d53b: click_mode
+  _aec66722: sub
+  _aecf68b5: signed_area
+  _aed1c5f7: gap2
+  _aed2856c: nearest_sheet
+  _aee8c33c: lasso_path
+  _aeea1f26: panels_on
+  _aeeebe35: invalidate_cache
+  _aeef106d: pressing
+  _af00b445: sheet_like?
+  _af025fed: cache_tick
+  _af071f3e: title
+  _af0763b9: save_pdf
+  _af153aab: defn2
+  _af289c11: seg_meet
+  _af33a8a2: off_b
+  _af392092: license_value
+  _af3b4662: rtype
+  _af4965d1: track_handles
+  _af4d17a6: observer
+  _af4f9ada: hull
+  _af55f4a9: edge_band_colors
+  _af86d57d: draw_sweep_rect
+  _af903e02: axis
+  _afd19bc8: order2
+  _afd97c4e: button_radius
+  _afda41d4: enter_top_view
+  _afdc12cc: drop_named
+  _afde96fa: span_u
+  _aff5a2bd: flip
+  _b01218a7: cross
+  _b015b5be: seg_dist2
+  _b017bb3f: track_pick_hover
+  _b020559e: u0
+  _b0335cae: draw_presets
+  _b0523834: side_drills
+  _b0818740: ratio
+  _b0b05ee9: new_id
+  _b0b1a9a6: try_place
+  _b0b73b9f: postpass_step
+  _b0bc0481: assign_payload
+  _b0e928b1: sheet_of
+  _b0ef3e99: round_lengths
+  _b106f688: cond
+  _b10e48a5: swap_type_block
+  _b1189fd0: sheet_cache
+  _b11ad6d6: idx
+  _b11e949a: count_by
+  _b122f132: label_kids
+  _b13178ab: tri_buckets
+  _b17d4c82: small
+  _b18d0adb: draw_panel_fill
+  _b1ac27c3: push_to_dialog
+  _b1d1760b: prev2
+  _b1eebedc: defs
+  _b1f15d9a: style_dim
+  _b2353c1e: pack_seed
+  _b25875c4: deactivate_error
+  _b258e208: want_back
+  _b268dd44: rx
+  _b290ad49: len
+  _b291b453: sy
+  _b2afa3e3: hinge
+  _b2ce8033: inst
+  _b2e655aa: group_bbox
+  _b2eb9fed: load_html
+  _b2ee0ccd: ix
+  _b2f4bec6: inset
+  _b30c52f8: len2d
+  _b33d5052: vec_angle
+  _b34022c4: new_id
+  _b344f39a: box_axes
+  _b3966dea: check_dirty
+  _b39c7d10: open_settings
+  _b39dfe94: visible?
+  _b3b2dea9: build_doc
+  _b3bfd2a3: collect_in_rect
+  _b40b317a: drawable?
+  _b419c75c: min_sheet_id
+  _b41d3c30: m_bottom
+  _b4479c25: rect
+  _b44d12cd: refresh_avail
+  _b4768d27: list_minifix
+  _b47e8811: py0
+  _b4835d15: gy
+  _b492fe5c: header_rect
+  _b49c7091: n
+  _b49f3b02: total_area
+  _b4a4ab01: world_tf2
+  _b4aba233: panel_normal_color
+  _b4afa817: uy2
+  _b4b1eb2c: strip_tabs
+  _b4c97c95: copy_image
+  _b4f05934: len
+  _b5073064: fit_label
+  _b512c50e: partner_of2
+  _b51d21a5: y_hi2
+  _b54811d0: best_plan
+  _b54bc327: pill_pts
+  _b56440cc: tr2
+  _b56680ac: part_data
+  _b5861a91: save_drag_state
+  _b59aecef: draw_dim_arrow
+  _b5af8dbf: jump
+  _b5c555e5: apply_offsets
+  _b5e220e5: plugins_dir
+  _b6107daa: push_presets
+  _b6176c15: acc2
+  _b6259b04: borders
+  _b63ecf39: added
+  _b650bc1d: assigned?
+  _b662a89c: xf
+  _b66888fd: unpack_value
+  _b682bee9: near_side?
+  _b6a93f39: draw_slots
+  _b6dece70: grow_d
+  _b6e422ab: round_parts
+  _b6e75d71: update_status
+  _b70b1e3d: set_side
+  _b76b2bdf: faces
+  _b786d4b9: rad
+  _b78c626c: h
+  _b797189c: draw_poly
+  _b7972c81: apply_plan
+  _b79e8f01: axes
+  _b79e997a: plane_z
+  _b7a8e470: pi
+  _b7e04e4a: rc
+  _b7f50c8f: warn_color
+  _b7fedb6b: crossed
+  _b80737a7: draw_faces
+  _b822c62c: duoi
+  _b82cc033: nested
+  _b83169ae: clear_cut_desc
+  _b849fe49: prev_hidden
+  _b85000b6: reorder_sheet
+  _b86cee12: remove_sheet
+  _b871c780: lx
+  _b87ad1ef: base_alpha
+  _b8902ae0: sheet_dim
+  _b8aa8bd0: load_cfg
+  _b8b29bcf: line_vec
+  _b8b63ab2: by2
+  _b8b91d06: moves
+  _b8cb289b: deg2
+  _b8f0d593: ask_key
+  _b8fb2c89: sheet?
+  _b90d5fb0: text_size
+  _b91bd5f1: parts_between
+  _b91e11c2: ctrl
+  _b933b59e: two_sided_ids
+  _b9371681: rows_of_cells
+  _b94228a2: shade
+  _b953e672: normalize_hw_id
+  _b96385ba: to_point
+  _b9664cc7: start_postpass
+  _b98eb823: solo
+  _b9915b01: postpass_rows
+  _b9a10674: reset_caches
+  _b9b893b7: hover_part
+  _b9d0be9c: banding
+  _b9d8cb29: part_list
+  _b9dafa47: sheet_type
+  _b9dfd839: press_pt
+  _b9fdc2d5: center_of
+  _ba0f0d7a: commit_changes
+  _ba1c7e14: two_sided?
+  _ba282f9c: press_panel
+  _ba29ba89: moved_enough?
+  _ba2a62ec: list_edgeband
+  _ba37aaad: rows_of_cells
+  _ba4c55ab: fill
+  _ba61760e: ring
+  _ba86ee14: b1y
+  _ba8d6c6d: mm
+  _ba969b17: poly
+  _ba97e686: ent2
+  _bad9469d: hover_preset
+  _bae3127f: bot_id
+  _bb09dbe4: _x_bi_lan_polys
+  _bb0c6429: ring_len
+  _bb230f13: button_hit
+  _bb236363: walk
+  _bb3caa82: tri_pts
+  _bb40b229: corner_sign
+  _bb681503: add_bottom_label
+  _bb6d283a: b_lo
+  _bb6febc8: seg_hits_part?
+  _bb8a463f: dot_pad
+  _bb972016: hover_corner
+  _bbad7f9f: sheet_id
+  _bbb1c846: label_plan
+  _bbdb0662: mirror_tf
+  _bbe79cfa: outer_pts
+  _bbff64e0: snap_edges
+  _bc0f9e7f: round_parts
+  _bc2ddf94: use_color
+  _bc2f12d0: marks_of
+  _bc375ed6: pw
+  _bc423d46: p_ref
+  _bc5e886d: deg4
+  _bc8516a9: is_cut
+  _bcb9cacd: click_field
+  _bce9c835: add_mark_square
+  _bd0c27f1: inv
+  _bd18224a: stat
+  _bd1895b8: slot_edges
+  _bd1e6f50: az
+  _bd21b165: off_x
+  _bd56066c: push_presets2
+  _bd6ab6e1: xml
+  _bd6b50c7: warn_color
+  _bdaee7ee: round_len
+  _bde16712: hover_mode
+  _bdf146d2: license_field
+  _bdf7307f: watch_model
+  _be017370: draw_loop
+  _be172fdd: compute_sig
+  _be1c5d10: pid
+  _be1e6e79: caret_on
+  _be2f77ba: board
+  _be43f05d: panel_cache
+  _be598c64: hide_last_cuts
+  _be7182ef: sy1
+  _be82450c: license_value
+  _be87b887: bottom_of
+  _be88d875: rep
+  _bea434bb: gaps_for
+  _beb63a90: copy_image
+  _bee95155: m_top2
+  _beecfd43: postpass_rows
+  _bef486db: eoff_x
+  _bef594f2: warm_up_network
+  _bf007ce6: clone_sheet_shell
+  _bf2cab5c: sweeping
+  _bf3bd302: a2
+  _bf8a619a: next_row
+  _bfbc76fb: sheet_tr
+  _bfc81b7e: read_bindings
+  _bfd6c325: build_nfp
+  _bfe9f61b: jb
+  _bff6f359: cross3
+  _c020887d: done_n
+  _c04ab7ea: load_presets
+  _c04fb39c: dir
+  _c0626865: largest_face
+  _c0711cd2: pminy
+  _c07bf6db: count_by_length
+  _c09a83ce: ui_scale
+  _c0b8bb8d: view
+  _c101f7a8: inv_tf
+  _c1184abe: click_fn
+  _c11b4f54: mark_point
+  _c12c6abc: click_field
+  _c14c1dc9: file
+  _c1874a1a: clip_to_box
+  _c1a2a6b2: refresh_panels
+  _c1c12e08: dist
+  _c1d9e7d1: vec2
+  _c211b5aa: pack_handle
+  _c2148d5e: x
+  _c21c1304: p_ref
+  _c22c5f28: groups
+  _c249b42f: eps_u
+  _c256c3d4: index_boards
+  _c26e3052: band_add
+  _c29eaf47: entities_in
+  _c2a4afd5: flat
+  _c2a901d3: container_ids
+  _c2ac3627: ref_p2
+  _c2db92f3: part_h
+  _c2dcefb1: build_limits
+  _c2e001fe: meet0
+  _c31e3116: f
+  _c3251927: bottom_face?
+  _c3288067: p_pressed
+  _c34290e2: limits_of
+  _c345c7f9: label
+  _c355ee06: v1
+  _c3574320: a1
+  _c36e3c6e: close_edit
+  _c374c8ee: edgeband_spec
+  _c3777da0: corners
+  _c378850c: partner_panel
+  _c37db3ab: len_in
+  _c3892d35: gap_for
+  _c39cdbeb: crc
+  _c3a0ce60: get
+  _c3a30e3d: a1b
+  _c3c108ab: place_move
+  _c3c60dcc: part_key
+  _c3ef3466: movable?
+  _c41450bb: formula
+  _c4181568: abort_unless_done
+  _c43254e4: font_full
+  _c4425a49: edge_normals
+  _c452aa80: sheet_ix
+  _c4559f6e: begin_edit
+  _c48c9ddb: set_override
+  _c4ac47fb: row_ix
+  _c4acf864: overlap_polys
+  _c4f153fd: plan_score
+  _c4f53943: eligible
+  _c51af16a: a1y
+  _c520310e: seen3
+  _c5292bf6: by1
+  _c5297436: scan_panels
+  _c52ad8bc: apply_label_hiding
+  _c5333713: clear_labels
+  _c53ece67: dlg2
+  _c56f68c8: saved_assign
+  _c56fde8f: ids
+  _c57d63ae: dxf_name
+  _c57fa363: mirror_pos
+  _c586141b: normal
+  _c5c795d7: warn
+  _c5d8e092: part_box
+  _c5f1352c: sheet_at
+  _c5f21c57: bracket_hit
+  _c6006bcd: border_rings
+  _c60adb84: hover_edge
+  _c612f398: max_eb_th
+  _c61e50a5: can_rotate
+  _c6224ad4: build_limits
+  _c65a5e13: editing
+  _c65c0a0a: xy_of
+  _c65c96b6: poly_key
+  _c662be2b: press_label
+  _c6825b67: refresh_groups
+  _c6888250: tmp
+  _c68fb5b1: max_x
+  _c6963965: clone_panel_into
+  _c6af8f99: umin2
+  _c6c4c974: margin
+  _c6eb57e9: slide_by_proj
+  _c706688b: gap_row
+  _c717a599: leave_edit
+  _c71fe5d3: simplify_poly
+  _c72c31e7: tidy_layers
+  _c73c2639: merge_loops
+  _c75af82f: do_flip
+  _c76ac622: panel_list
+  _c777b949: nesting
+  _c778d643: toggle_group
+  _c7e8ecb5: board
+  _c7f5e34f: refresh_after_move
+  _c82f9710: reset_anchor
+  _c839dc19: cell_map
+  _c83c9081: poly0
+  _c845d24c: steps
+  _c84801ce: overlaps
+  _c8494e6a: first_bottom
+  _c86c395e: candidates
+  _c86f0e92: stamp_sig
+  _c88ba427: scr
+  _c89655b5: boards
+  _c89bffc0: rec
+  _c8a1a3c9: items
+  _c8c01422: stop
+  _c8d48d77: update_drag
+  _c8d9bb6c: tail_pt
+  _c91b5da1: hover_target
+  _c93e3f70: ny
+  _c93fc131: kw
+  _c942559d: v0
+  _c94a475c: center
+  _c954c62c: pen_v
+  _c978d8cc: rotate
+  _c97d148c: hover_ix
+  _c9b5216c: drag_begin
+  _c9bc3f08: ox0
+  _c9e2c446: custom
+  _c9faf4c6: xml_escape
+  _ca11772b: swap_edit_offsets
+  _ca139d16: offset_pair
+  _ca2351da: load_slots_geom
+  _ca23e05b: start2
+  _ca2a364b: sin_a
+  _ca5147c6: load_slots
+  _ca5c17ea: on2
+  _ca7b7566: base_xy
+  _caaa25bf: box_cuts_poly?
+  _cab2c36f: target
+  _cafc4a61: panel2
+  _cb09e287: rot_for_panel
+  _cb224322: start3
+  _cb2ee30f: anchor_poly
+  _cb4186de: entries
+  _cb4a5018: entries
+  _cb592352: clear_grid_cache
+  _cb5b532d: draw_loop2d
+  _cb5ebd0d: rank_b
+  _cb784e7e: pname2
+  _cbb4a6c4: want
+  _cbeb8691: build_ui
+  _cc2599da: back_bb
+  _cc2a2579: order_of
+  _cc2a4846: start_rank
+  _cc47f59a: add_label_cross
+  _cc51eebc: spot_for
+  _cc53f14a: part_box
+  _cc5fd383: optimize_cancel
+  _cc6501e1: normal_rgb
+  _cc6a8014: bounds_of
+  _cc82985b: next_row
+  _cc82d7de: ref_p1
+  _cc8724e4: stop_collect
+  _cca954c3: panel_boxes
+  _ccde7c5f: track_ids
+  _cce35269: parts_of_sheet
+  _cd376dc3: edge_handle_at
+  _cd5e80f4: end_resize
+  _cd6029df: thick
+  _cd7df301: used
+  _cd95b9e2: on_sheet_edge?
+  _cd99bb15: activation_error
+  _cd99f039: text_color
+  _cda129c5: step_selection
+  _cdb6f1f6: min_x
+  _cdd54f61: sheet_id_text
+  _cdde7339: rects
+  _cdfdcddb: assert_license
+  _ce0f6b38: draw_warn_button
+  _ce4cf8fc: font
+  _ce5c626c: sheets_in_rect
+  _ce67eacc: polys
+  _ce6d3e96: wsh
+  _ce79ae35: timer
+  _ce8523fe: oy0
+  _ceb4c314: by3
+  _cee8f9d1: seg_hits_bbox?
+  _ceeedf70: repack_sheet
+  _cefd56c0: normal_rgb
+  _cefe7468: h
+  _cf0f08a8: merge_intersects
+  _cf571108: len
+  _cf6c0183: grp2
+  _cfad422a: draw_button
+  _cfcf2089: is_bottom
+  _cfe230f4: shape_of
+  _d0088db6: i
+  _d0192eb6: height
+  _d01fee87: tf3d
+  _d026bb2a: rsz
+  _d03a885e: opac
+  _d03f7ae3: rank_free
+  _d0424217: eps
+  _d0431df5: step_selection
+  _d043ebe3: plan_edge
+  _d056e9d1: insert_char
+  _d083d401: horiz
+  _d088863a: startup_flags
+  _d090233d: hole_near
+  _d0a7fdba: wrap
+  _d0b76f0f: tag
+  _d0bd50c1: every_board
+  _d0c93638: sort_key
+  _d0cd7908: root
+  _d0e81d0c: normalize_group
+  _d11d5e98: button_hit?
+  _d11f7600: open_ix
+  _d13c3ea0: rotate_partner
+  _d14b3aa1: s
+  _d17356d3: intersect_recs
+  _d187c81e: begin_drag
+  _d191529d: bands
+  _d198d54a: prep_parts
+  _d19df1ee: mark_added_edges
+  _d1a8a6ac: lock
+  _d1cd4194: tool_key
+  _d1cd855b: ph
+  _d1d0630a: ry2
+  _d1e4363f: edge_gap
+  _d1e86419: activation_errors
+  _d1ea58e7: def_name
+  _d204c38c: snap_point
+  _d20edad0: bx2
+  _d22c6161: cups
+  _d2483d24: face_by_children
+  _d25e9a04: came_from
+  _d289032e: setup_fields
+  _d28959e7: two_sided?
+  _d2988734: import
+  _d2d5f40a: was_drag
+  _d2efa9e8: track_overwrite_hover
+  _d2f99de2: check_license
+  _d35dc6ff: hide
+  _d395e9f8: dxf_layer
+  _d39b73b6: outer?
+  _d3a248fb: move_to_sheet
+  _d3a86b68: thick
+  _d3c53696: parse_thickness
+  _d3d9322a: lbl
+  _d3de41b2: rot_poly
+  _d3f0d7ec: load_slots
+  _d41503f4: ka
+  _d41bb15d: pt
+  _d41d1a70: rect_plan
+  _d41d44b0: add_board_stub
+  _d445eeab: col_name
+  _d44686c2: trace_loops
+  _d4580a7b: icy
+  _d4767c0f: commit_rect
+  _d4944f67: index_of
+  _d4a205ac: sheet_grp
+  _d4afb2ea: attr
+  _d4c52fb9: activation_error
+  _d4c7916e: select_tool
+  _d4f0f9eb: parts_of_sheet
+  _d4f88666: in_poly?
+  _d50f75ee: warning_color
+  _d522abbf: set
+  _d52326b3: moving_poly
+  _d528fe42: ensure_screen_poly
+  _d533ec26: grp
+  _d53ad96a: src_ix
+  _d54ff0d5: polys_overlap?
+  _d55debb1: found
+  _d569b95a: off_x
+  _d58a8c9b: random
+  _d5a5cc33: drag_rect
+  _d5bdbb5b: sweep_memo
+  _d5f932b3: save_collapsed
+  _d61658e0: sheets
+  _d61a6127: face_color
+  _d61e4492: started?
+  _d6593247: shape_pts
+  _d66e2cc1: pad_box
+  _d67056c0: to_polylines
+  _d6bf254c: lasso_pts
+  _d6f11a0e: moved
+  _d6f2ef9c: scan_nesting
+  _d73401e7: min_overlap
+  _d74a8c96: reason
+  _d78e0ff0: clone_panel_into
+  _d793db26: click_mode
+  _d7d3214d: draw_divider
+  _d7d61b9f: card_base
+  _d7e0ae7c: box
+  _d7e2daa6: want2
+  _d802db45: build_pairs
+  _d8120b3f: side_mode?
+  _d8240cb7: topts
+  _d82a1555: add_all
+  _d850e4bf: drag_y
+  _d859cc92: timeout
+  _d886c611: hit_side_button
+  _d8d90a24: cls2
+  _d8df8b21: http_get_curl
+  _d8e20ffb: ents3
+  _d8e803b0: ch
+  _d8f723f6: fld
+  _d9000faa: add_to_selection
+  _d900238d: cost_sheet
+  _d931ebad: smallest_at
+  _d93740da: repack_each
+  _d9487673: finish_drag_rank
+  _d9723779: ua
+  _d989eefc: ix
+  _d99de82f: panel_loops
+  _d9b81a7a: chord
+  _d9b8dd5e: polys
+  _d9d46c0f: group_rows
+  _d9f8420e: opac
+  _d9fc210d: bx0
+  _da05ecb1: b2x
+  _da36823f: margins_memo
+  _da3eb970: reason
+  _da4ca739: p_next
+  _da56aca1: placed_bbox
+  _da5bf059: sin_half
+  _da6d4b2d: part_no_of
+  _da6e784a: pen_u
+  _da79a376: optimize_next
+  _da8ad11a: bnds
+  _da8f01b5: out_d
+  _daa2f929: scan_sheet
+  _daaf9412: material_for
+  _daafd655: d1
+  _dacbffdf: turn_score
+  _dacd63a6: orders
+  _dae89e17: best_a
+  _daf96d51: offset_poly
+  _db08dfc9: label_opts
+  _db2c7a7c: hover_preset
+  _db511d0d: gid
+  _db5d7a3c: clear_license
+  _db78d72e: dist_to_box
+  _db7fb465: transform_ops
+  _db8637b0: update_hover_delete
+  _db8b2976: p3
+  _db9e726c: hover_field
+  _dba1b08c: default
+  _dba2022f: json_collapsed2
+  _dbaa315c: stroke_loops
+  _dbb01f34: add_sheets
+  _dbb88b03: nxt
+  _dbd406f5: set_startup_flag
+  _dbd6c4a1: draw_side_line
+  _dbe8c187: attach_mode?
+  _dbfe1f7e: read_license
+  _dbffb935: sheet_maps
+  _dc050c0b: done_count
+  _dc176291: p_next
+  _dc3f599f: spot_for
+  _dc4c0a5d: x1
+  _dc633f80: next_index
+  _dcb0799e: bottom_sheet?
+  _dccbbba5: license_json
+  _dcf8c04d: line_meet
+  _dd0fc563: edge_index
+  _dd1a7f20: rr
+  _dd2fd190: click_label
+  _dd62537e: menu2
+  _dd6468a7: seed
+  _dd78ba2c: sub_face_color
+  _dd8c9961: dlg
+  _dd953d51: ib
+  _ddb19efd: oid
+  _ddbabc42: postpass_step
+  _ddcec5ba: rvec
+  _de00f0f9: grp_box
+  _de24fd0f: write_one_dxf
+  _de556708: entry_target
+  _ded2bc13: clear_offsets
+  _dee620d8: framed
+  _def28f34: hit_panel
+  _def6bca6: draw_rect
+  _df30d1fe: pack_plain_again
+  _df31462f: drag_follow
+  _df357e42: a_lo
+  _df3606a3: pack_group
+  _df4f71bc: off_a
+  _df507b9e: panel
+  _df68e3b4: fld_bbox
+  _dfa1578b: list_boards
+  _dfa78933: name
+  _dfbcb16a: send_to_dialog
+  _dfc21ba3: cur
+  _dfe2f35b: additive
+  _e00bf5d7: mat
+  _e00e1721: grid_cache
+  _e041f5a2: nfp_memo
+  _e04359e9: upright
+  _e047a2a9: gx2
+  _e0516545: yj
+  _e08bdabb: box2
+  _e08eaa83: board_faces
+  _e09c7ff1: all_panels
+  _e0f60d52: draw_sheet_buttons
+  _e109aaba: sheet_recs
+  _e1375492: set_hover
+  _e147ae67: strict
+  _e1485b8e: prepare_model
+  _e14ef301: hover_del
+  _e1680f65: opts
+  _e17f53e7: base_xy
+  _e1ab909e: sheets_by_stock
+  _e1d5055e: send_materials
+  _e210a5c6: down_y
+  _e22f72d2: inner
+  _e25dbacd: yhi
+  _e26d142f: wrap_on
+  _e277ccde: gr
+  _e2b5ea25: prefix
+  _e2c255b6: total
+  _e2e799b4: eb_spec
+  _e2ec7c68: xy_bounds
+  _e2fc326f: fill_sizes
+  _e2fcb13d: ref_p2
+  _e3033102: hover_flat
+  _e313426d: offset_for
+  _e317be59: parse_value
+  _e31f533d: machine_fingerprint
+  _e33063b1: project_range
+  _e342b9fd: cam_sig
+  _e350e76c: b1
+  _e368f9b5: b1v
+  _e3937ef1: separator
+  _e3a37cf5: hover_button
+  _e3aa14d3: cross_sorter
+  _e3f8551c: reload_tool
+  _e4092e6c: rels_xml
+  _e412bec9: side
+  _e4147f27: find_free_rects
+  _e423551e: any_rot
+  _e439f8a6: m_top
+  _e43e5503: repack_each
+  _e46f856e: poly_bounds
+  _e48d8065: dy
+  _e4af2004: ddy
+  _e4c576df: rad
+  _e4f05c8d: dos_t
+  _e507f31f: best
+  _e510938c: error_points
+  _e558d50f: p_edge
+  _e55eb9b0: stop_timer
+  _e55fd46f: off_y
+  _e5699b75: section2
+  _e574594b: draw_preset_item
+  _e575c6a5: json_presets
+  _e57dbacc: leave_edit
+  _e58edc40: cutting_lines?
+  _e5a1cf0e: prune_bottoms
+  _e5a4c6cd: toggle_rect
+  _e5c90b3e: license_ok?
+  _e5da62bd: c_to
+  _e5dad2a3: save_edgeband_desc
+  _e60566a7: base_tr
+  _e6265e3b: bw2
+  _e630594c: license_field
+  _e653a6fe: rank_a
+  _e66408d5: per_row
+  _e66c6a7a: draw_polys
+  _e66e2152: pminx
+  _e674ea32: expand_corners
+  _e6a0dabe: sheet_xml
+  _e6a7bf6a: drawable?
+  _e6ba2f3b: apply_numbering
+  _e6dca85d: big_enough?
+  _e72d1472: ry1
+  _e7420ddc: resp2
+  _e7525ee3: apply_settings
+  _e7528997: postpass_timer
+  _e76905aa: drag_y
+  _e77c547c: deg
+  _e79d967a: register
+  _e7ad1f4c: commit_edit
+  _e7b239cb: in_front?
+  _e7b2b17b: style_ix
+  _e7f3b7e4: two_sided_ids
+  _e7fe4511: draw_edgeband
+  _e808fb3b: px0
+  _e8169ce8: each_point
+  _e81f6e07: v
+  _e82f609d: meet
+  _e84ef4ad: sheet_h
+  _e8598982: button_hit?
+  _e8649a72: ylo
+  _e884ad2a: mix
+  _e899e740: drop_id_cache
+  _e8a07557: dos_time
+  _e8a5bba6: attr
+  _e8ace267: min_side
+  _e8b69b47: has_gap
+  _e8d81c0a: m_right
+  _e8f5d19f: len_b
+  _e8f61d0b: poly_hits_rect?
+  _e9301909: start_i
+  _e935bf6b: track_hover
+  _e93b1f5c: tx
+  _e94f334b: clamp_to_panels
+  _e959a2a6: hit_header
+  _e9678ae3: bh2
+  _e9a4ae0f: input_buf
+  _e9b444c1: edge_overlaps
+  _e9dd4105: bx1
+  _e9f85f99: sort_sheets
+  _ea0a22f8: label3d
+  _ea0bd795: was_free
+  _ea265f1c: name_of
+  _ea2afcb5: draw_section_header
+  _ea302816: summary_rows
+  _ea58c957: cur_pt
+  _ea6972fd: conv2
+  _ea6f582c: pack_group
+  _ea76bc1e: xor_key
+  _ea8cf664: build_doc
+  _ea9e841c: reorder_cycle
+  _eab3e9a3: repacked_once
+  _eab82a8b: start
+  _eac99076: j0
+  _ead34cb6: sheet_list
+  _eaec7859: fields
+  _eaef8af2: enter_edit
+  _eb030e80: close_dialog
+  _eb1a86f7: tool_cls
+  _eb21f44d: errors_in_selection?
+  _eb4d097c: record_for
+  _eb525961: scale
+  _eb869462: apply_face_materials
+  _eb8abe9b: band_tris
+  _ebb014c3: set_status
+  _ebb59e9e: corner_dirs
+  _ebdf358b: draw_fill2d
+  _ebe40b5f: merge_near
+  _ebfc798c: pad_y
+  _ebffc3f1: rx
+  _ec07b26f: edge_hit
+  _ec19439d: init_modes
+  _ec1ff397: wmi_connect
+  _ec3c7542: lock_open
+  _ec42b2d6: row_of
+  _ec551fb3: cross
+  _ec5d6377: cell_xml
+  _ec74f2d8: j1
+  _ec8e6841: state
+  _ec928958: restore_selected_preset
+  _ecd369bc: draw_overlay
+  _ecdaec0b: overlap_polys
+  _ece1e335: scan_panels
+  _ecf7ba06: deactivate_key
+  _ed0756bd: gy
+  _ed158714: poly_area
+  _ed365aa2: attr
+  _ed489c5e: edge_frame
+  _ed5ce3d0: boards_in
+  _ed6e8510: load_collapsed
+  _ed77d228: ang
+  _ed786a35: commit_field_input
+  _ed7a5e68: pack_all_to_corner
+  _ed821e26: hw_config_id
+  _ed88bb03: set
+  _eda5d6c9: btn_plan
+  _edae44a3: layer_spec
+  _edcf42fb: plan_preview
+  _eddc6cdd: font_name
+  _edf95c3f: press_pt
+  _ee209207: draw_mirror_preview
+  _ee4fc9e7: normal_tris
+  _ee5368ab: loose
+  _ee5ebc07: on_lock
+  _ee7a3821: split_layer_name
+  _ee94079d: rows
+  _ee9dbd31: extents
+  _ee9f048c: add_sheet_label
+  _eeadf73b: movable_from_later
+  _eeb49264: type_set
+  _eec6336a: record_of
+  _eeed10e1: one_group
+  _eeed203a: clone_panel
+  _eef3bdc0: type_digit
+  _ef1f5b66: on_model_change
+  _ef3c3d8b: back_face?
+  _ef5820c5: scan
+  _ef8e93b0: half
+  _efa67472: done
+  _efa8b344: esc
+  _efb2355c: m_max
+  _efb4a7a6: txt
+  _efb88a42: cluster_parts
+  _f0113fb7: collect_tick
+  _f01b70ea: cos_a
+  _f0253dd8: draw_text
+  _f0518845: load_slots_json
+  _f0e831ba: open_dialog2
+  _f0ffd042: add_ring_edges
+  _f102fcb7: curves_in
+  _f10771fa: draw_brackets
+  _f12a31da: orient
+  _f13195ac: parse_value
+  _f1471506: load_overlay_settings
+  _f16a0746: run_async
+  _f171f5be: entity
+  _f1760bb9: in_front?
+  _f1809a61: two_sided_margin
+  _f183d527: preferences_key
+  _f18896f1: pack_to_corner
+  _f1989c21: on_change
+  _f1b759a9: far_pt
+  _f1ff2910: pair
+  _f201b40a: in_d
+  _f2385fe6: ia
+  _f239627d: select_sheet
+  _f23e8da5: edge_hit
+  _f258f05c: thickness
+  _f27128bc: update_hover_delete
+  _f2768942: cmd
+  _f29b2dfe: place_root
+  _f2b1338e: by0
+  _f2b9f885: ty
+  _f2bbf73b: prev_profile_w
+  _f2fac0a6: part_of
+  _f2fc04ac: redraw_rows
+  _f30745b0: polygon
+  _f31e2d05: sheet_at2
+  _f32cfa5a: dx
+  _f341d1ac: norm_board
+  _f3848539: face_color
+  _f38b9480: depths
+  _f39a7b42: hidden_cuts
+  _f39c06de: loops_of
+  _f3b98e26: tool
+  _f3bb28fb: end_drag2
+  _f41568a1: sheet_cache
+  _f43929b9: err_code
+  _f4588fa3: blank_label
+  _f4d6023c: z
+  _f51113bc: layers2
+  _f5451820: set_dim_text
+  _f5515cf7: shrink_poly
+  _f555f3f8: addon_data
+  _f573a61c: group_bbox
+  _f583511f: empty?
+  _f5a9ee13: rest
+  _f5c211c3: shift_dims
+  _f5e92b89: row2
+  _f60dec30: set_entries
+  _f6143dea: rank_by_layer
+  _f61f3611: margins_of
+  _f62d66db: klass
+  _f6358bd9: ci2
+  _f63f2fbf: face_with
+  _f64d4ccf: container?
+  _f6513cfd: ask
+  _f657ca75: ry2
+  _f6606a3f: number_by_sheet
+  _f66b7a32: gap3
+  _f692b623: seg_touches_part?
+  _f697d022: a2y
+  _f6a599ef: sheet_size
+  _f6b249fd: sync_ids
+  _f6b9554a: repeat
+  _f6ba5b0f: tol
+  _f6ca5dbd: ext_x
+  _f6cc449b: snap_edges
+  _f6d243ee: num_w
+  _f7026703: fetch_json
+  _f70ada02: queue
+  _f711d090: sheet_border?
+  _f74523af: two
+  _f74b0a99: clone_sheet_shell
+  _f755dafd: nfp_of
+  _f75643c6: area
+  _f76db6fe: bbox2d
+  _f777bf99: ci2
+  _f7826cb0: error_points
+  _f782b757: cands2
+  _f78f71fd: kflags
+  _f7c727df: cano
+  _f7e3069f: panel_world_box
+  _f7eacb3a: xor_key
+  _f7ec2498: draw_new_rect
+  _f7ecc290: bcy
+  _f7ede768: gaps_for
+  _f812d741: activation_errors
+  _f8140d0f: ops
+  _f83b37c8: dir_of
+  _f8552d5f: split_at
+  _f856e8dd: ty
+  _f88cef6a: half
+  _f890e275: wsh
+  _f89911a7: last_cut_json
+  _f8cd3fcf: tag_from_layer
+  _f8e42bd9: insert_sheet_after
+  _f8fb4848: label_text
+  _f8fcf54a: dot_col
+  _f9083db4: in_rings?
+  _f9100d6b: screen_scale
+  _f92bd08d: two_tris
+  _f941fe80: hide
+  _f96b3f2a: launch
+  _f9714588: draw_label
+  _f977db82: snap
+  _f9b419ff: panel_cells
+  _f9c9fb82: colors
+  _f9d5430d: cd2
+  _f9e9781a: sheet3
+  _f9ff0de9: id_cache
+  _fa09db7b: d2x
+  _fa14bb54: true_color
+  _fa31c4eb: hits_border?
+  _fa87e7fb: loops_mm
+  _fa9b75b4: side_nearest
+  _fab7c7ea: group_items
+  _facbe376: tag
+  _fadf8782: all_boards
+  _fae1d475: vec
+  _faecb1ca: polys_hit?
+  _faf3495b: load_slots_geom
+  _faf3aedd: part_record
+  _faff50cb: src_ix
+  _fb072f1a: ix
+  _fb7c57bd: select_group
+  _fb89e43a: xy_bounds
+  _fbb482eb: backup
+  _fbe73348: stream
+  _fbe812bc: part_in_rect?
+  _fbec2008: import_file
+  _fbf7e391: poly_area
+  _fc080fe2: typed
+  _fc1b1539: len2
+  _fc2ab752: kflags
+  _fc31c198: slot_edges
+  _fc5bd855: usable_size
+  _fc7a69ba: hover_panel
+  _fc8d3f1e: attr_snapshot
+  _fc8ecc8d: edgeband_group
+  _fc91f51b: unscale
+  _fca0949d: seg_cuts_poly?
+  _fcbc95c3: panels
+  _fcc2ae55: bx0
+  _fcccb052: save_selected_preset
+  _fcd3df97: start_x
+  _fced8cab: done_count
+  _fd0d8e60: edgeband_spec
+  _fd43cbba: transparent_material
+  _fd5d2222: preset2
+  _fd74e01e: stock_key
+  _fd8d63f5: rects
+  _fd910922: cy0
+  _fdb496e4: cos_a
+  _fdc18290: ray
+  _fdc4214f: found
+  _fdf1dff8: back_dir
+  _fdfa7f82: my
+  _fe0832f4: value
+  _fe0b87b0: click_outside
+  _fe1b4f42: start_collect
+  _fe23c250: hole_at
+  _fe4f3a12: renumber
+  _fe51b525: cx0
+  _fe625716: round_len
+  _fe7b627f: pack_cache
+  _fe8bd58d: place_leftovers
+  _feb51463: n
+  _fec87097: resize_to_cursor
+  _fed39657: warning_face_color
+  _fee44d87: xq
+  _ff0096e4: sheet_under
+  _ff11730d: d3
+  _ff2bddfb: reload
+  _ff3778ab: largest_gap
+  _ff485cbf: y
+  _ff6bb683: rebuild_panel
+  _ff891d1f: collect_kids
+  _ffff9a95: resp
+
+# Chi noi bien GIU cai gi, khong noi tac gia go tu nay.
+vai:
+  _01b9b578: transform
+  _020b21de: model
+  _032f81d4: holes
+  _04113f8e: src
+  _061f41f4: partner
+  _063888e7: tf
+  _070590b6: line_vec
+  _0973d2a2: rot
+  _0a2eb43e: box
+  _0b722daf: i
+  _0df1379c: edge
+  _0ef23977: partner
+  _14d486f4: color
+  _160d7a8e: ox
+  _18018a36: vec
+  _185c66d4: tf
+  _1890c36d: pt
+  _1987b589: view
+  _19896e63: edge
+  _1a0f49c2: umax
+  _223cc36c: tr
+  _27cbd418: len
+  _293a5134: part_tf
+  _29aefa85: bbox
+  _2a67d197: value
+  _2c7baf78: b
+  _2cad0207: members
+  _30e8f323: entity
+  _3b3b5796: margin
+  _3d524c1b: holes
+  _3fffe226: value
+  _4c31fe66: box
+  _4c90ac9a: bx2
+  _4dd2019e: ny
+  _5434e0d2: y
+  _563cf703: prefix
+  _572f7fb0: materials
+  _5a647f35: key
+  _5a832894: top
+  _61e9a139: cells
+  _648601f0: parts
+  _65651b3e: tf
+  _6d386b46: inv
+  _6f03ef52: i
+  _6f15bf5e: grid
+  _71fbb67c: closed
+  _78e9c58b: disp
+  _798be609: members
+  _7a362ab2: thickness
+  _7bb95c62: ox
+  _7cf43ee8: members
+  _7d36a17d: bbox
+  _841eae87: two_sided
+  _8509dab5: two_sided
+  _867c021a: x2
+  _880f8491: entity
+  _884463de: tr
+  _8864cc62: out
+  _8981ea3c: color
+  _8b217ad8: bbox
+  _8b402e9a: rec
+  _8ce1cc3f: y1
+  _97e4bf2e: fill
+  _99211983: renumber
+  _9b94b671: entity
+  _9e68ab19: partner
+  _a1e4f658: umin
+  _a2166243: rot
+  _a31cca46: src
+  _a36c6309: a
+  _a7f8ded3: y2
+  _aa4a165c: edge
+  _ab3bb2b5: transform
+  _b0c97240: x2
+  _b1dddda3: sheets
+  _b284b884: panel
+  _b589cb5d: oy
+  _b69d1f9e: y2
+  _b8681ffd: cells
+  _bbc1b182: y
+  _bdd201c3: by2
+  _c477bd6e: dy
+  _c67a7fd6: edge
+  _c7e8b218: bbox
+  _cd52d72c: x
+  _ce4820a8: ax
+  _cec39226: pt
+  _d1d4c1a4: transform
+  _d24d9627: panel
+  _d3ff2a14: inv
+  _d51b4ab3: members
+  _d6c4a908: top
+  _d6d35368: two_sided
+  _da365716: nx
+  _dc109140: nesting
+  _de0a87f4: dx
+  _debdac30: color
+  _e74b531c: side
+  _e8385f31: id
+  _e9d24615: id
+  _ea927e26: labels
+  _eb0d2b5d: out
+  _ec8ee58a: y1
+  _f005c610: closed
+  _f175348d: y
+  _f18c2d8f: y2
+  _f413c26e: x
+  _f4e43624: y1
+  _f80d00b2: is_bottom
+  _f8a46968: x
+  _f9fb932d: id
+  _fac73c01: thickness
+  _fd2d1676: entity
+  _ffcf5177: rot
+
+# Lech nhau giua cac cho -- phai doc tay, co y de trong.
+mau_thuan:
+  _0151a74a:   # {'utils/sheet/reorder.rb': 'gap_part'}
+  _0185c16c:   # {'method/xeptam/nfp.rb': {'arr7': 2, 'arr2': 7}}
+  _0208a6da:   # {'method/toiuu/back.rb': {'tr': 2, 'vec2': 2, 'tr2': 2}, 'method/xeptam/mirror.rb': 'tr'}
+  _021fb828:   # {'utils/nesting/corner.rb': 'num'}
+  _025ef33f:   # {'method/xuatdxf/entry.rb': 'arr4'}
+  _0265e6d7:   # {'method/thongke/summary.rb': 'each_sheet'}
+  _02d1df38:   # {'utils/nesting/engine.rb': 'num3'}
+  _02e5d8f8:   # {'method/chongbay.rb': {'bbox': 3, 'bb2': 10}}
+  _031d8f49:   # {'method/nesting.rb': {'pi': 3, 'b': 1}}
+  _042404e7:   # {'method/intem/scan.rb': {'arr2': 2, 'arr': 3}, 'method/xeptam/collide.rb': {'arr6': 2, 'h': 6, 'arr2': 6}, 'method/xeptam/drag.rb': 'arr2', 'utils/label.rb': 'arr2', 'utils/nesting/corner.rb': {'h': 17, 'arr3': 3}}
+  _04378fe0:   # {'method/xeptam/arrange.rb': 'tr2'}
+  _04c36b04:   # {'method/themtam.rb': {'rows': 1, 'seen': 2}}
+  _04c9a0d8:   # {'method/intem/scan.rb': {'h3': 1, 'arr': 1}}
+  _05b497c8:   # {'method/xeptam/mirror.rb': {'grp6': 4, 'vec': 4}}
+  _078e82d9:   # {'method/xeptam/mirror.rb': 'arr2', 'utils/font.rb': {'arr4': 2, 'arr2': 3}}
+  _0845fb1d:   # {'method/netcatcuoi/lastcut.rb': {'num': 2, 'tol': 5}}
+  _084d87fa:   # {'method/nesting.rb': {'nil': 1, 'clear_progress': 1}}
+  _0850aa4d:   # {'method/toiuuvan/engine.rb': {'out': 2, 'arr': 11, 'arr4': 3}}
+  _086c3777:   # {'utils/view.rb': 'quad', 'utils/view/query.rb': 'quad'}
+  _096c95d4:   # {'method/toiuu/engine.rb': {'arr': 7, 'arr4': 1}}
+  _09dce564:   # {'method/xeptam/push.rb': 'num', 'utils/label.rb': 'lo'}
+  _0a346bad:   # {'method/xeptam/mirror.rb': 'grp'}
+  _0a6fe10c:   # {'method/themtam.rb': {'h': 8, 'arm': 1}, 'method/xeptam/collide.rb': {'h': 6, 'h18': 2}, 'utils/nesting/pack.rb': 'h23'}
+  _0aa6b516:   # {'utils/label.rb': {'arr2': 4, 'arr': 3}}
+  _0b6488b0:   # {'method/xeptam/arrange.rb': 'tr3'}
+  _0b7e289c:   # {'utils/label.rb': {'vals': 3, 'arr12': 3}}
+  _0bcfaa3f:   # {'method/nesting/collect.rb': {'cfg': 12, 'b': 1}}
+  _0c5366dc:   # {'utils/sheet/reorder.rb': 'next_id'}
+  _0ca06750:   # {'utils/preset/field.rb': {'tw': 4, 'pt': 1}}
+  _0f6ff53e:   # {'method/xeptam/mirror.rb': {'partner2': 5, 'partner': 3}}
+  _1016acf9:   # {'utils/preset.rb': 'str3'}
+  _10270e02:   # {'method/xuatdxf/entry.rb': 'x2'}
+  _106da2d3:   # {'utils/nesting/corner.rb': {'arr3': 5, 'arr': 14}}
+  _10a86f9d:   # {'method/toiuu/postproc.rb': 'arr', 'method/xeptam/collide.rb': {'arr': 4, 'pt': 3}, 'method/xeptam/mirror.rb': 'arr', 'utils/label.rb': 'arr2', 'utils/view/query.rb': 'arr'}
+  _111ff364:   # {'utils/label.rb': 'grp2'}
+  _11485ef7:   # {'method/xeptam/mirror.rb': 'tr5'}
+  _11b90f53:   # {'method/themtam.rb': {'flag': 4, 'anchor': 3}}
+  _11f053b2:   # {'utils/nesting/edit.rb': 'v2'}
+  _124c7bd3:   # {'method/catcuoi.rb': 'node', 'method/catcuoi/lastcut.rb': 'node', 'method/thongke/hardware.rb': 'node', 'method/thongke/scan.rb': 'node', 'method/toiuu.rb': 'node', 'method/toiuu/engine.rb': 'node', 'method/toiuu/postproc.rb': 'node', 'utils/cutting/detail.rb': 'node', 'utils/cutting/loop.rb': 'node', 'utils/label.rb': 'node', 'utils/nesting/edit.rb': 'node', 'utils/normalize.rb': 'node'}
+  _147e36f7:   # {'method/chontam.rb': {'label_section_hidden': 1, 'overlap_fills': 4}, 'method/themtam.rb': {'label_section_hidden': 1, 'overlap_fills': 2}, 'method/toiuu.rb': {'label_section_hidden': 1, 'overlap_fills': 4}}
+  _14d07ef1:   # {'utils/nesting/pack.rb': {'tr2': 1, 'tr3': 2}}
+  _152904a8:   # {'method/xeptam/push.rb': {'umin3': 4, 'umin': 2}}
+  _15bc30f3:   # {'method/catcuoi/lastcut.rb': {'num': 2, 'tol': 5}}
+  _17818395:   # {'method/xeptam/collide.rb': 'arr', 'method/xeptam/nfp.rb': {'arr2': 3, 'arr': 5}, 'utils/cutting.rb': 'pt2', 'utils/geom.rb': 'pt2', 'utils/nesting.rb': 'arr', 'utils/nesting/corner.rb': {'arr': 11, 'arr2': 6}}
+  _178f2fea:   # {'method/chontam/pick.rb': {'arr2': 3, 'arr': 4}}
+  _17a7e4a5:   # {'method/toiuu.rb': {'arr2': 7, 'arr': 1}}
+  _18e680f5:   # {'utils/cutting/loop.rb': {'h21': 4, 'arr': 10}}
+  _195f72dc:   # {'utils/flip.rb': 'ents'}
+  _1b23e28b:   # {'method/toiuu/engine.rb': 'flip_x', 'method/xeptam/mirror.rb': 'right'}
+  _1b8588a9:   # {'utils/cutting.rb': {'str': 3, 'sep': 1}}
+  _1c3ee2ac:   # {'method/chongbay.rb': {'joint': 2, 'x': 1}}
+  _1d9db542:   # {'system/setting.rb': {'raw_str': 10, 'begin': 1}}
+  _1dbfc5f8:   # {'utils/sheet/mark.rb': 'pt'}
+  _1df10d8d:   # {'method/xeptam/arrange.rb': 'pt3'}
+  _1e20ae8e:   # {'method/catcuoi/resize.rb': {'y2': 8, 'y23': 3}}
+  _1fc5cd56:   # {'method/nesting/simplify.rb': 'arr7', 'method/xeptam/nfp.rb': 'arr2', 'utils/nesting/corner.rb': {'arr3': 4, 'arr5': 3, 'arr2': 2}}
+  _2083e4e3:   # {'utils/label.rb': 'bb2'}
+  _20cd1718:   # {'utils/pdf/ttf.rb': 'off'}
+  _21f34437:   # {'utils/cutting/detail.rb': {'arr2': 3, 'arr': 3}}
+  _2256fbaa:   # {'utils/view.rb': 'arr2'}
+  _22762e99:   # {'method/themtam.rb': {'grp2': 5, 'src': 3}}
+  _229ecce0:   # {'method/xeptam/nfp.rb': 'outers'}
+  _22a2efeb:   # {'utils/sheet/reorder.rb': 'vec'}
+  _23505ef9:   # {'method/netcatcuoi/lastcut.rb': 'pt', 'method/netcatcuoi/resize.rb': {'pt': 9, 'bb': 7}, 'method/thongke/quet.rb': 'pt', 'method/toiuuvan.rb': 'vec', 'method/toiuuvan/back.rb': 'pt', 'method/toiuuvan/engine.rb': {'arr2': 2, 'arr': 17, 'pt': 4, 'arr3': 6, 'rec': 20}, 'method/toiuuvan/postproc.rb': {'lead': 3, 'arr': 16, 'pt': 17}, 'method/xuatdxf/dxf.rb': 'pt', 'method/xuatdxf/entry.rb': {'arr': 12, 'pt': 10, 'rec': 3}, 'method/xuatdxf/geom.rb': 'pt', 'method/xuatdxf/scan.rb': {'arr2': 5, 'pt': 3}, 'utils/chuanhoa.rb': 'num', 'utils/nesting/bilan.rb': 'pt'}
+  _2491d8c7:   # {'utils/view/query.rb': {'arr2': 3, 'arr3': 3}}
+  _25425385:   # {'method/toiuuvan/postproc.rb': {'arr4': 3, 'arr3': 5}}
+  _25d57fd1:   # {'method/chontam/pick.rb': {'entity': 10, 'entity3': 2}}
+  _26ca0c07:   # {'utils/sheet/bottom.rb': 'h'}
+  _27008b35:   # {'method/catcuoi/resize.rb': {'arr2': 3, 'arr3': 3}}
+  _27014431:   # {'method/nesting/launch.rb': 'resp'}
+  _2a0c2e50:   # {'utils/chuanhoa.rb': 'h'}
+  _2b2f7e5d:   # {'method/thongke/scan.rb': {'font': 1, 'pts': 2, 'axis': 1}}
+  _2cb52d46:   # {'method/xuatdxf/scan.rb': 'grp'}
+  _2d59af86:   # {'method/toiuu/postproc.rb': {'arr4': 3, 'arr3': 5}}
+  _2dd219a5:   # {'utils/pdf/build.rb': 'type0_id', 'utils/view.rb': 'pt'}
+  _2e55af75:   # {'utils/preset/field.rb': 'cy'}
+  _2e6c91e1:   # {'utils/cutting/loop.rb': {'h2': 4, 'arr7': 2}}
+  _2f26dd39:   # {'method/toiuuvan/engine.rb': {'arr3': 4, 'arr': 12}}
+  _2f9ede84:   # {'utils/preset/store.rb': 'spec'}
+  _304b45a2:   # {'utils/sheet/reorder.rb': 'arr7'}
+  _312f66e6:   # {'utils/cutting.rb': {'thick_mm': 2, 'flag': 2}}
+  _329793ff:   # {'utils/nesting/optimize.rb': {'rotate_by_keyword?': 1, 'pack_to_row_start?': 1}}
+  _32df3318:   # {'method/xeptam/arrange.rb': {'vec': 9, 'grp': 4}}
+  _339bf2c5:   # {'utils/label.rb': 'rows'}
+  _33f52d3e:   # {'utils/nesting/bilan.rb': {'hole': 3, 'vec': 6}}
+  _3465c332:   # {'utils/cutting/loop.rb': 'h', 'utils/label.rb': 'h', 'utils/pdf/svg.rb': 'flag3'}
+  _354e0ff6:   # {'utils/cutting/loop.rb': 'num'}
+  _3628fb71:   # {'method/toiuuvan/postproc.rb': 'arr'}
+  _3796a651:   # {'method/xephang.rb': 'ri', 'utils/preset/store.rb': 'ci', 'utils/sheet/reorder.rb': 'pi'}
+  _3798bfa1:   # {'utils/nesting/bilan.rb': 'panel4'}
+  _37cef66c:   # {'method/xeptam/mirror.rb': 'sheet3'}
+  _37e6a4e9:   # {'method/xeptam/collide.rb': 'num', 'utils/font.rb': 'pos', 'utils/pdf/ttf.rb': 'off', 'utils/sheet/overlay.rb': 'arr2'}
+  _381d1670:   # {'method/thongke/xuat.rb': {'arr2': 2, 'arr': 3}, 'method/toiuuvan.rb': 'arr'}
+  _385c1d45:   # {'method/toiuu/postproc.rb': 'arr4', 'method/xeptam/push.rb': 'arr4'}
+  _3c248dab:   # {'utils/cutting/detail.rb': {'arr': 4, 'arr3': 3}}
+  _3c9642ff:   # {'method/thongke/export.rb': 'sheets', 'method/toiuu.rb': 'out', 'utils/nesting/engine.rb': 'arr2', 'utils/nesting/optimize.rb': 'arr3', 'utils/sheet/reorder.rb': 'arr3'}
+  _3ce370c6:   # {'method/toiuu/engine.rb': {'flag47': 2, 'num2': 2}}
+  _3d34edc5:   # {'method/toiuuvan/back.rb': {'tr': 2, 'vec2': 2, 'tr2': 2}}
+  _3d5f7eb7:   # {'system/update.rb': {'remove_installed': 1, 'end': 1, 'begin': 1}}
+  _3e7613f3:   # {'method/netcatcuoi/lastcut.rb': {'num': 3, 'num2': 2, 'sx': 2}, 'method/toiuuvan/back.rb': 'inset_x', 'method/toiuuvan/postproc.rb': 'num'}
+  _4002145c:   # {'utils/flip.rb': {'h': 3, 'arr2': 2}}
+  _4168a8e5:   # {'utils/cutting/loop.rb': {'ix2': 2, 'ix': 4}}
+  _417e0a8a:   # {'utils/label.rb': 'pt'}
+  _419b0a72:   # {'system/setting.rb': 'id2'}
+  _41f82561:   # {'utils/pdf/ttf.rb': 'n_pts'}
+  _4230ad5c:   # {'method/thongke/hardware.rb': {'box': 1, 'scope': 5}}
+  _42e818da:   # {'utils/pdf/ttf.rb': 'cmap_fmt12'}
+  _43360a56:   # {'method/nesting/launch.rb': {'id': 1, 'rows': 1}}
+  _43b1a57b:   # {'method/toiuuvan/engine.rb': {'arr': 5, 'arr2': 10}}
+  _452c8960:   # {'utils/cutting/loop.rb': 'kx'}
+  _4692fe22:   # {'method/themtam.rb': {'sheet_id_of': 5, 'hidden_sheet?': 1}}
+  _4697ca89:   # {'method/toiuuvan/engine.rb': {'arr2': 2, 'flag2': 5}}
+  _47828201:   # {'method/toiuuvan/back.rb': {'tr': 12, 'tr4': 6}}
+  _47c30794:   # {'method/catcuoi/lastcut.rb': {'flag': 4, 'arr4': 3}, 'method/catcuoi/resize.rb': {'arr2': 3, 'arr3': 4}, 'utils/nesting/corner.rb': {'arr2': 9, 'arr4': 2}}
+  _47e61256:   # {'method/chontam/pick.rb': {'hit_targets': 1, 'arr3': 1}}
+  _48d3c7a6:   # {'method/xeptam/mirror.rb': 'ny0'}
+  _49543d88:   # {'method/chontam/pick.rb': {'names_of': 1, 'cutting_layer?': 1}}
+  _49b559de:   # {'method/toiuuvan.rb': {'arr2': 7, 'arr': 2}}
+  _4bcb6213:   # {'method/xuatdxf/entry.rb': 'inset2', 'utils/nesting/bilan.rb': 'arr2'}
+  _4bea8267:   # {'method/themtam.rb': {'vec': 11, 'grp2': 5, 'grp': 3}, 'method/xeptam/mirror.rb': 'grp', 'utils/nesting/edit.rb': 'grp', 'utils/sheet/bottom.rb': 'grp'}
+  _4c11a852:   # {'method/chontam/pick.rb': {'arr': 5, 'h': 6}, 'method/thongke/export.rb': 'sheets', 'method/xephang.rb': 'arr5', 'method/xeptam/collide.rb': 'h', 'utils/sheet/reorder.rb': {'arr': 4, 'arr3': 4, 'arr4': 3, 'arr5': 6}, 'utils/view.rb': 'h2'}
+  _4c2c4b2b:   # {'utils/cutting/detail.rb': 'tr3'}
+  _4c606aca:   # {'method/toiuuvan/postproc.rb': 'arr'}
+  _4c8d9d44:   # {'utils/view.rb': {'num': 3, 'dy': 7}}
+  _4e69d4a6:   # {'method/xeptam/push.rb': 'got'}
+  _4ffa85f0:   # {'utils/cutting/detail.rb': 'h'}
+  _5020f2e5:   # {'method/xeptam/push.rb': 'hole', 'utils/nesting/corner.rb': 'arr', 'utils/view.rb': 'arr'}
+  _50c679ce:   # {'method/thongke/xuat.rb': {'arr2': 4, 'arr': 5}, 'method/toiuuvan.rb': 'out'}
+  _513637ac:   # {'method/xeptam/collide.rb': {'arr3': 10, 'obs': 3, 'arr': 7, 'arr4': 4, 'arr2': 5}, 'method/xeptam/nfp.rb': {'arr': 3, 'arr3': 1}, 'method/xeptam/push.rb': {'arr2': 10, 'arr': 4}}
+  _52c3f5b2:   # {'utils/cutting.rb': 'vec2', 'utils/label.rb': 'vec2'}
+  _52d99b93:   # {'utils/label.rb': {'name_w': 2, 'w2': 3}}
+  _53413887:   # {'method/xeptam/mirror.rb': 'bb2'}
+  _53418ffb:   # {'utils/cutting.rb': {'arr': 5, 'arr2': 3, 'arr3': 5}}
+  _55019123:   # {'method/xeptam/collide.rb': {'arr': 11, 'arr8': 3}}
+  _56b17eb2:   # {'utils/sheet/reorder.rb': 'arr3'}
+  _56bfeb4a:   # {'method/toiuuvan/postproc.rb': 'arr'}
+  _56eed28a:   # {'method/thongke/xuat.rb': 'arr'}
+  _586b26be:   # {'method/themtam.rb': {'overwrite_preview': 5, 'overlap_fills': 2}}
+  _589df0d9:   # {'utils/geom.rb': 'flag', 'utils/view/query.rb': 'sign'}
+  _58af306d:   # {'utils/nesting/bilan.rb': {'num4': 3, 'num': 5, 'num3': 2}}
+  _59bbde96:   # {'method/thongke/export.rb': {'sheets': 1, 'sheet': 1}}
+  _5a718701:   # {'utils/pdf/svg.rb': 'pre'}
+  _5c134ed6:   # {'method/chongbay/assign.rb': 'arr4'}
+  _5c63e60a:   # {'utils/nesting/bilan.rb': 'arr2'}
+  _5ce22cfd:   # {'utils/sheet/reorder.rb': {'num2': 5, 'col': 2}}
+  _5d951b22:   # {'method/toiuu.rb': {'flag': 2, 'dir2': 1}, 'utils/nesting/optimize.rb': 'pt'}
+  _5f765dbc:   # {'method/xeptam/collide.rb': 'num', 'utils/nesting/corner.rb': {'flag': 4, 'num9': 2, 'y': 2}, 'utils/view/query.rb': 'num4', 'utils/view/widget.rb': 'y'}
+  _5fb96e91:   # {'utils/nesting/bilan.rb': 'num2'}
+  _60000b16:   # {'method/netcatcuoi/resize.rb': 'ry0', 'method/toiuuvan.rb': 'y1b', 'method/xuatdxf/scan.rb': 'ty0'}
+  _60ad8660:   # {'method/toiuu/postproc.rb': {'arr3': 3, 'mv': 2, 'arr2': 5}, 'utils/nesting/corner.rb': {'gap_u': 5, 'arr': 5}}
+  _6129e547:   # {'utils/cutting/loop.rb': 'outer'}
+  _614e963e:   # {'method/chongbay/shape.rb': {'num': 12, 'x2': 6, 'x23': 5}, 'method/chontam/pick.rb': 'arr2'}
+  _616f9c80:   # {'system/setting.rb': {'select_preset_later': 3, 'push_presets2': 1}}
+  _63629225:   # {'method/toiuuvan/engine.rb': {'pt': 34, 'pt8': 8}, 'method/toiuuvan/postproc.rb': {'pt': 13, 'pt10': 5, 'pt11': 4}}
+  _63ec5a82:   # {'method/intem/scan.rb': {'h2': 1, 'arr': 1, 'arr3': 1}}
+  _64e300ca:   # {'utils/geom.rb': 'flag', 'utils/nesting.rb': 'flag', 'utils/view/query.rb': 'flag'}
+  _6502dcd6:   # {'utils/nesting/corner.rb': {'den': 4, 'num': 4}}
+  _65321c4e:   # {'utils/cutting/detail.rb': 'arr', 'utils/nesting/corner.rb': 'num2'}
+  _655bd972:   # {'method/xeptam/arrange.rb': {'flag2': 2, 'grp2': 8}}
+  _66b2e8a6:   # {'utils/cutting/detail.rb': {'tr': 3, 'tr2': 6}}
+  _66bd6e5e:   # {'method/xeptam/mirror.rb': 'bb'}
+  _67757007:   # {'method/gannhan.rb': 'sel3', 'method/thongke/summary.rb': 'roots', 'method/toiuu.rb': 'live', 'method/xeptam/collide.rb': 'in_sel', 'utils/isolate.rb': 'keep_list'}
+  _68165b06:   # {'method/xuatdxf/entry.rb': {'num': 3, 'sheet_h2': 12}, 'method/xuatdxf/scan.rb': {'num': 2, 'sheet_h2': 3}}
+  _69687351:   # {'method/xeptam/push.rb': 'arr'}
+  _69c7257f:   # {'utils/nesting/avail.rb': {'num': 1, 'gap_for': 10}}
+  _6a989d41:   # {'method/toiuuvan/back.rb': {'tr': 4, 'tf': 4}}
+  _6aba9c08:   # {'method/xeptam.rb': {'shift_cached_polys': 1, 'add_offset': 1}}
+  _6af5b283:   # {'method/themtam.rb': {'vec2': 4, 'grp': 7}}
+  _6be8cda0:   # {'method/toiuuvan/engine.rb': {'flag': 3, 'arr4': 6, 'arr2': 3}}
+  _6c07002d:   # {'utils/pdf/ttf.rb': {'data': 1, 'font_full': 1}}
+  _6c19ba73:   # {'utils/view/widget.rb': 'arr'}
+  _6c26f8f4:   # {'utils/sheet/reorder.rb': 'h3'}
+  _6c34774c:   # {'method/xeptam.rb': {'panel': 3, 'panel2': 4}}
+  _6da3bd5c:   # {'method/chontam/pick.rb': {'transform': 1, 'transform2': 3}}
+  _6da645c0:   # {'method/themtam.rb': {'ixs': 3, 'arr': 3}}
+  _6df404a0:   # {'method/chongbay.rb': {'num2': 8, 'y1': 4}}
+  _6f2569f7:   # {'method/nesting.rb': 'm_left', 'method/nesting/collect.rb': 'arr', 'method/toiuu/engine.rb': {'v': 2, 'arr10': 2}, 'method/toiuu/postproc.rb': 'arr5', 'method/xeptam/collide.rb': 'lo_x', 'utils/cutting/detail.rb': {'arr': 3, 'value': 2}, 'utils/cutting/loop.rb': {'arr': 16, 'lp': 2, 'arr6': 2}, 'utils/label.rb': 'hole', 'utils/nesting/avail.rb': 'v', 'utils/preset/mode.rb': 'v'}
+  _6f380ef9:   # {'utils/sheet/reorder.rb': {'num17': 5, 'total_h': 1}}
+  _6fe72826:   # {'utils/cutting.rb': 'vec'}
+  _712cf214:   # {'method/chongbay.rb': 'y', 'method/toiuu/engine.rb': {'arr2': 1, 'num': 4, 'arr4': 2}, 'method/toiuu/postproc.rb': {'arr': 2, 'arr2': 2}, 'utils/nesting/pack.rb': 'arr3'}
+  _713037d0:   # {'method/nesting/collect.rb': {'jobs_of': 1, 'vec_angle': 1}}
+  _715b8136:   # {'method/xuatdxf.rb': {'arr': 2, 'h': 4}}
+  _7181513e:   # {'method/xeptam/mirror.rb': 'bb2'}
+  _719ddd2d:   # {'utils/nesting/corner.rb': 'arr'}
+  _71e16edd:   # {'method/xeptam/nfp.rb': 'holes'}
+  _71fbc725:   # {'method/thongke/scan.rb': 'tf', 'method/xeptam/drag.rb': {'vec7': 7, 'vec': 3}}
+  _75614023:   # {'method/xeptam/push.rb': {'num': 5, 'd': 3}}
+  _758e8d28:   # {'utils/nesting/corner.rb': 'arr2', 'utils/nesting/pack.rb': 'arr4'}
+  _765c65ac:   # {'method/chongbay/shape.rb': 'left2', 'method/xeptam/mirror.rb': 'left', 'utils/label.rb': 'flag'}
+  _769bd952:   # {'utils/sheet/reorder.rb': {'row_h': 11, 'arr5': 2}}
+  _772eae98:   # {'method/toiuuvan/engine.rb': {'arr3': 2, 'num': 4, 'flag': 5}}
+  _77445f53:   # {'method/netcatcuoi/resize.rb': {'x212': 4, 'x213': 5, 'x214': 4, 'x215': 6, 'x216': 4}, 'method/toiuuvan.rb': 'x217'}
+  _774f7f26:   # {'method/toiuu/back.rb': {'tr': 12, 'tr4': 6}}
+  _77a00f52:   # {'utils/nesting/edit.rb': 'temp_layer', 'utils/preset.rb': 'str'}
+  _77a9e121:   # {'method/nesting/launch.rb': {'dlg': 2, 'str2': 1}, 'system/setting.rb': 'kind2'}
+  _77abae45:   # {'utils/sheet/bottom.rb': 'arr3'}
+  _77fee308:   # {'method/chongbay/assign.rb': {'layer': 4, 'grp': 5}, 'utils/cutting/detail.rb': {'str': 2, 'vec': 5}, 'utils/label.rb': 'layer', 'utils/nesting/edit.rb': 'flag2'}
+  _78875996:   # {'method/toiuu/postproc.rb': 'h', 'utils/nesting/corner.rb': {'arr5': 2, 'arr3': 5}}
+  _78dcb2bf:   # {'method/xeptam/collide.rb': 'num6'}
+  _7941948e:   # {'utils/nesting/edit.rb': 'grp2'}
+  _79d48c0c:   # {'method/xuatdxf/geom.rb': {'arr3': 3, 'arr': 4}}
+  _7a72dc50:   # {'method/catcuoi/resize.rb': 'cur_y', 'method/gannhan.rb': 'face2', 'method/intem/scan.rb': 'arr2', 'method/nesting/draw.rb': 'top2', 'utils/cutting/detail.rb': 'lbl_scale', 'utils/label.rb': 'flag2', 'utils/sheet/bottom.rb': 'arr3'}
+  _7ae2323e:   # {'utils/nesting/optimize.rb': 'tr'}
+  _7b230ca9:   # {'method/xeptam/mirror.rb': 'sheet', 'utils/sheet/bottom.rb': 'vec', 'utils/sheet/mark.rb': {'sheet': 7, 'grp': 5}}
+  _7b24bccf:   # {'method/xeptam.rb': 'flag5', 'method/xeptam/drag.rb': 'flag5'}
+  _7beee015:   # {'method/chontam/pick.rb': {'arr2': 3, 'arr': 3}}
+  _7e1c7e1d:   # {'method/xeptam/collide.rb': 'num', 'utils/nesting/avail.rb': 'num2', 'utils/nesting/pack.rb': {'dy2': 1, 'num': 2}, 'utils/sheet/mark.rb': 'flag'}
+  _7e53f420:   # {'method/netcatcuoi/resize.rb': 'cur_y', 'method/xuatdxf/geom.rb': 'last_i'}
+  _7eed91e8:   # {'utils/sheet/reorder.rb': 'k'}
+  _7fa7da40:   # {'method/toiuu/back.rb': {'tr': 4, 'tf': 2}}
+  _80333e4c:   # {'utils/label.rb': 'pt2'}
+  _80bf2222:   # {'method/gannhan.rb': {'arr4': 8, 'scope': 1}}
+  _81111174:   # {'utils/sheet/bottom.rb': 'out'}
+  _81c2b77f:   # {'method/chongbay/shape.rb': 'pt6', 'method/intem/scan.rb': 'grp', 'method/toiuu/engine.rb': {'pt': 23, 'pt8': 8}, 'method/toiuu/postproc.rb': {'pt': 13, 'pt10': 5, 'pt11': 4}}
+  _821639ac:   # {'method/catcuoi/lastcut.rb': {'num': 2, 'num2': 2, 'sx': 2}, 'method/toiuu/back.rb': 'inset_x', 'method/toiuu/postproc.rb': 'num', 'utils/cutting/loop.rb': 'dx_out', 'utils/sheet/bottom.rb': 'inset_x', 'utils/sheet/mark.rb': 'inset_x', 'utils/sheet/overlay.rb': {'dx3': 2, 'num2': 4}, 'utils/view.rb': 'ox'}
+  _82a21a55:   # {'method/toiuuvan/back.rb': {'vec3': 2, 'vec': 2}}
+  _82a89c28:   # {'utils/label.rb': {'num2': 2, 'y': 1}}
+  _82e73dbc:   # {'method/nesting/collect.rb': 'clear_collect'}
+  _8345c760:   # {'method/toiuu/engine.rb': {'arr': 2, 'arr2': 7}}
+  _84d8f6b3:   # {'method/toiuu/back.rb': {'bb2': 3, 'front_bb': 3}, 'method/xeptam/mirror.rb': 'bb'}
+  _85458193:   # {'method/xuatdxf/entry.rb': 'len2'}
+  _86429638:   # {'utils/pdf/svg.rb': {'node': 13, 'arr': 1}}
+  _8794f78f:   # {'utils/preset/field.rb': 'num2'}
+  _87da8017:   # {'method/netcatcuoi/resize.rb': {'arr2': 4, 'arr3': 3}}
+  _880b24bd:   # {'method/nesting/simplify.rb': 'idx'}
+  _882ed523:   # {'method/toiuu/postproc.rb': 'str'}
+  _88464b7e:   # {'method/toiuu/postproc.rb': 'acc', 'utils/view.rb': 'acc'}
+  _894df99e:   # {'utils/nesting/corner.rb': 'bb', 'utils/view.rb': {'arr': 5, 'inner': 4}, 'utils/view/query.rb': 'arr3'}
+  _896c4eb5:   # {'method/nesting/draw.rb': {'sheet_grp': 6, 'end': 1, 'gr': 9}}
+  _89897823:   # {'method/nesting.rb': {'ent': 4, 'arr': 1}, 'method/themtam.rb': {'entity': 1, 'ent': 24}}
+  _89bad203:   # {'method/toiuuvan.rb': {'flag': 2, 'dir2': 2}}
+  _8a1429bc:   # {'method/chontam.rb': 'flag', 'system/setting.rb': 'flag', 'utils/sheet/reorder.rb': 'num'}
+  _8a15fd29:   # {'utils/cutting/detail.rb': 'materials'}
+  _8b4b1649:   # {'method/nesting/collect.rb': {'parts': 2, 'vec': 1}}
+  _8d75d149:   # {'method/toiuu/postproc.rb': 'str2'}
+  _8ddd8c6f:   # {'method/xuatdxf/entry.rb': {'num2': 3, 'sheet_w2': 12}, 'method/xuatdxf/scan.rb': {'num2': 2, 'sheet_w2': 7}}
+  _8dfaeb72:   # {'method/chongbay.rb': 'panel?', 'method/xeptam/collide.rb': 'panel?', 'method/xeptam/group.rb': 'panel?', 'utils/sheet/bottom.rb': 'panel?', 'utils/view.rb': 'panel?'}
+  _8e3fca8c:   # {'utils/nesting/corner.rb': {'arr3': 1, 'arr4': 3}}
+  _9080d7ff:   # {'method/xeptam.rb': {'clear_grid_cache': 1, 'refresh_state': 1}}
+  _90cb2398:   # {'utils/nesting.rb': 'flag'}
+  _925b31fd:   # {'method/chongbay/assign.rb': {'arr3': 2, 'h': 3}, 'utils/nesting/pack.rb': 'arr4', 'utils/view/query.rb': 'was_persp'}
+  _926fe6c2:   # {'method/nesting.rb': {'start': 1, 'abort_op': 2}}
+  _92dffb5a:   # {'utils/nesting/corner.rb': 'arr2'}
+  _93f9844e:   # {'method/chongbay.rb': {'hit': 1, 'nil': 1}}
+  _945ac34d:   # {'method/xeptam.rb': 'edge_ix'}
+  _9535dc0b:   # {'method/toiuuvan.rb': 'live', 'method/xuatdxf.rb': 'rows2', 'method/xuatdxf/entry.rb': 'ring'}
+  _95686d4f:   # {'utils/view.rb': 'bb'}
+  _95bc0527:   # {'method/toiuu/postproc.rb': 'arr5', 'utils/nesting/corner.rb': 'ux', 'utils/view.rb': 's'}
+  _9710d820:   # {'method/netcatcuoi/lastcut.rb': {'pt2': 2, 'a': 4, 'pt': 12}, 'method/netcatcuoi/resize.rb': 'a', 'method/xuatdxf/geom.rb': {'args': 1, 'vec2': 5}, 'utils/quet.rb': 'arr2'}
+  _9770881f:   # {'method/xeptam/mirror.rb': 'edge_c'}
+  _98c3a7e0:   # {'method/catcuoi/lastcut.rb': {'num2': 2, 'num5': 2, 'sy': 2}, 'method/toiuu/back.rb': 'inset_y', 'method/toiuu/postproc.rb': 'num2', 'utils/cutting/loop.rb': 'dy_out', 'utils/sheet/bottom.rb': 'inset_y', 'utils/sheet/mark.rb': {'arr': 4, 'inset_y': 3}, 'utils/sheet/overlay.rb': {'dy3': 2, 'num3': 4}, 'utils/view.rb': 'oy'}
+  _997f01ec:   # {'utils/font.rb': {'flag2': 2, 'flag': 4}}
+  _99a1df81:   # {'method/xeptam/push.rb': {'arr3': 4, 'others': 1}, 'utils/nesting.rb': {'arr': 4, 'arr4': 3}}
+  _99b739cb:   # {'method/toiuu/engine.rb': 'arr8', 'method/xeptam/mirror.rb': 'hole', 'utils/cutting.rb': 'face', 'utils/geom.rb': {'h': 5, 'arr': 21}, 'utils/label.rb': 'face'}
+  _9ab97ee4:   # {'method/xeptam/drag.rb': {'expand_selection': 1, 'end': 1}}
+  _9b67c55d:   # {'method/netcatcuoi/lastcut.rb': {'arr4': 4, 'arr7': 4, 'arr3': 4}, 'utils/nesting/bilan.rb': 'arr'}
+  _9b84c914:   # {'method/netcatcuoi/resize.rb': {'y2': 13, 'y23': 6}}
+  _9ba1a361:   # {'method/netcatcuoi/lastcut.rb': {'num2': 3, 'num5': 2, 'sy': 2}, 'method/toiuuvan/back.rb': 'inset_y', 'method/toiuuvan/postproc.rb': 'num2'}
+  _9cb9471d:   # {'method/xeptam/mirror.rb': {'partner': 15, 'pair': 1}}
+  _9d53a6d4:   # {'utils/pdf/build.rb': {'arr': 2, 'stream': 1}}
+  _9df36fe4:   # {'method/xeptam/arrange.rb': 'str', 'utils/sheet/bottom.rb': 'str'}
+  _9eaa0644:   # {'method/toiuu/engine.rb': {'arr3': 1, 'arr': 9}}
+  _9ed4fbb1:   # {'method/xeptam/arrange.rb': 'grp3'}
+  _9edf9416:   # {'method/thongke/export.rb': {'sheets': 1, 'arr': 1}}
+  _9eeb0ff7:   # {'utils/label.rb': {'h': 14, 'arr': 8, 'arr6': 5}}
+  _9f80dd61:   # {'method/xeptam/arrange.rb': {'vec2': 9, 'grp2': 4}}
+  _9fe6030e:   # {'utils/cutting/detail.rb': {'arr': 2, 'arr5': 4}, 'utils/nesting/corner.rb': {'arr2': 4, 'arr3': 3}, 'utils/sheet/bottom.rb': 'acc2'}
+  _9ff9e93b:   # {'method/xeptam/collide.rb': 'num7'}
+  _a15857cb:   # {'method/xeptam/mirror.rb': 'bb3'}
+  _a2ef92fb:   # {'method/nesting.rb': {'finish_draw': 1, 'label_reset': 3}}
+  _a31bef1e:   # {'utils/label.rb': 'lbl'}
+  _a3f74bb6:   # {'method/xeptam/collide.rb': 'v'}
+  _a40afc07:   # {'method/catcuoi/resize.rb': {'x212': 4, 'x213': 4, 'x215': 3, 'x216': 4}, 'method/chongbay/shape.rb': {'x24': 5, 'x25': 3, 'x26': 2, 'x27': 2, 'x28': 2, 'x29': 5}, 'method/toiuu.rb': 'x217', 'method/xeptam/mirror.rb': 'x218', 'utils/view.rb': {'x2': 8, 'x220': 2}}
+  _a46bb2b4:   # {'method/toiuuvan/postproc.rb': 'h'}
+  _a5e52b43:   # {'utils/sheet/reorder.rb': 'arr2'}
+  _a5ffa708:   # {'method/xeptam/push.rb': 'hi', 'utils/label.rb': 'hi'}
+  _a70b7615:   # {'utils/pdf/build.rb': {'serialize': 1, 'stream_obj': 1}}
+  _a9a183cd:   # {'method/nesting/launch.rb': 'erase_nesting'}
+  _ab593548:   # {'method/xuatdxf/scan.rb': 'arr5'}
+  _ac3b3b9d:   # {'utils/nesting/edit.rb': {'transform3': 2, 'transform': 4}}
+  _ac8cbbc7:   # {'method/chongbay.rb': {'sheet': 20, 'view': 1}, 'method/nesting.rb': {'sheet_list': 1, 'sheet': 1}, 'method/thongke/export.rb': 'arr'}
+  _acb61722:   # {'method/xeptam/mirror.rb': 'arr2'}
+  _ae24ba63:   # {'utils/view.rb': 'pt2'}
+  _af0c62e0:   # {'utils/cutting/loop.rb': 'arr3'}
+  _afea3aa9:   # {'utils/sheet/bottom.rb': {'arr3': 2, 'arr': 8}}
+  _b0566a11:   # {'method/toiuu/engine.rb': 'num'}
+  _b0a95acb:   # {'utils/nesting/corner.rb': {'arr': 12, 'arr4': 3}}
+  _b41d8800:   # {'method/toiuuvan/engine.rb': {'v': 2, 'arr6': 4, 'arr10': 2}, 'method/xuatdxf.rb': 'layer2', 'method/xuatdxf/scan.rb': {'grp': 2, 'face': 4}}
+  _b4902f7f:   # {'method/intem/scan.rb': {'h': 1, 'arr': 2}}
+  _b57540e5:   # {'utils/sheet/bottom.rb': 'vec'}
+  _b5b1e8c0:   # {'method/gannhan.rb': {'scope': 3, 'label_section_hidden': 1}}
+  _b72afbe5:   # {'method/nesting/draw.rb': {'arr': 3, 'arr3': 2}, 'method/thongke/summary.rb': {'arr3': 1, 'arr2': 1, 'boards': 3}}
+  _b7318596:   # {'utils/cutting/detail.rb': {'vec': 13, 'grp': 6}}
+  _b74c7550:   # {'method/xeptam/drag.rb': 'h'}
+  _b8f3387b:   # {'method/xuatdxf/scan.rb': 'h2'}
+  _ba5231eb:   # {'utils/nesting/optimize.rb': 'grp'}
+  _ba748d94:   # {'method/chontam/pick.rb': {'arr3': 3, 'arr': 3}}
+  _ba87e6d3:   # {'method/xeptam/drag.rb': 'sheet2'}
+  _baaffb7f:   # {'method/nesting/draw.rb': {'color3': 1, 'color': 2}, 'utils/view.rb': {'color': 17, 'color4': 2}}
+  _bbf52dc8:   # {'method/toiuu/postproc.rb': 'arr'}
+  _bc0dc9c4:   # {'system/setting.rb': {'key': 22, 'key2': 8, 'key3': 1}, 'utils/preset/store.rb': {'key4': 3, 'key5': 3, 'key': 9}}
+  _bc61432c:   # {'method/themtam.rb': {'arr': 13, 'arr3': 2}, 'method/toiuu.rb': 'arr', 'method/xeptam/arrange.rb': 'arr', 'utils/label.rb': 'arr16', 'utils/preset/field.rb': 'arr', 'utils/sheet.rb': 'arr', 'utils/sheet/bottom.rb': 'arr'}
+  _bc9133af:   # {'method/catcuoi.rb': {'arr': 3, 'num': 6}, 'method/catcuoi/lastcut.rb': {'arr3': 7, 'arr': 9, 'arr2': 3}, 'method/themtam.rb': 'arr2', 'method/toiuu.rb': 'arr2', 'method/xeptam/arrange.rb': 'arr3', 'method/xeptam/drag.rb': 'arr3', 'utils/geom.rb': 'arr3', 'utils/nesting.rb': {'arr3': 3, 'arr2': 5}, 'utils/view.rb': 'arr2'}
+  _bcd2a048:   # {'method/xeptam/mirror.rb': 'nx0'}
+  _bd0102dd:   # {'method/toiuuvan/postproc.rb': {'arr3': 3, 'mv': 2, 'arr2': 16}}
+  _be2b9e95:   # {'utils/isolate.rb': 'io'}
+  _be4b922d:   # {'utils/font.rb': {'flag': 3, 'adv2': 4}}
+  _be53ef62:   # {'method/nesting.rb': {'rotate_by_name': 1, 'job_settings': 1}}
+  _bf071a8c:   # {'utils/label.rb': {'bb': 4, 'arr5': 6}}
+  _bf69ed97:   # {'method/xeptam/arrange.rb': {'flag': 2, 'grp': 6}}
+  _bfd42dae:   # {'method/nesting/launch.rb': 'rows'}
+  _c5211475:   # {'method/xeptam/collide.rb': 'num2', 'utils/nesting/corner.rb': {'flag2': 4, 'num11': 2}, 'utils/nesting/optimize.rb': 'x', 'utils/view/query.rb': 'num6', 'utils/view/widget.rb': 'x'}
+  _c593c839:   # {'method/xeptam/push.rb': {'vec2': 3, 'pt': 2}}
+  _c68c1731:   # {'method/toiuu/back.rb': {'vec3': 1, 'vec': 2}, 'method/xeptam/mirror.rb': 'vec3'}
+  _c6e0991f:   # {'method/netcatcuoi/lastcut.rb': {'arr': 3, 'arr5': 3, 'arr8': 2}}
+  _c713676e:   # {'utils/sheet/overlay.rb': 'num'}
+  _c723bcc4:   # {'method/toiuuvan/engine.rb': {'arr2': 2, 'num': 4, 'arr4': 2}, 'method/toiuuvan/postproc.rb': {'arr': 3, 'arr2': 2}}
+  _c836f364:   # {'method/catcuoi/lastcut.rb': {'a': 3, 'pt': 12}, 'method/catcuoi/resize.rb': 'a', 'method/chongbay.rb': {'arr2': 3, 'arr3': 2, 'arr': 5}, 'method/chongbay/assign.rb': 'arr2', 'method/chongbay/shape.rb': {'a': 2, 'pt': 5, 'pt2': 6}, 'method/chontam/pick.rb': 'num2', 'method/intem/scan.rb': 'arr2', 'method/nesting/simplify.rb': 'arr2', 'method/themtam.rb': 'pt3', 'method/xeptam/nfp.rb': {'arr4': 4, 'area': 6, 'pt2': 3}, 'utils/cutting.rb': {'num2': 3, 'arr': 7, 'arr2': 6}, 'utils/cutting/loop.rb': 'pt2', 'utils/font.rb': 'num2', 'utils/geom.rb': {'arr5': 3, 'arr2': 5, 'pt': 10, 'pt2': 3}, 'utils/nesting.rb': 'num', 'utils/nesting/corner.rb': {'pt': 8, 'num': 3, 'arr': 22, 'a': 4}, 'utils/pdf/svg.rb': 'sx2', 'utils/preset/field.rb': 'ang', 'utils/preset/store.rb': 'ang', 'utils/view.rb': {'pt3': 3, 'pt': 7, 'ax2': 2}, 'utils/view/query.rb': 'pt2'}
+  _c8378bbe:   # {'utils/geom.rb': 'arr3', 'utils/nesting/corner.rb': {'arr': 24, 'arr3': 5}, 'utils/nesting/pack.rb': 'arr2'}
+  _c85b78dd:   # {'method/thongke/export.rb': 'arr'}
+  _c86c0371:   # {'utils/preset/field.rb': 'th2', 'utils/view.rb': 'depth2'}
+  _c8b30203:   # {'utils/nesting/edit.rb': 'tr2', 'utils/sheet.rb': {'tr2': 2, 'tr': 4}, 'utils/sheet/overlay.rb': 'tr2'}
+  _c9d1d25d:   # {'method/xeptam/push.rb': 'partner'}
+  _c9f9e83c:   # {'utils/sheet/bottom.rb': 'arr2'}
+  _c9fa72f2:   # {'method/toiuuvan/engine.rb': 'arr8', 'method/xuatdxf/scan.rb': 'loop_pts'}
+  _ca3a7dba:   # {'method/chontam/pick.rb': {'panel': 6, 'sheet': 1}}
+  _ca8ab93b:   # {'utils/cutting.rb': 'flag', 'utils/cutting/detail.rb': {'vec2': 8, 'arr2': 5}}
+  _cafb32d8:   # {'method/netcatcuoi/lastcut.rb': {'flag': 4, 'arr4': 3}, 'method/netcatcuoi/resize.rb': {'arr2': 3, 'arr3': 4}}
+  _cb0d0d2e:   # {'utils/cutting/detail.rb': 'panel', 'utils/sheet/mark.rb': 'grp'}
+  _cb55b2a4:   # {'utils/cutting/loop.rb': {'h3': 3, 'arr8': 2}}
+  _cd2f6aa6:   # {'utils/sheet/bottom.rb': 'grp2'}
+  _cde72bf5:   # {'method/xeptam/mirror.rb': {'flag': 3, 'fill_c': 2}}
+  _ce6f66bb:   # {'method/thongke/summary.rb': 'make_unique_all'}
+  _cee11224:   # {'utils/nesting/avail.rb': {'sides_mm': 1, 'sides': 1}}
+  _cf1fb147:   # {'utils/nesting/pack.rb': 'arr2'}
+  _cf873454:   # {'utils/preset/store.rb': 'box'}
+  _d0258341:   # {'method/chongbay.rb': {'num': 8, 'x1': 4}}
+  _d06ee2a4:   # {'utils/cutting/loop.rb': {'tr': 11, 'tf': 4}}
+  _d0a341c6:   # {'method/toiuuvan/back.rb': {'bb2': 3, 'front_bb': 3}}
+  _d0cbe2b0:   # {'utils/nesting.rb': 'arr2'}
+  _d0ed3d7d:   # {'method/thongke/tonghop.rb': {'arr3': 2, 'arr2': 4, 'boards': 3}, 'method/xuatdxf/scan.rb': 'arr3'}
+  _d13db342:   # {'utils/pdf/svg.rb': {'path_ops': 1, 'paint_ops': 1}}
+  _d276009d:   # {'utils/nesting/corner.rb': {'num5': 2, 'num10': 2}}
+  _d35a1ce9:   # {'method/xuatdxf/geom.rb': {'arr': 5, 'arr4': 3}}
+  _d3fb9c5b:   # {'method/xeptam/nfp.rb': {'arr3': 2, 'arr': 7}, 'utils/geom.rb': 'arr6'}
+  _d46c450b:   # {'utils/geom.rb': {'out': 2, 'arr': 3}}
+  _d50bb2d0:   # {'utils/cutting/detail.rb': 'tr', 'utils/label.rb': 'pt2'}
+  _d5b3640b:   # {'utils/view/query.rb': 'num2', 'utils/view/widget.rb': 'num'}
+  _d62a0771:   # {'utils/cutting/detail.rb': {'arr2': 2, 'vec': 3}}
+  _d6439c88:   # {'method/toiuuvan/engine.rb': 'flip_x'}
+  _d67f3cec:   # {'method/chongbay/shape.rb': {'num2': 12, 'y2': 6, 'y22': 5}, 'method/chontam/pick.rb': 'arr3'}
+  _d6870614:   # {'method/toiuu.rb': 'arr2'}
+  _d68d6453:   # {'method/chongbay.rb': 'y2', 'method/chongbay/shape.rb': {'ay1': 12, 'num4': 3, 'num2': 2, 'num3': 2}, 'method/toiuu.rb': 'y1b', 'method/xeptam/mirror.rb': 'ay', 'utils/view.rb': {'y2': 7, 'ya': 2}}
+  _d6a8b0c1:   # {'method/xeptam/push.rb': 'num3', 'utils/nesting/avail.rb': 'num2', 'utils/nesting/corner.rb': {'tol': 5, 'num': 2}}
+  _d6d6bb22:   # {'method/toiuu/engine.rb': {'flag': 1, 'arr4': 4}}
+  _da3d932f:   # {'method/gannhan.rb': 'arr4', 'method/themtam.rb': {'overlap_fills': 1, 'err_pts': 2}, 'method/toiuu.rb': {'overlap_fills': 1, 'err_pts': 1}}
+  _da7a2fa2:   # {'method/xeptam/push.rb': {'answer': 3, 'poly': 1}}
+  _dd0f306a:   # {'utils/cutting/loop.rb': {'hull': 3, 'arr': 5}, 'utils/geom.rb': 'arr7'}
+  _ddbd5631:   # {'utils/label.rb': 'grp'}
+  _dea7cfbd:   # {'method/netcatcuoi.rb': {'arr': 3, 'num': 8}, 'method/netcatcuoi/lastcut.rb': {'arr3': 11, 'arr': 9, 'arr2': 3}, 'method/toiuuvan.rb': 'arr2', 'utils/quet.rb': 'arr'}
+  _e017a47c:   # {'utils/font.rb': 'arr3', 'utils/label.rb': 'arr4'}
+  _e16a3f5a:   # {'method/netcatcuoi.rb': {'arr2': 3, 'num2': 8}, 'method/netcatcuoi/lastcut.rb': {'arr2': 20, 'arr3': 3}, 'method/netcatcuoi/resize.rb': {'arr5': 3, 'arr2': 5}, 'utils/quet.rb': 'arr2'}
+  _e2c52692:   # {'utils/view.rb': 'my'}
+  _e3a65a9d:   # {'utils/nesting/engine.rb': {'nil': 1, 'close_if_idle': 2}}
+  _e4f12bf3:   # {'method/xephang.rb': 'arr', 'method/xeptam/arrange.rb': {'ty2': 3, 'arr': 4}, 'method/xeptam/mirror.rb': 'top', 'utils/label.rb': 'top', 'utils/sheet/bottom.rb': {'arr4': 2, 'h2': 3}, 'utils/sheet/reorder.rb': {'h': 10, 'h2': 5, 'arr2': 2, 'arr': 22}}
+  _e53ca5e7:   # {'method/xeptam.rb': {'sheet': 1, 'nil': 1}}
+  _e64bdf77:   # {'method/xuatdxf/geom.rb': {'str': 9, 'lname': 2}}
+  _e79b121e:   # {'method/intem/scan.rb': {'tf': 5, 'part_tf': 1}}
+  _e7c3b158:   # {'method/xeptam/nfp.rb': {'arr2': 7, 'arr3': 3, 'arr6': 3, 'vec': 4, 'arr': 4}, 'utils/nesting/corner.rb': {'arr2': 4, 'arr': 12, 'arr3': 4}, 'utils/view/widget.rb': 'arr'}
+  _e8a95da6:   # {'method/gannhan.rb': {'entity': 3, 'lbl': 1}}
+  _e8f9dc5f:   # {'utils/cutting.rb': 'tri_r'}
+  _ea3be1cd:   # {'utils/nesting/pack.rb': 'arr4'}
+  _eaff21fd:   # {'utils/nesting/optimize.rb': 'pack_to_row_start?'}
+  _eba0efbc:   # {'method/xeptam/collide.rb': 'arr7'}
+  _ebdef9f9:   # {'utils/label.rb': 'bb'}
+  _eca45f22:   # {'method/chontam/pick.rb': {'lvl': 6, 'num': 3}, 'method/intem/scan.rb': {'lvl': 2, 'num': 6}, 'utils/cutting/detail.rb': 'num2'}
+  _ed7d3a09:   # {'method/nesting.rb': {'flag22': 1, 'flag53': 1}}
+  _ed819a0b:   # {'utils/nesting/pack.rb': 'arr3'}
+  _edd15373:   # {'method/xeptam/arrange.rb': 'str2'}
+  _ee118252:   # {'system/setting.rb': {'value': 11, 'default': 1}}
+  _ee4f533e:   # {'utils/view.rb': {'num2': 3, 'dx': 7}}
+  _ee95d1d1:   # {'utils/nesting/optimize.rb': 'num'}
+  _efa3a205:   # {'method/catcuoi/lastcut.rb': {'arr5': 2, 'arr8': 1}}
+  _efbb0ef5:   # {'utils/sheet/bottom.rb': 'slots'}
+  _f0ba2e7b:   # {'method/catcuoi/lastcut.rb': {'arr4': 4, 'arr7': 4, 'arr3': 4}, 'utils/cutting/detail.rb': 'pad2'}
+  _f0f49576:   # {'utils/normalize.rb': 'grp4'}
+  _f125bb43:   # {'method/xeptam/collide.rb': 'm_left'}
+  _f4dc3a1d:   # {'utils/nesting/bilan.rb': 'num'}
+  _f4fdae1f:   # {'method/catcuoi/lastcut.rb': 'pt', 'method/catcuoi/resize.rb': {'pt': 5, 'bb': 5}, 'method/chongbay.rb': {'arr': 32, 'rec': 7, 'arr2': 2}, 'method/chongbay/assign.rb': {'arr': 57, 'str': 7}, 'method/chongbay/shape.rb': {'arr': 88, 'rec': 13, 'arr3': 2}, 'method/chontam/pick.rb': 'pt2', 'method/nesting.rb': 'arr', 'method/nesting/collect.rb': 'pt', 'method/nesting/draw.rb': {'arr': 11, 'arr4': 3}, 'method/nesting/simplify.rb': 'arr', 'method/themtam.rb': {'pt': 5, 'arr': 3}, 'method/thongke/scan.rb': 'pt', 'method/toiuu.rb': 'vec', 'method/toiuu/engine.rb': {'arr': 8, 'pt': 4, 'rec': 12}, 'method/toiuu/postproc.rb': {'lead': 3, 'arr': 14, 'pt': 13}, 'method/xeptam/arrange.rb': {'pt': 4, 'vec': 6}, 'method/xeptam/collide.rb': {'ent': 10, 'arr': 4, 'arr3': 3, 'pt': 9}, 'method/xeptam/drag.rb': {'pt': 9, 'vec': 9, 'panel': 3}, 'method/xeptam/group.rb': {'pnl': 6, 'grp': 1}, 'method/xeptam/mirror.rb': {'pt': 3, 'part': 5, 'arr2': 3, 'vec': 5}, 'method/xeptam/nfp.rb': {'pt': 3, 'arr3': 3, 'arr2': 4, 'arr5': 3, 'arr': 18}, 'method/xeptam/push.rb': 'grp', 'system/setting.rb': 'arr', 'utils/cutting.rb': {'pt': 3, 'pt3': 3}, 'utils/cutting/detail.rb': {'arr': 4, 'pt2': 2}, 'utils/cutting/loop.rb': 'pt', 'utils/flip.rb': {'grp': 6, 'pt': 2}, 'utils/geom.rb': {'pt': 29, 'pt3': 6}, 'utils/label.rb': {'grp': 10, 'arr7': 4, 'pt': 6}, 'utils/nesting.rb': 'arr', 'utils/nesting/avail.rb': 'pt', 'utils/nesting/corner.rb': {'grp': 10, 'pt': 13, 'arr2': 6, 'arr4': 3, 'arr3': 6}, 'utils/preset/store.rb': 'arr', 'utils/sheet.rb': 'pt', 'utils/sheet/bottom.rb': {'grp2': 3, 'num': 2}, 'utils/sheet/mark.rb': 'pt', 'utils/sheet/overlay.rb': 'pt2', 'utils/sheet/reorder.rb': 'arr', 'utils/view.rb': {'arr': 6, 'grp': 4, 'grp2': 4, 'pt2': 6}, 'utils/view/query.rb': {'pt': 4, 'pt3': 4}}
+  _f515d7f8:   # {'method/xeptam/push.rb': 'num'}
+  _f6cf12bd:   # {'utils/cutting.rb': 'vec4'}
+  _f89e4070:   # {'utils/nesting/corner.rb': {'num4': 2, 'num6': 2}}
+  _f9283209:   # {'method/themtam.rb': {'arr2': 4, 'slots': 6}}
+  _f9bc032a:   # {'method/xeptam/mirror.rb': 'bb2'}
+  _f9c86d43:   # {'utils/nesting/corner.rb': {'flag': 2, 'flag3': 1}}
+  _fab08cff:   # {'method/catcuoi.rb': {'arr2': 3, 'num2': 6}, 'method/catcuoi/lastcut.rb': {'arr2': 16, 'arr3': 3}, 'method/themtam.rb': 'arr3', 'method/toiuu.rb': 'arr3', 'method/xeptam/drag.rb': 'arr4', 'utils/label.rb': 'arr', 'utils/nesting.rb': {'arr2': 3, 'arr3': 5}, 'utils/sheet.rb': 'arr3', 'utils/view.rb': 'arr'}
+  _fb12ada6:   # {'utils/view.rb': {'two_tris': 1, 'tris': 4}}
+  _fb5e0b76:   # {'method/nesting.rb': {'refine_parts': 1, 'progress': 2}}
+  _fbf0cf8d:   # {'method/xeptam/collide.rb': 'num5', 'utils/nesting/avail.rb': 'num', 'utils/nesting/pack.rb': {'dx': 1, 'num2': 2}, 'utils/sheet/mark.rb': 'flag3'}
+  _fd9906f4:   # {'method/nesting/draw.rb': {'arr3': 1, 'arr2': 1}, 'method/thongke/hardware.rb': 'node', 'utils/cutting/detail.rb': 'arr', 'utils/nesting/optimize.rb': 'arr'}
+  _fdc5572e:   # {'utils/label.rb': {'num': 8, 'margin': 5}}
+  _fe8ae798:   # {'method/xuatdxf.rb': {'str4': 3, 'flag': 2}}
+  _fea30b2e:   # {'method/xeptam/mirror.rb': {'arr': 3, 'arr2': 3}}
+  _ff8cda6d:   # {'method/toiuu/engine.rb': 'seed', 'utils/nesting/corner.rb': 'seed'}
+  _ffa69805:   # {'method/toiuu/postproc.rb': {'flag53': 1, 'repacked_once': 6}}
+  _ffea2c2f:   # {'method/intem/scan.rb': 'arr4', 'method/themtam.rb': 'h', 'utils/pdf/ttf.rb': 'h'}

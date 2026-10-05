@@ -55,7 +55,7 @@ def mask(src: str) -> str:
     return IDENT.sub(lambda m: m.group(1) if m.group(1) in KEYWORDS else "X", src)
 
 
-DEFAULT_REF = "c45104c"
+DEFAULT_REF = "e72d0b2"
 
 
 def resolve(ref: str) -> str:

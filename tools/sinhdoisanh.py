@@ -29,7 +29,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from kscommon import ROOT  # noqa: E402
 
-BASELINE = "c45104c"
+BASELINE = "e72d0b2"
 
 # Fixed inputs, written as Ruby so no value has to survive a round trip through
 # JSON. An L shape rather than a square: a convex hull, a centroid and a

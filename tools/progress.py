@@ -16,6 +16,9 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from datten import BASELINE  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 HEX = re.compile(r"_[0-9a-f]{8}")
 
@@ -30,8 +33,15 @@ def ruby_files() -> list[str]:
 
 
 def baseline_rev() -> str | None:
-    r = subprocess.run(["git", "rev-list", "--max-parents=0", "HEAD"],
-                       cwd=ROOT, capture_output=True, text=True)
+    """The commit the current tree is being named FROM.
+
+    Not the repo's root commit any more: that one decrypted 2.1.5, and 2.3.2
+    was decrypted later, so measuring against the root would score this tree
+    against a different release and report the 39 new files as free progress.
+    datten.BASELINE is the single place that says which release is being read.
+    """
+    r = subprocess.run(["git", "rev-parse", BASELINE], cwd=ROOT,
+                       capture_output=True, text=True)
     return r.stdout.strip() or None
 
 

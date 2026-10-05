@@ -4,6 +4,9 @@ import json, re, sys
 from pathlib import Path
 from collections import defaultdict, Counter
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from kscommon import code_only  # noqa: E402
+
 ROOT = Path(sys.argv[1]).resolve()
 OUT  = Path(sys.argv[2]).resolve()
 
@@ -36,6 +39,12 @@ def rel(p): return p.relative_to(ROOT).as_posix()
 for p in files:
     r = rel(p)
     text = p.read_text(encoding='utf-8', errors='replace')
+    # Calls are read off a copy with strings and comments blanked. Scanning the
+    # raw text reported the inside of `"KSU.sheet-material"` as a call to
+    # KSU.sheet and `/_MAT_(?:TRUOC|SAU)/` as a method `_MAT_`, and those
+    # reached verify_graph.py as dangling calls that no rename could ever fix.
+    # code_only keeps the line structure, so line numbers still line up.
+    code = code_only(text)
     lines = text.splitlines()
     per_file[r]['lines'] = len(lines)
     stack = []                      # (indent, kind, name)
@@ -85,14 +94,14 @@ for p in files:
         per_file[r]['requires'].append(m.group(1))
     for m in RE_HTML.finditer(text):
         per_file[r]['html'].append(m.group(1))
-    for m in RE_MANGLED.finditer(text):
+    for m in RE_MANGLED.finditer(code):
         refs[m.group(1)] += 1
         ref_sites[m.group(1)].add(r)
-    for m in RE_QUAL.finditer(text):
+    for m in RE_QUAL.finditer(code):
         qual_edges[(r, m.group(1))] += 1
         if m.group(1) == 'KSU' or m.group(1).startswith('KSU::'):
             qual_pairs[(m.group(1), m.group(2))] += 1
-    for m in RE_SUOBS.finditer(text):
+    for m in RE_SUOBS.finditer(code):
         sk_api[m.group(0)] += 1
 
 # map mangled defs -> definition site

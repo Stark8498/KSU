@@ -22,7 +22,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import kscommon as R                                          # noqa: E402
+import kscommon as R
+from kscommon import code_only                                          # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 GRAPH = ROOT / "tools" / "graph.json"
@@ -41,13 +42,55 @@ NATIVE_METHODS = {
     "inflate",            # method/xeptam/nfp.rb -- polygon offset
     "contact_refine",     # method/xeptam/collide.rb
     "build_loops",        # utils/cutting/loop.rb
+    # KSU::Cnc::Native -- the CNC half of ksu.so, new in 2.3.2. Declared by
+    # name on the C side, so these names were never obfuscated and there is no
+    # `def` to resolve them to. Every one is called behind a `Calc::NATIVE` or
+    # `Calc::NATIVE_EXT` guard with a Ruby fallback beside it.
+    "boundary_error",     # method/giacong/calc.rb -- probes whether ksu.so has the CNC half
+    "clear_loop",         # method/giacong/profile.rb
+    "contour_distance",   # method/giacong/calc.rb
+    "crossings",          # method/giacong/topology.rb
+    "dedupe_loop",        # method/giacong/calc.rb
+    "detect_arc",         # method/giacong/geom.rb
+    "gap_clear",          # method/giacong/rescue.rb
+    "gouge_scan",         # method/giacong/profile.rb
+    "hausdorff",          # method/giacong/clip.rb
+    "in_polygon",         # method/giacong/calc.rb
+    "marching",           # method/giacong/profile.rb -- marching squares on a quadtree
+    "max_distance",       # method/giacong/clip.rb
+    "path_matches",       # method/giacong/rescue.rb
+    "planar_graph",       # method/giacong/profile.rb
+    "polygon_contains",   # method/giacong/profile.rb
+    "polygon_distance",   # method/giacong/calc.rb
+    "rdp_keep",           # method/giacong/profile.rb -- Ramer-Douglas-Peucker
+    "rescue_drift",       # method/giacong/rescue.rb
+    "round_labels",       # method/giacong/canvas.rb
+    "self_intersects",    # method/giacong/profile.rb
+    "signed_area",        # method/giacong/calc.rb
+    "sweep_intersects",   # method/giacong/clip.rb
 }
-NATIVE = {"KSU::Clibs", "KSU::Clipper"}
+NATIVE = {"KSU::Clibs", "KSU::Clipper", "KSU::Cnc::Native", "Native"}
+
+# Calls that were ALREADY dangling in the decrypted release, before a single
+# rename. Checked against the baseline by hex, not by name: `_c52ad8bc` and
+# `_7b408093` are called and never defined anywhere in the 127 files, so no
+# name could have resolved them and no rename broke them.
+#
+# All four call sites sit in the three Vietnamese-named units that 2.3.2
+# superseded -- danhsovan.rb, netcatcuoi*.rb, toiuuvan*.rb, replaced by
+# danhso.rb, catcuoi/* and toiuu/*. The replacements never call either method.
+# They are dead code kept beside the new copies, so this list should SHRINK
+# when those units are deleted; it must never grow.
+KNOWN_MISSING = {
+    "apply_label_hiding",   # _c52ad8bc -- KSU::Cutting, called from 3 legacy units
+    "sides",                # _7b408093 -- KSU::Avail, netcatcuoi/lastcut.rb only
+}
 # method dung san co the goi len mot Module/Class bat ky
 BUILTIN = {
     "new", "name", "class", "instance_of?", "is_a?", "kind_of?", "respond_to?",
     "send", "public_send", "instance_variable_get", "instance_variable_set",
     "include", "extend", "prepend", "included", "const_get", "constants",
+    "const_set", "const_defined?", "instance_variable_defined?",
     "instance_methods", "method_defined?", "ancestors", "freeze", "frozen?",
     "hash", "inspect", "to_s", "dup", "clone", "nil?", "==", "equal?",
     "allocate",
@@ -85,6 +128,7 @@ KEYWORD = {"if", "unless", "elsif", "while", "until", "case", "when", "and",
 # Ruby / SketchUp dung san, goi tran duoc tu trong mot lop.
 RUBY_BUILTIN = {
     "format", "sprintf", "printf", "puts", "print", "p", "rand", "srand",
+    "const_set", "const_defined?", "const_get", "define_method",
     "require", "require_relative", "instance_variable_get",
     "instance_variable_set", "instance_variables", "respond_to?", "send",
     "public_send", "method", "define_method", "attr_reader", "attr_writer",
@@ -129,13 +173,15 @@ def main() -> int:
         if "tools" in p.parts:
             continue
         rel = p.relative_to(ROOT).as_posix()
-        for i, line in enumerate(p.read_text(encoding="utf-8",
-                                             errors="replace").splitlines(), 1):
+        # Same blanking as part 2, and for the same reason: the text inside
+        # `"KSU.sheet-material"` reads as a call to KSU.sheet otherwise.
+        src1 = code_only(p.read_text(encoding="utf-8", errors="replace"))
+        for i, line in enumerate(src1.splitlines(), 1):
             if line.lstrip().startswith("#"):
                 continue
             for ns, meth in CALL.findall(line):
                 if (ns in NATIVE or meth in BUILTIN or CONST.search(ns)
-                        or meth in NATIVE_METHODS):
+                        or meth in NATIVE_METHODS or meth in KNOWN_MISSING):
                     continue
                 n_calls += 1
                 if meth not in defined:
@@ -147,13 +193,19 @@ def main() -> int:
         if "tools" in p.parts:
             continue
         rel = p.relative_to(ROOT).as_posix()
-        src = R.strip_heredocs(p.read_text(encoding="utf-8", errors="replace"),
-                               keep_lines=True)
+        # code_only blanks strings, comments AND regex literals while keeping
+        # the line structure. Blanking only quoted strings left the inside of
+        # `/_MAT_(?:TRUOC|SAU)/` and `/(?:\A|[-_])sheet(?:[-_]|\z)/` to be read
+        # as bare calls -- the §6.11 trap, reported here as dangling calls that
+        # no rename could fix.
+        src = code_only(R.strip_heredocs(
+            p.read_text(encoding="utf-8", errors="replace"), keep_lines=True))
         for i, line in enumerate(src.splitlines(), 1):
             if line.lstrip().startswith("#"):
                 continue
-            for meth in BARE.findall(_QSTR.sub('""', line)):
-                if meth in KEYWORD or meth in RUBY_BUILTIN or meth in NATIVE_METHODS:
+            for meth in BARE.findall(line):
+                if (meth in KEYWORD or meth in RUBY_BUILTIN
+                        or meth in NATIVE_METHODS or meth in KNOWN_MISSING):
                     continue
                 n_bare += 1
                 if meth not in defined:

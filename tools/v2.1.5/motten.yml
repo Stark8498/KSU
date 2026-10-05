@@ -1,0 +1,74 @@
+# Sinh boi tools/motten.py -- ten mot tu chuoi con sot lai.
+# SOAT MAT roi hay chep sang ten.yml; file nay khong duoc ap thang.
+ten:
+  _0a1c9ee6: umax
+  _0dde888a: outer
+  _0ef23977: partner
+  _10270e02: x2
+  _16a0db87: sheet
+  _1837f222: umax
+  _1add3f22: bbox
+  _1dbbb3bc: x1
+  _262dad3d: bbox
+  _30e8f323: entity
+  _33c34f08: face_color
+  _3798bfa1: panel
+  _44c34410: transform
+  _477c927d: entity
+  _4dab96a3: umin
+  _513b6595: pts
+  _529cefc7: panel
+  _572f7fb0: materials
+  _5733aff5: bbox
+  _58383aed: rank
+  _73dc38ac: sheet
+  _7525a050: transform
+  _77445f53: x1
+  _788affef: tris
+  _838f9d06: layer
+  _85458193: len
+  _867c021a: x2
+  _884dee16: on
+  _9e68ab19: partner
+  _a1bf6a3a: height
+  _a8bdc7d4: materials
+  _a8d0c622: back
+  _b0018280: parts
+  _b2ee0ccd: idx
+  _b3bfd2a3: materials
+  _b87879ab: umin
+  _ba97e686: lock_open
+  _be87b887: bottom
+  _c279ca2b: tris
+  _c9fa72f2: loop
+  _d14b3aa1: start_local
+  _d1ef5b91: sheet
+  _d5e8442b: outer
+  _df234764: panel
+  _e0acc7ff: transform
+  _e71c0db2: umin
+  _e8649a72: y1
+  _e9d24615: id
+
+# Phieu lech -- de trong co chu y.
+mau_thuan:
+  _00ef0ab9:   # {'v0': 2, 'v1': 2}
+  _0eb2a5fc:   # {'outer': 3, 'polygon': 2}
+  _1808a2e9:   # {'color': 1, 'warning_color': 1}
+  _27846c89:   # {'closed': 1, 'border': 1}
+  _4fbe9584:   # {'lx': 4, 'ly': 4, 'w': 3, 'h': 3, 'box': 2, 'rot': 1, 'bbox': 1}
+  _5fb96e91:   # {'len': 1, 'area': 1}
+  _6823cb31:   # {'x': 1, 'y': 1}
+  _79582570:   # {'divider': 1, 'border': 1}
+  _7bb04226:   # {'xmin': 1, 'ymin': 1, 'xmax': 1, 'ymax': 1}
+  _7ebf0e82:   # {'v': 1, 'hi': 2, 'xe': 1}
+  _8c6c071c:   # {'pts': 1, 'outer': 1}
+  _93188890:   # {'code_n1': 1, 'code1': 1, 'code2': 1, 'code3': 1}
+  _9a5525a8:   # {'mat': 2, 'material': 1}
+  _b4479c25:   # {'points': 1, 'large_size': 1, 'small_size': 1, 'rect': 2}
+  _b51d21a5:   # {'hi': 2, 'v': 1, 'ye': 1}
+  _cd6029df:   # {'top': 1, 'max_y': 1}
+  _d7a5f5f5:   # {'left': 1, 'right': 1}
+  _e25dbacd:   # {'len': 1, 'y2': 1}
+  _e84e5dc5:   # {'w': 1, 'h': 1, 'w2': 1, 'h2': 1}
+  _feb51463:   # {'az': 1, 'num_hm': 1}

@@ -3,20 +3,40 @@
 Tài liệu cho người **viết mã trên cây KSU đã đọc được**: kiến trúc, các đường
 nối mà grep không thấy, vòng lặp thử, và bộ đồ thị gọi hàm đi kèm.
 
-Đây **không phải** tài liệu dịch ngược. Việc đó đã xong và nằm ở
-[HANDOFF-giai-hex.md](HANDOFF-giai-hex.md); đọc file đó khi cần biết *một cái
-tên từ đâu ra*. File này giả định cây đã đọc được và chỉ nói chuyện sửa mã.
+Đây **không phải** tài liệu dịch ngược; việc đó nằm ở
+[HANDOFF-giai-hex.md](HANDOFF-giai-hex.md), đọc file đó khi cần biết *một cái
+tên từ đâu ra*. File này chỉ nói chuyện sửa mã.
+
+Cây đọc được ở mức **100 % tên method, 95 % số lượt định danh**; phần còn hex là
+biến cục bộ ít dùng, nên hầu hết chỗ bạn mở ra sẽ đọc được bình thường. Gặp một
+`_1a2b3c4d` thì `python tools/usage.py _1a2b3c4d` cho biết nó ở đâu.
 
 | | |
 |---|---|
 | **Sản phẩm** | Extension SketchUp (Windows), tối ưu sơ đồ cắt ván |
-| **Phiên bản** | KSU 2.1.5 — [ksu_vn.rb](ksu_vn.rb) |
-| **Cây mã** | 89 file `.rb`, 24.831 dòng · 1.708 method · 5.062 cạnh gọi |
-| **Phân tầng** | `method/` 43 file · `utils/` 37 file · `system/` 3 file |
-| **Giao diện** | 14 trang HTML + Vue 2, trong `ksu_vn/html/` |
+| **Phiên bản** | KSU **2.3.2** — [ksu_vn.rb](ksu_vn.rb) |
+| **Cây mã** | 128 file `.rb`, 38.201 dòng · 3.065 method · 8.052 cạnh gọi |
+| **Phân tầng** | `method/` 79 file · `utils/` 40 file · `system/` 3 file |
+| **Giao diện** | 18 trang HTML + Vue 2, trong `ksu_vn/html/` |
 | **Nhân tính toán** | `clibs/*/ksu.so` (C) + một engine JS nhúng (§7) |
 | **Đồ thị** | `python tools/dothi.py --dung` → `tools/dothi.json` (§10) |
-| **Đo ngày** | 04/10/2026 |
+| **Đo ngày** | 05/10/2026 |
+
+> **Khác 2.1.5, phải biết trước khi sửa.** 2.3.2 thêm 39 file, trong đó nặng
+> nhất là nhân CNC `method/giacong/` (24 file, ~12.700 dòng): quét model → nối
+> net thành đường chạy dao → bù bán kính dao → sinh file NC theo post
+> processor. Cùng với nó là `method/toiuu/`, `method/catcuoi/`,
+> `method/thongke/*` và `utils/{marquee,normalize}.rb`.
+>
+> **Bản tiếng Việt cũ vẫn nằm đó.** `method/toiuuvan*`, `method/netcatcuoi*`,
+> `method/danhsovan.rb`, `utils/chuanhoa.rb`, `utils/nesting/bilan.rb` là bản
+> trước của chính những đơn vị trên, đóng gói nguyên xi từ bản dựng 2.1.5 —
+> và **chúng mở cùng một module** với bản mới (`module KSU::Back` có ở cả
+> `toiuu/back.rb` lẫn `toiuuvan/back.rb`). Trong cây đọc được, method của bản
+> cũ mang đuôi `_v1` để hai bên không đè nhau. Chúng gọi hai method không tồn
+> tại ở đâu cả nên gần như chắc là mã chết, nhưng **chưa kiểm trong SketchUp**:
+> đừng xoá trước khi kiểm. Chi tiết ở §2 và §8 của
+> [HANDOFF-giai-hex.md](HANDOFF-giai-hex.md).
 
 ---
 
