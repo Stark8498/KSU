@@ -104,7 +104,7 @@ module KSU
       def labelling
         workers.any? { |w| !w[:ready] } || !queue.empty? || running_count.positive? || !@run_state.nil?
       end
-      def start_run(arr2, lo = 8)
+      def start_workers(arr2, lo = 8)
         return false unless arr2.length >= lo && parallel? && Util.bool_or(Dialog.settings["hien_duong_dao"], true)
         db = Dialog.active_database
         meta = db && child_meta(true)
@@ -128,7 +128,7 @@ module KSU
         start_timer if workers.any?
         usable?
       rescue StandardError => err
-        abort_run("#{err.class}: #{err.message}")
+        disable_parallel("#{err.class}: #{err.message}")
         false
       end
       def drop_jobs(arr)
@@ -142,7 +142,7 @@ module KSU
         start_timer
         nil
       rescue StandardError => err
-        abort_run("#{err.class}: #{err.message}")
+        disable_parallel("#{err.class}: #{err.message}")
         Dialog.run_many(keys, moves)
       end
       def tick
@@ -150,13 +150,13 @@ module KSU
         @flag37 = true
         at = Util.now
         workers.each { |w| read_worker(w, at) }
-        return abort_run(@one_group) if @one_group
+        return disable_parallel(@one_group) if @one_group
         reap_dead
         dispatch
         flush_batch
         last_ix if at - @num2.to_f > 30.0 && !labelling
       rescue StandardError => err
-        abort_run("#{err.class}: #{err.message}")
+        disable_parallel("#{err.class}: #{err.message}")
       ensure
         @flag37 = false
       end
@@ -252,7 +252,7 @@ module KSU
       end
       def spawn_worker(on_fail)
         exe_path, exe_args = worker_command(on_fail)
-        return abort_run("không tìm thấy host.exe hoặc DLL Ruby của SketchUp") unless exe_path
+        return disable_parallel("không tìm thấy host.exe hoặc DLL Ruby của SketchUp") unless exe_path
         _45db677b, _aec9a3e4 = IO.pipe(binmode: true)
         _6fa57ca9, _44edb09b = IO.pipe(binmode: true)
         @num10 = @num10.to_i + 1
@@ -262,7 +262,7 @@ module KSU
         { pid: pid, in: _aec9a3e4, out: _6fa57ca9, buf: String.new, jobs: [], ready: false, since: Util.now }
       rescue StandardError => arr
         [_45db677b, _aec9a3e4, _6fa57ca9, _44edb09b].compact.each { |_54b2ba86| swallow { _54b2ba86.close } }
-        abort_run("#{arr.class}: #{arr.message}")
+        disable_parallel("#{arr.class}: #{arr.message}")
       end
       def worker_command(on_fail)
         dll_name = ruby_dll
@@ -415,7 +415,7 @@ module KSU
           end
         Dialog.send_to_page("simBuilt", ok.merge(state[:reply]), state[:dialog])
       end
-      def abort_run(reason)
+      def disable_parallel(reason)
         state = @run_state
         last_ix
         @flag2 = true

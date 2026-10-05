@@ -139,7 +139,6 @@ ten:
   _2b9066dc: clean_sheet_label
   _ca831b12: placeholder_name? # rong, NESTING, SHEET<n>, TAM KHONG TEN
   _e8d07ccd: safe_filename     # bo ky tu Windows cam
-  _9bd77612: strip_thickness   # bo duoi "18mm"
   _8a195d82: sheet_number      # so sau "sheet"/"tam"/"tam", < 10000
   _d8e9cec1: label_fingerprint
   # KSU::Cnc::Latch
@@ -147,9 +146,7 @@ ten:
   _27014431: side_names        # tren/duoi/trai/phai/chung -> ten da cau hinh
   _15812d09: setting           # preset truoc, roi Settings.get_raw
   _c2c34c86: preset_settings
-  _328a2298: side_of           # prefix -> tren|duoi|trai|phai|''
   _abd2deed: side_for_layer    # memo trong @side_cache
-  _fb849a8f: cutting_lines?    # __ABF_cuttingLines / is-cutting-lines
   _d4e34296: merge_latch
   _eac41744: apply_latch
   _66255cfa: latched?
@@ -211,7 +208,6 @@ ten:
   _3de0bbed: tools_too_deep    # dao sau hon do day van qua 1mm
   _1b5cef0f: split_unmapped    # [layer chua gan, layer bo qua]
   _2c996aa4: all_skipped?
-  _3f74336c: skip_layer?
   _1003d64a: pass_limit_note   # qua PASS_LIMIT luot cat
   # ten va nhan
   _23a56f83: output_names      # [thu muc, tien to, ten file]
@@ -299,7 +295,6 @@ ten:
   _95438bf9: sweep_between     # hai GOC -> goc quet co dau theo chieu ccw
   _4cbb6ec4: wrap_pi           # dua ve (-pi, pi]
   _30b5a118: normalize_sweep   # ep dau cua delta theo chieu ccw
-  _17cb980a: angle_between     # luon <= pi
   _2c8bbe3e: corner_angle_deg
   _76a26ebe: corner_dir        # "bottom_right" ... -> vector don vi
   # so hoc
@@ -309,7 +304,6 @@ ten:
   _c7d1d1dc: kahan_sum         # cong bu sai so, giu ca inf/nan
   # da giac
   _60acdc26: dedupe_loop       # bo diem trung, bo duoi trung dau
-  _1d271ece: signed_area
   _7c38bd64: shoelace_area
   _ad310a1d: path_area         # dien tich duong co ca cung tron
   # cung tron
@@ -342,7 +336,6 @@ ten:
   _f298d1cf: segment_overlap   # [{t:, u:}], co xu ly truong hop song song
   _8ac8258b: segment_hit_params
   _d996367a: proper_crossing   # bo giao o dau mut
-  _86e91555: segments_cross?
   _57253f10: segments_properly_cross?
   _1db111e7: collinear_within? # b nam tren doan a..p, lech duoi 0,01
   _4133d998: segment_gap       # 0 neu cat nhau
@@ -365,7 +358,6 @@ ten:
   # trong / ngoai, hop bao
   _038bcb7f: ray_crossing?     # thuat toan dem lan cat tia
   _070e5425: in_polygon?       # nhan ca diem nam tren canh (<= 0,001)
-  _8615dcde: bounds_of         # [xmin, xmax, ymin, ymax]
   _f8388ed9: bounds_area
   _7ee4ef80: bounds_equal?
   _b02b4635: bounds_inside?
@@ -579,7 +571,6 @@ ten:
   _65a8f64c: drill_center      # raise khi dao to hon lo
   _714fafef: write_mark_entry
   _9cb27a68: assert_mark_plan  # ban kinh, tiep tuyen va duong vao phai khop
-  _a604a065: unit_to
   _27faf240: simplify_points
   _d76060be: layer_slug_cache
   # bien dung chung trong chain.rb
@@ -690,7 +681,6 @@ ten:
   # chay bang luoi marching khi bu thuong that bai
   _35fc33f1: offset_marching   # dung Native.marching tren luoi chia doi
   _f0c5e236: loop_clear?       # moi diem tren vong phai cach ban ve >= per_row
-  _6331da4c: trace_loops       # noi doan thanh vong qua do thi diem
   _d1ce87bb: node_index
   _d7d8a8de: offset_graph
   _675bfbef: planar_graph
@@ -782,7 +772,6 @@ ten:
   _801b7ced: rotate_at_hit
   # do cao va do sau
   _d4ad09a1: from_bottom?      # goc_cao_do dat o mat duoi
-  _e029123a: board_thickness
   _40ac8570: approach_z
   _66f1b333: depth_value
   _52e32c28: pass_depths       # chia cut_depth thanh tung luot theo stepdown
@@ -833,9 +822,7 @@ ten:
   _edd796b5: sample_midpoints
   _d5b42a60: pairwise_crossings
   _9df386de: grid_cell_size
-  _d07e24b1: build_grid
   _601cbbe7: grid_candidates
-  _d2cd590d: boxes_overlap?
   _d998b45e: point_inside?     # ban 7 tia theo goc le de tranh cham dinh
   _412f58d3: ray_hits
   _6ad7f942: ray_hits_line
@@ -926,7 +913,6 @@ ten:
   _ce14eb5d: retries
   _0cebe008: parallel?        # cai dat bat, va may co tu 2 nhan ro ranh
   _2d47cbb4: usable?
-  _aa4056c6: start_run
   _b201d835: drop_jobs
   _159e4a42: enqueue
   _ac093b0e: tick             # bom boi UI.start_timer, doc ong va phat viec
@@ -953,7 +939,6 @@ ten:
   _ce312100: reap_dead
   _88399118: close_worker
   _13791cab: send_job
-  _b684d176: abort_run
   _4569906d: swallow          # bo qua loi khi dong ong / xoa file
   _431a5720: touch
   _c4fa4bef: timer_id
@@ -1022,12 +1007,10 @@ ten:
   _e1dc3206: base_area
 
   # ---- method/giacong/canvas.rb : du lieu cho cua so mo phong ----
-  _ffa49671: sheet_rows        # danh sach tam cho giao dien, co memo
   _73997ff8: sheet_index
   _0e590d34: build_meta        # dao, layer_map, mau sac... dung chung mot luot
   _a4119a19: slots             # ket qua mo phong theo path_key
   _d9e58aed: slot_report       # { valid:, stale:, labels: }
-  _5cc4d71d: slot_for
   _3f309e7f: slot_fresh?
   _7d62a5d8: slot_key_now
   _9f66e067: slot_ready?
@@ -1037,7 +1020,6 @@ ten:
   _5a5ede0c: no_toolpath?
   _b1b6f431: slot_key          # khoa hinh hoc + khoa dao
   _3291f6ab: geometry_key      # SHA256 cua toan bo diem, co memo
-  _502f3660: tool_key
   _414d9849: tool_names
   _d4f72db3: sheet_scope       # do day van, mat sau, danh sach dao, co memo
   _5fed3941: rank_keys
@@ -1072,7 +1054,6 @@ ten:
   _03810a3f: to_xy
   _3124cd41: closed_ring?
   _29dd5de9: open_points
-  _ca64623d: corner_index
   _3aa58b24: assert_plan_ok
   _e8d5bf31: path_open?
   _f22f305b: path_direction_ok?
@@ -1126,7 +1107,6 @@ ten:
   _9e8a3c6e: layer_tags
   _ba59e872: any_latched?
   _44c9f859: tag_for_layer
-  _d96871e3: entities_in
   _46270fb4: highlight_layer
   _253bbf28: select_layer_entities
   _5c1700b9: scan_model
@@ -1189,13 +1169,11 @@ ten:
   _f32e2019: on_group_changed
   _333ed5ee: set_active_sheet
   _7e4812b3: refresh           # co tiet che theo thoi gian
-  _cace3537: set_status
   _fb5e0b76: pending
   _e74c240d: rotate_by_name
   _3d19a088: show_progress     # bat dau hien tien do cho mot job
   _bed007e3: schedule_tick
   _e5110b8e: restore_model
-  _b2e063a2: stop_labelling
   _d5e18f87: cancel_labelling
   _084d87fa: clear_status
   _be53ef62: spacing_settings  # [spacing, margin, margins]
@@ -1215,7 +1193,6 @@ ten:
   _48a961b7: send_state
   _a5ca95d7: material_orders
   _f22a94c3: parse_keywords
-  _26ea50d2: apply_order
   _d8bbcfd9: parse_keyed_rows  # loc phan tu co "key"; parse_rows la _499355c6
   _7c10fe07: start_labelling
   # ---- method/giacong/geom.rb : hinh hoc tren Point3d cua SketchUp ----
@@ -1223,8 +1200,6 @@ ten:
   _0c359361: vectors_parallel?
   _66ed821f: detect_arc        # mot vong 12 diem tro len co phai cung tron
   _77edeafd: corner_at
-  _2775961d: simplify_loop
-  _b4db6c01: build_loops       # noi canh thanh vong
   _3e6ac33b: walk_loop
   _fa5290f3: pack_rgb
   _8762393b: layer_style       # [ten, buc, mau] cho mot layer
@@ -1232,7 +1207,6 @@ ten:
   _3e876544: build_context
   _bdf93f01: vector_for
   _39940a08: path_for
-  _6d7defc4: loops_of
   _4d390a72: rotate_to_point
   _8514d0f6: perimeter
   _4c3fbfe9: edge_lengths
@@ -1243,7 +1217,6 @@ ten:
   _98aa5862: sheet_entities
   _2fed8e36: scan_group        # bo nhan, bo ghi chu dan canh
   _179e6089: text_outlines     # chu khac -> duong, can KSU::Font
-  _60ab6b21: edge_index
   _6a746f51: scan_cached
   _656cb7d2: vectors_to_xy
   _0c54bd61: tag_board_chain
@@ -1318,7 +1291,6 @@ ten:
   _7ac0a07c: run_batch
   # method/nesting/collect.rb
   _82e73dbc: restart_collect
-  _98b40ddf: collect_parts
   _5edf5975: part_from_face
   _713037d0: group_by_material
   # method/nesting/draw.rb
@@ -1380,7 +1352,6 @@ ten:
   # utils/sheet/bottom.rb
   _8dfaeb72: part_group?
   # utils/view/widget.rb
-  _f426c6e7: label_box          # nil khi diem nam sau camera
   _7203c963: draw_label_at    # draw_label la _f9714588
   _dfeaa8e6: svg_text
   _86429638: tag
@@ -1597,6 +1568,57 @@ ten:
                                # bounds + dien tich cua hai ban ghi
 
 vai:
+
+  # Round two. Same rule: one word, one hex, per build.
+  _17cb980a: subtended_angle
+  # the angle two points subtend AT a centre; simplify.rb's
+  # angle_between takes two vectors and no centre, which is what the
+  # word means
+  _26ea50d2: select_ids
+  # parses ids out of a page response and selects them; toiuu.rb's
+  # apply_order moves panels between sheets to match a given order
+  _6d7defc4: inside_odd_loops?
+  # counts the sibling loops containing this one and answers `.odd?` --
+  # a boolean, not loops
+  _aa4056c6: start_workers
+  # spawns the worker processes and fills the queue; the run it belongs
+  # to is started in nesting.rb
+  _b684d176: disable_parallel
+  # its own message reads `tat tinh song song cua Mo phong trong phien
+  # nay` -- it gives up on parallelism, it aborts no run
+  _502f3660: sheet_cache_key
+  # hashes the tool setup into the key the author's own string calls
+  # ksu_cnc_simulation_sheet_cache_v7
+
+  # Apt on both sides, so the tree keeps the word here and only the claim
+  # steps back: the other hex of each pair carries a 2.1.5 reading that was
+  # audited whole in that build, while these are this build's fresh guesses.
+  # signed_area names ONE hex across Calc, Arc and Profile, so it is one word
+  # of the author's rather than three guesses, and every caller reads its SIGN,
+  # which is what renaming it would drop.
+  _1d271ece: signed_area
+  _e029123a: board_thickness
+  _8615dcde: bounds_of
+  _d2cd590d: boxes_overlap?
+  _d07e24b1: build_grid
+  _b4db6c01: build_loops
+  _98b40ddf: collect_parts
+  _ca64623d: corner_index
+  _fb849a8f: cutting_lines?
+  _60ab6b21: edge_index
+  _d96871e3: entities_in
+  _f426c6e7: label_box
+  _86e91555: segments_cross?
+  _cace3537: set_status
+  _ffa49671: sheet_rows
+  _328a2298: side_of
+  _2775961d: simplify_loop
+  _3f74336c: skip_layer?
+  _5cc4d71d: slot_for
+  _b2e063a2: stop_labelling
+  _9bd77612: strip_thickness
+  _6331da4c: trace_loops
+  _a604a065: unit_to
 
   # Two methods in one build cannot share a word: the obfuscator mapped
   # name -> hex once. Where one of the pair reads wrong, it is renamed from

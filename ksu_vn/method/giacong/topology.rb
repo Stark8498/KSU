@@ -671,7 +671,7 @@ module KSU
         cross = (b[0] - arr[0]) * (arr2[1] - b[1]) - (b[1] - arr[1]) * (arr2[0] - b[0])
         return nil if cross.abs <= 1.0e-12
         center = [_ee4f533e, _4c8d9d44]
-        _5d951b22 = [Calc.angle_between(arr, b, center), Calc.angle_between(b, arr2, center)].max
+        _5d951b22 = [Calc.subtended_angle(arr, b, center), Calc.subtended_angle(b, arr2, center)].max
         { center_mm: center, radius_mm: r, turn: cross.positive? ? 1 : -1, max_step_deg: _5d951b22 * 180.0 / Math::PI }
       end
       def fit_arc_run(arr, out)
@@ -685,7 +685,7 @@ module KSU
         num2 = arr.first[:turn]
         num = total_sweep(arr2, center, num2).abs * 180.0 / Math::PI
         return nil unless num >= 5.0 && num <= 355.0
-        bulge = arr2.each_cons(2).map { |a, b| r * (1.0 - Math.cos(Calc.angle_between(a, b, center) * 0.5)) }.max
+        bulge = arr2.each_cons(2).map { |a, b| r * (1.0 - Math.cos(Calc.subtended_angle(a, b, center) * 0.5)) }.max
         return nil if bulge < 0.001
         return nil if arr.any? { |arr4| Calc.distance(arr4[:center_mm], center) > 0.01 }
         return nil if arr.any? { |arr4| (arr4[:radius_mm] - r).abs > 0.01 }

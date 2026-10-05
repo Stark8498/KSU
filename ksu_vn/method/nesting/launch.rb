@@ -8,7 +8,7 @@ module KSU::Launch
       send_materials(dlg, material_rows(@sel_snapshot))
     when "save_setting" then apply_override(payload, "nesting")
     when "save_rows" then apply_saved_cfg(payload)
-    when "select_parts" then apply_order(payload)
+    when "select_parts" then select_ids(payload)
     when "search_parts" then parse_keywords(payload)
     when "sync_parts" then send_state(dlg)
     when "load_layout" then parse_thickness(dlg)
@@ -247,7 +247,7 @@ module KSU::Launch
     KSU::View.view.invalidate
   rescue StandardError
   end
-  def apply_order(resp)
+  def select_ids(resp)
     str = JSON.parse(resp.to_s)
     return unless str.is_a?(Array) && !str.empty?
     KSU.select_only(Array(Sketchup.active_model.find_entity_by_id(*str.map(&:to_i))).compact.select(&:valid?))

@@ -8,7 +8,7 @@ module KSU::Intem
     case action
     when "load_data", "reload_data" then load_data(dlg)
     when "save_setting" then KSU::Nest.apply_override(payload, "in_tem")
-    when "select_parts" then KSU::Nest.apply_order(payload)
+    when "select_parts" then KSU::Nest.select_ids(payload)
     when "export_request" then export_request(dlg, payload)
     when "pick_logo" then pick_logo(dlg)
     when "save_eb" then save_edge_order(payload)

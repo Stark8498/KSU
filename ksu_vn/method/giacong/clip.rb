@@ -23,7 +23,7 @@ module KSU
           return failure("arc_bulge_over") if arr[:bulge_mm] > 0.30
           return failure("arc_sweep_over") if arr[:sweep_deg] > 180.0 + 1.0e-7
           start2 = arr3[arr[:src_start]..arr[:src_end]]
-          arr4 = start2.each_cons(2).map { |a, b| Calc.angle_between(a, b, arr[:c]) * 180.0 / Math::PI }.max
+          arr4 = start2.each_cons(2).map { |a, b| Calc.subtended_angle(a, b, arr[:c]) * 180.0 / Math::PI }.max
           return failure("arc_step_over") if arr4 > 30.0 + 1.0e-7
         end
         Result.new(ok: true, elems: elems)

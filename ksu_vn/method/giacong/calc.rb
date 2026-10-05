@@ -36,7 +36,7 @@ module KSU
         delta -= Math::PI * 2.0 while !ccw && delta >= 0.0
         delta
       end
-      def angle_between(a, b, center)
+      def subtended_angle(a, b, center)
         delta = (deg4(b, center) - deg4(a, center)).abs
         delta > Math::PI ? 2.0 * Math::PI - delta : delta
       end

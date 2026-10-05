@@ -189,8 +189,8 @@ module KSU
           _37953fc6, flag2 = at == :end ? [1.0, 0.0] : [0.0, 1.0]
           return !t.nil? && (t - _37953fc6).abs + HIT_EPS_MM < (t - flag2).abs
         end
-        Calc.angle_between(_f515d7f8, pt, arr[:c]) * arr[:radius_mm] + JOIN_TOL_MM <
-          Calc.angle_between(flag, pt, arr[:c]) * arr[:radius_mm]
+        Calc.subtended_angle(_f515d7f8, pt, arr[:c]) * arr[:radius_mm] + JOIN_TOL_MM <
+          Calc.subtended_angle(flag, pt, arr[:c]) * arr[:radius_mm]
       end
       def on_line?(h, _a8edb910, pt, at)
         return true unless h[:type] == :arc

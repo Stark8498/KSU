@@ -15,7 +15,7 @@ module KSU::Giacong
       pt = ::Geom::Point3d.new(x, y, 0).transform(tr)
       [pt.x.to_f * 25.4, pt.y.to_f * 25.4]
     end
-    path = path_for(arr2, tool, loops_of(entity, arr))
+    path = path_for(arr2, tool, inside_odd_loops?(entity, arr))
     return nil unless path
     back = tr.inverse
     failed = path.map { |x, y| ::Geom::Point3d.new(x / 25.4, y / 25.4, 0).transform(back) }
@@ -32,7 +32,7 @@ module KSU::Giacong
     path = export_file.ring(export_file.shift_lead(path, -tool["khoang_cach_xuong_dao"].to_f))
     %w[outside flip_side].include?(side) ? export_file.rotate_entry(path, tool) : path
   end
-  def loops_of(entity, arr2)
+  def inside_odd_loops?(entity, arr2)
     loops = (arr2[:loops] ||= arr2[:ents].select do |arr|
       arr[:closed] && arr[:via_module] && !arr[:sect] && arr[:pts].size >= 3
     end.group_by { |arr| arr[:pid] })

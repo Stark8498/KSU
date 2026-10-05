@@ -377,7 +377,7 @@ module KSU
             ok = canvas_payload
             _925b31fd = ok[:ok] ? slot_report_now : nil
             send_to_page("simSheets", _925b31fd ? ok.merge(valid: _925b31fd[:valid]) : ok, dlg2)
-            Pool.start_run(_925b31fd[:stale] - set_excluded(request)) if _925b31fd
+            Pool.start_workers(_925b31fd[:stale] - set_excluded(request)) if _925b31fd
           rescue ScriptError, StandardError
             send_to_page("simSheets", { ok: false }, dlg2)
             ::UI.messagebox(Text.t(:mo_phong, :khong_dung))
@@ -388,7 +388,7 @@ module KSU
           send_to_page("simKeys", { ok: true }.merge(_925b31fd), dlg2)
           excluded = set_excluded(parse_request(str))
           Pool.drop_jobs(excluded)
-          Pool.start_run(_925b31fd[:stale] - excluded)
+          Pool.start_workers(_925b31fd[:stale] - excluded)
         rescue StandardError
           send_to_page("simKeys", { ok: false }, dlg2)
         end

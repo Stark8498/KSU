@@ -153,7 +153,7 @@ module KSU
         slot[:paths].nil? && slot[:row][:warnings].include?(Text.t(:mo_phong, :khong_dung_duong_dao))
       end
       def slot_key(sheet, meta)
-        geometry_key(sheet) + tool_key(sheet, meta)
+        geometry_key(sheet) + sheet_cache_key(sheet, meta)
       end
       def geometry_key(arr)
         (@h16 ||= {}.compare_by_identity)[arr] ||= begin
@@ -174,7 +174,7 @@ module KSU
           _ec0da59d.hexdigest
         end
       end
-      def tool_key(sheet, meta)
+      def sheet_cache_key(sheet, meta)
         saved_sel = sheet_scope(sheet, meta)
         tools = Export.tool_index_for(meta, saved_sel[:do_day_van], saved_sel[:back])
         _ec0da59d = Digest::SHA256.new << "ksu_cnc_simulation_sheet_cache_v7|"
