@@ -1,5 +1,7 @@
-SketchUp 25.0.571  Ruby 3.2.2  2026-10-05 18:11:34 +0700
-ban: goc   (30 truong hop, 0 loi)
+SketchUp 25.0.571  Ruby 3.2.2  2026-10-05 18:59:31 +0700
+ban: goc   (79 truong hop, 0 loi)
+
+cnc-native: true
 
 00  KSU::Geom.convex_hull = [(10, 10, 0), (90, 10, 0), (88, 60, 0), (12, 62, 0)]
 01  KSU::Geom.bounds = {max_x: 90, max_y: 80, min_x: 0, min_y: 0}
@@ -31,3 +33,52 @@ ban: goc   (30 truong hop, 0 loi)
 27  KSU::Sheet.to_point = (1, 2, 3)
 28  KSU::Sheet.to_point = (1, 2, 3)
 29  KSU::Sheet.to_point = nil
+30  KSU::Cnc::Calc.distance = 5
+31  KSU::Cnc::Calc.deg4 = 0.785398163
+32  KSU::Cnc::Calc.cross = 100
+33  KSU::Cnc::Calc.lerp = [2.5, 5]
+34  KSU::Cnc::Calc.unit_vector = [0.6, 0.8]
+35  KSU::Cnc::Calc.sweep_between = 1.57079633
+36  KSU::Cnc::Calc.sweep_between = -4.71238898
+37  KSU::Cnc::Calc.wrap_pi = 0.716814693
+38  KSU::Cnc::Calc.normalize_sweep = 5.28318531
+39  KSU::Cnc::Calc.angle_between = 1.57079633
+40  KSU::Cnc::Calc.corner_angle_deg = 90
+41  KSU::Cnc::Calc.corner_dir = [-0.707106781, 0.707106781]
+42  KSU::Cnc::Calc.pt = [1.5, 2.5]
+43  KSU::Cnc::Calc.positive_float = 3.5
+44  KSU::Cnc::Calc.positive_float = nil
+45  KSU::Cnc::Calc.positive_float = nil
+46  KSU::Cnc::Calc.round2 = 1
+47  KSU::Cnc::Calc.round_to = 1.235
+48  KSU::Cnc::Calc.kahan_sum = 1
+49  KSU::Cnc::Calc.shoelace_area = 100
+50  KSU::Cnc::Calc.arc_sweep = 1.57079633
+51  KSU::Cnc::Calc.path_area = 78.5398163
+52  KSU::Cnc::Calc.tangent_at = [-0, 1]
+53  KSU::Cnc::Calc.tangent_at = [-1, 0]
+54  KSU::Cnc::Calc.project_to_radius = [6, 8]
+55  KSU::Cnc::Calc.arc_points = [[10, 0], [7.07106781, 7.07106781], [6.123234e-16, 10], [-7.07106781, 7.07106781], [-10, 1.2246468e-15]]
+56  KSU::Cnc::Calc.arc_polyline = [[10, 0], [9.96194698, 0.871557427], [9.84807753, 1.73648178], [9.65925826, 2.58819045], [9.39692621, 3.42020143], [9.06307787, 4.22618262], [8.66025404, 5], [8.19152044, 5.73576436], [7.66044443, 6.4278761], [7.07106781, 7.07106781], [6.4278761, 7.66044443], [5.73576436, 8.19152044], [5, 8.66025404], [4.22618262, 9.06307787], [3.42020143, 9.39692621], [2.58819045, 9.65925826], [1.73648178, 9.84807753], [0.871557427, 9.96194698], [6.123234e-16, 10]]
+57  KSU::Cnc::Calc.param_on_segment = 0.3
+58  KSU::Cnc::Calc.project_on_line = [3, 0]
+59  KSU::Cnc::Calc.distance_to_line = 4
+60  KSU::Cnc::Calc.along_axis = 3
+61  KSU::Cnc::Calc.line_intersection = [5, 5]
+62  KSU::Cnc::Calc.line_cross = [5, 5]
+63  KSU::Cnc::Calc.segment_circle_hits = [[-10, 0], [10, 0]]
+64  KSU::Cnc::Calc.circle_circle_hits = [[2.35424869, 2.35424869], [7.64575131, 7.64575131]]
+65  KSU::Cnc::Calc.segments_cross? = true
+66  KSU::Cnc::Calc.collinear_within? = true
+67  KSU::Cnc::Calc.fit_circle = {center: [2.93098879e-16, -3.57491814e-16], radius: 10}
+68  KSU::Cnc::Calc.dedupe_loop = [[0, 0], [10, 0], [10, 10], [0, 10], [10, 10]]
+69  KSU::Cnc::Calc.signed_area = 100
+70  KSU::Cnc::Calc.bounds_of = [0, 90, 0, 80]
+71  KSU::Cnc::Arc.turn_sign = 75
+72  KSU::Cnc::Arc.turn_sign_arc = -1
+73  KSU::Cnc::Arc.collapse_point = [2.35424869, 2.35424869]
+74  KSU::Cnc::Arc.on_element? = true
+75  KSU::Cnc::Canonicalizer.collinear_lines? = true
+76  KSU::Cnc::Canonicalizer.collinear_lines? = false
+77  KSU::Cnc::Canonicalizer.arc_weight = 1.57079633
+78  KSU::Cnc::Export.circle_from_points = {center: [2.93098879e-16, -3.57491814e-16], radius: 10}

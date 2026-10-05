@@ -372,7 +372,7 @@ mới của đợt này.
 | Lời gọi treo | `codegraph.py` rồi `verify_graph.py` | **0** |
 | Nạp cả cây | `ruby tools/napthu.rb .` | **NAP OK** — 74 hằng `KSU::*` |
 | Một-tên-một-hex | `python tools/trahex.py --soat` | 497 bắc cầu hai đợt (OK) · **158 cùng đợt (nợ)** |
-| Đối sánh hành vi | `ruby tools/doisanh.rb` | **30/30 giống nhau từng byte** — phủ 1,7 % số method (§8) |
+| Đối sánh hành vi | `ruby tools/doisanh.rb` | **79/79 giống nhau từng byte** — phủ 17,1 % số method (§8) |
 
 Chạy mọi lệnh Python với `PYTHONIOENCODING=utf-8`: console cp1252 của Windows
 ném `UnicodeEncodeError` ngay khi gặp chữ Việt.
@@ -383,18 +383,25 @@ ném `UnicodeEncodeError` ngay khi gặp chữ Việt.
 
 Xếp theo mức quan trọng, cao xuống thấp.
 
-1. **Đối sánh hành vi mới phủ 1,7 %.** `doisanh.rb` đã chạy hai bên: bản phát
-   hành trên SketchUp 25 và cây đọc được trên SketchUp 24. 30/30 trường hợp cho
-   kết quả giống nhau từng byte, nên lớp này không còn là ẩn số hoàn toàn. Nhưng
-   30 trường hợp chỉ chạm `KSU::Geom`, `KSU::Nfp`, `KSU::Sheet` — **51 trên
-   2.943 method**, đều là hàm hình học thuần. Lỗ hổng lớn nhất là
-   `method/giacong/` (24 file, ~12.700 dòng): mới hoàn toàn ở 2.3.2 nên tên ở đó
-   không có bản sinh đôi 2.1.5 làm chứng, mà cũng chưa chạy thử lần nào.
-   `KSU::Cnc::Calc` là `module_function` toàn hàm thuần số, thêm ca thử được
-   ngay. Cách chạy: mở bản phát hành ở một SketchUp và cây đọc được ở một
-   SketchUp khác (bản thứ hai **không được cài plugin** — `doisanh.rb` chọn bên
-   bằng `defined?(KSU::Geom)`), `load` nó ở cả hai, rồi so `doisanh_goc.txt` với
-   `doisanh_moi.txt`.
+1. **Đối sánh hành vi mới phủ 17,1 %.** `doisanh.rb` đã chạy hai bên: bản phát
+   hành trên SketchUp 25 và cây đọc được trên SketchUp 24. **79/79 trường hợp
+   giống nhau từng byte**, kể cả 49 ca trong `method/giacong/`. Nhưng 79 ca chỉ
+   chạm 7 module — **504 trên 2.943 method** — và đều là hàm thuần: không ca nào
+   đụng UI, đụng model, hay đụng đường xuất DXF/G-code. Thêm ca ở
+   `tools/sinhdoisanh.py`, **đừng sửa tay `doisanh_cases.rb`**.
+
+   Cách chạy: mở bản phát hành ở một SketchUp và cây đọc được ở một SketchUp
+   khác (bản thứ hai **không được cài plugin** — `doisanh.rb` chọn bên bằng
+   `defined?(KSU::Geom)`), `load` nó ở cả hai, rồi so `doisanh_goc.txt` với
+   `doisanh_moi.txt`. Chỉ hai dòng đầu được phép khác.
+
+   Đọc dòng `cnc-native:` trước đã. `KSU::Cnc::Calc` gọi sang phần mở rộng
+   native khi có và lùi về Ruby khi không, mà cây này không kèm `.so`/`.dll`
+   nào — nên lần chạy vừa rồi là `true` bên bản phát hành, `false` bên cây đọc
+   được. `dedupe_loop`, `signed_area` và `circle_from_points` vì thế chạy hai
+   nhánh mã khác nhau; chúng vẫn ra cùng kết quả, nghĩa là nhánh Ruby khớp với
+   native trên các ca này. Nếu sau này chúng lệch nhau, đọc cờ này trước khi
+   quy cho việc đổi tên.
 2. **158 tên nói quá.** `trahex.py --soat` chỉ ra 158 chỗ hai hex **cùng một
    đợt** mang một tên. Mỗi dòng nghĩa là: tác giả dùng hai từ khác nhau, mà từ
    điển gộp lại thành một. Không chỗ nào làm sai hành vi (rào cùng-module đã
