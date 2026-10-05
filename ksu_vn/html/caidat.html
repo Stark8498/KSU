@@ -107,12 +107,6 @@
                        @change="saveSetting('danh_dau_tam_bi_lan')" id="danh_dau_tam_bi_lan">
                 <label class="switch-label" for="danh_dau_tam_bi_lan"></label>
             </div>
-            <div class="switch">
-                <span>Ẩn nhãn và tiết diện</span>
-                <input type="checkbox" v-model="settings.an_nhan_tiet_dien"
-                       @change="saveSetting('an_nhan_tiet_dien')" id="an_nhan_tiet_dien">
-                <label class="switch-label" for="an_nhan_tiet_dien"></label>
-            </div>
         </div>
         <p class="switch-stacked-hint">Cài đặt hiển thị tấm khi dùng các công cụ.</p>
 
@@ -451,7 +445,6 @@
                 phu_mau_tam_hai_mat: true,
                 danh_dau_loi: true,
                 danh_dau_tam_bi_lan: false,
-                an_nhan_tiet_dien: false,
                 tam_cach_nhau: 6.5,
                 tam_cach_le: 3.5,
                 tach_cach_le: false,
@@ -472,7 +465,7 @@
                 nesting: true,
                 thong_ke: true,
                 in_tem: true,
-                xuat_dxf: true,
+                gia_cong: true,
                 // ksu-addon-startup
                 cai_dat: true,
                 giao_dien_cai_dat_toi: false,
@@ -483,15 +476,15 @@
                 {key: 'chon_tam', label: 'Chọn tấm'},
                 {key: 'them_tam', label: 'Thêm tấm'},
                 {key: 'xep_hang', label: 'Xếp hàng'},
-                {key: 'danh_so_van', label: 'Đánh số ván'},
+                {key: 'danh_so_van', label: 'Đánh số'},
                 {key: 'gan_nhan', label: 'Gắn nhãn'},
                 {key: 'chong_bay', label: 'Chống bay'},
-                {key: 'net_cat_cuoi', label: 'Nét cắt cuối'},
-                {key: 'toi_uu_van', label: 'Tối ưu ván'},
+                {key: 'net_cat_cuoi', label: 'Cắt cuối'},
+                {key: 'toi_uu_van', label: 'Tối ưu'},
                 {key: 'nesting', label: 'Nesting'},
                 {key: 'thong_ke', label: 'Thống kê'},
                 {key: 'in_tem', label: 'In tem nhãn'},
-                {key: 'xuat_dxf', label: 'Xuất DXF'},
+                {key: 'gia_cong', label: 'Gia công'},
                 // ksu-addon-tools
                 {key: 'cai_dat', label: 'Cài đặt'}
             ],
@@ -584,12 +577,8 @@
                 }
             },
 
-            postAction(action, data) {
-                if (window.parent !== window) {
-                    var msg = {action: action};
-                    if (data) Object.assign(msg, data);
-                    window.parent.postMessage(msg, '*');
-                }
+            postAction(action) {
+                if (window.parent !== window) window.parent.postMessage({action: action}, '*');
             },
 
             validateGap(key) {

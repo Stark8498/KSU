@@ -3,7 +3,7 @@ require "extensions.rb"
 require "fileutils"
 
 module KSU
-  VERSION = "2.1.5"
+  VERSION = "2.3.2"
   unless file_loaded?(__FILE__)
     runtime = RUBY_VERSION >= "3.0" ? "3.2" : "2.7"
     root = File.dirname(File.expand_path(__FILE__))

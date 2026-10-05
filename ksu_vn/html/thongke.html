@@ -4,247 +4,202 @@
     <meta charset="UTF-8">
     <title>Thống kê</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/nest.css">
+    <link rel="stylesheet" href="css/nest.css?v=56">
     <script src="js/vue.min.js"></script>
+    <script src="js/preload.js"></script>
     <style>
-        .tk-empty { padding: 20px 10px; text-align: center; font-size: 12px; color: #8e8e8e; }
-        .tk-table-wrap { overflow-x: auto; }
-        .tk-table-wrap::-webkit-scrollbar { width: 0; height: 14px; }
-        .tk-table-wrap::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.35); border-radius: 999px; border: 3px solid transparent;
-            background-clip: padding-box; min-width: 35px;
-        }
-        .tk-table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.5); background-clip: padding-box; }
-        .tk-table-wrap::-webkit-scrollbar-track, .tk-table-wrap::-webkit-scrollbar-corner { background: transparent; }
-        .tk-block { margin-bottom: 14px; }
-        .tk-block:last-child { margin-bottom: 0; }
-        .tk-table {
-            width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px; white-space: nowrap;
-        }
+        .tk-empty { padding: 20px 10px; text-align: center; color: var(--ink-muted); }
+        .tk-table-wrap { overflow-x: hidden; }
+        .tk-block { display: inline-block; vertical-align: top; min-width: 100%; }
+        .tk-table-wrap > .tk-empty { color: #3c3c3c; }
+        .tk-table { width: 100%; border-spacing: 0; white-space: nowrap; }
         .tk-table th, .tk-table td {
-            height: 26px; padding: 3px 10px; text-align: right; vertical-align: middle; line-height: 1.35;
-            border-right: 0.5px solid #c8c8c8; border-bottom: 0.5px solid #c8c8c8;
+            height: var(--table-row-h); padding: var(--table-pad); text-align: right; line-height: var(--table-leading);
+            border-right: 0.5px solid var(--table-line); border-bottom: 0.5px solid var(--table-line);
         }
         .tk-table th:last-child, .tk-table td:last-child { border-right: none; }
-        .tk-table tbody:last-child tr:last-child > td { border-bottom: none; }
-        .tk-table th { background: #e0e0e0; font-weight: 600; color: #1a1a1a; }
+        .tk-table tbody:last-child tr:last-child > td, .tk-table.tk-folded th { border-bottom: none; }
+        .tk-table th { height: var(--table-head-h); background: var(--table-head-bg); font-weight: 600; color: var(--table-head-ink); }
         .tk-table th.text, .tk-table td.text { text-align: left; }
-        .tk-table th.tk-stt, .tk-table td.tk-stt, .tk-table th.tk-center, .tk-table td.tk-center { text-align: center; }
+        .tk-table th.tk-center, .tk-table td.tk-center, .tk-num.tk-center { text-align: center; }
         .tk-table th.tk-id { width: 36px; }
-        .tk-spin {
-            display: inline-block; width: 12px; height: 12px; border: 2px solid #c8c8c8; border-top-color: #4a4a4a;
-            border-radius: 50%; vertical-align: middle; animation: tk-spin 0.8s linear infinite;
-        }
-        @keyframes tk-spin { to { transform: rotate(360deg); } }
-        .tk-table th.tk-sortable { cursor: pointer; user-select: none; }
-        .tk-parts .tk-row { user-select: none; cursor: default; }
+        .tk-table th.tk-sortable { cursor: pointer; }
+        .tk-parts .tk-row { cursor: default; }
         .tk-parts .tk-row.tk-sel > td { background: #ebebeb; }
         .tk-table th.tk-sortable:hover { background: #d4d4d4; }
-        .tk-sum th:not(.text), .tk-sum td:not(.text) { width: 1px; white-space: nowrap; }
+        .tk-sum th:not(.text), .tk-sum td:not(.text) { width: 1px; }
         .tk-sum th.text { width: 50%; }
-        .tk-sum td.text { white-space: normal; overflow-wrap: break-word; }
-        .tk-row:hover { background: #f5f5f5; }
-        .tk-sec > td { background: #e0e0e0; font-weight: 700; color: #1a1a1a; }
-        .tk-sec > td.tk-stt { padding-left: 0; padding-right: 0; font-size: 0; }
+        .tk-table th.tk-stt, .tk-table td.tk-stt { width: var(--table-stt-w); min-width: var(--table-stt-w); max-width: var(--table-stt-w); padding-left: 0; padding-right: 0; text-align: center; }
+        .tk-sec > td { background: var(--table-head-bg); font-weight: 700; color: var(--table-head-ink); }
+        .tk-sec > td.tk-stt { font-size: 0; }
         .tk-sec.tk-sec-empty > td { color: #bcbcbc; }
-        .tk-fold {
-            display: inline-flex; align-items: center; justify-content: center; vertical-align: middle;
-            box-sizing: border-box; width: 16px; height: 16px; padding: 0;
-            border: none; border-radius: 0; background: transparent; color: #6e6e6e;
-            font-family: inherit; font-size: 13px; line-height: 1; cursor: pointer; outline: none;
-        }
-        .tk-fold:hover { color: #000000; }
-        .tk-fold:disabled, .tk-fold:disabled:hover { color: #c4c4c4; cursor: default; }
+        .tk-fold, .tk-num { border: none; background: transparent; font-family: inherit; outline: none; }
+        .tk-fold { display: inline-flex; vertical-align: middle; width: var(--fold-size); height: var(--fold-size); color: var(--fold-ink); font-size: 13px; line-height: 1; }
+        .tk-fold:hover { color: var(--fold-ink-hover); }
+        .tk-fold:disabled { color: #c4c4c4; cursor: default; }
         .tk-table td.tk-cell-in { padding: 0; position: relative; }
         .tk-num {
-            position: absolute; top: 0; left: 0; box-sizing: border-box; width: 100%; height: 100%;
-            min-width: 0; min-height: 20px; padding: 3px 10px; margin: 0;
-            border: none; border-radius: 0; background: transparent; color: inherit;
-            font-family: inherit; font-size: inherit; text-align: right; outline: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; min-height: 20px; padding: var(--table-pad);
+            color: inherit; font-size: inherit; text-align: right;
         }
-        .tk-num.tk-center { text-align: center; }
-        .tk-num:hover { box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2); }
-        .tk-num:focus { box-shadow: inset 0 0 0 1px rgba(0,0,0,0.45); }
         .tk-len { display: block; }
 
-        html[data-theme="dark"] .tk-table-wrap::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.28); background-clip: padding-box; }
-        html[data-theme="dark"] .tk-table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.45); background-clip: padding-box; }
-        html[data-theme="dark"] .tk-table th, html[data-theme="dark"] .tk-table td { border-right-color: #969696; border-bottom-color: #969696; }
-        html[data-theme="dark"] .tk-table th { background: #707070; color: #ffffff; }
+        html[data-theme="dark"] .tk-table-wrap > .tk-empty { color: #a1a1a1; }
+        html[data-theme="dark"] .tk-table th, html[data-theme="dark"] .tk-table td { border-right-color: var(--table-line); border-bottom-color: var(--table-line); }
         html[data-theme="dark"] .tk-table th.tk-sortable:hover { background: #7c7c7c; }
         html[data-theme="dark"] .tk-parts .tk-row.tk-sel > td { background: #2e2e2e; }
-        html[data-theme="dark"] .tk-spin { border-color: #6e6e6e; border-top-color: #e5e5e5; }
-        html[data-theme="dark"] .tk-table td { color: #e5e5e5; }
-        html[data-theme="dark"] .tk-row:hover { background: #282828; }
-        html[data-theme="dark"] .tk-sec > td { background: #707070; color: #ffffff; }
+        html[data-theme="dark"] .tk-sec > td { color: var(--table-head-ink); }
         html[data-theme="dark"] .tk-sec.tk-sec-empty > td { color: #909090; }
-        html[data-theme="dark"] .tk-fold { color: #b0b0b0; }
-        html[data-theme="dark"] .tk-fold:hover { color: #ffffff; }
-        html[data-theme="dark"] .tk-fold:disabled, html[data-theme="dark"] .tk-fold:disabled:hover { color: #8e8e8e; }
-        html[data-theme="dark"] .tk-num:hover { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25); }
-        html[data-theme="dark"] .tk-num:focus { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5); }
+        html[data-theme="dark"] .tk-fold:disabled { color: #8e8e8e; }
     </style>
     <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
 </head>
 <body>
 
 <div id="app" class="nest-root">
-    <div class="nest-left" :class="{ collapsed: col2Hidden }">
-        <div class="nest-left-head">
-            <div class="nest-seg">
-                <button class="nest-seg-btn" :class="{ active: leftTab === 'chung' }" @click="leftTab = 'chung'">Chi phí</button>
-                <button class="nest-seg-btn" :class="{ active: leftTab === 'cau_kien' }" @click="leftTab = 'cau_kien'">Cấu kiện</button>
-            </div>
-        </div>
+    <div class="nest-left" :class="{ collapsed: leftHidden }">
+        <tool-tabs current="thong_ke"></tool-tabs>
         <div class="nest-left-scroll">
 
-            <div class="nest-left-pane" v-show="leftTab === 'chung'">
-                <div class="switch-stacked">
-                    <div class="switch">
-                        <span>Làm tròn kích thước</span>
-                        <input type="checkbox" v-model="settings.tu_dong_lam_tron" @change="saveSetting('tu_dong_lam_tron')" id="tu_dong_lam_tron">
-                        <label class="switch-label" for="tu_dong_lam_tron"></label>
+            <div class="nest-left-pane" v-for="pane in switches">
+                <template v-for="s in pane">
+                    <div class="switch-stacked">
+                        <div class="switch">
+                            <span>{{ s.label }}</span>
+                            <input type="checkbox" v-model="settings[s.key]" @change="saveSetting(s.key)" :id="s.key">
+                            <label class="switch-label" :for="s.key"></label>
+                        </div>
                     </div>
-                </div>
-                <p class="switch-stacked-hint">Tự động làm tròn chiều dài và diện tích.</p>
-                <div class="switch-stacked">
-                    <div class="switch">
-                        <span>Ẩn tên dán cạnh</span>
-                        <input type="checkbox" v-model="settings.an_ten_dan_canh" @change="saveSetting('an_ten_dan_canh')" id="an_ten_dan_canh">
-                        <label class="switch-label" for="an_ten_dan_canh"></label>
-                    </div>
-                </div>
-                <p class="switch-stacked-hint">Chỉ hiển thị chiều dày cạnh.</p>
+                    <p class="switch-stacked-hint">{{ s.hint }}</p>
+                </template>
             </div>
-
-            <div class="nest-left-pane" v-show="leftTab === 'cau_kien'">
-                <div class="switch-stacked">
-                    <div class="switch">
-                        <span>Làm tròn kích thước</span>
-                        <input type="checkbox" v-model="settings.lam_tron_cau_kien" @change="saveSetting('lam_tron_cau_kien')" id="lam_tron_cau_kien">
-                        <label class="switch-label" for="lam_tron_cau_kien"></label>
-                    </div>
-                </div>
-                <p class="switch-stacked-hint">Tự động làm tròn dài và rộng.</p>
+        </div>
+        <div class="nest-left-foot">
+            <div class="footer-btns">
+                <button class="action-button-full" @click="snapshot" :disabled="loading || !hasData || snapping">Chụp màn hình</button>
+                <button class="action-button-full" @click="exportExcel" :disabled="loading || !hasData">Xuất thống kê</button>
             </div>
         </div>
     </div>
 
     <div class="nest-right">
         <div class="nest-right-head">
-            <button class="nest-col2-btn"
-                    @click="col2Hidden = !col2Hidden">
-                <svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><line x1="9.5" y1="4.5" x2="9.5" y2="19.5"/></svg>
-            </button>
+            <button class="nest-col2-btn" type="button" @click="leftHidden = !leftHidden"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><line x1="9.5" y1="4.5" x2="9.5" y2="19.5"/></svg></button>
             <div class="nest-search">
                 <input type="text" v-model="keyword" placeholder="Tìm kiếm..." spellcheck="false" autocomplete="off">
                 <button class="nest-search-clear" v-show="keyword" @click="keyword = ''" tabindex="-1">×</button>
             </div>
-            <span class="nest-right-stat" @click="selectAllParts">{{ totalParts }} chi tiết</span>
+            <span class="nest-right-stat" @click="selectAllParts">{{ partRows.length }} chi tiết</span>
             <button class="col3-btn" @click="reload">Cập nhật</button>
         </div>
 
-        <div class="nest-right-scroll tk-table-wrap">
-            <div class="tk-block" v-if="leftTab === 'chung'">
-                <table class="tk-table tk-sum" ref="sumTable">
-                    <thead>
-                    <tr>
-                        <th class="tk-stt"></th>
-                        <th class="text">Loại</th>
-                        <th class="text">Mô tả chi tiết</th>
-                        <th class="tk-center">Số lượng</th>
-                        <th class="tk-center">Đơn vị</th>
-                        <th class="tk-center">Hệ số</th>
-                        <th>Đơn giá</th>
-                        <th>Thành tiền</th>
-                    </tr>
-                    </thead>
-                    <tbody v-for="sec in visibleSections" :key="sec.key">
-                    <tr class="tk-sec" :class="{ 'tk-sec-empty': !sec.items.length }">
-                        <td class="tk-stt"><button class="tk-fold" :disabled="!sec.items.length" @click="toggleFold(sec.key)">{{ folded[sec.key] ? '+' : '−' }}</button></td>
-                        <td class="text" colspan="6">{{ sec.title }}</td>
-                        <td>{{ fmtNum(sectionTotal(sec)) }}</td>
-                    </tr>
-                    <tr class="tk-row" v-show="!folded[sec.key]"
-                        v-for="(r, i) in sec.items" :key="sec.key + r.k">
-                        <td class="tk-stt">{{ i + 1 }}</td>
-                        <td class="text">{{ r.loai }}</td>
-                        <td class="text">
-                            <template v-if="r.lines">
-                                <span class="tk-len" v-for="(ln, li) in r.lines" :key="li">{{ lineText(ln) }}</span>
-                            </template>
-                            <template v-else>{{ r.mota }}</template>
-                        </td>
-                        <td class="tk-center">{{ r.sl }}</td>
-                        <td class="tk-center" :class="{ 'tk-cell-in': r.unitItem }">
-                            <input class="tk-num tk-center" type="text" v-if="r.unitItem"
-                                   :value="r.unitItem.unit || ''" spellcheck="false"
-                                   @change="changeUnit(r.unitItem, $event.target.value)">
-                            <template v-else>{{ r.dv }}</template>
-                        </td>
-                        <td class="tk-center tk-cell-in">
-                            <input class="tk-num tk-center" type="text" :value="coefOf(r.k)" spellcheck="false"
-                                   @change="setCoef(r.k, $event.target.value)">
-                        </td>
-                        <td class="tk-cell-in">
-                            <input class="tk-num" type="text" :value="priceOf(r.k)" spellcheck="false"
-                                   @change="setPrice(r.k, $event.target.value)">
-                        </td>
-                        <td>{{ fmtNum(amountOf(r)) }}</td>
-                    </tr>
-                    </tbody>
-                    <tbody>
-                    <tr class="tk-sec">
-                        <td class="tk-stt"></td>
-                        <td class="text" colspan="6">Tổng chi phí</td>
-                        <td>{{ fmtNum(totalCost) }}</td>
-                    </tr>
-                    </tbody>
-                </table>
+        <div class="nest-right-scroll tk-table-wrap nest-table-area" ref="tableArea" :class="{ blank: !hasData }">
+            <div class="it-empty" v-if="!hasData">{{ loading ? 'Đang quét model...' : 'Chưa có dữ liệu.' }}</div>
+            <div class="tk-zoom" v-else :style="{ zoom: tableZoom, '--zoom': tableZoom }">
+                <div class="tk-block nest-table-card" v-if="tableView === 'cost'">
+                    <table class="tk-table tk-sum" :class="{ 'tk-folded': sumFolded }" ref="sumTable">
+                        <thead>
+                        <tr>
+                            <th class="tk-stt"><button class="tk-fold" @click="sumFolded = !sumFolded">{{ sumFolded ? '+' : '−' }}</button></th>
+                            <th class="text">Loại</th>
+                            <th class="text">Mô tả chi tiết</th>
+                            <th class="tk-center">Số lượng</th>
+                            <th class="tk-center">Đơn vị</th>
+                            <th class="tk-center">Hệ số</th>
+                            <th>Đơn giá</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                        </thead>
+                        <tbody v-for="sec in visibleSections" :key="sec.key" v-show="!sumFolded">
+                        <tr class="tk-sec" :class="{ 'tk-sec-empty': !sec.items.length }">
+                            <td class="tk-stt"><button class="tk-fold" :disabled="!sec.items.length" @click="folded[sec.key] = !folded[sec.key]">{{ folded[sec.key] ? '+' : '−' }}</button></td>
+                            <td class="text" colspan="6">{{ sec.title }}</td>
+                            <td>{{ fmtNum(sectionTotal(sec)) }}</td>
+                        </tr>
+                        <tr class="tk-row" v-show="!folded[sec.key]"
+                            v-for="(r, i) in sec.items" :key="sec.key + r.k">
+                            <td class="tk-stt">{{ i + 1 }}</td>
+                            <td class="text">{{ r.loai }}</td>
+                            <td class="text">
+                                <template v-if="r.lines">
+                                    <span class="tk-len" v-for="(ln, li) in r.lines" :key="li">{{ lineText(ln) }}</span>
+                                </template>
+                                <template v-else>{{ r.mota }}</template>
+                            </td>
+                            <td class="tk-center">{{ r.sl }}</td>
+                            <td class="tk-center" :class="{ 'tk-cell-in': r.unitItem }">
+                                <input class="tk-num tk-center" type="text" v-if="r.unitItem"
+                                       :value="r.unitItem.unit || ''" spellcheck="false"
+                                       @change="changeUnit(r.unitItem, $event.target.value)">
+                                <template v-else>{{ r.dv }}</template>
+                            </td>
+                            <td class="tk-center tk-cell-in">
+                                <input class="tk-num tk-center" type="text" :value="coefOf(r.k)" spellcheck="false"
+                                       @change="setCoef(r.k, $event.target.value)">
+                            </td>
+                            <td class="tk-cell-in">
+                                <input class="tk-num" type="text" :value="priceOf(r.k)" spellcheck="false"
+                                       @change="setPrice(r.k, $event.target.value)">
+                            </td>
+                            <td>{{ fmtNum(amountOf(r)) }}</td>
+                        </tr>
+                        </tbody>
+                        <tbody v-show="!sumFolded">
+                        <tr class="tk-sec">
+                            <td class="tk-stt"></td>
+                            <td class="text" colspan="6">Tổng chi phí</td>
+                            <td>{{ fmtNum(totalCost) }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tk-block nest-table-card" v-else-if="headers.length">
+                    <table class="tk-table tk-parts" :class="{ 'tk-folded': partsFolded }" ref="partTable">
+                        <thead>
+                        <tr>
+                            <th v-for="(head, i) in headers" :key="i" :class="{ 'tk-sortable': i > 0, 'tk-stt': i === 0, text: isTextColumn(i), 'tk-center': !isTextColumn(i), 'tk-id': i === 1 }" @click="i > 0 && sortBy(i)">
+                                <button class="tk-fold" v-if="i === 0" @click="partsFolded = !partsFolded">{{ partsFolded ? '+' : '−' }}</button>
+                                <template v-else>{{ head }}</template>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody v-show="!partsFolded">
+                        <tr class="tk-row" v-for="(row, ri) in sortedRows" :key="'p' + ri"
+                            :class="{ 'tk-sel': selIds.indexOf(row[0]) !== -1 }" @click="pickRow(ri, $event)">
+                            <td v-for="(cell, ci) in row" :key="ci" :class="{ text: isTextColumn(ci), 'tk-center': !isTextColumn(ci), 'tk-stt': ci === 0 }">{{ cell }}</td>
+                        </tr>
+                        </tbody>
+                        <tbody v-show="!partsFolded && filteredRows.length">
+                        <tr class="tk-sec">
+                            <td class="tk-stt"></td>
+                            <td class="text" :colspan="headers.length - 1">{{ partFoot }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="tk-empty" v-if="!filteredRows.length && !loading && !partsFolded">Không có ván nào được đánh dấu.</div>
+                </div>
             </div>
 
-            <div class="tk-block" v-if="leftTab === 'cau_kien' && headers.length">
-                <table class="tk-table tk-parts" ref="partTable">
-                    <thead>
-                    <tr>
-                        <th v-for="(head, i) in headers" :key="i" class="tk-sortable" :class="{ text: isTextColumn(i), 'tk-center': !isTextColumn(i), 'tk-id': i < 2 }" @click="sortBy(i)">{{ head }}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr class="tk-row" v-for="(row, ri) in sortedRows" :key="'p' + ri"
-                        :class="{ 'tk-sel': isSel(row) }" @click="pickRow(ri, $event)">
-                        <td v-for="(cell, ci) in row" :key="ci" :class="{ text: isTextColumn(ci), 'tk-center': !isTextColumn(ci) }">{{ cellText(cell) }}</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="tk-empty" v-if="!filteredRows.length && !loading">Không có ván nào được đánh dấu.</div>
-            </div>
-
-            <div class="tk-empty" v-if="loading">Đang quét model...</div>
+            <div class="tk-empty" v-if="loading && hasData">Đang quét model...</div>
         </div>
 
-        <div class="nest-right-footer">
-            <div class="footer-btns">
-                <button class="action-button-full" @click="snapshot" :disabled="loading || !hasData || snapping"><span class="tk-spin" v-if="snapping"></span><template v-else>Chụp màn hình</template></button>
-                <button class="action-button-full" @click="exportExcel" :disabled="loading || !hasData">Xuất thống kê</button>
-            </div>
-            <p class="switch-stacked-hint">Tính năng đang trong giai đoạn thử nghiệm và phát triển, luôn phải kiểm tra lại kết quả trước khi đưa vào sản xuất.</p>
-        </div>
+        <note-bar :expanded="settings.thong_bao_mo" @toggle="setNoteOpen"><span class="note-tools" v-if="hasData"><button class="note-btn xh-1" type="button" @click="toggleTable">{{ tableView === 'cost' ? 'Cấu kiện' : 'Chi phí' }}</button><button class="note-btn xh-2" type="button" @click="fitTable"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button></span></note-bar>
     </div>
 </div>
 
 <script>
-    function skp(fn, arg) {
-        if (window.parent === window) return;
-        window.parent.postMessage({ action: 'tool_call', tabId: 'thong_ke', fn: fn, arg: arg }, '*');
-    }
+    var skp = ksuToolCall('thong_ke');
 
-    var app = new Vue({
+    new Vue({
         el: '#app',
         data: {
-            col2Hidden: false,
-            leftTab: 'chung',
             keyword: '',
+            leftHidden: false,
+            sumFolded: false,
+            partsFolded: false,
+            tableView: 'cost',
+            tableZoom: 1,
             sortCol: null,
             sortDir: 1,
             snapping: false,
@@ -259,18 +214,13 @@
             edgebands: [],
             sheets: [],
             prices: {},
-            folded: {
-                hien_phu_kien: false,
-                hien_tiet_dien: false,
-                hien_doi_tuong: false,
-                hien_dan_canh: false,
-                hien_tam: false
-            },
-            settings: {
-                tu_dong_lam_tron: true,
-                lam_tron_cau_kien: true,
-                an_ten_dan_canh: false
-            }
+            folded: { hien_phu_kien: false, hien_tiet_dien: false, hien_doi_tuong: false, hien_dan_canh: false, hien_tam: false },
+            settings: { tu_dong_lam_tron: true, lam_tron_cau_kien: true, an_ten_dan_canh: false, thong_bao_mo: false },
+            switches: [
+                [{ key: 'tu_dong_lam_tron', label: 'Làm tròn kích thước', hint: 'Tự động làm tròn chiều dài và diện tích.' },
+                    { key: 'an_ten_dan_canh', label: 'Ẩn tên dán cạnh', hint: 'Chỉ hiển thị chiều dày cạnh.' }],
+                [{ key: 'lam_tron_cau_kien', label: 'Làm tròn cấu kiện', hint: 'Tự động làm tròn dài và rộng.' }]
+            ]
         },
         computed: {
             rowsConnector: function () {
@@ -283,32 +233,29 @@
             rowsIntersect: function () {
                 var self = this;
                 return this.intersects.map(function (it) {
-                    return self.mkRow('i|' + it.name, it.name || 'Không tên', '', it.quantity, 'mét', { lines: self.detailLines(it) });
+                    return self.mkRow('i|' + it.name, it.name || 'Không tên', '', it.quantity, 'mét', self.detailLines(it));
                 });
             },
             rowsStatistical: function () {
                 var self = this;
                 return this.statisticals.map(function (it) {
                     var counter = it.subtype === 'counter';
-                    return self.mkRow('s|' + it.name, it.name || 'Không tên', '', it.quantity, 'mét', {
-                        lines: counter ? null : self.detailLines(it),
-                        unitItem: counter ? it : null
-                    });
+                    return self.mkRow('s|' + it.name, it.name || 'Không tên', '', it.quantity, 'mét', !counter && self.detailLines(it), counter && it);
                 });
             },
             rowsEdgeband: function () {
-                var self = this;
-                var kinds = {};
-                this.edgebands.forEach(function (it) {
-                    var mat = self.bandMaterial(it);
+                var self = this, kinds = {};
+                var mats = this.edgebands.map(function (it) {
+                    var mat = self.stripThick(it.material || it.name, it.board_thickness);
                     kinds[mat] = kinds[mat] || {};
                     kinds[mat][it.board_thickness] = true;
+                    return mat;
                 });
-                return this.edgebands.map(function (it) {
-                    var mat = self.bandMaterial(it);
-                    var many = Object.keys(kinds[mat]).length > 1;
-                    return self.mkRow('e|' + it.name + '|' + it.material + '|' + it.board_thickness, self.bandLabel(it),
-                        many ? mat + ' - ' + self.thickLabel(it.board_thickness) : mat, it.quantity, 'mét');
+                return this.edgebands.map(function (it, i) {
+                    var mat = mats[i], thick = self.thickLabel(it.thickness);
+                    return self.mkRow('e|' + it.name + '|' + it.material + '|' + it.board_thickness,
+                        self.settings.an_ten_dan_canh || !it.name ? thick : thick + ' | ' + it.name,
+                        Object.keys(kinds[mat]).length > 1 ? mat + ' - ' + self.thickLabel(it.board_thickness) : mat, it.quantity, 'mét');
                 });
             },
             rowsSheet: function () {
@@ -327,9 +274,13 @@
                 ];
             },
             visibleSections: function () {
-                var self = this;
+                var self = this, key = this.searchKey;
                 return this.allSections.map(function (sec) {
-                    return { key: sec.key, title: sec.title, items: self.matchRows(sec.items) };
+                    return { key: sec.key, title: sec.title, items: !key ? sec.items : sec.items.filter(function (r) {
+                        var f = self.flatRow(r);
+                        return [r.loai, f.mota, f.sl, f.dv, f.he_so, f.gia, self.fmtNum(f.tien)].concat(f.lines || [])
+                            .some(function (c) { return self.cellHas(c, key); });
+                    }) };
                 });
             },
             totalCost: function () {
@@ -337,141 +288,83 @@
                 return this.visibleSections.reduce(function (s, sec) { return s + self.sectionTotal(sec); }, 0);
             },
             hasData: function () {
-                return this.partRows.length > 0 || this.connectors.length > 0 || this.intersects.length > 0
-                    || this.statisticals.length > 0 || this.edgebands.length > 0 || this.sheets.length > 0;
+                return this.partRows.length || this.connectors.length || this.intersects.length
+                    || this.statisticals.length || this.edgebands.length || this.sheets.length;
             },
-            totalParts: function () {
-                return this.partRows.length;
-            },
-            searchKey: function () {
-                return this.keyword.trim().toLowerCase();
-            },
+            searchKey: function () { return this.keyword.trim().toLowerCase(); },
             filteredRows: function () {
-                var key = this.searchKey;
-                if (!key) return this.partRows;
-                var self = this;
-                return this.partRows.filter(function (row) {
+                var key = this.searchKey, self = this;
+                return !key ? this.partRows : this.partRows.filter(function (row) {
                     return row.some(function (cell) { return self.cellHas(cell, key); });
                 });
             },
-            sortedRows: function () {
-                return this.sortRows(this.filteredRows);
+            sortedRows: function () { return this.sortRows(this.filteredRows); },
+            partFoot: function () {
+                var rows = this.filteredRows, self = this, count = function (ci) {
+                    var seen = {};
+                    rows.forEach(function (r) { if (self.cellText(r[ci]) !== '') seen[r[ci]] = true; });
+                    return Object.keys(seen).length;
+                };
+                return 'Có ' + rows.length + ' chi tiết, ' + count(this.headers.indexOf('Tấm')) + ' tấm, '
+                    + count(this.headers.indexOf('Vật liệu')) + ' vật liệu';
             }
         },
         methods: {
-            mkRow: function (k, loai, mota, sl, dv, opt) {
-                opt = opt || {};
-                return {
-                    k: k,
-                    loai: loai,
-                    mota: mota,
-                    lines: opt.lines || null,
-                    sl: sl,
-                    dv: dv,
-                    unitItem: opt.unitItem || null
-                };
+            mkRow: function (k, loai, mota, sl, dv, lines, unitItem) {
+                return { k: k, loai: loai, mota: mota, lines: lines, sl: sl, dv: dv, unitItem: unitItem };
             },
             sortRows: function (rows) {
                 var col = this.sortCol;
                 if (col === null) return rows;
-                var dir = this.sortDir;
-                var self = this;
+                var dir = this.sortDir, self = this;
                 return rows.slice().sort(function (r1, r2) {
-                    var a = r1[col], b = r2[col];
-                    var ea = self.cellText(a) === '';
-                    var eb = self.cellText(b) === '';
-                    if (ea && eb) return 0;
-                    if (ea) return 1;
-                    if (eb) return -1;
-                    return self.cmpCell(a, b) * dir;
+                    var a = r1[col], b = r2[col], ea = self.cellText(a) === '', eb = self.cellText(b) === '';
+                    if (ea || eb) return ea - eb;
+                    var na = Number(a), nb = Number(b);
+                    if (!isNaN(na) && !isNaN(nb)) return (na - nb) * dir;
+                    return String(a).localeCompare(String(b), 'vi', { numeric: true, sensitivity: 'base' }) * dir;
                 });
-            },
-            isSel: function (row) {
-                return this.selIds.indexOf(row[0]) !== -1;
             },
             selectAllParts: function () {
                 var ids = this.partRows.map(function (r) { return r[0]; });
                 if (!ids.length) return;
-                this.selIds = ids;
                 this.selAnchor = null;
-                skp('select_parts', JSON.stringify(ids));
+                this.selectIds(ids);
             },
-            clearSel: function () {
-                if (!this.selIds.length) return;
-                this.selIds = [];
-                this.selAnchor = null;
-                skp('select_parts', '[]');
-            },
+            selectIds: function (ids) { this.selIds = ids; skp('select_parts', JSON.stringify(ids)); },
             pickRow: function (ri, e) {
-                var rows = this.sortedRows;
-                var id = rows[ri][0];
-                var ids;
+                var rows = this.sortedRows, id = rows[ri][0], ids = [id];
                 if (e.shiftKey && this.selAnchor !== null) {
                     var a = Math.min(this.selAnchor, ri), b = Math.max(this.selAnchor, ri);
                     ids = rows.slice(a, b + 1).map(function (r) { return r[0]; });
-                } else if (e.ctrlKey || e.metaKey) {
-                    ids = this.selIds.slice();
-                    var k = ids.indexOf(id);
-                    if (k === -1) ids.push(id); else ids.splice(k, 1);
-                    this.selAnchor = ri;
                 } else {
-                    ids = [id];
+                    if (e.ctrlKey || e.metaKey) {
+                        ids = this.selIds.slice();
+                        var k = ids.indexOf(id);
+                        if (k === -1) ids.push(id); else ids.splice(k, 1);
+                    }
                     this.selAnchor = ri;
                 }
-                this.selIds = ids;
-                skp('select_parts', JSON.stringify(ids));
+                this.selectIds(ids);
             },
-            sortBy: function (index) {
-                if (this.sortCol === index) {
-                    this.sortDir = -this.sortDir;
-                } else {
-                    this.sortCol = index;
-                    this.sortDir = 1;
-                }
-            },
-            cmpCell: function (a, b) {
-                var na = Number(a), nb = Number(b);
-                if (!isNaN(na) && !isNaN(nb)) return na - nb;
-                return String(a).localeCompare(String(b), 'vi', { numeric: true, sensitivity: 'base' });
-            },
-            isTextColumn: function (index) {
-                return index === 2;
-            },
-            cellText: function (cell) {
-                if (cell === null || cell === undefined) return '';
-                return cell;
-            },
+            sortBy: function (index) { this.sortDir = this.sortCol === index ? -this.sortDir : 1; this.sortCol = index; },
+            isTextColumn: function (index) { return index === 2; },
+            cellText: function (cell) { return cell === null || cell === undefined ? '' : cell; },
             thickLabel: function (value) {
                 var n = Number(value);
-                if (!value || isNaN(n)) return String(this.cellText(value));
-                return n + ' mm';
+                return !value || isNaN(n) ? String(this.cellText(value)) : n + ' mm';
             },
             stripThick: function (name, thickness) {
-                var text = String(this.cellText(name)).trim();
-                var n = Number(thickness);
-                if (!n || isNaN(n)) return text;
-                var num = String(n).replace('.', '[.,]');
-                return text.replace(new RegExp('[ _-]*' + num + ' *(mm)?$', 'i'), '').trim();
-            },
-            bandLabel: function (it) {
-                var thick = this.thickLabel(it.thickness);
-                if (this.settings.an_ten_dan_canh || !it.name) return thick;
-                return thick + ' | ' + it.name;
-            },
-            bandMaterial: function (it) {
-                return this.stripThick(it.material ? it.material : it.name, it.board_thickness);
+                var text = String(this.cellText(name)).trim(), n = Number(thickness);
+                return !n ? text : text.replace(new RegExp('[ _-]*' + String(n).replace('.', '[.,]') + ' *(mm)?$', 'i'), '').trim();
             },
             detailLines: function (item) {
-                var detail = item.count_by_length || {};
-                return Object.keys(detail).sort(function (a, b) {
-                    return Number(a) - Number(b);
-                }).map(function (key) {
+                var detail = item.count_by_length;
+                return Object.keys(detail).sort(function (a, b) { return a - b; }).map(function (key) {
                     return { count: detail[key], length: key };
                 });
             },
-            lineText: function (ln) {
-                return ln.count + ' x ' + ln.length + ' mm';
-            },
+            lineText: function (ln) { return ln.count + ' x ' + ln.length + ' mm'; },
             flatRow: function (r) {
                 return {
                     loai: r.loai,
@@ -484,50 +377,22 @@
                     tien: this.amountOf(r)
                 };
             },
-            cellHas: function (cell, key) {
-                return String(this.cellText(cell)).toLowerCase().indexOf(key) !== -1;
-            },
-            matchRows: function (rows) {
-                var key = this.searchKey;
-                if (!key) return rows;
-                var self = this;
-                return rows.filter(function (r) {
-                    var f = self.flatRow(r);
-                    var cells = [r.loai, f.mota, f.sl, f.dv, f.he_so, f.gia, self.fmtNum(f.tien)].concat(f.lines || []);
-                    return cells.some(function (c) { return self.cellHas(c, key); });
-                });
-            },
-            toggleFold: function (key) {
-                this.$set(this.folded, key, !this.folded[key]);
-            },
-            priceOf: function (key) {
-                var p = this.prices[key];
-                return p ? p.gia : 0;
-            },
-            coefOf: function (key) {
-                var p = this.prices[key];
-                return p ? p.he_so : 1;
-            },
+            cellHas: function (cell, key) { return String(this.cellText(cell)).toLowerCase().indexOf(key) !== -1; },
+            priceOf: function (key) { return this.prices[key] ? this.prices[key].gia : 0; },
+            coefOf: function (key) { return this.prices[key] ? this.prices[key].he_so : 1; },
             parseAmount: function (value, fallback) {
                 var n = parseFloat(String(value).replace(/[^\d.-]/g, ''));
                 return (isNaN(n) || n < 0) ? fallback : n;
             },
-            setPrice: function (key, value) {
-                this.$set(this.prices, key, { gia: this.parseAmount(value, 0), he_so: this.coefOf(key) });
-            },
-            setCoef: function (key, value) {
-                this.$set(this.prices, key, { gia: this.priceOf(key), he_so: this.parseAmount(value, 1) });
-            },
-            amountOf: function (r) {
-                return (Number(r.sl) || 0) * this.priceOf(r.k) * this.coefOf(r.k);
-            },
+            setPrice: function (key, value) { this.$set(this.prices, key, { gia: this.parseAmount(value, 0), he_so: this.coefOf(key) }); },
+            setCoef: function (key, value) { this.$set(this.prices, key, { gia: this.priceOf(key), he_so: this.parseAmount(value, 1) }); },
+            amountOf: function (r) { return (Number(r.sl) || 0) * this.priceOf(r.k) * this.coefOf(r.k); },
             sectionTotal: function (sec) {
                 var self = this;
                 return sec.items.reduce(function (sum, r) { return sum + self.amountOf(r); }, 0);
             },
             fmtNum: function (value) {
-                var v = Math.round((Number(value) || 0) * 100) / 100;
-                var parts = String(v).split('.');
+                var v = Math.round((Number(value) || 0) * 100) / 100, parts = String(v).split('.');
                 parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                 return parts.join(',');
             },
@@ -535,25 +400,17 @@
                 this.loading = true;
                 skp('change_unit', JSON.stringify({ name: item.name, unit: value }));
             },
-            saveSetting: function (key) {
-                skp('save_setting', key + '@' + this.settings[key]);
-            },
-            reload: function () {
-                this.loading = true;
-                skp('reload_data', '');
-            },
+            saveSetting: function (key) { skp('save_setting', key + '@' + this.settings[key]); },
+            setNoteOpen: function (v) { this.settings.thong_bao_mo = v; this.saveSetting('thong_bao_mo'); },
+            reload: function () { this.loading = true; skp('reload_data', ''); },
             snapshot: function () {
                 if (this.snapping) return;
-                var self = this;
+                var self = this, done = function () { self.snapping = false; };
                 this.snapping = true;
-                var done = function () { self.snapping = false; };
                 setTimeout(done, 15000);
                 setTimeout(function () {
-                    var spec = self.leftTab === 'cau_kien' ? self.partsImageSpec() : self.costImageSpec();
-                    var canvas = self.drawTable(spec.cols, spec.rows, spec.geo);
-                    var viaRuby = function () {
-                        skp('copy_image', canvas.toDataURL('image/png').split(',')[1]);
-                    };
+                    var canvas = self.tableView === 'parts' ? self.partsImage() : self.costImage();
+                    var viaRuby = function () { skp('copy_image', canvas.toDataURL('image/png').split(',')[1]); };
                     if (!navigator.clipboard || !window.ClipboardItem || !canvas.toBlob) return viaRuby();
                     canvas.toBlob(function (blob) {
                         if (!blob) return viaRuby();
@@ -565,39 +422,31 @@
                     }, 'image/png');
                 }, 30);
             },
-            costImageSpec: function () {
+            costImage: function () {
                 var self = this;
                 var cols = [
                     { text: '', align: 'center' }, { text: 'Loại', align: 'left' }, { text: 'Mô tả chi tiết', align: 'left' },
                     { text: 'Số lượng', align: 'center' }, { text: 'Đơn vị', align: 'center' }, { text: 'Hệ số', align: 'center' },
                     { text: 'Đơn giá', align: 'right' }, { text: 'Thành tiền', align: 'right' }
                 ];
-                var rows = [];
+                var rows = [], secRow = function (title, total) {
+                    return { kind: 'sec', cells: [{ text: '' }, { text: title, align: 'left', span: 6 }, { text: self.fmtNum(total), align: 'right' }] };
+                };
                 this.visibleSections.forEach(function (sec) {
-                    rows.push({ kind: 'sec', cells: [
-                        { text: '' }, { text: sec.title, align: 'left', span: 6 }, { text: self.fmtNum(self.sectionTotal(sec)), align: 'right' }
-                    ] });
+                    rows.push(secRow(sec.title, self.sectionTotal(sec)));
                     if (self.folded[sec.key]) return;
                     sec.items.forEach(function (r, i) {
                         var f = self.flatRow(r);
-                        rows.push({ kind: 'row', cells: [
-                            { text: String(i + 1) },
-                            { text: f.loai },
-                            f.lines ? { lines: f.lines } : { text: f.mota },
-                            { text: String(f.sl) },
-                            { text: f.dv },
-                            { text: String(f.he_so) },
-                            { text: String(f.gia) },
-                            { text: self.fmtNum(f.tien) }
-                        ] });
+                        var cells = [String(i + 1), f.loai, f.mota, String(f.sl), f.dv, String(f.he_so), String(f.gia), self.fmtNum(f.tien)]
+                            .map(function (t) { return { text: t }; });
+                        if (f.lines) cells[2] = { lines: f.lines };
+                        rows.push({ kind: 'row', cells: cells });
                     });
                 });
-                rows.push({ kind: 'sec', cells: [
-                    { text: '' }, { text: 'Tổng chi phí', align: 'left', span: 6 }, { text: self.fmtNum(self.totalCost), align: 'right' }
-                ] });
-                return { cols: cols, rows: rows, geo: this.measureTable(this.$refs.sumTable) };
+                rows.push(secRow('Tổng chi phí', this.totalCost));
+                return this.drawTable(cols, rows, this.measureTable(this.$refs.sumTable));
             },
-            partsImageSpec: function () {
+            partsImage: function () {
                 var self = this;
                 var cols = this.headers.map(function (h, i) {
                     return { text: h, align: self.isTextColumn(i) ? 'left' : 'center' };
@@ -605,55 +454,73 @@
                 var rows = this.sortedRows.map(function (row) {
                     return { kind: 'row', cells: row.map(function (v) { return { text: String(self.cellText(v)) }; }) };
                 });
-                return { cols: cols, rows: rows, geo: this.measureTable(this.$refs.partTable) };
+                if (rows.length) rows.push({ kind: 'sec', cells: [{ text: '' }, { text: this.partFoot, align: 'left', span: this.headers.length - 1 }] });
+                return this.drawTable(cols, rows, this.measureTable(this.$refs.partTable));
             },
             measureTable: function (table) {
-                if (!table || !table.tHead || !table.tHead.rows.length) return null;
-                var head = table.tHead.rows[0];
-                var widths = Array.prototype.map.call(head.cells, function (c) { return c.getBoundingClientRect().width; });
-                var heights = [];
-                Array.prototype.forEach.call(table.tBodies, function (tb) {
-                    Array.prototype.forEach.call(tb.rows, function (tr) {
-                        var h = tr.getBoundingClientRect().height;
-                        if (h > 0) heights.push(h);
-                    });
+                if (!table) return null;
+                var head = table.tHead.rows[0], k = table.getBoundingClientRect().width / (table.offsetWidth || 1) || 1;
+                if (Math.abs(k - 1) < 0.01) k = 1;
+                var widths = Array.prototype.map.call(head.cells, function (c) { return c.getBoundingClientRect().width / k; });
+                var heights = Array.prototype.map.call(table.querySelectorAll('tbody > tr'), function (tr) { return tr.getBoundingClientRect().height / k; });
+                return { widths: widths, headH: head.getBoundingClientRect().height / k, heights: heights.filter(function (h) { return h > 0; }) };
+            },
+            toggleTable: function () {
+                this.tableView = this.tableView === 'cost' ? 'parts' : 'cost';
+                this.$refs.tableArea.scrollTop = 0;
+                this.$nextTick(this.fitTable);
+            },
+            setTableZoom: function (z) { this.tableZoom = Math.round(Math.max(0.4, Math.min(1, z)) * 1000) / 1000; },
+            zoomTable: function (dir) { this.setTableZoom(this.tableZoom * (dir < 0 ? 1 / 1.1 : 1.1)); },
+            fitTable: function () {
+                var area = this.$refs.tableArea, table = this.$refs[this.tableView === 'parts' ? 'partTable' : 'sumTable'];
+                if (!table) return;
+                var old = table.style.width;
+                table.style.width = '1px';
+                var w = table.offsetWidth;
+                table.style.width = old;
+                var cs = getComputedStyle(area), room = area.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+                if (w > 0 && room > 0) this.setTableZoom(room / (w + 2));
+                this.refitTable(3);
+            },
+            refitTable: function (left) {
+                var self = this;
+                this.$nextTick(function () {
+                    var el = self.$refs.tableArea, z = el.querySelector('.tk-zoom');
+                    if (!left || !z || parseFloat(z.style.zoom) !== self.tableZoom || el.scrollWidth <= el.clientWidth) return;
+                    self.setTableZoom(self.tableZoom * el.clientWidth / el.scrollWidth);
+                    self.refitTable(left - 1);
                 });
-                return { widths: widths, headH: head.getBoundingClientRect().height, heights: heights };
             },
             drawTable: function (cols, rows, geo) {
-                var family = getComputedStyle(document.body).fontFamily;
-                var font = '12px ' + family;
-                var bold = '600 12px ' + family;
-                var pad = 10, lineH = 16.2, minH = 32, scale = window.devicePixelRatio || 1;
-                var canvas = document.createElement('canvas');
-                var ctx = canvas.getContext('2d');
-                var widths = cols.map(function (col) {
-                    ctx.font = bold;
-                    return ctx.measureText(col.text).width + pad * 2;
-                });
-                rows.forEach(function (row) {
-                    ctx.font = row.kind === 'row' ? font : bold;
-                    var i = 0;
-                    row.cells.forEach(function (cell) {
-                        var span = cell.span || 1;
-                        if (span === 1) {
-                            (cell.lines || [cell.text]).forEach(function (ln) {
-                                widths[i] = Math.max(widths[i], ctx.measureText(String(ln)).width + pad * 2);
-                            });
-                        }
-                        i += span;
-                    });
-                });
-                var heights = rows.map(function (row) {
-                    var n = 1;
-                    row.cells.forEach(function (cell) { if (cell.lines) n = Math.max(n, cell.lines.length); });
-                    return Math.max(minH, n * lineH + 6);
-                });
-                var headH = minH;
+                var family = getComputedStyle(document.body).fontFamily, font = '12px ' + family, bold = '600 12px ' + family;
+                var pad = 10, lineH = 16.2, scale = window.devicePixelRatio || 1;
+                var canvas = document.createElement('canvas'), ctx = canvas.getContext('2d'), widths, heights, headH = 32;
                 if (geo && geo.widths.length === cols.length && geo.heights.length === rows.length) {
                     widths = geo.widths;
                     heights = geo.heights;
                     headH = geo.headH;
+                } else {
+                    ctx.font = bold;
+                    widths = cols.map(function (col) { return ctx.measureText(col.text).width + pad * 2; });
+                    rows.forEach(function (row) {
+                        ctx.font = row.kind === 'row' ? font : bold;
+                        var i = 0;
+                        row.cells.forEach(function (cell) {
+                            var span = cell.span || 1;
+                            if (span === 1) {
+                                (cell.lines || [cell.text]).forEach(function (ln) {
+                                    widths[i] = Math.max(widths[i], ctx.measureText(String(ln)).width + pad * 2);
+                                });
+                            }
+                            i += span;
+                        });
+                    });
+                    heights = rows.map(function (row) {
+                        var n = 1;
+                        row.cells.forEach(function (cell) { if (cell.lines) n = Math.max(n, cell.lines.length); });
+                        return Math.max(32, n * lineH + 6);
+                    });
                 }
                 var W = widths.reduce(function (s, w) { return s + w; }, 0);
                 var H = heights.reduce(function (s, h) { return s + h; }, headH);
@@ -663,28 +530,22 @@
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(0, 0, W, H);
                 ctx.textBaseline = 'middle';
-                ctx.lineWidth = 1;
-                var y = 0;
-                var drawRow = function (cells, h, bg, f, color) {
-                    if (bg) {
-                        ctx.fillStyle = bg;
-                        ctx.fillRect(0, y, W, h);
-                    }
+                ctx.strokeStyle = '#c8c8c8';
+                var y = 0, drawRow = function (cells, h, sec) {
+                    if (sec) { ctx.fillStyle = '#e0e0e0'; ctx.fillRect(0, y, W, h); }
+                    ctx.font = sec ? bold : font;
+                    ctx.fillStyle = sec ? '#1a1a1a' : '#1c1c1c';
                     var x = 0, i = 0;
                     cells.forEach(function (cell) {
                         var span = cell.span || 1, w = 0;
                         for (var k = 0; k < span; k++) w += widths[i + k];
-                        ctx.strokeStyle = '#c8c8c8';
                         ctx.beginPath();
                         ctx.moveTo(x + w - 0.5, y);
                         ctx.lineTo(x + w - 0.5, y + h);
                         ctx.moveTo(x, y + h - 0.5);
                         ctx.lineTo(x + w, y + h - 0.5);
                         ctx.stroke();
-                        var align = cell.align || cols[i].align || 'left';
-                        var lines = cell.lines || [cell.text];
-                        ctx.font = f;
-                        ctx.fillStyle = color;
+                        var align = cell.align || cols[i].align, lines = cell.lines || [cell.text];
                         ctx.textAlign = align;
                         var tx = align === 'left' ? x + pad : (align === 'right' ? x + w - pad : x + w / 2);
                         var ty = y + (h - lines.length * lineH) / 2 + lineH / 2;
@@ -694,12 +555,8 @@
                     });
                     y += h;
                 };
-                drawRow(cols, headH, '#e0e0e0', bold, '#1a1a1a');
-                rows.forEach(function (row, ri) {
-                    var sec = row.kind === 'sec';
-                    drawRow(row.cells, heights[ri], sec ? '#e0e0e0' : null, sec ? bold : font, sec ? '#1a1a1a' : '#1c1c1c');
-                });
-                ctx.strokeStyle = '#c8c8c8';
+                drawRow(cols, headH, true);
+                rows.forEach(function (row, ri) { drawRow(row.cells, heights[ri], row.kind === 'sec'); });
                 ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
                 return canvas;
             },
@@ -711,66 +568,61 @@
                         tong: self.sectionTotal(sec),
                         items: sec.items.map(function (r) {
                             var f = self.flatRow(r);
-                            return {
-                                loai: f.loai,
-                                mota: f.lines ? f.lines.join('\n') : f.mota,
-                                sl: f.sl,
-                                dv: f.dv,
-                                he_so: f.he_so,
-                                gia: f.gia,
-                                tien: f.tien
-                            };
+                            if (f.lines) f.mota = f.lines.join('\n');
+                            delete f.lines;
+                            return f;
                         })
                     };
                 });
-                var tong = sections.reduce(function (s, sec) { return s + sec.tong; }, 0);
                 skp('export_request', JSON.stringify({
-                    chi_phi: { sections: sections, tong: tong },
+                    chi_phi: { sections: sections, tong: sections.reduce(function (s, sec) { return s + sec.tong; }, 0) },
                     cau_kien: { headers: this.headers, rows: this.sortRows(this.partRows) }
                 }));
-            },
-            apply: function (data) {
-                var self = this;
-                this.loading = false;
-                this.selIds = [];
-                this.selAnchor = null;
-                this.headers = data.part_data.headers;
-                this.partRows = data.part_data.rows;
-                this.connectors = data.sum_data.list_connector;
-                this.intersects = data.sum_data.list_intersect;
-                this.statisticals = data.sum_data.list_statistical_object;
-                this.edgebands = data.sum_data.list_edgeband;
-                this.sheets = data.sum_data.list_sheet;
-                if (data.settings) {
-                    Object.keys(data.settings).forEach(function (key) {
-                        self.$set(self.settings, key, data.settings[key]);
-                    });
-                }
             }
         },
+        updated: function () { this.refitTable(3); },
         mounted: function () {
             var self = this;
             window.tkLoad = function (data) {
-                self.apply(typeof data === 'string' ? JSON.parse(data) : data);
+                if (typeof data === 'string') data = JSON.parse(data);
+                self.loading = false;
+                self.selIds = [];
+                self.selAnchor = null;
+                self.headers = data.part_data.headers;
+                self.partRows = data.part_data.rows;
+                self.connectors = data.sum_data.list_connector;
+                self.intersects = data.sum_data.list_intersect;
+                self.statisticals = data.sum_data.list_statistical_object;
+                self.edgebands = data.sum_data.list_edgeband;
+                self.sheets = data.sum_data.list_sheet;
+                for (var key in data.settings) self.$set(self.settings, key, data.settings[key]);
+                self.$nextTick(self.fitTable);
             };
-            window.tkSnapDone = function () {
-                self.snapping = false;
-            };
+            window.tkSnapDone = function () { self.snapping = false; };
             document.addEventListener('click', function (e) {
                 var t = e.target;
-                if (t && t.closest && t.closest('.tk-parts tbody tr, th, button, input, select, textarea, label')) return;
-                self.clearSel();
+                if ((t && t.closest && t.closest('.tk-parts tbody tr, th, button, input, select, textarea, label, .nest-right-stat')) || !self.selIds.length) return;
+                self.selAnchor = null;
+                self.selectIds([]);
             });
-            window.addEventListener('message', function (e) {
-                if (!e.data || e.data.action !== 'tab_shown') return;
-                if (self._loaded && !e.data.reload) return;
-                self._loaded = true;
-                self.loading = true;
-                skp('load_data', '');
+            window.addEventListener('keydown', function (e) {
+                var d = e.key === '+' || e.key === '=' ? 1 : e.key === '-' || e.key === '_' ? -1 : 0;
+                if ((e.key !== 'Tab' && !d) || e.ctrlKey || e.metaKey || e.altKey || !self.hasData) return;
+                if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+                e.preventDefault();
+                if (d) self.zoomTable(d);
+                else self.toggleTable();
             });
-            if (window.parent !== window) {
-                window.parent.postMessage({ action: 'iframe_ready', tabId: 'thong_ke' }, '*');
-            }
+            var areaW = 0, onResize = function () {
+                var w = self.$refs.tableArea.clientWidth;
+                if (w === areaW) return self.refitTable(3);
+                areaW = w;
+                self.fitTable();
+            };
+            if (typeof ResizeObserver !== 'undefined') new ResizeObserver(onResize).observe(self.$refs.tableArea);
+            else window.addEventListener('resize', onResize);
+            ksuOnShown(self, skp, true);
+            if (window.parent !== window) window.parent.postMessage({ action: 'iframe_ready', tabId: 'thong_ke' }, '*');
         }
     });
 </script>

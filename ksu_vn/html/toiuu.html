@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tối ưu</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/preload.js"></script>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="container">
+    <div class="col2">
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Tự động hậu kỳ</span>
+                <input type="checkbox" v-model="settings.tu_dong_hau_ky"
+                       @change="saveSetting('tu_dong_hau_ky')" id="tu_dong_hau_ky">
+                <label class="switch-label" for="tu_dong_hau_ky"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Tự động dồn ván hậu kỳ sau khi nesting.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Góc dồn ván</span>
+                <div class="select-group">
+                    <select v-model="settings.goc_don_van" @change="saveSetting('goc_don_van')">
+                        <option value="trai_duoi">Trái dưới</option>
+                        <option value="trai_tren">Trái trên</option>
+                        <option value="phai_duoi">Phải dưới</option>
+                        <option value="phai_tren">Phải trên</option>
+                    </select>
+                </div>
+            </div>
+            <div class="switch">
+                <span>Thứ tự dồn</span>
+                <div class="select-group">
+                    <select v-model="settings.thu_tu_don" @change="saveSetting('thu_tu_don')">
+                        <option value="mac_dinh">Mặc định</option>
+                        <option value="theo_ten">Theo tên</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Tùy chỉnh xếp tấm trên ván khi nesting.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Tách nhóm hai mặt</span>
+                <input type="checkbox" v-model="settings.tach_nhom_2_mat"
+                       @change="saveSetting('tach_nhom_2_mat')" id="tach_nhom_2_mat">
+                <label class="switch-label" for="tach_nhom_2_mat"></label>
+            </div>
+            <div class="switch" v-if="settings.tach_nhom_2_mat">
+                <span>Dồn về đầu hàng</span>
+                <input type="checkbox" v-model="settings.don_ve_dau_hang"
+                       @change="saveSetting('don_ve_dau_hang')" id="don_ve_dau_hang">
+                <label class="switch-label" for="don_ve_dau_hang"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Ưu tiên dồn tấm hai mặt.</p>
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Cho phép xoay tấm</span>
+                <input type="checkbox" v-model="settings.cho_phep_xoay"
+                       @change="saveSetting('cho_phep_xoay')" id="cho_phep_xoay">
+                <label class="switch-label" for="cho_phep_xoay"></label>
+            </div>
+            <div class="switch" v-show="settings.cho_phep_xoay">
+                <span>Theo tên vật liệu</span>
+                <input type="text" class="text-popup-store" v-model="settings.danh_sach_vat_lieu"
+                       @change="saveSetting('danh_sach_vat_lieu')" hidden>
+                <div class="text-input-group select-group text-popup-trigger" v-show="settings.xoay_theo_vat_lieu">
+                    <input type="text" class="text-popup-face" value="..." readonly tabindex="-1">
+                </div>
+                <input type="checkbox" v-model="settings.xoay_theo_vat_lieu"
+                       @change="saveSetting('xoay_theo_vat_lieu')" id="xoay_theo_vat_lieu">
+                <label class="switch-label" for="xoay_theo_vat_lieu"></label>
+            </div>
+            <div class="switch" v-show="settings.cho_phep_xoay">
+                <span>Theo tên tấm</span>
+                <input type="text" class="text-popup-store" v-model="settings.danh_sach_tu_khoa"
+                       @change="saveSetting('danh_sach_tu_khoa')" hidden>
+                <div class="text-input-group select-group text-popup-trigger" v-show="settings.xoay_theo_tu_khoa">
+                    <input type="text" class="text-popup-face" value="..." readonly tabindex="-1">
+                </div>
+                <input type="checkbox" v-model="settings.xoay_theo_tu_khoa"
+                       @change="saveSetting('xoay_theo_tu_khoa')" id="xoay_theo_tu_khoa">
+                <label class="switch-label" for="xoay_theo_tu_khoa"></label>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Có thể sử dụng khi gia công ván đồng màu.</p>
+
+    </div>
+    <div id="preset-panel"></div>
+</div>
+
+<script>
+    document.body.spellcheck = false;
+
+    new Vue({
+        el: '#app',
+        mixins: [SettingsMixin('toi_uu_van')],
+        data: {
+            settings: {
+                tu_dong_hau_ky: true,
+                goc_don_van: 'trai_duoi',
+                thu_tu_don: 'mac_dinh',
+                tach_nhom_2_mat: true,
+                don_ve_dau_hang: true,
+                cho_phep_xoay: false,
+                xoay_theo_tu_khoa: false,
+                danh_sach_tu_khoa: 'XƯƠNG, XÀ, GIẰNG, CHẶN',
+                xoay_theo_vat_lieu: false,
+                danh_sach_vat_lieu: 'TRƠN, TRẮNG, XANH, HỒNG'
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

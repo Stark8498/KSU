@@ -4,213 +4,197 @@
     <meta charset="UTF-8">
     <title>Nesting</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/nest.css">
+    <link rel="stylesheet" href="css/nest.css?v=56">
     <script src="js/vue.min.js"></script>
     <script src="js/setting.js"></script>
     <script src="js/preload.js"></script>
     <style>
-        .nest-right-scroll {
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+        .ns-block {
+            display: inline-block;
+            vertical-align: top;
+            min-width: 100%;
         }
-        .nest-right-scroll::-webkit-scrollbar {
-            display: none;
-            width: 0;
-        }
-        .nest-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            border-bottom: 0.5px solid #e0e0e0;
-        }
-        .nest-row-lead {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-            padding: 10px 0 10px 14px;
-            margin: -10px 0 -10px -14px;
-            cursor: grab;
-        }
-        .nest-row-lead:active {
-            cursor: grabbing;
-        }
-        .nest-row-lead .tool-drag-handle {
-            margin-right: 0;
-        }
-        .nest-row.drag-src {
-            position: absolute;
-            left: -9999px;
-            top: -9999px;
-        }
-        .nest-row.drag-before {
-            margin-top: 32px;
-        }
-        .nest-row.drag-end {
-            margin-bottom: 32px;
-        }
-        .nest-row .switch {
-            display: inline-flex;
-            padding: 0;
-            border-top: none;
-            max-height: none;
-            flex-shrink: 0;
-        }
-        .nest-row .switch-label {
-            margin-left: 0;
-        }
-        .nest-row-text {
-            min-width: 0;
-        }
-        .nest-row-title {
-            font-size: 12px;
-            color: #1c1c1c;
+        .ns-table {
+            width: 100%;
+            border-spacing: 0;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
-        .nest-row-count {
-            flex-shrink: 0;
-            margin-left: auto;
-            font-size: 11px;
-            color: #8e8e8e;
-            cursor: pointer;
+        .ns-table th, .ns-table td {
+            height: var(--table-row-h);
+            padding: var(--table-pad);
+            text-align: left;
+            line-height: var(--table-leading);
+            color: var(--table-ink);
+            border-right: 0.5px solid var(--table-line);
+            border-bottom: 0.5px solid var(--table-line);
         }
-        .nest-row-count:hover {
-            color: #1c1c1c;
+        .ns-table th:last-child, .ns-table td:last-child {
+            border-right: none;
         }
-        .nest-row-del {
-            flex-shrink: 0;
-            width: 18px;
-            height: 18px;
+        .ns-table tbody tr:last-child > td, .ns-table.folded th {
+            border-bottom: none;
+        }
+        .ns-table th {
+            height: var(--table-head-h);
+            background: var(--table-head-bg);
+            color: var(--table-head-ink);
+            font-weight: 600;
+        }
+        .ns-table .ns-c {
+            width: 80px;
+            min-width: 80px;
+            text-align: center;
+        }
+        .ns-table .ns-stt {
+            width: var(--table-stt-w);
+            min-width: var(--table-stt-w);
+            max-width: var(--table-stt-w);
             padding: 0;
-            border: none;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.07);
-            color: #6e6e6e;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            outline: none;
+            text-align: center;
         }
-        .nest-row-del svg {
-            width: 11px;
-            height: 11px;
+        .ns-table th.ns-name, .ns-table th.ns-kw {
+            width: 50%;
+        }
+        .ns-table th.ns-kw {
+            min-width: 140px;
+        }
+        .ns-table th.ns-sort {
+            cursor: pointer;
+            user-select: none;
+        }
+        .ns-sort-in {
+            position: relative;
+        }
+        .ns-arrow {
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            width: 10px;
+            height: 10px;
+            margin: -5px 0 0 3px;
             fill: none;
             stroke: currentColor;
-            stroke-width: 2.4;
+            stroke-width: 1.4;
             stroke-linecap: round;
+            stroke-linejoin: round;
         }
-        .nest-row-del:hover {
-            background: rgba(220, 53, 69, 0.14);
-            color: #dc3545;
+        .ns-arrow.desc {
+            transform: rotate(180deg);
         }
-        .nest-rot {
-            position: relative;
-            flex-shrink: 0;
-            width: 20px;
-            height: 20px;
-            padding: 0;
-            border: none;
-            border-radius: 50%;
-            background: #e7e7e7;
-            color: #8e8e8e;
-            display: inline-flex;
+        .ns-table td.ns-grip {
+            cursor: grab;
+        }
+        .ns-table td.ns-name, .ns-link.on {
+            cursor: pointer;
+        }
+        .ns-link.on:hover {
+            text-decoration: underline;
+        }
+        .ns-row:hover > td {
+            background: var(--table-hover-bg);
+        }
+        .ns-row.off > td {
+            color: var(--ink-muted);
+        }
+        .ns-row.dragging > td {
+            opacity: 0.35;
+        }
+        .ns-row.drop-before > td {
+            box-shadow: inset 0 2px 0 var(--accent);
+        }
+        .ns-row.drop-after > td {
+            box-shadow: inset 0 -2px 0 var(--accent);
+        }
+        .ns-fold, .ns-vis {
+            display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0;
+            border: none;
+            background: transparent;
             cursor: pointer;
             outline: none;
         }
-        .nest-rot::before {
-            content: "";
+        .ns-fold {
+            width: var(--fold-size);
+            height: var(--fold-size);
+            margin: 0 auto;
+            color: var(--fold-ink);
+        }
+        .ns-fold:hover {
+            color: var(--fold-ink-hover);
+        }
+        .ns-fold svg {
+            width: var(--fold-icon-size);
+            height: var(--fold-icon-size);
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.2;
+            stroke-linecap: round;
+        }
+        .ns-vis {
+            display: inline-flex;
+            width: var(--vis-size);
+            height: var(--vis-size);
+            margin: 0 4px 0 -4px;
+            vertical-align: middle;
+        }
+        .ns-label {
+            vertical-align: middle;
+        }
+        .ns-table td.ns-in {
+            position: relative;
+            padding: 0;
+        }
+        .ns-table td.ns-in .ns-vis {
             position: absolute;
-            left: -6px;
-            top: -6px;
-            width: 32px;
-            height: 32px;
+            top: 3px;
+            left: 6px;
+            z-index: 1;
+            margin: 0;
         }
-        .nest-rot svg {
-            width: 12px;
-            height: 12px;
-            display: block;
-            fill: currentColor;
+        .ns-table td.ns-in .ns-cin {
+            padding-left: 30px;
         }
-        .nest-rot:hover {
-            background: #dcdcdc;
-            color: #1c1c1c;
+        .ns-cin {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            min-width: 0;
+            padding: var(--table-pad);
+            border: none;
+            background: transparent;
+            color: inherit;
+            font-family: inherit;
+            font-size: inherit;
+            text-align: left;
+            outline: none;
         }
-        .nest-rot.kw {
-            background: #b0b0b0;
-            color: #ffffff;
+        .nest-layout {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+            overflow: hidden;
+            background: var(--sim-canvas-bg);
+            cursor: grab;
         }
-        .nest-rot.on {
-            background: #1c1c1c;
-            color: #ffffff;
+        .nest-layout.panning {
+            cursor: grabbing;
         }
-        .nest-row.off .nest-rot {
-            opacity: 0.55;
+        .nest-layout canvas {
+            position: absolute;
+            left: 0;
+            top: 0;
         }
-        .nest-row.off {
-            background: #f5f5f5;
+        .note-progress {
+            color: var(--note-ink-strong);
+            white-space: nowrap;
         }
-        .nest-row.off .nest-row-title {
-            color: #8e8e8e;
-        }
-        .nest-row.off .nest-row-lead:hover .nest-row-title {
-            color: #1c1c1c;
-        }
-        .nest-empty {
-            padding: 16px 14px;
-            text-align: center;
-            font-size: 12px;
-            color: #8e8e8e;
-        }
-        html[data-theme="dark"] .nest-row {
-            border-bottom-color: #3a3a3a;
-        }
-        html[data-theme="dark"] .nest-row .switch-label::before {
-            background: #383838;
-        }
-        html[data-theme="dark"] .nest-row-title {
-            color: #e5e5e5;
-        }
-        html[data-theme="dark"] .nest-row.off {
-            background: #181818;
-        }
-        html[data-theme="dark"] .nest-row.off .nest-row-title {
-            color: #8e8e8e;
-        }
-        html[data-theme="dark"] .nest-row.off .nest-row-lead:hover .nest-row-title {
-            color: #e5e5e5;
-        }
-        html[data-theme="dark"] .nest-row-del {
-            background: rgba(255, 255, 255, 0.12);
-            color: #b0b0b0;
-        }
-        html[data-theme="dark"] .nest-row-del:hover {
-            background: rgba(255, 69, 58, 0.22);
-            color: #ff453a;
-        }
-        html[data-theme="dark"] .nest-row-count:hover {
-            color: #e5e5e5;
-        }
-        html[data-theme="dark"] .nest-rot {
-            background: #383838;
-            color: #8e8e8e;
-        }
-        html[data-theme="dark"] .nest-rot:hover {
-            background: #444444;
-            color: #e5e5e5;
-        }
-        html[data-theme="dark"] .nest-rot.kw {
-            background: #6a6a6a;
-            color: #e5e5e5;
-        }
-        html[data-theme="dark"] .nest-rot.on {
-            background: #e5e5e5;
-            color: #1c1c1c;
+        html[data-theme="dark"] .ns-table th, html[data-theme="dark"] .ns-table td {
+            border-right-color: var(--table-line);
+            border-bottom-color: var(--table-line);
         }
     </style>
     <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
@@ -218,42 +202,88 @@
 <body>
 
 <div id="app" class="nest-root">
-    <div class="nest-left" :class="{ collapsed: col2Hidden }">
-        <div class="nest-left-head">
-            <div class="nest-seg">
-                <button class="nest-seg-btn" :class="{ active: leftTab === 'set' }" @click="setTab('set')">Cài đặt</button>
-                <button class="nest-seg-btn" :class="{ active: leftTab === 'list' }" @click="setTab('list')">Danh sách</button>
-            </div>
-        </div>
-        <div class="nest-left-scroll" ref="leftScroll">
+    <div class="nest-left" :class="{ collapsed: leftHidden }">
+        <tool-tabs current="nesting"></tool-tabs>
+        <div class="nest-left-scroll">
 
-            <div class="nest-left-pane" v-show="leftTab === 'list'">
-                <div class="switch-stacked" v-show="materials.length > 1">
+            <div class="nest-left-pane">
+                <div class="switch-stacked">
                     <div class="switch">
-                        <span>Sắp xếp</span>
-                        <div class="select-group">
-                            <select v-model="settings.sap_xep_danh_sach" @change="applySort()">
-                                <option value="tuy_chinh" v-if="settings.sap_xep_danh_sach === 'tuy_chinh'">...</option>
-                                <option value="mac_dinh">Tự động</option>
-                                <option value="vat_lieu">Vật liệu</option>
-                                <option value="do_day">Độ dày</option>
-                            </select>
+                        <span>Bỏ qua đối tượng ẩn</span>
+                        <input type="checkbox" v-model="settings.bo_qua_doi_tuong_an"
+                               @change="saveSetting('bo_qua_doi_tuong_an'); reloadData()" id="bo_qua_doi_tuong_an">
+                        <label class="switch-label" for="bo_qua_doi_tuong_an"></label>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Không nesting các chi tiết ẩn.</p>
+
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Tấm cách nhau</span>
+                        <div class="number-input-group">
+                            <button class="spinner-btn"
+                                    @click="decrementValue('tam_cach_nhau_rieng', 0.5, 0)"
+                                    :disabled="settings.tam_cach_nhau_rieng <= 0">−
+                            </button>
+                            <input type="number"
+                                   v-model.number="settings.tam_cach_nhau_rieng"
+                                   @change="saveSetting('tam_cach_nhau_rieng')"
+                                   @blur="validateRange('tam_cach_nhau_rieng', 0, 100)"
+                                   @keyup.enter="validateRange('tam_cach_nhau_rieng', 0, 100)"
+                                   min="0" max="100" step="0.5">
+                            <button class="spinner-btn"
+                                    @click="incrementValue('tam_cach_nhau_rieng', 0.5)"
+                                    :disabled="settings.tam_cach_nhau_rieng >= 100">+
+                            </button>
                         </div>
                     </div>
-                </div>
-                <p class="switch-stacked-hint" v-show="materials.length > 1">Thứ tự hiển thị danh sách vật liệu.</p>
-                <div class="it-empty" v-if="!materials.length">Không tìm thấy chi tiết nào.</div>
-                <div class="it-tree" v-if="materials.length">
-                    <div class="it-mat" :class="{ off: !m.on }" v-for="m in materials" :key="m.key"
-                         @click="toggleMat(m)">
-                        <span class="it-name">{{ matLabel(m) }}</span>
-                        <span class="it-switch" :class="{ on: m.on }" @click.stop="toggleMat(m)"></span>
+                    <div class="switch">
+                        <span class="gap-lock-label">
+                            Tấm cách lề
+                            <gap-lock :open="settings.tach_cach_le_rieng" @toggle="toggleSetting('tach_cach_le_rieng')"></gap-lock>
+                        </span>
+                        <div class="number-input-group" :class="{ disabled: settings.tach_cach_le_rieng }">
+                            <button class="spinner-btn"
+                                    @click="decrementValue('tam_cach_le_rieng', 0.5, 0)"
+                                    :disabled="settings.tam_cach_le_rieng <= 0 || settings.tach_cach_le_rieng">−
+                            </button>
+                            <input type="number"
+                                   v-model.number="settings.tam_cach_le_rieng"
+                                   @change="saveSetting('tam_cach_le_rieng')"
+                                   @blur="validateRange('tam_cach_le_rieng', 0, 100)"
+                                   @keyup.enter="validateRange('tam_cach_le_rieng', 0, 100)"
+                                   :disabled="settings.tach_cach_le_rieng"
+                                   min="0" max="100" step="0.5">
+                            <button class="spinner-btn"
+                                    @click="incrementValue('tam_cach_le_rieng', 0.5)"
+                                    :disabled="settings.tam_cach_le_rieng >= 100 || settings.tach_cach_le_rieng">+
+                            </button>
+                        </div>
                     </div>
+                    <template v-if="settings.tach_cach_le_rieng">
+                        <div class="switch" v-for="s in gapSides" :key="s.key">
+                            <span class="gap-sub">{{ s.name }}</span>
+                            <div class="number-input-group">
+                                <button class="spinner-btn"
+                                        @click="decrementValue(s.key, 0.5, 0)"
+                                        :disabled="settings[s.key] <= 0">−
+                                </button>
+                                <input type="number"
+                                       v-model.number="settings[s.key]"
+                                       @change="saveSetting(s.key)"
+                                       @blur="validateRange(s.key, 0, 100)"
+                                       @keyup.enter="validateRange(s.key, 0, 100)"
+                                       min="0" max="100" step="0.5">
+                                <button class="spinner-btn"
+                                        @click="incrementValue(s.key, 0.5)"
+                                        :disabled="settings[s.key] >= 100">+
+                                </button>
+                            </div>
+                        </div>
+                    </template>
                 </div>
-                <p class="switch-stacked-hint" v-if="materials.length">Danh sách vật liệu nesting.</p>
-            </div>
+                <p class="switch-stacked-hint">Khoảng hở giữa các tấm và lề ván.</p>
 
-            <div class="nest-left-pane" v-show="leftTab === 'set'">
                 <div class="switch-stacked">
                     <div class="switch">
                         <span>Chiều rộng ván</span>
@@ -265,8 +295,8 @@
                             <input type="number"
                                    v-model.number="settings.chieu_rong_van"
                                    @change="saveSetting('chieu_rong_van')"
-                                   @blur="validateSize('chieu_rong_van')"
-                                   @keyup.enter="validateSize('chieu_rong_van')"
+                                   @blur="validateRange('chieu_rong_van', 100, 10000)"
+                                   @keyup.enter="validateRange('chieu_rong_van', 100, 10000)"
                                    min="100" max="10000" step="any">
                             <button class="spinner-btn"
                                     @click="incrementValue('chieu_rong_van', 10)"
@@ -284,8 +314,8 @@
                             <input type="number"
                                    v-model.number="settings.chieu_dai_van"
                                    @change="saveSetting('chieu_dai_van')"
-                                   @blur="validateSize('chieu_dai_van')"
-                                   @keyup.enter="validateSize('chieu_dai_van')"
+                                   @blur="validateRange('chieu_dai_van', 100, 10000)"
+                                   @keyup.enter="validateRange('chieu_dai_van', 100, 10000)"
                                    min="100" max="10000" step="any">
                             <button class="spinner-btn"
                                     @click="incrementValue('chieu_dai_van', 10)"
@@ -330,415 +360,867 @@
                 </div>
                 <p class="switch-stacked-hint">Tùy chỉnh xếp tấm trên ván khi nesting.</p>
 
-                <div class="switch-stacked">
-                    <div class="switch">
-                        <span>Tách nhóm hai mặt</span>
-                        <input type="checkbox" v-model="settings.tach_nhom_2_mat"
-                               @change="saveSetting('tach_nhom_2_mat')" id="tach_nhom_2_mat">
-                        <label class="switch-label" for="tach_nhom_2_mat"></label>
+                <template v-for="g in pairGroups">
+                    <div class="switch-stacked">
+                        <div class="switch">
+                            <span>{{ g.name }}</span>
+                            <input type="checkbox" v-model="settings[g.key]"
+                                   @change="saveSetting(g.key)" :id="g.key">
+                            <label class="switch-label" :for="g.key"></label>
+                        </div>
+                        <div class="switch" v-if="g.sub && settings[g.key]">
+                            <span>{{ g.subName }}</span>
+                            <input type="checkbox" v-model="settings[g.sub]"
+                                   @change="saveSetting(g.sub)" :id="g.sub">
+                            <label class="switch-label" :for="g.sub"></label>
+                        </div>
                     </div>
-                    <div class="switch" v-if="settings.tach_nhom_2_mat">
-                        <span>Dồn về đầu hàng</span>
-                        <input type="checkbox" v-model="settings.don_ve_dau_hang"
-                               @change="saveSetting('don_ve_dau_hang')" id="don_ve_dau_hang">
-                        <label class="switch-label" for="don_ve_dau_hang"></label>
-                    </div>
-                </div>
-                <p class="switch-stacked-hint">Ưu tiên dồn tấm hai mặt.</p>
-
-                <div class="switch-stacked">
-                    <div class="switch">
-                        <span>Ghép cặp tối ưu</span>
-                        <input type="checkbox" v-model="settings.ghep_cap_toi_uu"
-                               @change="saveSetting('ghep_cap_toi_uu')" id="ghep_cap_toi_uu">
-                        <label class="switch-label" for="ghep_cap_toi_uu"></label>
-                    </div>
-                    <div class="switch" v-if="settings.ghep_cap_toi_uu">
-                        <span>Tự động nhóm</span>
-                        <input type="checkbox" v-model="settings.nhom_cap_am_duong"
-                               @change="saveSetting('nhom_cap_am_duong')" id="nhom_cap_am_duong">
-                        <label class="switch-label" for="nhom_cap_am_duong"></label>
-                    </div>
-                </div>
-                <p class="switch-stacked-hint">Ghép các cặp răng lược, âm dương.</p>
+                    <p class="switch-stacked-hint">{{ g.hint }}</p>
+                </template>
             </div>
 
+        </div>
+        <div class="nest-left-foot">
+            <div class="footer-btns">
+                <button class="action-button-full" :disabled="runDisabled || !!progress" @click="runNest">Bắt đầu nesting</button>
+                <button class="action-button-full" :disabled="!hasNesting || syncing || !!progress" @click="syncParts">Đồng bộ lại từ 3D</button>
+            </div>
         </div>
     </div>
 
     <div class="nest-right">
         <div class="nest-right-head">
-            <button class="nest-col2-btn"
-                    @click="col2Hidden = !col2Hidden">
-                <svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><line x1="9.5" y1="4.5" x2="9.5" y2="19.5"/></svg>
-            </button>
+            <button class="nest-col2-btn" type="button" @click="leftHidden = !leftHidden"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><line x1="9.5" y1="4.5" x2="9.5" y2="19.5"/></svg></button>
             <div class="nest-search">
-                <input type="text" v-model="searchText" @keyup.enter="doSearch"
-                       placeholder="Tìm kiếm..." spellcheck="false" autocomplete="off">
-                <button class="nest-search-clear" v-show="searchText" @click="searchText = ''"
-                        tabindex="-1">×</button>
+                <input type="text" v-model="searchText" @keyup.enter="doSearch" placeholder="Tìm kiếm..." spellcheck="false" autocomplete="off">
+                <button class="nest-search-clear" v-show="searchText" @click="searchText = ''" tabindex="-1">×</button>
             </div>
             <span class="nest-right-stat" @click="selectAllParts">{{ totalParts }} chi tiết</span>
             <button class="col3-btn secondary" @click="reloadData">Cập nhật</button>
         </div>
-        <div class="nest-right-scroll" @dragover.prevent="dragOverList" @drop.prevent="dropRow">
-            <div class="nest-empty" v-if="!materials.length">Không tìm thấy chi tiết nào.</div>
-            <div class="nest-empty" v-else-if="!activeMaterials.length">Chưa chọn vật liệu nào.</div>
-            <div class="nest-row" v-for="(m, i) in activeMaterials" :key="m.key"
-                 :class="{ 'drag-src': dragIdx === i, 'drag-before': overIdx === i, 'drag-end': overIdx === activeMaterials.length && i === dragEndIdx }">
-                <div class="nest-row-lead" draggable="true"
-                     @dragstart="dragStart(i, $event)" @dragend="dragEnd">
-                    <i class="tool-drag-handle">
-                        <svg width="6" height="10" viewBox="0 0 6 10">
-                            <circle cx="1" cy="1" r="1"></circle>
-                            <circle cx="5" cy="1" r="1"></circle>
-                            <circle cx="1" cy="5" r="1"></circle>
-                            <circle cx="5" cy="5" r="1"></circle>
-                            <circle cx="1" cy="9" r="1"></circle>
-                            <circle cx="5" cy="9" r="1"></circle>
-                        </svg>
-                    </i>
-                    <button class="nest-rot" :class="{ on: m.rot, kw: !m.rot && m.kw }"
-                            @click="toggleRot(m)"
-                            @contextmenu.prevent.stop="openKw(m, i, $event)">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-                        </svg>
-                    </button>
-                    <div class="nest-row-text">
-                        <div class="nest-row-title">{{ m.name }}</div>
-                    </div>
+        <div class="nest-layout" v-show="showLayout" ref="stage" :class="{ panning: !!pan }" @wheel.prevent="wheelLayout" @mousedown="downLayout" @dblclick="fitLayout">
+            <canvas ref="canvas"></canvas>
+        </div>
+        <div class="nest-right-scroll nest-table-area" ref="listScroll" v-show="!showLayout" :class="{ blank: !materials.length }">
+            <div class="it-empty" v-if="!materials.length">Chưa có dữ liệu.</div>
+            <div class="ns-zoom" v-else :style="{ zoom: tableZoom, '--zoom': tableZoom }">
+                <div class="ns-block nest-table-card">
+                    <table class="ns-table" :class="{ folded: tableFolded }" ref="matTable">
+                        <thead>
+                        <tr>
+                            <th class="ns-stt"><button class="ns-fold" type="button" @click="tableFolded = !tableFolded"><svg viewBox="0 0 10 10"><path :d="tableFolded ? 'M5 2.2v5.6M2.2 5h5.6' : 'M2.2 5h5.6'"/></svg></button></th>
+                            <th class="ns-name ns-sort" @click="sortBy('vat_lieu')"><span class="ns-sort-in">Vật liệu<svg class="ns-arrow" v-if="sortCol === 'vat_lieu'" :class="{ desc: sortDesc }" viewBox="0 0 10 10"><path d="M2.5 6.2L5 3.7l2.5 2.5"/></svg></span></th>
+                            <th class="ns-c ns-sort" @click="sortBy('do_day')"><span class="ns-sort-in">Độ dày<svg class="ns-arrow" v-if="sortCol === 'do_day'" :class="{ desc: sortDesc }" viewBox="0 0 10 10"><path d="M2.5 6.2L5 3.7l2.5 2.5"/></svg></span></th>
+                            <th class="ns-c ns-sort" @click="sortBy('cau_kien')"><span class="ns-sort-in">Cấu kiện<svg class="ns-arrow" v-if="sortCol === 'cau_kien'" :class="{ desc: sortDesc }" viewBox="0 0 10 10"><path d="M2.5 6.2L5 3.7l2.5 2.5"/></svg></span></th>
+                            <th class="ns-c">Vượt khổ</th>
+                            <th class="ns-kw">Xoay tấm</th>
+                        </tr>
+                        </thead>
+                        <tbody v-show="!tableFolded">
+                        <tr class="ns-row" v-for="(m, i) in materials" :key="m.key" :class="rowClass(m)"
+                            :draggable="armed === m.key ? 'true' : 'false'" @dragstart="dragStart(m, $event)" @dragend="dragEnd"
+                            @dragover="dragOver(m, $event)" @dragleave="dragLeave(m)" @drop="dropOn(m, $event)">
+                            <td class="ns-stt ns-grip" @mousedown="armed = m.key">{{ i + 1 }}</td>
+                            <td class="ns-name" @click="selectParts(m.eids)"><button class="ns-vis" type="button" @click.stop="toggleRow(m, 'on')"><span class="it-check" :class="{ on: m.on }"><i class="it-check-mark"></i></span></button><span class="ns-label">{{ m.mat || thickText(m) }}</span></td>
+                            <td class="ns-c">{{ thickText(m) }}</td>
+                            <td class="ns-c">{{ m.eids.length }}</td>
+                            <td class="ns-c"><span class="ns-link" :class="{ on: overIds[m.key].length }" @click="selectParts(overIds[m.key])">{{ overIds[m.key].length }}</span></td>
+                            <td class="ns-in"><button class="ns-vis" type="button" @click="toggleRow(m, 'rot')"><span class="it-check" :class="{ on: m.rot }"><i class="it-check-mark"></i></span></button><input class="ns-cin" type="text" :value="m.kw.replace(/\s*\n\s*/g, ', ')" spellcheck="false" autocomplete="off" @change="setKw(m, $event.target.value)"></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <span class="nest-row-count" @click="selectParts(m)">{{ m.eids.length }} chi tiết</span>
-                <button class="nest-row-del" @click="dropMat(m)">
-                    <svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>
-                </button>
             </div>
         </div>
 
-        <div class="nest-right-footer">
-            <button class="action-button-full" :disabled="runDisabled" @click="runNest">Bắt đầu nesting</button>
-            <p class="switch-stacked-hint">Tính năng đang trong giai đoạn thử nghiệm và phát triển, luôn phải kiểm tra lại kết quả trước khi đưa vào sản xuất.</p>
-        </div>
+        <note-bar :lines="lines" :expanded="settings.thong_bao_mo" @toggle="setSetting('thong_bao_mo', $event)" @pick="pickPart"><span class="note-progress xh-1" v-if="progress">{{ progress }}</span><i class="xh-1" v-if="progress && (hasNesting || live || materials.length)"></i><span class="note-tools" v-if="hasNesting || live || materials.length"><button class="note-btn xh-2" type="button" :disabled="!(hasNesting || live)" @click="toggleView">{{ showLayout ? 'Danh sách' : 'Sơ đồ' }}</button><button class="note-btn xh-3" type="button" v-if="showLayout || materials.length" @click="showLayout ? fitLayout() : fitTable()"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button></span></note-bar>
     </div>
 
-    <div class="text-popup" v-if="kwPop" :style="{ left: kwPop.x + 'px', top: kwPop.y + 'px' }"
-         @mousedown.stop @contextmenu.prevent.stop>
-        <textarea class="text-popup-area" v-model="kwPop.text" ref="kwInput" spellcheck="false"></textarea>
-    </div>
 </div>
 
 <script>
-    Vue.config.productionTip = false;
-    Vue.config.devtools = false;
     document.body.spellcheck = false;
 
-    function skp(fn, arg) {
-        if (window.parent === window) return;
-        window.parent.postMessage({ action: 'tool_call', tabId: 'nesting', fn: fn, arg: arg }, '*');
-    }
+    var skp = ksuToolCall('nesting');
 
-    var app = new Vue({
+    new Vue({
         el: '#app',
         mixins: [SettingsMixin('nesting')],
         data: {
-            col2Hidden: false,
             materials: [],
-            leftTab: 'set',
+            layoutCount: 0,
+            nestingFound: false,
+            live: false,
+            listView: true,
+            leftHidden: false,
+            syncing: false,
+            lines: [],
+            progress: '',
+            pan: null,
             searchText: '',
-            dragIdx: null,
-            overIdx: null,
-            kwPop: null,
+            tableZoom: 1,
+            tableFolded: false,
+            armed: null,
+            dragKey: null,
+            dropKey: null,
+            dropAfter: false,
+            gapSides: [
+                {key: 'tam_cach_le_trai_rieng', name: 'Lề trái'},
+                {key: 'tam_cach_le_phai_rieng', name: 'Lề phải'},
+                {key: 'tam_cach_le_tren_rieng', name: 'Lề trên'},
+                {key: 'tam_cach_le_duoi_rieng', name: 'Lề dưới'}
+            ],
+            pairGroups: [
+                {key: 'tach_nhom_2_mat', name: 'Tách nhóm hai mặt', hint: 'Ưu tiên dồn tấm hai mặt.'},
+                {key: 'ghep_cap_toi_uu', name: 'Ghép cặp tối ưu', sub: 'nhom_cap_am_duong', subName: 'Tự động nhóm', hint: 'Ghép các cặp răng lược, âm dương.'}
+            ],
             settings: {
+                bo_qua_doi_tuong_an: true,
+                tam_cach_nhau_rieng: 6.5,
+                tam_cach_le_rieng: 3.5,
+                tach_cach_le_rieng: false,
+                tam_cach_le_trai_rieng: 3.5,
+                tam_cach_le_phai_rieng: 3.5,
+                tam_cach_le_tren_rieng: 3.5,
+                tam_cach_le_duoi_rieng: 3.5,
                 tu_dong_hau_ky: true,
                 chieu_rong_van: 1220,
                 chieu_dai_van: 2440,
                 goc_don_van: 'trai_duoi',
                 thu_tu_don: 'mac_dinh',
                 tach_nhom_2_mat: true,
-                don_ve_dau_hang: true,
                 ghep_cap_toi_uu: true,
                 nhom_cap_am_duong: false,
-                sap_xep_danh_sach: 'mac_dinh'
+                sap_xep_danh_sach: 'mac_dinh',
+                thong_bao_mo: false
             }
         },
         computed: {
-            activeMaterials: function () {
-                return this.materials.filter(function (m) { return m.on; });
+            activeMaterials: function () { return this.materials.filter(function (m) { return m.on; }); },
+            totalParts: function () { return this.activeMaterials.reduce(function (n, m) { return n + m.eids.length; }, 0); },
+            runDisabled: function () { return !this.activeMaterials.length; },
+            hasNesting: function () { return this.nestingFound || this.layoutCount > 0; },
+            overIds: function () {
+                var s = this.settings, le = Number(s.tam_cach_le_rieng) || 0, out = {};
+                var mg = s.tach_cach_le_rieng ? this.gapSides.map(function (g) { return Number(s[g.key]) || 0; }) : [le, le, le, le];
+                var aw = (Number(s.chieu_rong_van) || 0) - mg[0] - mg[1] + 0.01, ah = (Number(s.chieu_dai_van) || 0) - mg[2] - mg[3] + 0.01;
+                this.materials.forEach(function (m) {
+                    var kws = m.kw.split(/[,\n]/).map(function (k) { return k.trim().toLowerCase(); }).filter(Boolean), ids = [];
+                    m.dims.forEach(function (d, i) {
+                        var rot = m.rot || kws.some(function (k) { return d[2].indexOf(k) >= 0; });
+                        if (!(d[0] <= aw && d[1] <= ah) && !(rot && d[1] <= aw && d[0] <= ah)) ids.push(m.eids[i]);
+                    });
+                    out[m.key] = ids;
+                });
+                return out;
             },
-            totalParts: function () {
-                var n = 0;
-                var list = this.activeMaterials;
-                for (var i = 0; i < list.length; i++) {
-                    n += list[i].eids.length;
-                }
-                return n;
-            },
-            dragEndIdx: function () {
-                var n = this.activeMaterials.length;
-                return this.dragIdx === n - 1 ? n - 2 : n - 1;
-            },
-            runDisabled: function () {
-                if (!this.materials.length) return true;
-                for (var i = 0; i < this.materials.length; i++) {
-                    if (this.materials[i].on) return false;
-                }
-                return true;
-            }
+            showLayout: function () { return (this.hasNesting || this.live) && !this.listView; },
+            sortCol: function () { return String(this.settings.sap_xep_danh_sach).replace(/_giam$/, ''); },
+            sortDesc: function () { return /_giam$/.test(String(this.settings.sap_xep_danh_sach)); }
         },
         methods: {
-            saveSetting: function (key) {
-                var v = this.settings[key];
-                skp('save_setting', key + '@' + v);
-            },
-            validateSize: function (key) {
+            saveSetting: function (key) { skp('save_setting', key + '@' + this.settings[key]); },
+            setSetting: function (key, v) { this.settings[key] = v; this.saveSetting(key); },
+            toggleSetting: function (key) { this.setSetting(key, !this.settings[key]); },
+            validateRange: function (key, lo, hi) {
                 var n = parseFloat(this.settings[key]);
-                if (isNaN(n) || n < 100) n = 100;
-                if (n > 10000) n = 10000;
-                this.settings[key] = parseFloat(n.toFixed(2));
-                this.saveSetting(key);
+                this.setSetting(key, parseFloat((isNaN(n) ? lo : Math.min(hi, Math.max(lo, n))).toFixed(2)));
             },
-            selectParts: function (m) {
-                if (!m.eids.length) return;
-                skp('select_parts', JSON.stringify(m.eids));
-            },
-            selectAllParts: function () {
-                var eids = [];
-                var list = this.activeMaterials;
-                for (var i = 0; i < list.length; i++) {
-                    eids = eids.concat(list[i].eids);
-                }
-                if (!eids.length) return;
-                skp('select_parts', JSON.stringify(eids));
-            },
-            reloadData: function () {
-                skp('reload_data', '');
-            },
-            doSearch: function () {
-                var q = String(this.searchText || '').trim();
-                if (!q) return;
-                skp('search_parts', q);
-            },
+            selectParts: function (eids) { if (eids.length) skp('select_parts', JSON.stringify(eids)); },
+            selectAllParts: function () { this.selectParts(this.activeMaterials.reduce(function (a, m) { return a.concat(m.eids); }, [])); },
+            reloadData: function () { skp('reload_data', ''); },
+            doSearch: function () { var q = this.searchText.trim(); if (q) skp('search_parts', q); },
             saveRows: function () {
                 var cfg = {};
-                for (var i = 0; i < this.materials.length; i++) {
-                    var m = this.materials[i];
-                    cfg[m.key] = [m.on, i, m.rot, m.kw];
-                }
+                this.materials.forEach(function (m, i) { cfg[m.key] = [m.on, i, m.rot, m.kw]; });
                 skp('save_rows', JSON.stringify(cfg));
             },
             sortKeyList: function (list) {
-                var by = this.settings.sap_xep_danh_sach;
-                var out = list.slice();
-                if (by === 'tuy_chinh') {
-                    return out;
-                }
-                if (by === 'vat_lieu') {
-                    out.sort(function (a, b) {
-                        return String(a.name || '').localeCompare(String(b.name || ''), 'vi');
-                    });
-                } else if (by === 'do_day') {
-                    out.sort(function (a, b) {
-                        var ta = Number(a.th) || 0;
-                        var tb = Number(b.th) || 0;
-                        if (ta !== tb) return ta - tb;
-                        return String(a.name || '').localeCompare(String(b.name || ''), 'vi');
-                    });
-                } else {
-                    var ord = this._origOrder || {};
-                    out.sort(function (a, b) {
-                        var oa = ord[a.key], ob = ord[b.key];
-                        if (oa === undefined) oa = 9999;
-                        if (ob === undefined) ob = 9999;
-                        return oa - ob;
-                    });
-                }
+                var col = this.sortCol, desc = this.sortDesc, ord = this._origOrder, out = list.slice();
+                var byName = function (a, b) { return String(a.name || '').localeCompare(String(b.name || ''), 'vi'); };
+                var cmp = col === 'vat_lieu' ? byName : col === 'do_day' ? function (a, b) { return a.th - b.th || byName(a, b); } : col === 'cau_kien' ? function (a, b) { return a.eids.length - b.eids.length || byName(a, b); } : null;
+                if (cmp) out.sort(desc ? function (a, b) { return cmp(b, a); } : cmp);
+                else if (col !== 'tuy_chinh') out.sort(function (a, b) { return ord[a.key] - ord[b.key]; });
                 return out;
             },
-            rememberOrder: function () {
-                var ord = {};
-                this.materials.forEach(function (m, i) { ord[m.key] = i; });
-                this._origOrder = ord;
-            },
-            applySort: function () {
-                this.saveSetting('sap_xep_danh_sach');
+            sortBy: function (col) {
+                this.setSetting('sap_xep_danh_sach', this.settings.sap_xep_danh_sach === col ? col + '_giam' : col);
                 this.materials = this.sortKeyList(this.materials);
                 this.saveRows();
             },
-            setTab: function (t) {
-                if (this.leftTab === t) return;
-                this.leftTab = t;
-                var self = this;
-                this.$nextTick(function () {
-                    var el = self.$refs.leftScroll;
-                    if (el) el.scrollTop = 0;
-                });
+            toggleRow: function (m, key) { m[key] = !m[key]; this.saveRows(); },
+            thickText: function (m) { return m.th ? Math.round(m.th * 100) / 100 + ' mm' : '-'; },
+            setKw: function (m, v) {
+                var t = v.trim();
+                if (m.kw !== t) { m.kw = t; this.saveRows(); }
             },
-            matLabel: function (m) {
-                var n = String(m.name || '');
-                var base = n.replace(/\s*[-–]?\s*\d+(?:[.,]\d+)?\s*mm\s*$/i, '').trim() || n;
-                var t = Number(m.th) || 0;
-                if (!t) return n;
-                var r = Math.round(t * 10) / 10;
-                return base + ' - ' + (r % 1 === 0 ? Math.round(r) : r) + 'mm';
+            rowClass: function (m) {
+                var drop = this.dropKey === m.key;
+                return { off: !m.on, dragging: this.dragKey === m.key, 'drop-before': drop && !this.dropAfter, 'drop-after': drop && this.dropAfter };
             },
-            dropMat: function (m) {
-                if (!m.on) return;
-                m.on = false;
-                this.saveRows();
+            belowMid: function (e) {
+                var el = e.currentTarget, r = el.getBoundingClientRect(), top = r.top, h = r.height, z = this.tableZoom;
+                if (z !== 1 && Math.abs(h / (el.offsetHeight || 1) - 1) < 0.01) { top *= z; h *= z; }
+                return e.clientY > top + h / 2;
             },
-            toggleMat: function (m) {
-                m.on = !m.on;
-                this.saveRows();
-            },
-            toggleRot: function (m) {
-                m.rot = !m.rot;
-                this.saveRows();
-            },
-            openKw: function (m, i, e) {
-                this.closeKwPop(true);
-                var r = e.currentTarget.getBoundingClientRect();
-                this.kwPop = { mat: m, text: m.kw, x: 0, y: 0 };
-                var self = this;
-                this.$nextTick(function () {
-                    var t = self.$refs.kwInput;
-                    if (!t || !self.kwPop) return;
-                    var pop = t.parentNode;
-                    var w = pop.offsetWidth;
-                    var h = pop.offsetHeight;
-                    var x = r.left + r.width / 2 - w / 2;
-                    var mx = document.documentElement.clientWidth - w - 6;
-                    if (x < 6) x = 6;
-                    if (x > mx) x = mx;
-                    var y = r.bottom + 4;
-                    if (y + h > document.documentElement.clientHeight - 6) y = r.top - 4 - h;
-                    if (y < 6) y = 6;
-                    self.kwPop.x = Math.round(x);
-                    self.kwPop.y = Math.round(y);
-                    t.focus();
-                    t.setSelectionRange(t.value.length, t.value.length);
-                });
-            },
-            closeKwPop: function (save) {
-                var p = this.kwPop;
-                if (!p) return;
-                this.kwPop = null;
-                if (!save) return;
-                var m = p.mat;
-                if (!m) return;
-                var t = String(p.text || '').trim();
-                if (m.kw === t) return;
-                m.kw = t;
-                this.saveRows();
-            },
-            dragStart: function (i, e) {
-                if (e.target && e.target.closest && e.target.closest('.nest-rot')) {
-                    e.preventDefault();
-                    return;
-                }
+            dragStart: function (m, e) {
+                if (this.armed !== m.key) return e.preventDefault();
+                this.dragKey = m.key;
                 e.dataTransfer.effectAllowed = 'move';
                 e.dataTransfer.setData('text/plain', '');
-                var row = e.target.closest('.nest-row');
-                if (row && e.dataTransfer.setDragImage) {
-                    var rr = row.getBoundingClientRect();
-                    e.dataTransfer.setDragImage(row, e.clientX - rr.left, e.clientY - rr.top);
-                }
-                this._dragging = true;
-                var self = this;
-                setTimeout(function () {
-                    if (!self._dragging) return;
-                    self.dragIdx = i;
-                    self.overIdx = null;
-                    self.$nextTick(function () {
-                        if (!self._dragging) return;
-                        var rows = self.$el.querySelectorAll('.nest-row:not(.drag-src)');
-                        var mids = [];
-                        for (var k = 0; k < rows.length; k++) {
-                            var r = rows[k].getBoundingClientRect();
-                            mids.push(r.top + r.height / 2);
-                        }
-                        self._mids = mids;
-                    });
-                }, 0);
-            },
-            dragOverList: function (e) {
-                if (this.dragIdx === null || !this._mids) return;
-                e.dataTransfer.dropEffect = 'move';
-                var v = this._mids.length;
-                for (var i = 0; i < this._mids.length; i++) {
-                    if (e.clientY < this._mids[i]) { v = i; break; }
-                }
-                this.overIdx = v < this.dragIdx ? v : v + 1;
-            },
-            dropRow: function () {
-                if (this.dragIdx === null || this.overIdx === null) {
-                    this.dragEnd();
-                    return;
-                }
-                var list = this.activeMaterials;
-                var from = this.dragIdx;
-                var to = this.overIdx;
-                this.dragEnd();
-                var item = list[from];
-                if (!item) return;
-                var next = to < list.length ? list[to] : null;
-                if (next === item) return;
-                var mats = this.materials.slice();
-                mats.splice(mats.indexOf(item), 1);
-                var at = next ? mats.indexOf(next) : mats.length;
-                mats.splice(at, 0, item);
-                this.materials = mats;
-                if (this.settings.sap_xep_danh_sach !== 'tuy_chinh') {
-                    this.settings.sap_xep_danh_sach = 'tuy_chinh';
-                    this.saveSetting('sap_xep_danh_sach');
-                }
-                this.saveRows();
             },
             dragEnd: function () {
-                this._dragging = false;
-                this.dragIdx = null;
-                this.overIdx = null;
-                this._mids = null;
+                this.armed = this.dragKey = this.dropKey = null;
+                this.dropAfter = false;
+            },
+            dragOver: function (m, e) {
+                if (!this.dragKey || this.dragKey === m.key) return;
+                e.preventDefault();
+                this.dropKey = m.key;
+                this.dropAfter = this.belowMid(e);
+            },
+            dragLeave: function (m) {
+                if (this.dropKey !== m.key) return;
+                this.dropKey = null;
+                this.dropAfter = false;
+            },
+            dropOn: function (m, e) {
+                var from = this.dragKey;
+                if (!from) return;
+                e.preventDefault();
+                var after = this.belowMid(e), mats = this.materials.slice();
+                this.dragEnd();
+                if (from === m.key) return;
+                var item = mats.splice(mats.findIndex(function (x) { return x.key === from; }), 1)[0];
+                mats.splice(mats.indexOf(m) + (after ? 1 : 0), 0, item);
+                this.materials = mats;
+                this.saveOrder();
+            },
+            setTableZoom: function (z) { this.tableZoom = Math.round(Math.max(0.4, Math.min(1, z)) * 1000) / 1000; },
+            zoomTable: function (dir) { this.setTableZoom(this.tableZoom * (dir < 0 ? 1 / 1.1 : 1.1)); },
+            fitTable: function () {
+                var area = this.$refs.listScroll, table = this.$refs.matTable;
+                if (!table) return;
+                var wide = Array.prototype.slice.call(table.querySelectorAll('th.ns-name, th.ns-kw')), old = table.style.width, side = 0;
+                table.style.width = '1px';
+                wide.forEach(function (th) { th.style.minWidth = ''; });
+                wide.forEach(function (th) { side = Math.max(side, th.offsetWidth + 1); });
+                wide.forEach(function (th) { th.style.minWidth = side + 'px'; });
+                var w = table.offsetWidth;
+                table.style.width = old;
+                var cs = getComputedStyle(area), room = area.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+                if (w > 0 && room > 0) this.setTableZoom(room / (w + 2));
+                this.refitTable(3);
+            },
+            refitTable: function (left) {
+                var self = this;
+                this.$nextTick(function () {
+                    var el = self.$refs.listScroll, z = el.querySelector('.ns-zoom');
+                    if (!left || !z || parseFloat(z.style.zoom) !== self.tableZoom || el.scrollWidth <= el.clientWidth) return;
+                    self.setTableZoom(self.tableZoom * el.clientWidth / el.scrollWidth);
+                    self.refitTable(left - 1);
+                });
+            },
+            saveOrder: function () {
+                if (this.settings.sap_xep_danh_sach !== 'tuy_chinh') this.setSetting('sap_xep_danh_sach', 'tuy_chinh');
+                this.saveRows();
+            },
+            toggleView: function () {
+                this.listView = !this.listView;
+                if (!this.showLayout) return;
+                if (this._layoutStale) this.requestLayout();
+                this.$nextTick(this.resizeLayout);
+            },
+            requestLayout: function () {
+                if (this._layoutBusy) return;
+                this._layoutBusy = true;
+                if (!this.progress) this.progress = 'Đang đọc sơ đồ...';
+                skp('load_layout', '');
+            },
+            applyLayout: function (layout) {
+                var ob = this._liveBounds, v = this._view;
+                this._liveBounds = null;
+                this._layoutStale = false;
+                this._mark = null;
+                this.setLayout(layout);
+                var nb = ob && v ? this.layoutBounds() : null;
+                if (nb && Math.abs((nb.x1 - nb.x0) - (ob.x1 - ob.x0)) < 1 && Math.abs((nb.y1 - nb.y0) - (ob.y1 - ob.y0)) < 1) {
+                    v.ox -= (nb.x0 - ob.x0) * v.scale;
+                    v.oy += (nb.y0 - ob.y0) * v.scale;
+                    this._needFit = false;
+                } else this._needFit = true;
+                this.$nextTick(this.resizeLayout);
+                var pick = this._pendingPick, self = this;
+                this._pendingPick = null;
+                if (pick != null) this.$nextTick(function () { self.focusPart(pick); });
+            },
+            pickPart: function (id, line) {
+                var self = this;
+                skp('search_parts', id);
+                if (line.zoom === false || (!this.hasNesting && !this.live)) return;
+                if (this.listView) {
+                    this.listView = false;
+                    if (this._layoutStale) { this._pendingPick = id; this.requestLayout(); return this.$nextTick(this.resizeLayout); }
+                    return this.$nextTick(function () { self.resizeLayout(); self.focusPart(id); });
+                }
+                this.focusPart(id);
+            },
+            partBounds: function (id) {
+                var self = this, lay = this._layout, b = null, key = String(id);
+                if (!lay) return null;
+                var take = function (f) { if (String(f.id) === key) b = self.join(b, self.rectOf(f.pts)); };
+                (lay.fills || []).forEach(take);
+                lay.sheets.forEach(function (sh) { (sh.fills || []).forEach(take); });
+                return b;
+            },
+            focusPart: function (id) {
+                var st = this.$refs.stage, b = this.partBounds(id);
+                if (!st || !b || !st.clientWidth) return;
+                var w = st.clientWidth, h = st.clientHeight, span = Math.max(b.x1 - b.x0, b.y1 - b.y0, 100) * 3;
+                var scale = Math.max(1e-4, Math.min(w, h) / span);
+                this._view = { scale: scale, ox: w / 2 - (b.x0 + b.x1) / 2 * scale, oy: h / 2 + (b.y0 + b.y1) / 2 * scale };
+                this._mark = id;
+                this._needFit = false;
+                this.scheduleLayout();
+            },
+            syncParts: function () {
+                if (!this.hasNesting || this.syncing) return;
+                this.syncing = true;
+                this.lines = [];
+                skp('sync_parts', '');
+            },
+            join: function (b, r) {
+                return b ? { x0: Math.min(b.x0, r.x0), y0: Math.min(b.y0, r.y0), x1: Math.max(b.x1, r.x1), y1: Math.max(b.y1, r.y1) } : { x0: r.x0, y0: r.y0, x1: r.x1, y1: r.y1 };
+            },
+            layoutBounds: function (pure) {
+                var self = this;
+                return (this._layout ? this._layout.sheets : []).reduce(function (b, sh) { return self.join(b, self.sheetRect(sh)); }, !pure && this.live && this._extent ? this.join(null, this._extent) : null);
+            },
+            boundsGrew: function (a, b) {
+                if (!b) return false;
+                if (!a) return true;
+                return b.x0 < a.x0 - 0.5 || b.y0 < a.y0 - 0.5 || b.x1 > a.x1 + 0.5 || b.y1 > a.y1 + 0.5;
+            },
+            setLayout: function (lay) {
+                this._layout = lay;
+                this.layoutCount = lay && lay.sheets ? lay.sheets.length : 0;
+            },
+            labelFont: function (bold) {
+                if (!this._font) this._font = getComputedStyle(document.body).fontFamily || 'sans-serif';
+                return (bold ? '600 11px ' : '10px ') + this._font;
+            },
+            rectOf: function (pts) {
+                var r = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };
+                for (var i = 0; i < pts.length; i++) {
+                    var p = pts[i];
+                    if (p[0] < r.x0) r.x0 = p[0];
+                    if (p[0] > r.x1) r.x1 = p[0];
+                    if (p[1] < r.y0) r.y0 = p[1];
+                    if (p[1] > r.y1) r.y1 = p[1];
+                }
+                return r;
+            },
+            sheetRect: function (sh) { return sh.rect || (sh.rect = this.rectOf(sh.paper)); },
+            materialLabels: function () {
+                var self = this, byKey = {}, fronts = {}, out = [];
+                (this._layout ? this._layout.sheets : []).forEach(function (sh) {
+                    if (!sh.key) return;
+                    (byKey[sh.key] = byKey[sh.key] || []).push(sh);
+                    if (!sh.bottom) fronts[sh.key] = true;
+                });
+                Object.keys(byKey).forEach(function (key) {
+                    var own = byKey[key].filter(function (sh) { return !fronts[key] || !sh.bottom; }).map(function (sh) { return { sh: sh, r: self.sheetRect(sh) }; });
+                    own.sort(function (a, b) { return b.r.y1 - a.r.y1; });
+                    var avg = own.reduce(function (sum, it) { return sum + it.r.y1 - it.r.y0; }, 0) / Math.max(1, own.length);
+                    var rows = [], row = null, base = 0;
+                    own.forEach(function (it) {
+                        if (row && Math.abs(it.r.y1 - base) <= avg / 2) return row.push(it);
+                        rows.push(row = [it]);
+                        base = it.r.y1;
+                    });
+                    rows.forEach(function (group) {
+                        var first = group.reduce(function (a, b) { return b.r.x0 < a.r.x0 ? b : a; });
+                        out.push({ text: key, r: first.r });
+                    });
+                });
+                return out;
+            },
+            fitLayout: function () {
+                var st = this.$refs.stage, cv = this.$refs.canvas, b = this.layoutBounds();
+                if (!st || !b || !st.clientWidth) return;
+                var w = st.clientWidth, h = st.clientHeight, pad = 24, lw = 0, ctx = cv && cv.getContext('2d');
+                if (ctx) {
+                    ctx.font = this.labelFont(true);
+                    this.materialLabels().map(function (l) { return l.text; }).concat(this.live ? this._liveKeys || [] : []).forEach(function (text) { lw = Math.max(lw, Math.ceil(ctx.measureText(text).width) + 16); });
+                }
+                var scale = Math.max(1e-4, Math.min((w - 2 * pad - lw) / Math.max(b.x1 - b.x0, 1), (h - 2 * pad) / Math.max(b.y1 - b.y0, 1)));
+                this._view = { scale: scale, ox: (w + lw) / 2 - (b.x0 + b.x1) / 2 * scale, oy: h / 2 + (b.y0 + b.y1) / 2 * scale };
+                this._needFit = false;
+                this.drawLayout();
+            },
+            resizeLayout: function () {
+                var st = this.$refs.stage, cv = this.$refs.canvas;
+                if (!st || !cv || !st.clientWidth) return;
+                var dpr = window.devicePixelRatio || 1;
+                cv.width = Math.round(st.clientWidth * dpr);
+                cv.height = Math.round(st.clientHeight * dpr);
+                cv.style.width = st.clientWidth + 'px';
+                cv.style.height = st.clientHeight + 'px';
+                if (this._needFit || !this._view) this.fitLayout();
+                else this.drawLayout();
+            },
+            drawLayout: function () {
+                var cv = this.$refs.canvas, v = this._view, lay = this._layout, self = this;
+                if (!cv || !v || !lay) return;
+                var dpr = window.devicePixelRatio || 1, ctx = cv.getContext('2d'), cw = cv.width / dpr, ch = cv.height / dpr;
+                var css = getComputedStyle(this.$refs.stage);
+                var colors = lay.colors || [], tones = lay.tones || {};
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                ctx.clearRect(0, 0, cw, ch);
+                var sx = function (x) { return v.ox + x * v.scale; }, sy = function (y) { return v.oy - y * v.scale; };
+                var pp = 40 * v.scale, m = 48 + pp;
+                var inView = function (r) { return sx(r.x1) >= -m && sx(r.x0) <= cw + m && sy(r.y0) >= -m && sy(r.y1) <= ch + m; };
+                var path = function (pts, close) {
+                    ctx.moveTo(sx(pts[0][0]), sy(pts[0][1]));
+                    for (var i = 1; i < pts.length; i++) ctx.lineTo(sx(pts[i][0]), sy(pts[i][1]));
+                    if (close) ctx.closePath();
+                };
+                var fillShapes = function (list, color) {
+                    ctx.fillStyle = color;
+                    list.forEach(function (f) {
+                        if (f.pts.length < 3 || !inView(f.rect || (f.rect = self.rectOf(f.pts)))) return;
+                        ctx.beginPath();
+                        path(f.pts, true);
+                        f.holes.forEach(function (h) { if (h.length > 2) path(h, true); });
+                        ctx.fill('evenodd');
+                    });
+                };
+                var plate = function (sh) {
+                    var r = self.sheetRect(sh);
+                    var x = sx(r.x0) - pp, y = sy(r.y1) - pp, w = (r.x1 - r.x0) * v.scale + 2 * pp, h = (r.y1 - r.y0) * v.scale + 2 * pp;
+                    self.roundRect(ctx, x, y, w, h, Math.min(4, 3 * pp, w / 2, h / 2));
+                };
+                var shown = lay.sheets.filter(function (sh) { return inView(self.sheetRect(sh)); });
+                shown.forEach(function (sh) {
+                    plate(sh);
+                    ctx.fillStyle = sh.bottom ? '#cccccc' : '#d9d9d9';
+                    ctx.fill();
+                    if (sh.paper.length < 3) return;
+                    ctx.beginPath();
+                    path(sh.paper, true);
+                    ctx.fillStyle = sh.bottom ? '#ececec' : '#ffffff';
+                    ctx.fill();
+                });
+                var grays = {}, gray = function (c) { return grays[c] || (grays[c] = self.grayOf(c)); };
+                var fills = lay.fills || [], muted = [];
+                shown.forEach(function (sh) {
+                    if (!sh.fills) return;
+                    if (self.stageOf(sh) === 1) muted = muted.concat(sh.fills); else fills = fills.concat(sh.fills);
+                });
+                [[fills, function (c) { return c; }], [muted, gray]].forEach(function (g, i) {
+                    if (i && !g[0].length) return;
+                    fillShapes(g[0].filter(function (f) { return !f.two && !f.group; }), g[1](tones.normal || 'rgba(128,128,128,0.78)'));
+                    fillShapes(g[0].filter(function (f) { return !f.two && f.group; }), g[1](tones.group || 'rgba(179,179,179,0.78)'));
+                    fillShapes(g[0].filter(function (f) { return f.two; }), g[1](tones.two || 'rgba(98,195,165,0.78)'));
+                });
+                var groups = {};
+                shown.forEach(function (sh, si) {
+                    var mute = self.stageOf(sh) === 1;
+                    sh.lines.forEach(function (ln) {
+                        if (ln[2].length < 2) return;
+                        var color = colors[ln[1]] || '#000000';
+                        if (mute) color = gray(color);
+                        var g = groups[color] || (groups[color] = []);
+                        (g[si] = g[si] || []).push(ln);
+                    });
+                });
+                ctx.lineWidth = 1;
+                ctx.lineJoin = 'round';
+                Object.keys(groups).forEach(function (color) {
+                    ctx.strokeStyle = color;
+                    groups[color].forEach(function (list) {
+                        ctx.beginPath();
+                        list.forEach(function (ln) { path(ln[2], ln[0] === 1); });
+                        ctx.stroke();
+                    });
+                });
+                ctx.beginPath();
+                shown.forEach(function (sh) { if (sh.paper.length > 2) path(sh.paper, true); });
+                ctx.strokeStyle = '#000000';
+                ctx.stroke();
+                fillShapes(lay.lan || [], tones.warn_face || 'rgba(210,117,159,0.4)');
+                if (lay.loi && lay.loi.length) {
+                    var spots = [];
+                    lay.loi.forEach(function (p) {
+                        var x = sx(p[0]), y = sy(p[1]);
+                        if (x < -m || x > cw + m || y < -m || y > ch + m) return;
+                        var near = spots.find(function (c) { return Math.hypot(c.x / c.n - x, c.y / c.n - y) < 20; });
+                        if (near) { near.x += x; near.y += y; near.n++; } else spots.push({ x: x, y: y, n: 1 });
+                    });
+                    ctx.fillStyle = tones.warn || 'rgba(210,117,159,0.9)';
+                    spots.forEach(function (c) {
+                        ctx.beginPath();
+                        ctx.arc(c.x / c.n, c.y / c.n, 10, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                }
+                shown.forEach(function (sh) {
+                    var st = self.stageOf(sh);
+                    if (!st) return;
+                    plate(sh);
+                    ctx.globalCompositeOperation = st === 1 ? 'destination-out' : 'source-over';
+                    ctx.fillStyle = st === 1 ? 'rgba(0,0,0,0.75)' : 'rgba(98,195,165,0.35)';
+                    ctx.fill();
+                });
+                ctx.globalCompositeOperation = 'source-over';
+                if (this._mark) {
+                    var marked = fills.concat(muted).filter(function (f) { return String(f.id) === self._mark; });
+                    if (marked.length) {
+                        ctx.beginPath();
+                        marked.forEach(function (f) { path(f.pts, true); });
+                        ctx.lineWidth = 2;
+                        ctx.strokeStyle = tones.warn || 'rgba(210,117,159,0.9)';
+                        ctx.stroke();
+                    }
+                }
+                var twins = {}, open = {};
+                lay.sheets.forEach(function (sh) {
+                    if (sh.id != null) twins[sh.id] = (twins[sh.id] || 0) + 1;
+                    if (sh.key && self.stageOf(sh)) open[sh.key] = true;
+                });
+                ctx.font = this.labelFont(true);
+                ctx.fillStyle = css.getPropertyValue('--sim-sheet-label').trim() || '#1c1c1c';
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                this.materialLabels().forEach(function (l) {
+                    ctx.globalAlpha = open[l.text] ? 0.25 : 1;
+                    ctx.fillText(l.text, sx(l.r.x0) - pp - 10, (sy(l.r.y0) + sy(l.r.y1)) / 2);
+                });
+                ctx.globalAlpha = 1;
+                ctx.font = this.labelFont();
+                ctx.textAlign = 'center';
+                var dim = null, box = null, tags = this._tags = [];
+                shown.forEach(function (sh) {
+                    if (sh.id == null) return;
+                    var r = self.sheetRect(sh), text = String(sh.id), g = ctx;
+                    if (twins[sh.id] > 1) text += sh.bottom ? '-1' : '-0';
+                    if (self.stageOf(sh) === 1) g = dim || (dim = self.dimLayer(cv, dpr, ctx.font));
+                    var t = self.badge(g, text, (sx(r.x0) + sx(r.x1)) / 2, sy(r.y0) + pp + 4, dpr);
+                    tags.push(t);
+                    if (g === dim) box = self.join(box, t);
+                });
+                if (box) {
+                    var bx = Math.max(0, Math.floor(box.x0 * dpr) - 1), by = Math.max(0, Math.floor(box.y0 * dpr) - 1);
+                    var bw = Math.min(cv.width, Math.ceil(box.x1 * dpr) + 1) - bx, bh = Math.min(cv.height, Math.ceil(box.y1 * dpr) + 1) - by;
+                    ctx.setTransform(1, 0, 0, 1, 0, 0);
+                    ctx.globalAlpha = 0.25;
+                    if (bw > 0 && bh > 0) ctx.drawImage(dim.canvas, bx, by, bw, bh, bx, by, bw, bh);
+                    ctx.globalAlpha = 1;
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                }
+                this._drawnView = { scale: v.scale, ox: v.ox, oy: v.oy };
+            },
+            roundRect: function (g, x, y, w, h, k) {
+                g.beginPath();
+                g.moveTo(x + k, y);
+                g.arcTo(x + w, y, x + w, y + h, k);
+                g.arcTo(x + w, y + h, x, y + h, k);
+                g.arcTo(x, y + h, x, y, k);
+                g.arcTo(x, y, x + w, y, k);
+                g.closePath();
+            },
+            badge: function (g, text, cx, top, dpr) {
+                g.textBaseline = 'alphabetic';
+                var m = g.measureText(text), up = m.actualBoundingBoxAscent, down = m.actualBoundingBoxDescent || 0;
+                var w = Math.ceil(m.width) + 6, h = Math.round(11 * dpr) / dpr, x = Math.round((cx - w / 2) * dpr) / dpr, y = Math.round(top * dpr) / dpr;
+                if (!(up > 0)) { up = 7; down = 0; }
+                this.roundRect(g, x, y, w, h, 3);
+                g.fillStyle = 'rgba(0,0,0,0.8)';
+                g.fill();
+                g.fillStyle = '#ffffff';
+                g.fillText(text, x + w / 2, Math.round((y + (h + up - down) / 2) * dpr) / dpr);
+                return { x0: x, y0: y, x1: x + w, y1: y + h };
+            },
+            dimLayer: function (cv, dpr, font) {
+                var c = this._dim || (this._dim = document.createElement('canvas'));
+                if (c.width !== cv.width || c.height !== cv.height) { c.width = cv.width; c.height = cv.height; }
+                var g = c.getContext('2d');
+                g.setTransform(1, 0, 0, 1, 0, 0);
+                g.clearRect(0, 0, c.width, c.height);
+                g.setTransform(dpr, 0, 0, dpr, 0, 0);
+                g.font = font;
+                g.textAlign = 'center';
+                return g;
+            },
+            stageOf: function (sh) {
+                var lay = this._layout;
+                return !lay || !lay.pp || sh.done ? 0 : sh.id != null && String(sh.id) === lay.busy ? 2 : 1;
+            },
+            rgbaOf: function (c) {
+                var s = String(c), m = s.charAt(0) === '#' ? [1, 3, 5].map(function (i) { return parseInt(s.substr(i, 2), 16); }) : (s.match(/[\d.]+/g) || []).map(Number);
+                return [m[0] || 0, m[1] || 0, m[2] || 0, m.length > 3 ? m[3] : 1];
+            },
+            grayOf: function (c) {
+                var m = this.rgbaOf(c), l = Math.round(0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]);
+                return 'rgba(' + l + ',' + l + ',' + l + ',' + m[3] + ')';
+            },
+            paintParts: function (fills, lines, stage) {
+                var cv = this.$refs.canvas, v = this._view, dv = this._drawnView, lay = this._layout, self = this;
+                if (!cv || !v || !dv || !lay || stage === 2 || this._frame || v.scale !== dv.scale || v.ox !== dv.ox || v.oy !== dv.oy) return false;
+                var dpr = window.devicePixelRatio || 1, ctx = cv.getContext('2d'), tones = lay.tones || {}, colors = lay.colors || [];
+                var tint = function (c) { return stage === 1 ? self.grayOf(c) : c; };
+                var sx = function (x) { return v.ox + x * v.scale; }, sy = function (y) { return v.oy - y * v.scale; };
+                var tags = this._tags || [], cover = function (r) {
+                    var a = sx(r.x0), b = sx(r.x1), c = sy(r.y1), d = sy(r.y0);
+                    return tags.some(function (t) { return a < t.x1 && b > t.x0 && c < t.y1 && d > t.y0; });
+                };
+                if (tags.length && (fills.some(function (f) { return f.pts.length > 2 && cover(f.rect || (f.rect = self.rectOf(f.pts))); }) || lines.some(function (ln) { return ln[2].length > 1 && cover(self.rectOf(ln[2])); }))) return false;
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                ctx.globalCompositeOperation = stage === 1 ? 'source-atop' : 'source-over';
+                var path = function (pts, close) {
+                    ctx.moveTo(sx(pts[0][0]), sy(pts[0][1]));
+                    for (var i = 1; i < pts.length; i++) ctx.lineTo(sx(pts[i][0]), sy(pts[i][1]));
+                    if (close) ctx.closePath();
+                };
+                fills.forEach(function (f) {
+                    if (f.pts.length < 3) return;
+                    ctx.beginPath();
+                    path(f.pts, true);
+                    f.holes.forEach(function (h) { if (h.length > 2) path(h, true); });
+                    ctx.fillStyle = tint(f.two ? tones.two || 'rgba(98,195,165,0.78)' : f.group ? tones.group || 'rgba(179,179,179,0.78)' : tones.normal || 'rgba(128,128,128,0.78)');
+                    ctx.fill('evenodd');
+                });
+                ctx.lineWidth = 1;
+                ctx.lineJoin = 'round';
+                lines.forEach(function (ln) {
+                    if (ln[2].length < 2) return;
+                    ctx.beginPath();
+                    path(ln[2], ln[0] === 1);
+                    ctx.strokeStyle = tint(colors[ln[1]] || '#000000');
+                    ctx.stroke();
+                });
+                ctx.globalCompositeOperation = 'source-over';
+                return true;
+            },
+            scheduleLayout: function () {
+                var self = this;
+                if (this._frame) return;
+                this._frame = requestAnimationFrame(function () {
+                    self._frame = 0;
+                    self.drawLayout();
+                });
+            },
+            zoomAt: function (factor, cx, cy) {
+                var v = this._view;
+                if (!v) return;
+                var scale = Math.max(0.0005, Math.min(50, v.scale * factor)), k = scale / v.scale;
+                v.ox = cx - (cx - v.ox) * k;
+                v.oy = cy - (cy - v.oy) * k;
+                v.scale = scale;
+                this.scheduleLayout();
+            },
+            zoomLayout: function (d) {
+                var st = this.$refs.stage;
+                if (st) this.zoomAt(d > 0 ? 1.25 : 0.8, st.clientWidth / 2, st.clientHeight / 2);
+            },
+            wheelLayout: function (e) {
+                var r = this.$refs.stage.getBoundingClientRect();
+                this.zoomAt(e.deltaY < 0 ? 1.12 : 1 / 1.12, e.clientX - r.left, e.clientY - r.top);
+            },
+            downLayout: function (e) {
+                if (e.button !== 0 && e.button !== 1) return;
+                e.preventDefault();
+                var self = this;
+                if (!this._view) return;
+                this.pan = { x: e.clientX, y: e.clientY };
+                var move = function (ev) {
+                    var p = self.pan, v = self._view;
+                    if (!p) return;
+                    v.ox += ev.clientX - p.x;
+                    v.oy += ev.clientY - p.y;
+                    p.x = ev.clientX;
+                    p.y = ev.clientY;
+                    self.scheduleLayout();
+                };
+                var up = function () {
+                    self.pan = null;
+                    window.removeEventListener('mousemove', move);
+                    window.removeEventListener('mouseup', up);
+                };
+                window.addEventListener('mousemove', move);
+                window.addEventListener('mouseup', up);
             },
             runNest: function () {
-                if (this.runDisabled) return;
-                var rows = [];
-                for (var i = 0; i < this.materials.length; i++) {
-                    var m = this.materials[i];
-                    rows.push({ key: m.key, name: m.name, on: m.on, rot: m.rot, kw: m.kw });
-                }
-                skp('nest_run', JSON.stringify(rows));
+                if (this.runDisabled || this.progress) return;
+                this.lines = [];
+                skp('nest_run', JSON.stringify(this.materials.map(function (m) {
+                    return { key: m.key, name: m.name, on: m.on, rot: m.rot, kw: m.kw };
+                })));
+                document.activeElement.blur();
             }
         },
         mounted: function () {
             var self = this;
-            document.addEventListener('mousedown', function () {
-                self.closeKwPop(true);
-            });
+            window.addEventListener('mouseup', function () { self.armed = null; });
             window.nestingLoad = function (data) {
                 if (data.theme) document.documentElement.setAttribute('data-theme', data.theme);
                 self.loadSettings(data.settings || {});
-                var mats = [];
-                (data.materials || []).forEach(function (m) {
-                    mats.push({
-                        key: m.key, name: m.name, eids: m.eids || [],
-                        th: Number(m.thickness_mm) || 0,
-                        on: m.on !== false,
-                        rot: m.rot === true,
-                        kw: String(m.kw || '')
+                var ord = {}, mats = (data.materials || []).map(function (m, i) {
+                    ord[m.key] = m.ord == null ? i : m.ord;
+                    return { key: m.key, name: m.name, mat: String(m.material == null ? '' : m.material), eids: m.eids || [], th: Number(m.thickness_mm) || 0, on: m.on !== false, rot: m.rot === true, kw: String(m.kw || ''),
+                        dims: Object.freeze((m.dims || []).map(function (d) { return [Number(d[0]) || 0, Number(d[1]) || 0, String(d[2] || '')]; })) };
+                });
+                self._origOrder = ord;
+                self.materials = self.sortKeyList(mats);
+                self.$nextTick(self.fitTable);
+                self._liveBounds = self.live && self._view ? self.layoutBounds(true) : null;
+                self.nestingFound = !!data.has_nesting;
+                if (data.notes) self.lines = data.notes;
+                self.live = false;
+                self._extent = null;
+                if (data.layout) return self.applyLayout(data.layout);
+                self._layoutStale = true;
+                self._layoutBusy = false;
+                if (!data.has_nesting) self.setLayout(null);
+                if (self.showLayout) self.requestLayout();
+            };
+            window.nestingProgress = function (r) { self.progress = r && r.text ? String(r.text) : ''; };
+            window.nestingEngine = function (r) {
+                if (!r) return;
+                if (r.cancel) { self._engineBoot = null; if (window.cancelJobs) window.cancelJobs(); return; }
+                var cb = function () { skp('engine_cb', JSON.stringify(Array.prototype.slice.call(arguments))); };
+                var report = function (e) { cb('error', String(e && e.stack || e)); };
+                var boot = function () {
+                    if (!r.start || !window.startJobs) return;
+                    try { (new Function(r.start))(); } catch (e) { report(e); }
+                };
+                if (window.__ksuEngine) return boot();
+                if (!r.js) return cb('need_js');
+                var shim = {};
+                ['on_job_progress', 'on_job_place_progress', 'on_job_place', 'on_job_fail', 'on_job_nested'].forEach(function (n) {
+                    shim[n] = cb.bind(null, n);
+                });
+                window.onerror = function (msg, src, line) { report(msg + ' @' + line); };
+                var load = function (src, next) {
+                    var tag = document.createElement('script');
+                    tag.src = src;
+                    tag.onload = next;
+                    tag.onerror = next;
+                    document.head.appendChild(tag);
+                };
+                self._engineBoot = r;
+                load('js/clip.js', function () {
+                    load('js/geo.js', function () {
+                        try { (new Function('sketchup', r.js))(shim); } catch (e) { return report(e); }
+                        window.__ksuEngine = true;
+                        if (self._engineBoot === r) boot();
                     });
                 });
-                self.materials = mats;
-                self.rememberOrder();
-                self.materials = self.sortKeyList(self.materials);
             };
-            window.addEventListener('message', function (e) {
-                if (!e.data || e.data.action !== 'tab_shown') return;
-                if (self._loaded && !e.data.reload) return;
-                self._loaded = true;
-                skp('load_data', '');
+            window.nestingLayout = function (r) {
+                self._layoutBusy = false;
+                if (self.progress === 'Đang đọc sơ đồ...') self.progress = '';
+                self.applyLayout(r && r.layout ? r.layout : null);
+            };
+            window.nestingNotes = function (r) { if (r && r.line) self.lines.push(r.line); };
+            window.nestingLive = function (r) {
+                var blank = function () { return { sheets: [], layers: [], colors: [], fills: [], loi: [], lan: [], tones: {} }; };
+                if (r.reset) {
+                    var fresh = blank();
+                    fresh.tones = r.tones || {};
+                    fresh.pp = !!r.pp;
+                    self._extent = r.extent || null;
+                    self._liveKeys = r.keys || [];
+                    self._layoutStale = false;
+                    self._mark = null;
+                    self.setLayout(fresh);
+                    self.live = true;
+                    self.listView = false;
+                    self._needFit = true;
+                    return self.$nextTick(self.resizeLayout);
+                }
+                var lay = self._layout || blank(), before = self.layoutBounds();
+                var redraw = function () {
+                    self.setLayout(lay);
+                    if (!self.showLayout) return self._needFit = true;
+                    if (self.boundsGrew(before, self.layoutBounds())) self.$nextTick(self.fitLayout); else self.scheduleLayout();
+                };
+                var src = r.place || r;
+                var map = (src.layers || []).map(function (name, i) {
+                    var idx = lay.layers.indexOf(name);
+                    if (idx < 0) { idx = lay.layers.length; lay.layers.push(name); lay.colors.push((src.colors || [])[i] || ''); }
+                    return idx;
+                });
+                if (r.busy != null) {
+                    lay.busy = String(r.busy);
+                    return redraw();
+                }
+                if (r.done != null) {
+                    lay.sheets.forEach(function (o) { if (o.tmp == null && String(o.id) === String(r.done)) o.done = true; });
+                    return redraw();
+                }
+                var pl = r.place;
+                if (pl) {
+                    var fresh = false, tmp = lay.sheets.find(function (o) { return o.tmp === pl.tmp; });
+                    if (!tmp) {
+                        tmp = { tmp: pl.tmp, job: pl.job, id: null, key: pl.key, bottom: false, paper: pl.paper, lines: [], fills: [] };
+                        lay.sheets.push(tmp);
+                        fresh = true;
+                    }
+                    if (pl.bottom && !lay.sheets.some(function (o) { return o.tmp === pl.tmp + '-b'; })) {
+                        lay.sheets.push({ tmp: pl.tmp + '-b', job: pl.job, id: null, key: pl.key, bottom: true, paper: pl.bottom, lines: [], fills: [] });
+                        fresh = true;
+                    }
+                    if (pl.clear) { tmp.fills = []; tmp.lines = []; fresh = true; }
+                    var addF = [], addL = [];
+                    (pl.parts || []).forEach(function (p) {
+                        (p.lines || []).forEach(function (ln) { ln[1] = map[ln[1]]; tmp.lines.push(ln); addL.push(ln); });
+                        var f = { pts: p.pts, holes: p.holes || [], two: p.two, group: p.group, id: p.id };
+                        tmp.fills.push(f);
+                        addF.push(f);
+                    });
+                    self.setLayout(lay);
+                    if (!fresh && self.showLayout && !self.boundsGrew(before, self.layoutBounds()) && self.paintParts(addF, addL, self.stageOf(tmp))) return;
+                    return redraw();
+                }
+                var list = r.sheets || (r.sheet ? [r.sheet] : []);
+                if (!list.length) return;
+                if (r.job != null) lay.sheets = lay.sheets.filter(function (o) { return o.tmp == null || o.job !== r.job; });
+                list.forEach(function (sh) {
+                    sh.lines.forEach(function (ln) { ln[1] = map[ln[1]]; });
+                    var at = lay.sheets.findIndex(function (o) { return o.tmp == null && o.id === sh.id && !!o.bottom === !!sh.bottom; });
+                    if (at >= 0 && lay.sheets[at].done) sh.done = true;
+                    if (at < 0) lay.sheets.push(sh); else lay.sheets.splice(at, 1, sh);
+                });
+                redraw();
+            };
+            window.nestingSynced = function () { self.syncing = false; };
+            window.addEventListener('keydown', function (e) {
+                if (e.ctrlKey || e.metaKey || e.altKey || isTypingTarget(e.target)) return;
+                if (e.key === 'Tab') {
+                    if (!self.hasNesting && !self.live) return;
+                    e.preventDefault();
+                    return self.toggleView();
+                }
+                var d = e.key === '+' || e.key === '=' ? 1 : e.key === '-' || e.key === '_' ? -1 : 0;
+                if (!d || !(self.showLayout || self.materials.length)) return;
+                e.preventDefault();
+                if (self.showLayout) self.zoomLayout(d);
+                else self.zoomTable(d);
             });
-        }
+            if (typeof ResizeObserver !== 'undefined') new ResizeObserver(function () { self.resizeLayout(); }).observe(self.$refs.stage);
+            else window.addEventListener('resize', self.resizeLayout);
+            var areaW = 0, onResize = function () {
+                var w = self.$refs.listScroll.clientWidth;
+                if (w === areaW) return self.refitTable(3);
+                areaW = w;
+                self.fitTable();
+            };
+            if (typeof ResizeObserver !== 'undefined') new ResizeObserver(onResize).observe(self.$refs.listScroll);
+            else window.addEventListener('resize', onResize);
+            ksuOnShown(self, skp);
+        },
+        updated: function () { this.refitTable(3); }
     });
 </script>
 

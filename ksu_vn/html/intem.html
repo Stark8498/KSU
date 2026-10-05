@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>In tem</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/nest.css">
+    <link rel="stylesheet" href="css/nest.css?v=56">
     <script src="js/vue.min.js"></script>
     <script src="js/setting.js"></script>
     <script src="js/preload.js"></script>
@@ -22,64 +22,173 @@
             box-shadow: 0 0 0 3px rgba(0,0,0,0.5);
             z-index: 1;
         }
-        .it-mat {
-            min-height: 32px;
-        }
-        .it-mat .tool-drag-handle {
+        .it-eb-row .tool-drag-handle {
             margin-right: 0;
             width: 10px;
             justify-content: flex-start;
         }
-        .it-sheet .it-caret {
-            text-align: right;
+        .it-cover-layer {
+            position: relative;
         }
-        .it-check.sm {
-            width: 13px;
-            height: 13px;
-            border-radius: 3px;
-            border-width: 1.5px;
-        }
-        .it-check.sm.on .it-check-mark {
-            width: 3px;
-            height: 6px;
-            margin-top: -1px;
-            border-width: 0 1.5px 1.5px 0;
-        }
-        .it-check.sm.indet .it-check-mark {
-            width: 5.5px;
-            border-top-width: 1.5px;
-        }
-        .it-drag-src {
-            position: absolute;
-            left: -9999px;
-            top: -9999px;
-        }
-        .it-drag-before {
-            margin-top: 30px;
-        }
-        .it-drag-end {
-            margin-bottom: 30px;
-        }
-        .it-tem.a0 > svg, .it-tem.a180 > svg {
+        .it-cover-art > svg {
             display: block;
             width: 100%;
             height: auto;
         }
-        .it-tem.a180 > svg {
+        .it-cover-in {
+            position: absolute;
+            margin: 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: #000000;
+            font-family: Arial, sans-serif;
+            resize: none;
+            overflow: hidden;
+            outline: none;
+        }
+        .it-cover-in:hover, .it-cover-in:focus {
+            outline: 1px dashed rgba(0,0,0,0.35);
+        }
+        .it-cover-in::placeholder {
+            color: #a0a0a0;
+        }
+        .it-cover-logo {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a0a0a0;
+            cursor: pointer;
+        }
+        .it-cover-logo:hover {
+            color: #3a3a3a;
+        }
+        .it-cover-logo:not(.on) {
+            border: 1px dashed #b0b0b0;
+        }
+        .it-logo-del {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            display: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #8e8e93;
+            color: #ffffff;
+            font-size: 11px;
+            font-style: normal;
+            line-height: 14px;
+            text-align: center;
+        }
+        .it-cover-logo:hover .it-logo-del {
+            display: block;
+        }
+        .it-logo-del:hover {
+            background: #dc3545;
+        }
+        .it-cover-eb {
+            position: absolute;
+            cursor: pointer;
+        }
+        .it-cover-eb:hover {
+            outline: 1px dashed rgba(0,0,0,0.35);
+        }
+        .it-tem .it-ebl {
+            cursor: pointer;
+        }
+        .it-modal-back {
+            z-index: 10000;
+        }
+        .it-modal {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            width: max-content;
+            max-width: 320px;
+            max-height: 80%;
+            overflow: hidden;
+            border: 0.5px solid #c7c7cc;
+            border-radius: 6px;
+            background: #ffffff;
+        }
+        .it-modal-list {
+            overflow-y: auto;
+        }
+        .it-eb-row {
+            position: relative;
+            display: flex;
+            align-items: center;
+            min-height: 20px;
+            padding: 6px 14px;
+            font-size: 12px;
+        }
+        .it-eb-row + .it-eb-row::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 14px;
+            left: 14px;
+            border-top: var(--divider);
+        }
+        .it-eb-body {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+            cursor: grab;
+        }
+        .it-eb-row.dash .it-eb-body {
+            cursor: default;
+        }
+        .it-eb-row.over .it-eb-body {
+            opacity: 0.4;
+        }
+        .it-eb-body > * + * {
+            margin-left: 10px;
+        }
+        .it-eb-pad {
+            flex: none;
+            width: 10px;
+        }
+        .it-eb-sym {
+            flex: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 20px;
+            color: #1c1c1e;
+        }
+        .it-eb-row.off .it-name {
+            color: #a0a0a0;
+        }
+        html[data-theme="dark"] .it-modal {
+            border-color: #48484a;
+            background: #3a3a3c;
+        }
+        html[data-theme="dark"] .it-eb-sym {
+            color: #e5e5ea;
+        }
+        .it-tem.a0 > svg, .it-tem.a180 > svg, .it-tem.a0 > .it-cover-layer, .it-tem.a180 > .it-cover-layer {
+            display: block;
+            width: 100%;
+        }
+        .it-tem.a180 > svg, .it-tem.a180 > .it-cover-layer {
             transform: rotate(180deg);
         }
-        .it-tem.a90 > svg, .it-tem.a270 > svg {
-            display: block;
+        .it-tem.a90 > svg, .it-tem.a270 > svg, .it-tem.a90 > .it-cover-layer, .it-tem.a270 > .it-cover-layer {
             position: absolute;
             top: 50%;
             left: 50%;
             width: var(--svgw);
             height: var(--svgh);
         }
-        .it-tem.a90 > svg {
+        .it-tem.a90 > svg, .it-tem.a90 > .it-cover-layer {
             transform: translate(-50%, -50%) rotate(90deg);
         }
-        .it-tem.a270 > svg {
+        .it-tem.a270 > svg, .it-tem.a270 > .it-cover-layer {
             transform: translate(-50%, -50%) rotate(270deg);
         }
         .switch .it-note-trigger {
@@ -101,41 +210,30 @@
         .it-note-row .text-popup-area {
             padding-right: 26px;
         }
-        .it-note-btn {
-            position: absolute;
-            right: 4px;
-            bottom: 4px;
+        .it-note-btn, .it-note-del {
             width: 18px;
             height: 18px;
-            padding: 0;
             border: none;
             border-radius: 3px;
             background: rgba(0,0,0,0.07);
             color: #3a3a3a;
             font-size: 13px;
             line-height: 18px;
-            text-align: center;
             cursor: pointer;
+        }
+        .it-note-btn {
+            position: absolute;
+            right: 4px;
+            bottom: 4px;
+        }
+        .it-note-del {
+            flex: none;
         }
         .it-note-btn:hover {
             background: rgba(0,0,0,0.14);
         }
         .it-note-btn.off {
             visibility: hidden;
-        }
-        .it-note-del {
-            flex: none;
-            width: 18px;
-            height: 18px;
-            padding: 0;
-            border: none;
-            border-radius: 3px;
-            background: rgba(0,0,0,0.07);
-            color: #3a3a3a;
-            font-size: 13px;
-            line-height: 18px;
-            text-align: center;
-            cursor: pointer;
         }
         .it-note-del:hover {
             background: rgba(220,53,69,0.14);
@@ -163,23 +261,17 @@
             flex: 1;
             min-width: 0;
             padding-left: 2px;
-            font-size: 12px;
             line-height: 18px;
-            color: #000;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        html[data-theme="dark"] .it-note-btn {
+        html[data-theme="dark"] .it-note-btn, html[data-theme="dark"] .it-note-del {
             background: rgba(255,255,255,0.12);
             color: #e5e5ea;
         }
         html[data-theme="dark"] .it-note-btn:hover {
             background: rgba(255,255,255,0.22);
-        }
-        html[data-theme="dark"] .it-note-del {
-            background: rgba(255,255,255,0.12);
-            color: #e5e5ea;
         }
         html[data-theme="dark"] .it-note-del:hover {
             background: rgba(255,69,58,0.22);
@@ -190,9 +282,6 @@
         }
         html[data-theme="dark"] .it-note-item:hover {
             background: rgba(255,255,255,0.09);
-        }
-        html[data-theme="dark"] .it-note-text {
-            color: #e5e5ea;
         }
         #it-print-area {
             display: none;
@@ -228,95 +317,11 @@
 <body>
 
 <div id="app" class="nest-root">
-    <div class="nest-left" :class="{ collapsed: col2Hidden }">
-        <div class="nest-left-head">
-            <div class="nest-seg">
-                <button class="nest-seg-btn" :class="{ active: leftTab === 'set' }" @click="setTab('set')">Cài đặt</button>
-                <button class="nest-seg-btn" :class="{ active: leftTab === 'list' }" @click="setTab('list')">Danh sách</button>
-            </div>
-        </div>
-        <div class="nest-left-scroll" ref="leftScroll">
+    <div class="nest-left" :class="{ collapsed: leftHidden }">
+        <tool-tabs current="in_tem"></tool-tabs>
+        <div class="nest-left-scroll">
 
-            <div class="nest-left-pane" v-show="leftTab === 'list'">
-                <div class="switch-stacked">
-                    <div class="switch">
-                        <span>Thứ tự tem</span>
-                        <div class="select-group">
-                            <select v-model="settings.thu_tu_in" @change="changeOrder">
-                                <option value="vi_tri">Vị trí</option>
-                                <option value="so_tam">Số tấm</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="switch" v-show="settings.thu_tu_in === 'so_tam'">
-                        <span>Sắp xếp</span>
-                        <div class="select-group">
-                            <select v-model="settings.sap_xep" @change="changeSort">
-                                <option value="tang_dan">Tăng dần</option>
-                                <option value="giam_dan">Giảm dần</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="switch" v-show="settings.thu_tu_in !== 'so_tam'">
-                        <span>Góc bắt đầu</span>
-                        <div class="select-group">
-                            <select v-model="settings.goc_bat_dau" @change="changeCorner">
-                                <option value="trai_duoi">Trái dưới</option>
-                                <option value="trai_tren">Trái trên</option>
-                                <option value="phai_duoi">Phải dưới</option>
-                                <option value="phai_tren">Phải trên</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <p class="switch-stacked-hint">Thứ tự sắp xếp tem trong tấm.</p>
-                <div class="it-tree" v-if="materials.length" @dragover.prevent="dragOverList" @drop.prevent="dropRow">
-                    <div v-for="(m, i) in materials" :key="m.key"
-                         :class="{ 'it-drag-src': dragIdx === i, 'it-drag-before': overIdx === i, 'it-drag-end': overIdx === materials.length && i === materials.length - 1 }">
-                        <div class="it-mat" :class="{ active: sel.mat === m.key, off: matState(m) === 'off' }"
-                             draggable="true" @dragstart="dragStart(i, $event)" @dragend="dragEnd"
-                             @click="clickMat(m)">
-                            <i class="tool-drag-handle">
-                                <svg width="6" height="10" viewBox="0 0 6 10">
-                                    <circle cx="1" cy="1" r="1"></circle>
-                                    <circle cx="5" cy="1" r="1"></circle>
-                                    <circle cx="1" cy="5" r="1"></circle>
-                                    <circle cx="5" cy="5" r="1"></circle>
-                                    <circle cx="1" cy="9" r="1"></circle>
-                                    <circle cx="5" cy="9" r="1"></circle>
-                                </svg>
-                            </i>
-                            <span class="it-check sm" :class="{ on: matState(m) === 'on', indet: matState(m) === 'indet' }"
-                                  @click.stop="toggleMat(m)"><i class="it-check-mark"></i></span>
-                            <span class="it-name">{{ matLabel(m) }}</span>
-                            <span class="it-count">{{ matParts(m).length }} tem</span>
-                        </div>
-                        <div class="it-children" v-if="sel.mat === m.key">
-                            <template v-for="sid in m.sheets">
-                                <div class="it-sheet" :key="'s' + sid" @click="clickSheet(sid)">
-                                    <span class="it-caret">{{ expandedSheets[sid] ? '▾' : '▸' }}</span>
-                                    <span class="it-check sm" :class="{ on: sheetState(sid) === 'on', indet: sheetState(sid) === 'indet' }"
-                                          @click.stop="toggleSheet(sid)"><i class="it-check-mark"></i></span>
-                                    <span class="it-name">Sheet {{ sid }}</span>
-                                    <span class="it-count">{{ sheets[sid] ? sheets[sid].parts.length : 0 }} tem</span>
-                                </div>
-                                <template v-if="expandedSheets[sid]">
-                                    <div class="it-part" :class="{ active: !!selSet[pi] }"
-                                         v-for="pi in sheets[sid].parts" :key="'p' + pi" :ref="'prow' + pi" @click="clickPart(pi, $event)">
-                                        <span class="it-check sm" :class="{ on: !off[pi] }"
-                                              @click.stop="togglePart(pi)"><i class="it-check-mark"></i></span>
-                                        <span class="it-name">{{ parts[pi].lk ? parts[pi].name : parts[pi].id + '. ' + parts[pi].name }}</span>
-                                    </div>
-                                </template>
-                            </template>
-                        </div>
-                    </div>
-                </div>
-                <p class="switch-stacked-hint" v-if="materials.length">Danh sách vật liệu và tem.</p>
-                <p class="it-empty" v-if="!materials.length">Chưa có dữ liệu nesting.</p>
-            </div>
-
-            <div class="nest-left-pane" v-show="leftTab === 'set'">
+            <div class="nest-left-pane">
                 <div class="switch-stacked">
                     <div class="switch">
                         <span>Mẫu tem</span>
@@ -346,8 +351,8 @@
                             <input type="number"
                                    v-model.number="settings.kho_tem_rong"
                                    @change="saveSetting('kho_tem_rong')"
-                                   @blur="validateTem('kho_tem_rong')"
-                                   @keyup.enter="validateTem('kho_tem_rong')"
+                                   @blur="stepTem('kho_tem_rong', 0)"
+                                   @keyup.enter="stepTem('kho_tem_rong', 0)"
                                    min="20" max="200" step="any">
                             <button class="spinner-btn"
                                     @click="stepTem('kho_tem_rong', 5)"
@@ -365,8 +370,8 @@
                             <input type="number"
                                    v-model.number="settings.kho_tem_cao"
                                    @change="saveSetting('kho_tem_cao')"
-                                   @blur="validateTem('kho_tem_cao')"
-                                   @keyup.enter="validateTem('kho_tem_cao')"
+                                   @blur="stepTem('kho_tem_cao', 0)"
+                                   @keyup.enter="stepTem('kho_tem_cao', 0)"
                                    min="20" max="200" step="any">
                             <button class="spinner-btn"
                                     @click="stepTem('kho_tem_cao', 5)"
@@ -384,22 +389,33 @@
                         <label class="switch-label" for="moc_khoan_ngang"></label>
                     </div>
                     <div class="switch">
-                        <span>Mã tem QR</span>
+                        <span class="gap-lock-label">
+                            Mã tem QR
+                            <gap-lock :open="settings.tach_ma_qr" @toggle="toggleSetting('tach_ma_qr')"></gap-lock>
+                        </span>
                         <input type="checkbox" v-model="settings.them_ma_qr"
                                @change="saveSetting('them_ma_qr')" id="them_ma_qr">
                         <label class="switch-label" for="them_ma_qr"></label>
+                    </div>
+                    <template v-if="settings.tach_ma_qr">
+                        <div class="switch" v-for="f in qrParts" :key="f.key">
+                            <span class="gap-sub">{{ f.name }}</span>
+                            <input type="checkbox" v-model="settings[f.key]"
+                                   @change="saveSetting(f.key)" :id="f.key">
+                            <label class="switch-label" :for="f.key"></label>
+                        </div>
+                    </template>
+                    <div class="switch">
+                        <span>Tên vật liệu</span>
+                        <input type="checkbox" v-model="settings.hien_vat_lieu"
+                               @change="saveSetting('hien_vat_lieu')" id="hien_vat_lieu">
+                        <label class="switch-label" for="hien_vat_lieu"></label>
                     </div>
                     <div class="switch">
                         <span>Kích thước</span>
                         <input type="checkbox" v-model="settings.hien_kich_thuoc"
                                @change="saveSetting('hien_kich_thuoc')" id="hien_kich_thuoc">
                         <label class="switch-label" for="hien_kich_thuoc"></label>
-                    </div>
-                    <div class="switch">
-                        <span>Tên vật liệu</span>
-                        <input type="checkbox" v-model="settings.hien_vat_lieu"
-                               @change="saveSetting('hien_vat_lieu')" id="hien_vat_lieu">
-                        <label class="switch-label" for="hien_vat_lieu"></label>
                     </div>
                     <div class="switch">
                         <span>Ghi chú 1</span>
@@ -421,13 +437,13 @@
                     <div class="switch">
                         <span class="gap-lock-label">
                             Mã dán cạnh
-                            <gap-lock :open="settings.tach_ma_canh" @toggle="toggleEbLock"></gap-lock>
+                            <gap-lock :open="settings.tach_ma_canh" @toggle="toggleSetting('tach_ma_canh')"></gap-lock>
                         </span>
                         <input type="checkbox" v-model="settings.ma_dan_canh"
                                @change="saveSetting('ma_dan_canh')" id="ma_dan_canh">
                         <label class="switch-label" for="ma_dan_canh"></label>
                     </div>
-                    <template v-if="settings.tach_ma_canh && settings.ma_dan_canh !== false">
+                    <template v-if="settings.tach_ma_canh">
                         <div class="switch" v-for="f in ebParts" :key="f.key">
                             <span class="gap-sub">{{ f.name }}</span>
                             <input type="checkbox" v-model="settings[f.key]"
@@ -475,7 +491,7 @@
                     <div class="switch">
                         <span class="gap-lock-label">
                             Cỡ chữ
-                            <gap-lock :open="settings.tach_co_chu" @toggle="toggleFontLock"></gap-lock>
+                            <gap-lock :open="settings.tach_co_chu" @toggle="toggleSetting('tach_co_chu')"></gap-lock>
                         </span>
                         <div class="number-input-group" :class="{ disabled: settings.tach_co_chu }">
                             <button class="spinner-btn"
@@ -486,8 +502,8 @@
                             <input type="number"
                                    v-model.number="settings.co_chu"
                                    @change="saveSetting('co_chu')"
-                                   @blur="validateFontScale"
-                                   @keyup.enter="validateFontScale"
+                                   @blur="stepFontScale(0)"
+                                   @keyup.enter="stepFontScale(0)"
                                    :disabled="settings.tach_co_chu"
                                    min="50" max="200" step="any">
                             <button class="spinner-btn"
@@ -509,8 +525,8 @@
                                 <input type="number"
                                        v-model.number="settings[f.key]"
                                        @change="saveSetting(f.key)"
-                                       @blur="validateFontPart(f.key)"
-                                       @keyup.enter="validateFontPart(f.key)"
+                                       @blur="stepFontPart(f.key, 0)"
+                                       @keyup.enter="stepFontPart(f.key, 0)"
                                        min="1" max="3" step="any">
                                 <button class="spinner-btn"
                                         @click="stepFontPart(f.key, 0.1)"
@@ -522,55 +538,111 @@
                     </template>
                 </div>
                 <p class="switch-stacked-hint">Tùy chỉnh hiển thị tem nhãn.</p>
+                <div class="switch-stacked">
+                    <div class="switch">
+                        <span>Thứ tự tem</span>
+                        <div class="select-group">
+                            <select v-model="settings.thu_tu_in" @change="changeOrder('thu_tu_in')">
+                                <option value="vi_tri">Vị trí</option>
+                                <option value="so_tam">Số tấm</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="switch" v-show="settings.thu_tu_in === 'so_tam'">
+                        <span>Sắp xếp</span>
+                        <div class="select-group">
+                            <select v-model="settings.sap_xep" @change="changeOrder('sap_xep')">
+                                <option value="tang_dan">Tăng dần</option>
+                                <option value="giam_dan">Giảm dần</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="switch" v-show="settings.thu_tu_in !== 'so_tam'">
+                        <span>Góc bắt đầu</span>
+                        <div class="select-group">
+                            <select v-model="settings.goc_bat_dau" @change="changeOrder('goc_bat_dau')">
+                                <option value="trai_duoi">Trái dưới</option>
+                                <option value="trai_tren">Trái trên</option>
+                                <option value="phai_duoi">Phải dưới</option>
+                                <option value="phai_tren">Phải trên</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <p class="switch-stacked-hint">Thứ tự sắp xếp tem trong tấm.</p>
             </div>
 
+        </div>
+        <div class="nest-left-foot">
+            <div class="footer-btns">
+                <button class="action-button-full" :disabled="!outItems.length || exporting" @click="printTems()">{{ selCount ? 'In ' + selCount + ' tem' : 'In tem' }}</button>
+                <button class="action-button-full" :disabled="!outItems.length || exporting" @click="requestExport($event)">{{ exporting ? 'Đang xuất...' : (selCount ? 'Xuất ' + selCount + ' tem' : 'Xuất tem') }}</button>
+            </div>
         </div>
     </div>
 
     <div class="nest-right">
         <div class="nest-right-head">
-            <button class="nest-col2-btn"
-                    @click="col2Hidden = !col2Hidden">
-                <svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><line x1="9.5" y1="4.5" x2="9.5" y2="19.5"/></svg>
-            </button>
+            <button class="nest-col2-btn" type="button" @click="leftHidden = !leftHidden"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><line x1="9.5" y1="4.5" x2="9.5" y2="19.5"/></svg></button>
             <div class="nest-search">
-                <input type="text" v-model="searchText"
-                       placeholder="Tìm kiếm..." spellcheck="false" autocomplete="off">
-                <button class="nest-search-clear" v-show="searchText" @click="searchText = ''"
-                        tabindex="-1">×</button>
+                <input type="text" v-model="searchText" placeholder="Tìm kiếm..." spellcheck="false" autocomplete="off">
+                <button class="nest-search-clear" v-show="searchText" @click="searchText = ''" tabindex="-1">×</button>
             </div>
             <span class="nest-right-stat" @click="selectVisibleParts">{{ visible.length }} tem</span>
             <button class="col3-btn secondary" @click="reloadData">Cập nhật</button>
         </div>
-        <div class="nest-right-scroll cards" ref="scroll" :class="{ filled: visible.length > 0, 'one-col': settings.mot_cot }"
-             :style="scrollStyle" @click.self="clickBlank" @dblclick.self="dblClickBlank">
-            <div class="it-empty" v-if="!visible.length">Không có dữ liệu tem.</div>
-            <div class="it-tem" :class="['a' + dispAngle, { active: !!selSet[pi] }]"
-                 :style="temBoxStyle" :ref="'tem' + pi"
-                 v-for="pi in visible" :key="'t' + pi" v-lazytem="pi"
-                 @click="clickTem(pi, $event)" @dblclick="dblClickTem(pi)"
-                 v-html="(!lazyEnabled || shown[pi]) ? temSvg(pi) : ''"></div>
-        </div>
-        <div class="it-dock" v-if="visible.length">
-            <button class="it-dock-btn" @click="zoomStep(-1)">−</button>
-            <button class="it-dock-btn" @click="zoomStep(1)">+</button>
-            <button class="it-dock-btn" @click="rotCCW"><span class="it-rot-ico">↺</span></button>
-            <button class="it-dock-btn" @click="toggleMotCot">
-                <svg class="it-dock-ico" v-if="settings.mot_cot" viewBox="0 0 24 24"><rect x="4.5" y="5" width="6" height="14"/><rect x="13.5" y="5" width="6" height="14"/></svg>
-                <svg class="it-dock-ico" v-else viewBox="0 0 24 24"><path d="M5.5 5v5.5h13V5M5.5 19v-5.5h13V19"/></svg>
-            </button>
-            <button class="it-dock-btn" @click="scrollByPct(-1)"><svg class="it-dock-ico thin" viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"/></svg></button>
-            <button class="it-dock-btn" @click="scrollByPct(1)"><svg class="it-dock-ico thin" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
-        </div>
-        <div class="nest-right-footer">
-            <div class="footer-btns">
-                <button class="action-button-full" :disabled="!visible.length || exporting" @click="printTems()">{{ selCount ? 'In ' + selCount + ' tem' : 'In tem' }}</button>
-                <button class="action-button-full" :disabled="!visible.length || exporting" @click="requestExport($event)">{{ exporting ? 'Đang xuất...' : (selCount ? 'Xuất ' + selCount + ' tem' : 'Xuất tem') }}</button>
+        <div class="nest-right-scroll cards filled" ref="scroll" :class="{ blank: !sections.length }"
+             @click.self="clickBlank" @dblclick.self="dblClickBlank" @dragover.prevent="secDragOver" @drop.prevent="secDrop">
+            <div class="it-empty" v-if="!sections.length">{{ materials.length ? 'Không có dữ liệu tem.' : 'Chưa có dữ liệu.' }}</div>
+            <div class="it-sec" v-for="(sec, si) in cards" :key="secKey(sec)" :style="secStyle"
+                 :class="{ 'drag-src': secDrag === si, 'drop-before': secOver === si, 'drop-after': secOver === cards.length && si === cards.length - 1 }"
+                 @click.self="clickBlank" @dblclick.self="dblClickBlank">
+                <div class="it-sec-head" :class="{ off: sec.cover ? !sec.on : sec.state === 'off' }" :style="openTems(sec).length ? headStyle : null"
+                     draggable="true" @dragstart="secDragStart(si, $event)" @dragend="secDragEnd">
+                    <span class="it-check" v-if="sec.cover" :class="{ on: sec.on }" @click="toggleSetting('bia_ghi_chu')"><i class="it-check-mark"></i></span>
+                    <span class="it-check" v-else :class="{ on: sec.state === 'on', indet: sec.state === 'indet' }" @click="toggleGroup(sec.all)"><i class="it-check-mark"></i></span>
+                    <span class="it-sec-label" @click="toggleFold(sec)">
+                        <span class="it-sec-name">{{ sec.cover ? 'Bìa ghi chú' : matLabel(sec.m) }}</span>
+                        <svg class="it-sec-fold" :class="{ open: !fold[secKey(sec)] }" viewBox="0 0 10 10"><path d="M3.5 2l3 3-3 3"/></svg>
+                    </span>
+                    <span class="it-sec-count">{{ sec.cover ? 1 : sec.all.length }} tem</span>
+                </div>
+                <template v-if="sec.cover">
+                    <div class="it-tem" v-if="openTems(sec).length" :class="'a' + dispAngle" :style="temBoxStyle">
+                        <div class="it-cover-layer">
+                            <div class="it-cover-art" v-html="sec.edit.svg" @dblclick="fitZoom"></div>
+                            <div class="it-cover-logo" :class="{ on: settings.bia_logo }" :style="coverBox(sec.edit.box.logo)" @click="pickLogo">
+                                <template v-if="!settings.bia_logo">+</template>
+                                <i class="it-logo-del" v-if="settings.bia_logo" @click.stop="setSetting('bia_logo', '')">×</i>
+                            </div>
+                            <div class="it-cover-eb" :style="coverBox(sec.edit.box.eb)" @click="openEb"></div>
+                            <textarea class="it-cover-in" :style="coverBox(sec.edit.box.note)" v-model="settings.bia_noi_dung"
+                                      @change="saveSetting('bia_noi_dung')" placeholder="Nội dung ghi chú..." spellcheck="false"></textarea>
+                        </div>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="it-tem" :class="['a' + dispAngle, { active: !!selSet[pi] }]"
+                         :style="temBoxStyle" :ref="'tem' + pi"
+                         v-for="pi in openTems(sec)" :key="'t' + pi" v-lazytem="pi"
+                         @click="clickTem(pi, $event)" @dblclick="dblClickTem(pi)"
+                         v-html="(!lazyEnabled || shown[pi]) ? temSvg(pi) : ''"></div>
+                </template>
             </div>
-            <p class="switch-stacked-hint">Tính năng đang trong giai đoạn thử nghiệm và phát triển, luôn phải kiểm tra lại kết quả trước khi đưa vào sản xuất.</p>
         </div>
+        <note-bar :expanded="settings.thong_bao_mo" @toggle="setNoteOpen">
+            <span class="note-tools" v-if="visible.length">
+                <button class="note-btn xh-1" type="button" @click="rotCCW"><span class="it-rot-ico">↺</span></button>
+                <button class="note-btn xh-2" type="button" @click="toggleSetting('mot_cot')">
+                    <svg v-if="settings.mot_cot" viewBox="0 0 24 24"><rect x="4.5" y="5" width="6" height="14"/><rect x="13.5" y="5" width="6" height="14"/></svg>
+                    <svg v-else viewBox="0 0 24 24"><path d="M5.5 5v5.5h13V5M5.5 19v-5.5h13V19"/></svg>
+                </button>
+                <button class="note-btn xh-3" type="button" @click="fitAll"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
+            </span>
+        </note-bar>
     </div>
 
+    <div class="ksu-dim" v-if="notePop"></div>
     <div class="text-popup" v-if="notePop" :style="{ left: notePop.x + 'px', top: notePop.y + 'px' }"
          @mousedown.stop @contextmenu.prevent.stop>
         <div class="it-note-row">
@@ -585,33 +657,40 @@
             </div>
         </div>
     </div>
+    <div class="ksu-dim it-modal-back" v-if="ebOpen" @mousedown.self="closeEb">
+        <div class="it-modal" ref="ebModal" :style="{ left: ebPos.x + 'px', top: ebPos.y + 'px' }">
+            <div class="it-modal-list">
+                <div class="it-eb-row" v-for="(r, i) in ebRows" :key="i" :class="{ off: ebView[i].off, dash: r.dash, over: ebDrag !== null && ebOver === i }"
+                     @dragover.prevent="ebDragOver(i)" @drop.prevent="ebDrop(i)">
+                    <span class="it-eb-sym" :style="{ width: ebSym.px + 'px' }" v-html="ebSym.list[i]"></span>
+                    <span class="it-eb-body" :draggable="!r.dash" @dragstart="ebDragStart(i, $event)" @dragend="ebDrag = ebOver = null">
+                        <drag-handle v-if="!r.dash"></drag-handle>
+                        <span class="it-eb-pad" v-else></span>
+                        <span class="it-check" :class="{ on: !ebView[i].off }" @click="toggleEb(ebView[i].name)"><i class="it-check-mark"></i></span>
+                        <span class="it-name">{{ ebView[i].name }}</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="it-print-area"></div>
 
 <script>
-    Vue.config.productionTip = false;
-    Vue.config.devtools = false;
     document.body.spellcheck = false;
 
-    function skp(fn, arg) {
-        if (window.parent === window) return;
-        window.parent.postMessage({ action: 'tool_call', tabId: 'in_tem', fn: fn, arg: arg }, '*');
-    }
+    var skp = ksuToolCall('in_tem'), coverRow = { cover: true };
 
-    var measureCtx = document.createElement('canvas').getContext('2d');
-    var _twCache = {};
+    var measureCtx = document.createElement('canvas').getContext('2d'), _twCache = {};
 
     function textW(str, sizeMm, bold) {
-        var s = String(str);
-        var key = (bold ? '1' : '0') + s;
-        var w = _twCache[key];
-        if (w === undefined) {
+        var s = String(str), key = (bold ? '1' : '0') + s;
+        if (_twCache[key] === undefined) {
             measureCtx.font = (bold ? 'bold ' : '') + '100px Arial, sans-serif';
-            w = measureCtx.measureText(s).width;
-            _twCache[key] = w;
+            _twCache[key] = measureCtx.measureText(s).width;
         }
-        return w * sizeMm / 100;
+        return _twCache[key] * sizeMm / 100;
     }
 
     function esc(s) {
@@ -631,98 +710,62 @@
             ' text-anchor="' + (anchor || 'middle') + '">' + esc(str) + '</text>';
     }
 
-    function fmtMm(v) {
-        var r = Math.round(v * 10) / 10;
-        return String(r % 1 === 0 ? Math.round(r) : r);
+    function ctext(str, x, y, sz, mid, tail) {
+        return '<text x="' + x.toFixed(2) + '" y="' + (y + sz * 0.36).toFixed(2) + '" font-size="' + sz.toFixed(3) + '"' +
+            (mid || '') + ' text-anchor="middle"' + (tail || '') + '>' + esc(str) + '</text>';
     }
+
+    function fmtMm(v) { return String(Math.round(v * 10) / 10); }
 
     function ebParse(nm) {
-        var s = String(nm == null ? '' : nm).trim();
-        var m = s.match(/^(.*?)(?:\s*[^\s\d]\s*)?(\d+(?:[.,]\d+)?)\s*mm$/i);
-        if (!m) return [s, Infinity];
-        return [m[1].trim(), parseFloat(m[2].replace(',', '.'))];
-    }
-
-    function ebCompare(a, b) {
-        var pa = ebParse(a), pb = ebParse(b);
-        var c = pa[0].localeCompare(pb[0], 'vi', { numeric: true, sensitivity: 'base' });
-        if (c) return c;
-        if (pa[1] !== pb[1]) return pa[1] - pb[1];
-        return String(a).localeCompare(String(b), 'vi');
+        var s = String(nm == null ? '' : nm).trim(), m = s.match(/^(.*?)(?:\s*[^\s\d]\s*)?(\d+(?:[.,]\d+)?)\s*mm$/i);
+        return m ? [m[1].trim(), parseFloat(m[2].replace(',', '.'))] : [s, Infinity];
     }
 
     function ebDash(e) {
-        if (e[5] === 'vat') return true;
-        var t = String(e[4] == null ? '' : e[4]).toLowerCase();
-        return t.indexOf('âm') >= 0 || t.indexOf('móc') >= 0 || t.indexOf('vát') >= 0;
+        return e[5] === 'vat' || /âm|móc|vát/.test(String(e[4] == null ? '' : e[4]).toLowerCase());
     }
 
     function ebTri(cx, cy, sz, deg) {
-        var R = sz * 0.62;
-        var d0 = deg == null ? -90 : deg;
-        var tp = [];
-        for (var t = 0; t < 3; t++) {
+        var R = sz * 0.62, d0 = deg == null ? -90 : deg;
+        return '<polygon points="' + [0, 1, 2].map(function (t) {
             var ang = (d0 + t * 120) * Math.PI / 180;
-            tp.push((cx + R * Math.cos(ang)).toFixed(2) + ',' + (cy + R * Math.sin(ang)).toFixed(2));
-        }
-        return '<polygon points="' + tp.join(' ') + '" fill="#000"/>';
+            return (cx + R * Math.cos(ang)).toFixed(2) + ',' + (cy + R * Math.sin(ang)).toFixed(2);
+        }).join(' ') + '" fill="#000"/>';
     }
 
-    var EB_MARKS = 6;
-
     function ebMark(idx, cx, cy, sz) {
-        var i = Number(idx);
+        var i = Number(idx), num = function (v) { return v.toFixed(2); };
         if (!(i >= 1)) return '';
-        var num = function (v) { return v.toFixed(2); };
-        if (i > EB_MARKS) {
-            var fs = sz / 0.72;
-            return '<text x="' + num(cx) + '" y="' + num(cy + fs * 0.36) + '" font-size="' + fs.toFixed(3) +
-                '" text-anchor="middle">' + i + '</text>';
-        }
-        var solid = i % 2 === 1;
-        var k = Math.ceil(i / 2);
-        var sw = Math.max(0.12, sz * 0.15);
-        var fa = solid ? ' fill="#000"' : ' fill="none" stroke="#000" stroke-width="' + sw.toFixed(2) + '"';
-        var d = solid ? 0 : sw / 2;
-        if (k === 1) {
-            return '<circle cx="' + num(cx) + '" cy="' + num(cy) + '" r="' + num(sz * 0.5 - d) + '"' + fa + '/>';
-        }
-        if (k === 2) {
-            var a = sz * 0.88 - 2 * d;
-            return '<rect x="' + num(cx - a / 2) + '" y="' + num(cy - a / 2) + '" width="' + num(a) +
-                '" height="' + num(a) + '"' + fa + '/>';
-        }
-        var pw = sz - 2 * d;
-        var ph = sz * 0.52 - 2 * d;
+        if (i > 6) return ctext(i, cx, cy, sz / 0.72);
+        var solid = i % 2 === 1, k = Math.ceil(i / 2), sw = Math.max(0.12, sz * 0.15);
+        var fa = solid ? ' fill="#000"' : ' fill="none" stroke="#000" stroke-width="' + sw.toFixed(2) + '"', d = solid ? 0 : sw / 2;
+        if (k === 1) return '<circle cx="' + num(cx) + '" cy="' + num(cy) + '" r="' + num(sz * 0.5 - d) + '"' + fa + '/>';
+        var sq = k === 2, pw = (sq ? sz * 0.88 : sz) - 2 * d, ph = sq ? pw : sz * 0.52 - 2 * d;
         return '<rect x="' + num(cx - pw / 2) + '" y="' + num(cy - ph / 2) + '" width="' + num(pw) +
-            '" height="' + num(ph) + '" rx="' + num(ph / 2) + '"' + fa + '/>';
+            '" height="' + num(ph) + '"' + (sq ? '' : ' rx="' + num(ph / 2) + '"') + fa + '/>';
     }
 
     function rotPt(p, deg, cx, cy) {
-        var rad = deg * Math.PI / 180;
-        var c = Math.cos(rad), s = Math.sin(rad);
+        var rad = deg * Math.PI / 180, c = Math.cos(rad), s = Math.sin(rad);
         var dx = p[0] - cx, dy = p[1] - cy;
         return [cx + dx * c - dy * s, cy + dx * s + dy * c];
     }
 
     function bboxOf(pts) {
         var x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
-        for (var i = 0; i < pts.length; i++) {
-            var p = pts[i];
+        pts.forEach(function (p) {
             if (p[0] < x0) x0 = p[0];
             if (p[1] < y0) y0 = p[1];
             if (p[0] > x1) x1 = p[0];
             if (p[1] > y1) y1 = p[1];
-        }
+        });
         return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
     }
 
     function distToSeg(p, a, b) {
-        var vx = b[0] - a[0], vy = b[1] - a[1];
-        var wx = p[0] - a[0], wy = p[1] - a[1];
-        var len2 = vx * vx + vy * vy;
-        var t = len2 > 0 ? (wx * vx + wy * vy) / len2 : 0;
-        t = Math.max(0, Math.min(1, t));
+        var vx = b[0] - a[0], vy = b[1] - a[1], wx = p[0] - a[0], wy = p[1] - a[1];
+        var len2 = vx * vx + vy * vy, t = Math.max(0, Math.min(1, len2 > 0 ? (wx * vx + wy * vy) / len2 : 0));
         var dx = a[0] + t * vx - p[0], dy = a[1] + t * vy - p[1];
         return Math.sqrt(dx * dx + dy * dy);
     }
@@ -737,9 +780,8 @@
     }
 
     function leaderTo(cb, b, lw2, lh2, obs, strict) {
-        var gap = 2, minLeg = 1.2;
         obs = obs || [];
-        var cx = cb.x + cb.w / 2, cy = cb.y + cb.h / 2;
+        var gap = 2, minLeg = 1.2, cx = cb.x + cb.w / 2, cy = cb.y + cb.h / 2;
         var clampX = function (v) { return Math.max(b.x0 + lw2, Math.min(b.x1 - lw2, v)); };
         var clampY = function (v) { return Math.max(b.y0 + lh2, Math.min(b.y1 - lh2, v)); };
         var clearance = function (x, y) {
@@ -747,27 +789,19 @@
             if (x0 < b.x0 - 0.01 || x1 > b.x1 + 0.01 || y0 < b.y0 - 0.01 || y1 > b.y1 + 0.01) return -1;
             var best = Math.min(x0 - b.x0, b.x1 - x1, y0 - b.y0, b.y1 - y1);
             for (var i = 0; i < obs.length; i++) {
-                var o = obs[i];
-                var dx = Math.max(o[0] - x1, x0 - o[2], 0), dy = Math.max(o[1] - y1, y0 - o[3], 0);
+                var o = obs[i], dx = Math.max(o[0] - x1, x0 - o[2], 0), dy = Math.max(o[1] - y1, y0 - o[3], 0);
                 var d = Math.sqrt(dx * dx + dy * dy);
                 if (d < 0.3) return -1;
                 if (d < best) best = d;
             }
             return best;
         };
-        var sides = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-        var dists = [gap, gap + 2.5, gap + 5];
-        var slides = [0, -0.5, 0.5, -1, 1];
         var pick = null, bestScore = -Infinity, first = null;
-        sides.forEach(function (sd, si) {
-            dists.forEach(function (g) {
-                slides.forEach(function (sl) {
-                    var c;
-                    if (sd[0]) {
-                        c = [sd[0] > 0 ? cb.x + cb.w + g + lw2 : cb.x - g - lw2, clampY(cy + sl * (cb.h / 2 + lh2)), sd[0] > 0 ? cb.x + cb.w : cb.x, cy, sd[0], 0];
-                    } else {
-                        c = [clampX(cx + sl * (cb.w / 2 + lw2)), sd[1] > 0 ? cb.y + cb.h + g + lh2 : cb.y - g - lh2, cx, sd[1] > 0 ? cb.y + cb.h : cb.y, 0, sd[1]];
-                    }
+        [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function (sd, si) {
+            [gap, gap + 2.5, gap + 5].forEach(function (g) {
+                [0, -0.5, 0.5, -1, 1].forEach(function (sl) {
+                    var c = sd[0] ? [sd[0] > 0 ? cb.x + cb.w + g + lw2 : cb.x - g - lw2, clampY(cy + sl * (cb.h / 2 + lh2)), sd[0] > 0 ? cb.x + cb.w : cb.x, cy, sd[0], 0]
+                        : [clampX(cx + sl * (cb.w / 2 + lw2)), sd[1] > 0 ? cb.y + cb.h + g + lh2 : cb.y - g - lh2, cx, sd[1] > 0 ? cb.y + cb.h : cb.y, 0, sd[1]];
                     if (!first) first = c;
                     var cl = clearance(c[0], c[1]);
                     if (cl < 0) return;
@@ -780,32 +814,21 @@
             if (strict) return null;
             pick = first;
             pick[0] = clampX(pick[0]);
-            pick[1] = clampY(pick[1]);
         }
-        var ux = pick[4], uy = pick[5];
-        var px0 = pick[2], py0 = pick[3];
+        var ux = pick[4], uy = pick[5], px0 = pick[2], py0 = pick[3];
+        var pathD = 'M' + px0.toFixed(2) + ' ' + py0.toFixed(2);
         if (ux) {
             var dY = pick[1] - py0;
             if (Math.abs(dY) > lh2 && Math.abs(dY) < lh2 + minLeg) pick[1] = clampY(py0 + (dY > 0 ? 1 : -1) * (lh2 + minLeg));
+            var offY = pick[1] - py0;
+            pathD += Math.abs(offY) <= lh2 ? 'L' + (pick[0] - ux * lw2).toFixed(2) + ' ' + py0.toFixed(2)
+                : 'L' + pick[0].toFixed(2) + ' ' + py0.toFixed(2) + 'L' + pick[0].toFixed(2) + ' ' + (pick[1] - (offY > 0 ? lh2 : -lh2)).toFixed(2);
         } else {
             var dX = pick[0] - px0;
             if (Math.abs(dX) > lw2 && Math.abs(dX) < lw2 + minLeg) pick[0] = clampX(px0 + (dX > 0 ? 1 : -1) * (lw2 + minLeg));
-        }
-        var pathD = 'M' + px0.toFixed(2) + ' ' + py0.toFixed(2);
-        if (ux) {
-            var offY = pick[1] - py0;
-            if (Math.abs(offY) <= lh2) {
-                pathD += 'L' + (pick[0] - ux * lw2).toFixed(2) + ' ' + py0.toFixed(2);
-            } else {
-                pathD += 'L' + pick[0].toFixed(2) + ' ' + py0.toFixed(2) + 'L' + pick[0].toFixed(2) + ' ' + (pick[1] - (offY > 0 ? lh2 : -lh2)).toFixed(2);
-            }
-        } else {
             var offX = pick[0] - px0;
-            if (Math.abs(offX) <= lw2) {
-                pathD += 'L' + px0.toFixed(2) + ' ' + (pick[1] - uy * lh2).toFixed(2);
-            } else {
-                pathD += 'L' + px0.toFixed(2) + ' ' + pick[1].toFixed(2) + 'L' + (pick[0] - (offX > 0 ? lw2 : -lw2)).toFixed(2) + ' ' + pick[1].toFixed(2);
-            }
+            pathD += Math.abs(offX) <= lw2 ? 'L' + px0.toFixed(2) + ' ' + (pick[1] - uy * lh2).toFixed(2)
+                : 'L' + px0.toFixed(2) + ' ' + pick[1].toFixed(2) + 'L' + (pick[0] - (offX > 0 ? lw2 : -lw2)).toFixed(2) + ' ' + pick[1].toFixed(2);
         }
         return {
             x: pick[0], y: pick[1],
@@ -820,17 +843,11 @@
     }
 
     function wrapText(str, sizeMm, maxW) {
-        var words = String(str).split(/\s+/).filter(function (w) { return w.length; });
-        var lines = [];
-        var cur = '';
+        var words = String(str).split(/\s+/).filter(function (w) { return w.length; }), lines = [], cur = '';
         for (var i = 0; i < words.length; i++) {
             var t = cur ? cur + ' ' + words[i] : words[i];
-            if (textW(t, sizeMm, true) <= maxW || !cur) {
-                cur = t;
-            } else {
-                lines.push(cur);
-                cur = words[i];
-            }
+            if (textW(t, sizeMm, true) <= maxW || !cur) cur = t;
+            else { lines.push(cur); cur = words[i]; }
         }
         if (cur) lines.push(cur);
         return lines;
@@ -840,18 +857,58 @@
         var tLines = [title];
         while (tSize > 0.8) {
             tLines = wrapText(title, tSize, availW);
-            var mlw = 0;
-            for (var wi = 0; wi < tLines.length; wi++) {
-                var lw = textW(tLines[wi], tSize, true);
-                if (lw > mlw) mlw = lw;
-            }
+            var mlw = tLines.reduce(function (m, l) { var w = textW(l, tSize, true); return w > m ? w : m; }, 0);
             if (mlw <= availW && tLines.length * tSize * 1.4 <= maxTitleH) break;
             tSize -= 0.1;
         }
         return { lines: tLines, size: tSize };
     }
 
-    var app = new Vue({
+    function svgHead(W, H, bx) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" xml:space="preserve" font-family="Arial, sans-serif" fill="#000">' +
+            '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#fff"/>' +
+            '<rect x="' + bx + '" y="' + bx + '" width="' + (W - 2 * bx) + '" height="' + (H - 2 * bx) + '" fill="none" stroke="#000" stroke-width="0.15"/>';
+    }
+
+    function hingeOf(p) {
+        return [p.hinge, p.gname].map(function (v) { return String(v || '').trim(); }).filter(Boolean).join(' - ');
+    }
+
+    function qrRuns(data, qs) {
+        var qm = null, runs = [];
+        try { qm = KSUQR.matrix(data); } catch (e) {}
+        if (!qm) return null;
+        for (var r = 0; r < qm.length; r++) {
+            var c = 0;
+            while (c < qm.length) {
+                if (!qm[r][c]) { c++; continue; }
+                var c0 = c;
+                while (c < qm.length && qm[r][c]) c++;
+                runs.push([r, c0, c]);
+            }
+        }
+        return { runs: runs, cell: qs / (qm.length + 4) };
+    }
+
+    function mapFrame(sheet, ax, ay, aw, ah) {
+        if (!sheet.w || !sheet.h || aw <= 0 || ah <= 0) return null;
+        var swap = sheet.h > sheet.w, mw = swap ? sheet.h : sheet.w, mh = swap ? sheet.w : sheet.h;
+        var sc = Math.min(aw / mw, ah / mh), ox = ax + (aw - mw * sc) / 2, oy = ay + (ah - mh * sc) / 2;
+        return {
+            swap: swap, mw: mw, mh: mh, sc: sc, ox: ox, oy: oy,
+            rect: '<rect x="' + ox.toFixed(2) + '" y="' + oy.toFixed(2) +
+                '" width="' + (mw * sc).toFixed(2) + '" height="' + (mh * sc).toFixed(2) +
+                '" fill="none" stroke="#000" stroke-width="0.12"/>',
+            path: function (pts) {
+                return pts.map(function (q, j) {
+                    var u = swap ? q[1] : q[0], v = swap ? sheet.w - q[0] : q[1];
+                    return (j ? 'L' : 'M') + (ox + (mw - u) * sc).toFixed(2) + ' ' + (oy + v * sc).toFixed(2);
+                }).join('') + 'Z';
+            }
+        };
+    }
+
+    new Vue({
         el: '#app',
         mixins: [SettingsMixin('in_tem')],
         directives: {
@@ -863,41 +920,48 @@
                     ctx._lazyEls.push(el);
                     if (ctx._io) ctx._io.observe(el);
                 },
-                update: function (el, binding) {
-                    el.__pi = binding.value;
-                },
+                update: function (el, binding) { el.__pi = binding.value; },
                 unbind: function (el, binding, vnode) {
-                    var ctx = vnode.context;
+                    var ctx = vnode.context, k = ctx._lazyEls.indexOf(el);
                     if (ctx._io) ctx._io.unobserve(el);
-                    if (ctx._lazyEls) {
-                        var k = ctx._lazyEls.indexOf(el);
-                        if (k >= 0) ctx._lazyEls.splice(k, 1);
-                    }
+                    if (k >= 0) ctx._lazyEls.splice(k, 1);
                 }
             }
         },
         data: {
-            col2Hidden: false,
             materials: [],
-            dragIdx: null,
-            overIdx: null,
             sheets: {},
             parts: [],
             searchText: '',
-            leftTab: 'set',
+            leftHidden: false,
             shown: {},
             off: {},
-            expandedSheets: {},
+            fold: {},
+            secDrag: null,
+            secOver: null,
             lazyEnabled: true,
             exporting: false,
             temScale: 240,
-            sel: { mat: null, part: null },
+            anchor: null,
             selSet: {},
             notePop: null,
             notePresets: { ghi_chu_them: [], ghi_chu_them_2: [] },
+            ebCfg: { order: [], off: [] },
+            ebOpen: false,
+            ebPos: { x: 0, y: 0 },
+            ebDrag: null,
+            ebOver: null,
+            logoSize: null,
             ebParts: [
                 { key: 'ma_canh_ten', name: 'Tên thống kê' },
                 { key: 'ma_canh_do_day_canh', name: 'Độ dày cạnh' }
+            ],
+            qrParts: [
+                { key: 'ma_qr_id', name: 'ID tấm' },
+                { key: 'ma_qr_ten', name: 'Tên tấm' },
+                { key: 'ma_qr_code_1', name: 'Code N.1' },
+                { key: 'ma_qr_code_2', name: 'Code N.2' },
+                { key: 'ma_qr_code_3', name: 'Code N.3' }
             ],
             fontParts: [
                 { key: 'co_chu_tieu_de', name: 'Tiêu đề', def: 2 },
@@ -907,6 +971,7 @@
                 { key: 'co_chu_ghi_chu', name: 'Ghi chú', def: 2 }
             ],
             settings: {
+                thong_bao_mo: false,
                 kieu_tem: 'tem01',
                 tu_dong_xoay: true,
                 kho_tem_rong: 60,
@@ -922,6 +987,12 @@
                 co_chu_id: 2,
                 co_chu_ghi_chu: 2,
                 them_ma_qr: false,
+                tach_ma_qr: false,
+                ma_qr_id: true,
+                ma_qr_ten: true,
+                ma_qr_code_1: true,
+                ma_qr_code_2: true,
+                ma_qr_code_3: true,
                 hien_vat_lieu: false,
                 hien_kich_thuoc: false,
                 moc_khoan_ngang: false,
@@ -934,161 +1005,209 @@
                 thu_tu_in: 'so_tam',
                 goc_bat_dau: 'trai_duoi',
                 sap_xep: 'tang_dan',
-                goc_xoay: 0,
+                goc_xoay: 1,
                 ty_le_zoom: 240,
-                mot_cot: false
+                mot_cot: false,
+                bia_ghi_chu: false,
+                bia_logo: '',
+                bia_noi_dung: '',
+                vi_tri_bia: 0
             }
         },
         computed: {
-            ebIndex: function () {
-                var self = this;
-                var names = {};
+            ebNames: function () {
+                var self = this, num = {}, dash = {}, pos = {}, cmp = function (a, b) {
+                    var pa = ebParse(a), pb = ebParse(b);
+                    return pa[0].localeCompare(pb[0], 'vi', { numeric: true, sensitivity: 'base' }) ||
+                        (pa[1] !== pb[1] ? pa[1] - pb[1] : a.localeCompare(b, 'vi'));
+                };
                 this.parts.forEach(function (p) {
-                    (p.ebs || []).forEach(function (e) {
-                        if (ebDash(e)) return;
+                    p.ebs.forEach(function (e) {
                         var nm = self.ebName(e);
-                        if (nm) names[nm] = true;
+                        if (nm) (ebDash(e) ? dash : num)[nm] = true;
                     });
                 });
-                var list = Object.keys(names).sort(ebCompare);
-                var map = {};
-                list.forEach(function (nm, i) { map[nm] = i + 1; });
+                this.ebCfg.order.forEach(function (nm, i) { pos[nm] = i; });
+                return {
+                    num: Object.keys(num).sort(function (a, b) {
+                        var ia = pos.hasOwnProperty(a) ? pos[a] : Infinity, ib = pos.hasOwnProperty(b) ? pos[b] : Infinity;
+                        return ia !== ib ? (ia < ib ? -1 : 1) : cmp(a, b);
+                    }),
+                    dash: Object.keys(dash).filter(function (nm) { return !num[nm]; }).sort(cmp)
+                };
+            },
+            ebOff: function () {
+                return this.ebCfg.off.reduce(function (m, nm) { m[nm] = true; return m; }, {});
+            },
+            ebIndex: function () {
+                var off = this.ebOff, map = {}, i = 0;
+                this.ebNames.num.forEach(function (nm) { if (!off[nm]) map[nm] = ++i; });
                 return map;
             },
+            coverQr: function () {
+                var self = this, bx = 0.75, nm = this.fontMm('co_chu_ghi_chu', 1.8), n2 = String(this.settings.ghi_chu_them_2 || '').trim();
+                var SQ = Math.min(this.temW - 2 * bx, this.temH - bx - Math.max(3.25, nm + 1.45) * (n2 ? 2 : 1) - 10), cnt = {}, best = SQ * 0.4, most = 0;
+                var secs = this.sections.filter(function (s) { return s.tems.length; }), at = this.coverAt;
+                var near = secs.filter(function (s) { return self.materials.indexOf(s.m) >= at; })[0] || secs[secs.length - 1];
+                (near ? near.tems : []).forEach(function (pi) {
+                    var p = self.parts[pi], hg = hingeOf(p) ? 2.6 : 0;
+                    var q = Math.round((SQ - self.ebFit(p, 1.5, SQ - 3, Math.max(0, (SQ - hg) * 0.4), false).h - hg) * 40) / 100;
+                    cnt[q] = (cnt[q] || 0) + 1;
+                    if (cnt[q] > most) { most = cnt[q]; best = q; }
+                });
+                return best;
+            },
+            ebRows: function () {
+                var off = this.ebOff, idx = this.ebIndex;
+                return this.ebNames.num.map(function (nm) { return { name: nm, off: !!off[nm], no: idx[nm] }; })
+                    .concat(this.ebNames.dash.map(function (nm) { return { name: nm, off: !!off[nm], dash: true }; }));
+            },
+            ebSym: function () {
+                var ms = 4.2, fs = 5, mark = this.ebMarkOn, t02 = this.settings.kieu_tem === 'tem02';
+                var parts = this.ebRows.map(function (r) {
+                    var n = r.no, s, side;
+                    if (r.off) return { g: '', w: 0 };
+                    if (r.dash) return { g: ebTri(0, 0, ms), w: ms * 1.08 };
+                    if (mark && n <= 6) return { g: ebMark(n, 0, 0, ms), w: ms };
+                    if (mark || t02) {
+                        s = mark ? String(n) : n + '.';
+                        return { g: textStr(s, 0, fs * 0.36, fs, false), w: textW(s, fs) };
+                    }
+                    side = Math.max(ms, textW(String(n), fs)) + fs * 0.34;
+                    return { g: '<rect x="' + (-side / 2).toFixed(2) + '" y="' + (-side / 2).toFixed(2) + '" width="' + side.toFixed(2) + '" height="' + side.toFixed(2) +
+                        '" fill="none" stroke="#000" stroke-width="0.5"/>' + textStr(String(n), 0, fs * 0.36, fs, false), w: side + 0.5 };
+                });
+                var w = Math.max.apply(null, parts.map(function (p) { return p.w; }).concat(ms)), px = Math.ceil(w * 2);
+                return { px: px, list: parts.map(function (p) {
+                    return p.g ? '<svg viewBox="' + (-px / 4) + ' -5 ' + (px / 2) + ' 10" width="' + px + '" height="20" font-family="Arial, sans-serif" fill="currentColor">' +
+                        p.g.replace(/#000/g, 'currentColor') + '</svg>' : '';
+                }) };
+            },
+            ebView: function () {
+                var rows = this.ebRows, from = this.ebDrag, to = this.ebOver;
+                if (from === null || to === null || from === to) return rows;
+                var v = rows.slice();
+                v.splice(to, 0, v.splice(from, 1)[0]);
+                return v;
+            },
+            qrOn: function () {
+                var s = this.settings;
+                return !!(s.them_ma_qr && window.KSUQR && (!s.tach_ma_qr || this.qrParts.some(function (f) { return s[f.key] !== false; })));
+            },
             ebMarkOn: function () {
-                if (this.settings.ma_dan_canh === false) return false;
-                return String(this.settings.kieu_ma_canh || 'so') === 'hinh';
+                return this.settings.ma_dan_canh !== false && String(this.settings.kieu_ma_canh) === 'hinh';
             },
-            curPresets: function () {
-                if (!this.notePop) return [];
-                return this.notePresets[this.notePop.key] || [];
-            },
-            temW: function () {
-                return Math.min(this.settings.kho_tem_rong || 60, this.settings.kho_tem_cao || 40);
-            },
-            temH: function () {
-                return Math.max(this.settings.kho_tem_rong || 60, this.settings.kho_tem_cao || 40);
-            },
-            landscape: function () {
-                return (this.settings.kho_tem_rong || 60) > (this.settings.kho_tem_cao || 40);
-            },
+            curPresets: function () { return this.notePop ? this.notePresets[this.notePop.key] : []; },
+            khoR: function () { return this.settings.kho_tem_rong || 60; },
+            khoC: function () { return this.settings.kho_tem_cao || 40; },
+            temW: function () { return Math.min(this.khoR, this.khoC); },
+            temH: function () { return Math.max(this.khoR, this.khoC); },
             dispAngle: function () {
-                var base = this.landscape ? 90 : 0;
-                return ((base - (this.settings.goc_xoay || 0) * 90) % 360 + 360) % 360;
+                return (((this.khoR > this.khoC ? 90 : 0) - (this.settings.goc_xoay || 0) * 90) % 360 + 360) % 360;
             },
-            scrollStyle: function () {
-                var g = this.temScale * 14 / 240;
-                return { gap: g + 'px ' + (g / 2) + 'px' };
+            sideways: function () { return this.dispAngle === 90 || this.dispAngle === 270; },
+            temRatio: function () { return this.sideways ? this.temW / this.temH : this.temH / this.temW; },
+            secStyle: function () {
+                var g = this.temScale * 14 / 240, w = this.temScale + 'px';
+                return { gridGap: g + 'px ' + (g / 2) + 'px', gridTemplateColumns: this.settings.mot_cot ? w : 'repeat(auto-fill, ' + w + ')' };
             },
+            headStyle: function () { return { marginBottom: (8 - this.temScale * 14 / 240) + 'px' }; },
             temBoxStyle: function () {
                 var boxW = this.temScale;
-                var land = (this.dispAngle === 90 || this.dispAngle === 270);
-                if (land) {
+                if (this.sideways) {
                     return {
                         width: boxW + 'px',
-                        aspectRatio: this.temH + ' / ' + this.temW,
+                        height: (boxW * this.temW / this.temH) + 'px',
                         '--svgw': (boxW * this.temW / this.temH) + 'px',
                         '--svgh': boxW + 'px'
                     };
                 }
-                return { width: boxW + 'px', aspectRatio: this.temW + ' / ' + this.temH };
+                return { width: boxW + 'px', height: (boxW * this.temH / this.temW) + 'px' };
             },
-            selCount: function () {
+            selParts: function () {
                 var self = this;
-                return this.visible.filter(function (pi) { return self.selSet[pi]; }).length;
-            },
-            outParts: function () {
-                var self = this;
-                if (!this.selCount) return this.visible;
                 return this.visible.filter(function (pi) { return self.selSet[pi]; });
             },
-            visible: function () {
-                var self = this;
-                var pis = [];
-                var mats = this.materials;
-                mats.forEach(function (m) {
-                    m.sheets.forEach(function (sid) {
-                        if (self.sheets[sid]) pis = pis.concat(self.sheets[sid].parts);
-                    });
-                });
-                pis = pis.filter(function (pi) { return !self.off[pi]; });
-                var q = String(this.searchText || '').trim().toLowerCase();
-                if (q) {
-                    var terms = q.split(/[,\n]/).map(function (t) { return t.trim(); })
-                        .filter(function (t) { return t.length; });
-                    if (terms.length) {
-                        pis = pis.filter(function (pi) {
-                            var txt = self.partText(pi);
-                            return terms.some(function (t) { return txt.indexOf(t) >= 0; });
-                        });
-                    }
+            selCount: function () { return this.selParts.length; },
+            outItems: function () {
+                if (this.selCount) return this.selParts;
+                return this.cards.reduce(function (a, c) { return a.concat(c.cover ? (c.svg ? [c] : []) : c.tems); }, []);
+            },
+            coverAt: function () {
+                var v = parseInt(this.settings.vi_tri_bia, 10), n = this.materials.length;
+                return v < 0 ? n : Math.min(n, v > 0 ? v : 0);
+            },
+            rows: function () {
+                var r = this.materials.slice();
+                r.splice(this.coverAt, 0, coverRow);
+                return r;
+            },
+            cover: function () {
+                if (!this.sections.length) return null;
+                var it = { cover: true, id: 'bia', on: !!this.settings.bia_ghi_chu };
+                if (it.on) {
+                    it.svg = this.coverDraw().svg;
+                    it.edit = this.coverDraw(true);
                 }
-                return pis;
+                return it;
+            },
+            cards: function () {
+                var self = this, cv = this.cover, at = this.coverAt, out = [];
+                this.sections.forEach(function (sec) {
+                    if (cv && self.materials.indexOf(sec.m) >= at) { out.push(cv); cv = null; }
+                    out.push(sec);
+                });
+                if (cv) out.push(cv);
+                return out;
+            },
+            sections: function () {
+                var self = this;
+                var terms = String(this.searchText || '').toLowerCase().split(/[,\n]/).map(function (t) { return t.trim(); })
+                    .filter(function (t) { return t.length; });
+                return this.materials.map(function (m) {
+                    var all = terms.length ? self.matParts(m).filter(function (pi) {
+                        var txt = self.partText(pi);
+                        return terms.some(function (t) { return txt.indexOf(t) >= 0; });
+                    }) : self.matParts(m);
+                    var tems = all.filter(function (pi) { return !self.off[pi]; });
+                    return { m: m, all: all, tems: tems, state: !tems.length ? 'off' : tems.length === all.length ? 'on' : 'indet' };
+                }).filter(function (sec) { return sec.all.length; });
+            },
+            visible: function () {
+                return this.sections.reduce(function (a, sec) { return a.concat(sec.tems); }, []);
             }
         },
-        watch: (function () {
-            var w = {
-                temW: function () { this.invalidateSvg(); },
-                temH: function () { this.invalidateSvg(); }
-            };
-            ['kieu_tem', 'do_dam_canh', 'tu_dong_xoay', 'ghi_chu_them', 'ghi_chu_them_2', 'co_chu', 'tach_co_chu',
-                'co_chu_tieu_de', 'co_chu_thong_tin', 'co_chu_ky_hieu', 'co_chu_id', 'co_chu_ghi_chu', 'them_ma_qr',
-                'hien_vat_lieu', 'hien_kich_thuoc', 'moc_khoan_ngang', 'ma_dan_canh', 'tach_ma_canh', 'ma_canh_ten',
-                'ma_canh_do_day_canh', 'ngan_cach', 'kieu_ma_canh'].forEach(function (k) {
-                w['settings.' + k] = function () { this.invalidateSvg(); };
-            });
-            return w;
-        })(),
+        watch: ['temW', 'temH'].concat(['kieu_tem', 'do_dam_canh', 'tu_dong_xoay', 'ghi_chu_them', 'ghi_chu_them_2', 'co_chu', 'tach_co_chu',
+            'co_chu_tieu_de', 'co_chu_thong_tin', 'co_chu_ky_hieu', 'co_chu_id', 'co_chu_ghi_chu', 'them_ma_qr',
+            'tach_ma_qr', 'ma_qr_id', 'ma_qr_ten', 'ma_qr_code_1', 'ma_qr_code_2', 'ma_qr_code_3', 'hien_vat_lieu', 'hien_kich_thuoc', 'moc_khoan_ngang', 'ma_dan_canh', 'tach_ma_canh', 'ma_canh_ten',
+            'ma_canh_do_day_canh', 'ngan_cach', 'kieu_ma_canh'].map(function (k) { return 'settings.' + k; }))
+            .reduce(function (w, k) { w[k] = 'invalidateSvg'; return w; }, { 'settings.bia_logo': 'loadLogo' }),
         methods: {
             saveSetting: function (key) {
                 var v = this.settings[key];
-                skp('save_setting', key + '@' + v);
+                skp('save_setting', key + '@' + (typeof v === 'string' ? JSON.stringify(v) : v));
             },
+            setSetting: function (key, v) { this.settings[key] = v; this.saveSetting(key); },
+            toggleSetting: function (key) { this.setSetting(key, !this.settings[key]); },
+            setNoteOpen: function (v) { this.settings.thong_bao_mo = v; this.saveSetting('thong_bao_mo'); },
             openNotePop: function (key, e) {
-                if (this.notePop && this.notePop.key === key) {
-                    this.closeNotePop();
-                    return;
-                }
+                var same = this.notePop && this.notePop.key === key;
                 this.closeNotePop();
-                var r = e.currentTarget.getBoundingClientRect();
+                if (same) return;
                 this.notePop = { key: key, text: String(this.settings[key] || ''), x: 0, y: 0 };
-                var self = this;
-                this.$nextTick(function () {
-                    var t = self.$refs.noteInput;
-                    if (!t || !self.notePop) return;
-                    var pop = t.closest('.text-popup');
-                    var w = pop.offsetWidth;
-                    var h = pop.offsetHeight;
-                    var x = r.left + r.width / 2 - w / 2;
-                    var mx = document.documentElement.clientWidth - w - 6;
-                    if (x < 6) x = 6;
-                    if (x > mx) x = mx;
-                    var y = r.bottom + 4;
-                    if (y + h > document.documentElement.clientHeight - 6) y = r.top - 4 - h;
-                    if (y < 6) y = 6;
-                    self.notePop.x = Math.round(x);
-                    self.notePop.y = Math.round(y);
-                    t.focus();
-                    t.setSelectionRange(t.value.length, t.value.length);
-                });
+                ksuPlacePopup(this, 'notePop', 'noteInput', e.currentTarget.getBoundingClientRect());
             },
             closeNotePop: function () {
                 var p = this.notePop;
                 if (!p) return;
                 this.notePop = null;
                 var t = String(p.text || '').trim();
-                if (String(this.settings[p.key] || '') === t) return;
-                this.settings[p.key] = t;
-                this.saveSetting(p.key);
+                if (String(this.settings[p.key] || '') !== t) this.setSetting(p.key, t);
             },
             addNotePreset: function () {
                 if (!this.notePop) return;
-                var t = String(this.notePop.text || '').trim();
-                if (!t) return;
-                var list = this.notePresets[this.notePop.key];
-                if (!list || list.indexOf(t) >= 0) return;
-                list.push(t);
-                this.saveNotePresets(this.notePop.key);
+                var t = String(this.notePop.text || '').trim(), list = this.notePresets[this.notePop.key];
+                if (t && list.indexOf(t) < 0) { list.push(t); this.saveNotePresets(this.notePop.key); }
             },
             useNotePreset: function (t) {
                 if (!this.notePop) return;
@@ -1103,137 +1222,45 @@
             },
             delNotePreset: function (i) {
                 if (!this.notePop) return;
-                var list = this.notePresets[this.notePop.key];
-                if (!list) return;
-                list.splice(i, 1);
+                this.notePresets[this.notePop.key].splice(i, 1);
                 this.saveNotePresets(this.notePop.key);
             },
             saveNotePresets: function (key) {
-                var sk = key === 'ghi_chu_them_2' ? 'ghi_chu_preset_2' : 'ghi_chu_preset';
-                skp('save_setting', sk + '@' + JSON.stringify(this.notePresets[key] || []));
+                skp('save_setting', (key === 'ghi_chu_them_2' ? 'ghi_chu_preset_2' : 'ghi_chu_preset') + '@' + JSON.stringify(this.notePresets[key]));
             },
-            changeOrder: function () {
-                this.saveSetting('thu_tu_in');
-                this.resortParts();
-            },
-            changeCorner: function () {
-                this.saveSetting('goc_bat_dau');
-                this.resortParts();
-            },
-            changeSort: function () {
-                this.saveSetting('sap_xep');
-                this.resortParts();
-            },
-            dragStart: function (i, e) {
-                e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('text/plain', '');
-                var row = e.target.closest('.it-mat');
-                if (row && e.dataTransfer.setDragImage) {
-                    var rr = row.getBoundingClientRect();
-                    e.dataTransfer.setDragImage(row, e.clientX - rr.left, e.clientY - rr.top);
-                }
-                this._dragging = true;
-                var self = this;
-                setTimeout(function () {
-                    if (!self._dragging) return;
-                    self.dragIdx = i;
-                    self.overIdx = null;
-                    self.$nextTick(function () {
-                        if (!self._dragging) return;
-                        var rows = self.$el.querySelectorAll('.it-tree > div:not(.it-drag-src)');
-                        var mids = [];
-                        for (var k = 0; k < rows.length; k++) {
-                            var r = rows[k].getBoundingClientRect();
-                            mids.push(r.top + r.height / 2);
-                        }
-                        self._mids = mids;
-                    });
-                }, 0);
-            },
-            dragOverList: function (e) {
-                if (this.dragIdx === null || !this._mids) return;
-                e.dataTransfer.dropEffect = 'move';
-                var v = this._mids.length;
-                for (var i = 0; i < this._mids.length; i++) {
-                    if (e.clientY < this._mids[i]) { v = i; break; }
-                }
-                this.overIdx = v < this.dragIdx ? v : v + 1;
-            },
-            dropRow: function () {
-                if (this.dragIdx === null || this.overIdx === null) {
-                    this.dragEnd();
-                    return;
-                }
-                var from = this.dragIdx;
-                var to = this.overIdx;
-                this.dragEnd();
-                var mats = this.materials.slice();
-                var item = mats[from];
-                if (!item) return;
-                var next = to < mats.length ? mats[to] : null;
-                if (next === item) return;
-                mats.splice(from, 1);
-                var at = next ? mats.indexOf(next) : mats.length;
-                mats.splice(at, 0, item);
-                this.materials = mats;
-                this.saveMatOrder();
-            },
-            dragEnd: function () {
-                this._dragging = false;
-                this.dragIdx = null;
-                this.overIdx = null;
-                this._mids = null;
-            },
-            saveMatOrder: function () {
-                var keys = this.materials.map(function (m) { return m.key; });
-                skp('save_setting', 'thu_tu_vat_lieu@' + JSON.stringify(keys));
+            changeOrder: function (key) { this.saveSetting(key); this.resortParts(); },
+            saveOrder: function () {
+                skp('save_setting', 'thu_tu_vat_lieu@' + JSON.stringify(this.materials.map(function (m) { return m.key; })));
             },
             applyMatOrder: function (order) {
                 if (!order || !order.length) return;
-                var pos = {};
+                var pos = {}, n = this.materials.length;
                 order.forEach(function (k, i) { pos[String(k)] = i; });
-                var n = this.materials.length;
                 this.materials = this.materials.map(function (m, i) {
-                    var p = pos.hasOwnProperty(String(m.key)) ? pos[String(m.key)] : n + i;
-                    return { m: m, p: p };
+                    return { m: m, p: pos.hasOwnProperty(String(m.key)) ? pos[String(m.key)] : n + i };
                 }).sort(function (a, b) { return a.p - b.p; }).map(function (x) { return x.m; });
             },
             resortParts: function () {
-                var self = this;
-                if (String(this.settings.thu_tu_in || 'so_tam') === 'so_tam') {
-                    var dir = String(this.settings.sap_xep || 'tang_dan') === 'giam_dan' ? -1 : 1;
-                    Object.keys(this.sheets).forEach(function (sid) {
-                        var sh = self.sheets[sid];
-                        if (!sh || !sh.parts) return;
-                        sh.parts = sh.parts.slice().sort(function (a, b) {
-                            var pa = self.parts[a], pb = self.parts[b];
-                            var la = pa && pa.lk ? 1 : 0;
-                            var lb = pb && pb.lk ? 1 : 0;
-                            if (la !== lb) return la - lb;
-                            var na = pa ? (Number(pa.id) || 0) : 0;
-                            var nb = pb ? (Number(pb.id) || 0) : 0;
-                            return dir * (na - nb);
-                        });
-                    });
-                    return;
-                }
-                var corner = String(this.settings.goc_bat_dau || 'trai_duoi');
+                var self = this, byId = String(this.settings.thu_tu_in || 'so_tam') === 'so_tam';
+                var dir = String(this.settings.sap_xep) === 'giam_dan' ? -1 : 1, corner = String(this.settings.goc_bat_dau);
                 Object.keys(this.sheets).forEach(function (sid) {
                     var sh = self.sheets[sid];
                     if (!sh || !sh.parts) return;
+                    if (byId) {
+                        sh.parts = sh.parts.slice().sort(function (a, b) {
+                            var pa = self.parts[a], pb = self.parts[b];
+                            return ((pa && pa.lk ? 1 : 0) - (pb && pb.lk ? 1 : 0)) || dir * ((pa ? (Number(pa.id) || 0) : 0) - (pb ? (Number(pb.id) || 0) : 0));
+                        });
+                        return;
+                    }
                     var cx = corner.indexOf('phai') >= 0 ? (sh.w || 0) : 0;
-                    var cy = corner.indexOf('tren') >= 0 ? (sh.h || 0) : 0;
-                    var keys = {};
+                    var cy = corner.indexOf('tren') >= 0 ? (sh.h || 0) : 0, keys = {};
                     sh.parts.forEach(function (pi) {
-                        var p = self.parts[pi];
-                        var pts = (p && p.poly && p.poly[0]) || [];
-                        var best = null, bd = Infinity;
+                        var p = self.parts[pi], pts = (p && p.poly && p.poly[0]) || [], best = [cx, cy], bd = Infinity;
                         for (var i = 0; i < pts.length; i++) {
-                            var dx = pts[i][0] - cx, dy = pts[i][1] - cy;
-                            var d = dx * dx + dy * dy;
+                            var dx = pts[i][0] - cx, dy = pts[i][1] - cy, d = dx * dx + dy * dy;
                             if (d < bd) { bd = d; best = pts[i]; }
                         }
-                        if (!best) best = [cx, cy];
                         keys[pi] = [p && p.lk ? 1 : 0, Math.round(Math.abs(best[1] - cy)), Math.abs(best[0] - cx), p ? (Number(p.id) || 0) : 0];
                     });
                     sh.parts = sh.parts.slice().sort(function (a, b) {
@@ -1242,231 +1269,207 @@
                     });
                 });
             },
-            validateTem: function (key) { this.stepTem(key, 0); },
-            stepTem: function (key, step) {
+            stepNum: function (key, step, def, lo, hi, dp) {
                 var n = parseFloat(this.settings[key]);
-                if (isNaN(n)) n = 20;
-                n = Math.min(200, Math.max(20, n + step));
-                this.settings[key] = parseFloat(n.toFixed(1));
-                this.saveSetting(key);
+                this.setSetting(key, parseFloat(Math.min(hi, Math.max(lo, (isNaN(n) ? def : n) + step)).toFixed(dp)));
             },
+            stepTem: function (key, step) { this.stepNum(key, step, 20, 20, 200, 1); },
             stepBold: function (step) {
                 var n = parseInt(this.settings.do_dam_canh, 10);
-                if (isNaN(n)) n = 1;
-                this.settings.do_dam_canh = Math.min(5, Math.max(1, n + step));
-                this.saveSetting('do_dam_canh');
-            },
-            toggleEbLock: function () {
-                this.settings.tach_ma_canh = !this.settings.tach_ma_canh;
-                this.saveSetting('tach_ma_canh');
+                this.setSetting('do_dam_canh', Math.min(5, Math.max(1, (isNaN(n) ? 1 : n) + step)));
             },
             saveSep: function () {
-                var v = String(this.settings.ngan_cach == null ? '' : this.settings.ngan_cach).trim().slice(0, 1);
-                if (this.settings.ngan_cach !== v) this.settings.ngan_cach = v;
-                this.saveSetting('ngan_cach');
+                this.setSetting('ngan_cach', String(this.settings.ngan_cach == null ? '' : this.settings.ngan_cach).trim().slice(0, 1));
             },
             ebName: function (e) {
-                var raw = String(e[4] == null ? '' : e[4]);
-                if (e.length < 10) return ebDash(e) ? ebParse(raw)[0] : raw;
-                var s = this.settings;
-                var sep = !!s.tach_ma_canh;
-                var sepCh = String(s.ngan_cach == null ? '-' : s.ngan_cach).trim().slice(0, 1);
-                var glue = sepCh ? ' ' + sepCh + ' ' : ' ';
+                if (e.length < 10) return ebDash(e) ? ebParse(e[4])[0] : String(e[4] == null ? '' : e[4]);
+                var s = this.settings, sep = !!s.tach_ma_canh;
+                var sepCh = String(s.ngan_cach == null ? '-' : s.ngan_cach).trim().slice(0, 1), glue = sepCh ? ' ' + sepCh + ' ' : ' ';
                 var out = (!sep || s.ma_canh_ten !== false) && e[6] ? String(e[6]) : '';
-                if (!ebDash(e) && (!sep || s.ma_canh_do_day_canh !== false) && e[9]) {
-                    out += (out ? glue : '') + e[9] + 'mm';
-                }
+                if (!ebDash(e) && (!sep || s.ma_canh_do_day_canh !== false) && e[9]) out += (out ? glue : '') + e[9] + 'mm';
                 return out;
             },
-            toggleFontLock: function () {
-                this.settings.tach_co_chu = !this.settings.tach_co_chu;
-                this.saveSetting('tach_co_chu');
+            qrData: function (p) {
+                var s = this.settings, on = function (k) { return !s.tach_ma_qr || s[k] !== false; };
+                var head = [], out = [];
+                if (on('ma_qr_id')) head.push(String(p.id));
+                if (on('ma_qr_ten')) head.push(String(p.name || ''));
+                if (head.length) out.push(head.join('.'));
+                [1, 2, 3].forEach(function (i) { if (on('ma_qr_code_' + i)) out.push(String(p['code' + i] || '')); });
+                return out.join(',');
             },
-            stepFontScale: function (step) {
-                var n = parseFloat(this.settings.co_chu);
-                if (isNaN(n)) n = 100;
-                n = Math.min(200, Math.max(50, n + step));
-                this.settings.co_chu = Math.round(n);
-                this.saveSetting('co_chu');
-            },
-            validateFontScale: function () { this.stepFontScale(0); },
-            stepFontPart: function (key, step) {
-                var n = parseFloat(this.settings[key]);
-                if (isNaN(n)) n = 2;
-                n = Math.min(3, Math.max(1, n + step));
-                this.settings[key] = parseFloat(n.toFixed(1));
-                this.saveSetting(key);
-            },
-            validateFontPart: function (key) { this.stepFontPart(key, 0); },
-            resetFontScale: function () {
-                if (this.settings.tach_co_chu) return;
-                this.settings.co_chu = 100;
-                this.saveSetting('co_chu');
-            },
-            resetFontPart: function (f) {
-                this.settings[f.key] = f.def;
-                this.saveSetting(f.key);
-            },
+            stepFontScale: function (step) { this.stepNum('co_chu', step, 100, 50, 200, 0); },
+            stepFontPart: function (key, step) { this.stepNum(key, step, 2, 1, 3, 1); },
+            resetFontScale: function () { if (!this.settings.tach_co_chu) this.setSetting('co_chu', 100); },
+            resetFontPart: function (f) { this.setSetting(f.key, f.def); },
             fontMm: function (key, def) {
                 if (this.settings.tach_co_chu) {
                     var v = parseFloat(this.settings[key]);
-                    if (isNaN(v) || v <= 0) v = def;
-                    return Math.min(3, Math.max(1, v));
+                    return Math.min(3, Math.max(1, v > 0 ? v : def));
                 }
                 var sc = parseFloat(this.settings.co_chu);
-                if (isNaN(sc) || sc <= 0) sc = 100;
-                return def * sc / 100;
+                return def * (sc > 0 ? sc : 100) / 100;
             },
-            reloadData: function () {
-                skp('reload_data', '');
-            },
-            zoomStep: function (d) {
-                this.setScale(this.temScale + d * 40);
-            },
-            setScale: function (v) {
-                this.temScale = Math.max(20, v);
-                this.settings.ty_le_zoom = this.temScale;
-                this.saveSetting('ty_le_zoom');
-            },
-            rotCCW: function () {
-                this.settings.goc_xoay = ((this.settings.goc_xoay || 0) + 1) % 4;
-                this.saveSetting('goc_xoay');
-            },
-            toggleMotCot: function () {
-                this.settings.mot_cot = !this.settings.mot_cot;
-                this.saveSetting('mot_cot');
-            },
-            scrollByPct: function (dir) {
-                var el = this.$refs.scroll;
-                if (!el) return;
-                var range = el.scrollHeight - el.clientHeight;
-                if (range <= 0) return;
-                el.scrollTop += dir * range * 0.1;
-            },
+            reloadData: function () { skp('reload_data', ''); },
+            zoomStep: function (d) { this.setScale(this.temScale + d * 40); },
+            setScale: function (v) { this.temScale = Math.max(20, v); this.setSetting('ty_le_zoom', this.temScale); },
+            rotCCW: function () { this.setSetting('goc_xoay', ((this.settings.goc_xoay || 0) + 1) % 4); },
             matParts: function (m) {
                 var self = this;
-                var pis = [];
-                m.sheets.forEach(function (sid) {
-                    if (self.sheets[sid]) pis = pis.concat(self.sheets[sid].parts);
+                return m.sheets.reduce(function (a, sid) { return a.concat(self.sheets[sid] ? self.sheets[sid].parts : []); }, []);
+            },
+            toggleGroup: function (pis) {
+                var self = this, val = pis.some(function (pi) { return !self.off[pi]; });
+                for (var i = 0; i < pis.length; i++) this.$set(this.off, pis[i], val);
+            },
+            secKey: function (sec) { return sec.cover ? '#bia' : 'm' + sec.m.key; },
+            openTems: function (sec) {
+                if (this.fold[this.secKey(sec)]) return [];
+                return sec.cover ? (sec.svg ? [sec] : []) : sec.tems;
+            },
+            toggleFold: function (sec) {
+                var k = this.secKey(sec);
+                this.$set(this.fold, k, !this.fold[k]);
+            },
+            secDragStart: function (i, e) {
+                var self = this;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', '');
+                this._secFrom = i;
+                setTimeout(function () { if (self._secFrom === i) self.secDrag = i; }, 0);
+            },
+            secDragOver: function (e) {
+                var from = this._secFrom;
+                if (from == null) return;
+                e.dataTransfer.dropEffect = 'move';
+                var els = this.$refs.scroll.querySelectorAll('.it-sec'), v = 0;
+                while (v < els.length) {
+                    var r = els[v].getBoundingClientRect();
+                    if (e.clientY < r.top + r.height / 2) break;
+                    v++;
+                }
+                this.secOver = v === from || v === from + 1 ? null : v;
+            },
+            secDragEnd: function () {
+                this._secFrom = null;
+                this.secDrag = this.secOver = null;
+            },
+            secDrop: function () {
+                var from = this._secFrom, to = this.secOver, cards = this.cards;
+                this.secDragEnd();
+                if (from == null || to === null || !cards[from]) return;
+                var item = function (c) { return c.cover ? coverRow : c.m; }, src = item(cards[from]);
+                var rows = this.rows.filter(function (r) { return r !== src; });
+                rows.splice(to < cards.length ? rows.indexOf(item(cards[to])) : rows.indexOf(item(cards[cards.length - 1])) + 1, 0, src);
+                var at = rows.indexOf(coverRow);
+                this.materials = rows.filter(function (r) { return r !== coverRow; });
+                this.saveOrder();
+                if (at !== this.coverAt) this.setSetting('vi_tri_bia', at && at === rows.length - 1 ? -1 : at);
+            },
+            coverBox: function (b) {
+                var W = this.temW, H = this.temH, ppm = this.temScale / (this.sideways ? H : W);
+                return { left: b.x / W * 100 + '%', top: b.y / H * 100 + '%', width: b.w / W * 100 + '%', height: b.h / H * 100 + '%',
+                    fontSize: b.size * ppm + 'px', lineHeight: (b.line || b.size) * ppm + 'px', padding: (b.pad || 0) * ppm + 'px' };
+            },
+            openEb: function (e) {
+                if (!this.ebRows.length) return;
+                var self = this, x = e.clientX, y = e.clientY;
+                this._ebSnap = JSON.stringify(this.ebCfg);
+                this.ebPos = { x: x + 4, y: y + 4 };
+                this.ebOpen = true;
+                this.$nextTick(function () {
+                    var m = self.$refs.ebModal, de = document.documentElement;
+                    if (!m) return;
+                    var w = m.offsetWidth, h = m.offsetHeight, vw = de.clientWidth, vh = de.clientHeight;
+                    self.ebPos = {
+                        x: Math.round(Math.max(6, Math.min(x + 4, vw - w - 6))),
+                        y: Math.round(Math.max(6, y + 4 + h > vh - 6 ? Math.min(y - 4 - h, vh - h - 6) : y + 4))
+                    };
                 });
-                return pis;
             },
-            groupState: function (pis) {
-                if (!pis.length) return 'off';
-                var on = 0;
-                for (var i = 0; i < pis.length; i++) {
-                    if (!this.off[pis[i]]) on++;
-                }
-                if (on === 0) return 'off';
-                if (on === pis.length) return 'on';
-                return 'indet';
+            closeEb: function () {
+                var cfg = JSON.stringify(this.ebCfg);
+                this.ebOpen = false;
+                if (cfg !== this._ebSnap) skp('save_eb', cfg);
             },
-            matState: function (m) {
-                return this.groupState(this.matParts(m));
+            setEb: function (order, off) {
+                this.ebCfg = { order: order, off: off };
+                this.invalidateSvg();
             },
-            sheetState: function (sid) {
-                return this.groupState(this.sheets[sid] ? this.sheets[sid].parts : []);
+            toggleEb: function (nm) {
+                var off = this.ebCfg.off.filter(function (x) { return x !== nm; });
+                if (off.length === this.ebCfg.off.length) off.push(nm);
+                this.setEb(this.ebNames.num.slice(), off);
             },
-            setGroupOff: function (pis, val) {
-                for (var i = 0; i < pis.length; i++) {
-                    this.$set(this.off, pis[i], val);
-                }
+            ebDragStart: function (i, e) {
+                if (this.ebRows[i].dash) return e.preventDefault();
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', '');
+                this.ebDrag = i;
+                this.ebOver = null;
             },
-            toggleMat: function (m) {
-                var pis = this.matParts(m);
-                this.setGroupOff(pis, this.groupState(pis) !== 'off');
+            ebDragOver: function (i) { if (this.ebDrag !== null && !this.ebRows[i].dash) this.ebOver = i; },
+            ebDrop: function (i) {
+                var from = this.ebDrag, order = this.ebNames.num.slice();
+                this.ebDrag = this.ebOver = null;
+                if (from === null || i >= order.length || from === i) return;
+                order.splice(i, 0, order.splice(from, 1)[0]);
+                this.setEb(order, this.ebCfg.off.slice());
             },
-            toggleSheet: function (sid) {
-                var pis = this.sheets[sid] ? this.sheets[sid].parts : [];
-                this.setGroupOff(pis, this.groupState(pis) !== 'off');
+            pickLogo: function () { skp('pick_logo', ''); },
+            setLogo: function (src) {
+                var self = this, img = new Image();
+                img.onload = function () {
+                    var w = img.naturalWidth || 300, h = img.naturalHeight || 300, side = Math.min(480, Math.max(w, h)), k = side / Math.max(w, h);
+                    var cv = document.createElement('canvas'), ctx, dw = Math.round(w * k), dh = Math.round(h * k);
+                    cv.width = cv.height = Math.max(1, Math.round(side));
+                    ctx = cv.getContext('2d');
+                    ctx.fillStyle = '#fff';
+                    ctx.fillRect(0, 0, cv.width, cv.height);
+                    ctx.drawImage(img, (cv.width - dw) / 2, (cv.height - dh) / 2, dw, dh);
+                    self.setSetting('bia_logo', cv.toDataURL('image/jpeg', 0.9));
+                };
+                img.src = src;
             },
-            togglePart: function (pi) {
-                this.$set(this.off, pi, !this.off[pi]);
+            loadLogo: function (src) {
+                var self = this, img = new Image();
+                this.logoSize = null;
+                if (!src) return;
+                img.onload = function () { if (self.settings.bia_logo === src) self.logoSize = { w: img.naturalWidth || 1, h: img.naturalHeight || 1 }; };
+                img.src = src;
             },
             partText: function (pi) {
-                if (!this._searchCache) this._searchCache = {};
                 if (this._searchCache[pi] !== undefined) return this._searchCache[pi];
-                var p = this.parts[pi];
-                var t = '';
+                var p = this.parts[pi], t = '';
                 if (p) {
-                    var bb = bboxOf(p.poly[0] || []);
-                    var szStr = fmtMm(Math.min(bb.w, bb.h)) + 'x' + fmtMm(Math.max(bb.w, bb.h));
-                    var ebNames = (p.ebs || []).map(function (e) {
+                    var bb = bboxOf(p.poly[0] || []), szStr = fmtMm(Math.min(bb.w, bb.h)) + 'x' + fmtMm(Math.max(bb.w, bb.h));
+                    var ebNames = p.ebs.map(function (e) {
                         return e.length < 10 ? e[4] : [e[4]].concat(e.slice(6, 10)).join(' ');
                     }).join(' ');
                     t = [p.id, p.name, p.mat, szStr, ebNames].join(' ').toLowerCase();
                 }
-                this._searchCache[pi] = t;
-                return t;
+                return (this._searchCache[pi] = t);
             },
             selectVisibleParts: function () {
-                var self = this;
-                var eids = [];
-                this.visible.forEach(function (pi) {
-                    var p = self.parts[pi];
-                    if (p && p.eid != null) eids.push(p.eid);
-                });
+                var self = this, eids = [];
+                this.visible.forEach(function (pi) { var p = self.parts[pi]; if (p && p.eid != null) eids.push(p.eid); });
                 if (eids.length) skp('select_parts', JSON.stringify(eids));
             },
-            clickMat: function (m) {
-                this.expandedSheets = {};
-                this.selSet = {};
-                if (this.sel.mat === m.key) {
-                    this.sel = { mat: null, part: null };
-                } else {
-                    this.sel = { mat: m.key, part: null };
-                }
-            },
-            clickSheet: function (sid) {
-                this.$set(this.expandedSheets, sid, !this.expandedSheets[sid]);
-            },
-            treeOrder: function () {
-                var self = this;
-                var pis = [];
-                this.materials.forEach(function (m) {
-                    if (m.key !== self.sel.mat) return;
-                    m.sheets.forEach(function (sid) {
-                        if (self.expandedSheets[sid] && self.sheets[sid]) pis = pis.concat(self.sheets[sid].parts);
-                    });
-                });
-                return pis;
-            },
-            copySel: function () {
-                var m = {};
-                for (var k in this.selSet) {
-                    if (this.selSet[k]) m[k] = true;
-                }
-                return m;
-            },
             applySelClick: function (pi, e, order) {
-                var add = !!(e && (e.ctrlKey || e.metaKey));
-                if (e && e.shiftKey && this.sel.part != null) {
-                    var a = order.indexOf(this.sel.part);
-                    var b = order.indexOf(pi);
+                var add = e.ctrlKey || e.metaKey, m = {};
+                if (add) for (var k in this.selSet) if (this.selSet[k]) m[k] = true;
+                if (e.shiftKey && this.anchor != null) {
+                    var a = order.indexOf(this.anchor), b = order.indexOf(pi);
                     if (a >= 0 && b >= 0) {
-                        var lo = Math.min(a, b);
-                        var hi = Math.max(a, b);
-                        var mr = add ? this.copySel() : {};
-                        for (var i = lo; i <= hi; i++) mr[order[i]] = true;
-                        this.selSet = mr;
+                        var lo = Math.min(a, b), hi = Math.max(a, b);
+                        for (var i = lo; i <= hi; i++) m[order[i]] = true;
+                        this.selSet = m;
                         return;
                     }
                 }
-                if (add) {
-                    var mt = this.copySel();
-                    if (mt[pi]) delete mt[pi]; else mt[pi] = true;
-                    this.selSet = mt;
-                } else {
-                    var ms = {};
-                    ms[pi] = true;
-                    this.selSet = ms;
-                }
-                this.sel = { mat: this.sel.mat, part: pi };
-            },
-            clickPart: function (pi, e) {
-                this.applySelClick(pi, e, this.treeOrder());
-                this.$set(this.shown, pi, true);
-                this.scrollToRef('tem' + pi);
+                if (add && m[pi]) delete m[pi]; else m[pi] = true;
+                this.selSet = m;
+                this.anchor = pi;
             },
             scrollToRef: function (name) {
                 var self = this;
@@ -1477,152 +1480,85 @@
                 });
             },
             matLabel: function (m) {
-                var n = String(m.name || '');
-                var t = Number(m.th) || 0;
-                if (!t) return n;
-                var base = n.replace(/\s*[-–]?\s*\d+(?:[.,]\d+)?\s*mm\s*$/i, '').trim() || n;
-                return base + ' - ' + fmtMm(t) + 'mm';
+                var n = String(m.name || ''), t = Number(m.th) || 0;
+                return t ? (n.replace(/\s*[-–]?\s*\d+(?:[.,]\d+)?\s*mm\s*$/i, '').trim() || n) + ' - ' + fmtMm(t) + 'mm' : n;
             },
-            setTab: function (t) {
-                if (this.leftTab === t) return;
-                this.leftTab = t;
-                var self = this;
-                this.$nextTick(function () {
-                    var el = self.$refs.leftScroll;
-                    if (!el) return;
-                    if (t === 'list' && self.sel.part != null) {
-                        var row = self.$refs['prow' + self.sel.part];
-                        if (Array.isArray(row)) row = row[0];
-                        if (row && row.scrollIntoView) {
-                            row.scrollIntoView({ block: 'center' });
-                            return;
-                        }
-                    }
-                    el.scrollTop = 0;
-                });
-            },
-            selectInTree: function (pi) {
-                var p = this.parts[pi];
-                if (!p) return;
-                var sid = p.sheet;
-                var mkey = null;
-                for (var i = 0; i < this.materials.length; i++) {
-                    if (this.materials[i].sheets.indexOf(sid) >= 0) { mkey = this.materials[i].key; break; }
-                }
-                this.expandedSheets = {};
-                var ms = {};
-                ms[pi] = true;
-                this.selSet = ms;
-                this.sel = { mat: mkey || this.sel.mat, part: pi };
-                this.$set(this.expandedSheets, sid, true);
-                this.scrollToRef('prow' + pi);
+            matText: function (p, sheet) {
+                var n = String(p.mat || '').trim(), t = Number(sheet.th) || 0;
+                var b = n.replace(/\s*[-–]?\s*\d+(?:[.,]\d+)?\s*mm\s*$/i, '').trim() || n;
+                return (t ? (b ? b + ' - ' : '') + fmtMm(t) : n).toUpperCase();
             },
             clickTem: function (pi, e) {
-                if (e && (e.ctrlKey || e.metaKey || e.shiftKey)) {
-                    this.applySelClick(pi, e, this.visible);
-                    return;
-                }
-                this.selectInTree(pi);
+                if (e.target.closest && e.target.closest('.it-ebl')) return this.openEb(e);
+                var self = this;
+                this.applySelClick(pi, e, this.cards.reduce(function (a, c) { return c.cover ? a : a.concat(self.openTems(c)); }, []));
             },
-            dblClickTem: function (pi) {
-                this.fitZoom();
-                this.scrollToRef('tem' + pi);
-            },
+            dblClickTem: function (pi) { this.fitZoom(); this.scrollToRef('tem' + pi); },
             fitZoom: function () {
-                var el = this.$refs.scroll;
-                if (!el) return;
-                var availW = el.clientWidth - 36;
-                var availH = el.clientHeight - 36;
+                var el = this.$refs.scroll, availW = el.clientWidth - 36, availH = el.clientHeight - 36;
                 if (availW <= 20 || availH <= 20) return;
-                var land = (this.dispAngle === 90 || this.dispAngle === 270);
-                var ratio = land ? (this.temW / this.temH) : (this.temH / this.temW);
-                var s = Math.min(availW, availH / ratio);
-                this.setScale(Math.floor(s));
+                this.setScale(Math.floor(Math.min(availW, availH / this.temRatio)));
             },
             clickBlank: function (e) {
                 if (e.offsetX >= e.target.clientWidth) return;
                 this.selSet = {};
-                if (this.sel.part == null) return;
-                this.sel = { mat: this.sel.mat, part: null };
+                this.anchor = null;
             },
-            dblClickBlank: function (e) {
-                if (e.offsetX >= e.target.clientWidth) return;
-                this.fitAll();
-            },
+            dblClickBlank: function (e) { if (e.offsetX >= e.target.clientWidth) return; this.fitAll(); },
             fitAll: function () {
-                var el = this.$refs.scroll;
-                var n = this.visible.length;
-                if (!el || !n) return;
-                var availW = el.clientWidth - 28;
-                var availH = el.clientHeight - 28;
-                if (availW <= 20 || availH <= 20) return;
-                var land = (this.dispAngle === 90 || this.dispAngle === 270);
-                var ratio = land ? (this.temW / this.temH) : (this.temH / this.temW);
-                var maxC = this.settings.mot_cot ? 1 : n;
-                var best = 20;
+                var self = this, el = this.$refs.scroll, availW = el.clientWidth - 28, availH = el.clientHeight - 28;
+                var counts = this.cards.map(function (c) { return self.openTems(c).length; }), n = Math.max.apply(null, counts.concat(0));
+                if (!n || availW <= 20 || availH <= 20) return;
+                var head = el.querySelector('.it-sec-head'), full = counts.filter(function (k) { return k; }).length;
+                var fixed = counts.length * (head ? head.offsetHeight : 0) + full * 8 + (counts.length - 1) * (parseFloat(getComputedStyle(el).rowGap) || 0);
+                var ratio = this.temRatio, maxC = this.settings.mot_cot ? 1 : n, best = 20;
                 for (var c = 1; c <= maxC; c++) {
-                    var r = Math.ceil(n / c);
-                    var sw = availW / (c + (c - 1) * 7 / 240);
-                    var sh = availH / (r * ratio + (r - 1) * 14 / 240);
-                    var s = Math.min(sw, sh);
+                    var r = counts.reduce(function (t, k) { return t + Math.ceil(k / c); }, 0);
+                    var s = Math.min(availW / (c + (c - 1) * 7 / 240), (availH - fixed) / (r * ratio + (r - full) * 14 / 240));
                     if (s > best) best = s;
                 }
                 this.setScale(Math.floor(best));
                 el.scrollTop = 0;
             },
             printTems: function () {
-                var pis = this.outParts;
+                var pis = this.outItems, self = this, kr = this.khoR, kc = this.khoC;
                 if (!pis.length) return;
-                var self = this;
-                var pa = document.getElementById('it-print-area');
-                if (!pa) return;
-                var kr = this.settings.kho_tem_rong || 60;
-                var kc = this.settings.kho_tem_cao || 40;
-                var buf = [];
-                pis.forEach(function (pi) {
-                    var inner = self.temSvg(pi);
-                    if (kr > kc) {
-                        inner = '<div style="width:' + self.temW + 'mm;height:' + self.temH +
-                            'mm;transform:rotate(90deg) translateY(-100%);transform-origin:top left;">' + inner + '</div>';
-                    }
-                    inner = '<div style="position:absolute;left:0;top:0;width:' + kr + 'mm;height:' + kc + 'mm;overflow:hidden;">' + inner + '</div>';
-                    buf.push('<div style="position:relative;width:' + kr + 'mm;height:' + (kc - 0.5) + 'mm;overflow:hidden;">' + inner + '</div>');
-                });
-                pa.innerHTML = buf.join('');
-                this.updatePageStyle();
+                document.getElementById('it-print-area').innerHTML = pis.map(function (pi) {
+                    var inner = typeof pi === 'number' ? self.temSvg(pi) : pi.svg;
+                    if (kr > kc) inner = '<div style="width:' + self.temW + 'mm;height:' + self.temH +
+                        'mm;transform:rotate(90deg) translateY(-100%);transform-origin:top left;">' + inner + '</div>';
+                    return '<div style="position:relative;width:' + kr + 'mm;height:' + (kc - 0.5) + 'mm;overflow:hidden;">' +
+                        '<div style="position:absolute;left:0;top:0;width:' + kr + 'mm;height:' + kc + 'mm;overflow:hidden;">' + inner + '</div></div>';
+                }).join('');
+                var st = document.getElementById('it-print');
+                if (!st) {
+                    st = document.createElement('style');
+                    st.id = 'it-print';
+                    document.head.appendChild(st);
+                }
+                st.textContent = '@page { size: ' + kr + 'mm ' + kc + 'mm; margin: 0; }';
                 setTimeout(function () { window.print(); }, 60);
             },
             requestExport: function (e) {
-                if (!this.outParts.length || this.exporting) return;
-                skp('export_request', e && e.shiftKey ? 'jpg' : 'pdf');
+                if (!this.outItems.length || this.exporting) return;
+                skp('export_request', e.shiftKey ? 'jpg' : 'pdf');
             },
             exportImages: function (fmt) {
-                var self = this;
-                var pis = self.outParts.slice();
+                var self = this, pis = self.outItems.slice(), kr = self.khoR, kc = self.khoC;
                 if (self.exporting || !pis.length) return;
                 self.exporting = true;
-                var kr = self.settings.kho_tem_rong || 60;
-                var kc = self.settings.kho_tem_cao || 40;
-                var rot = kr > kc;
-                var dpi = 300;
-                var outW = Math.round(kr / 25.4 * dpi);
-                var outH = Math.round(kc / 25.4 * dpi);
-                var pxW = Math.round(self.temW / 25.4 * dpi);
-                var pxH = Math.round(self.temH / 25.4 * dpi);
-                var mime = fmt === 'png' ? 'image/png' : 'image/jpeg';
+                var dpi = 300, outW = Math.round(kr / 25.4 * dpi), outH = Math.round(kc / 25.4 * dpi);
+                var pxW = Math.round(self.temW / 25.4 * dpi), pxH = Math.round(self.temH / 25.4 * dpi);
                 skp('img_begin', '');
-                var i = 0;
-                var next = function () {
+                var i = 0, next = function () {
                     if (i >= pis.length) {
                         skp('img_save', '');
                         self.exporting = false;
                         return;
                     }
-                    var pi = pis[i];
-                    var pp = self.parts[pi];
-                    var id = pp ? pp.id : (i + 1);
+                    var pi = pis[i], cover = typeof pi !== 'number', pp = cover ? null : self.parts[pi], id = cover ? pi.id : pp ? pp.id : (i + 1);
                     if (pp && pp.lk) id = String(id) + '_' + pp.sheet;
-                    var svg = self.buildSvg(pi).replace('<svg ', '<svg width="' + pxW + '" height="' + pxH + '" ');
+                    var svg = (cover ? pi.svg : self.buildSvg(pi)).replace('<svg ', '<svg width="' + pxW + '" height="' + pxH + '" ');
                     var img = new Image();
                     img.onload = function () {
                         try {
@@ -1630,14 +1566,10 @@
                             canvas.width = outW; canvas.height = outH;
                             var ctx = canvas.getContext('2d');
                             ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, outW, outH);
-                            if (rot) { ctx.translate(outW, 0); ctx.rotate(Math.PI / 2); }
+                            if (kr > kc) { ctx.translate(outW, 0); ctx.rotate(Math.PI / 2); }
                             ctx.drawImage(img, 0, 0, pxW, pxH);
-                            var url = canvas.toDataURL(mime, 0.95);
-                            var b64 = url.substring(url.indexOf(',') + 1);
-                            var CH = 500000;
-                            for (var k = 0; k < b64.length; k += CH) {
-                                skp('img_data', b64.substr(k, CH));
-                            }
+                            var b64 = canvas.toDataURL(fmt === 'png' ? 'image/png' : 'image/jpeg', 0.95).split(',')[1];
+                            for (var k = 0; k < b64.length; k += 500000) skp('img_data', b64.substr(k, 500000));
                             skp('img_page', String(id));
                         } catch (err) {
                             skp('pdf_error', String(err && err.message || err));
@@ -1656,18 +1588,13 @@
                 next();
             },
             exportPdf: function () {
-                var self = this;
-                var pis = self.outParts.slice();
+                var self = this, pis = self.outItems.slice(), kr = self.khoR, kc = self.khoC;
                 if (self.exporting || !pis.length) return;
                 self.exporting = true;
-                var kr = self.settings.kho_tem_rong || 60;
-                var kc = self.settings.kho_tem_cao || 40;
                 setTimeout(function () {
                     try {
                         skp('pdf_begin', JSON.stringify({ w: self.temW, h: self.temH, kr: kr, kc: kc, rot: kr > kc }));
-                        for (var i = 0; i < pis.length; i++) {
-                            skp('pdf_svg', self.buildSvg(pis[i]));
-                        }
+                        for (var i = 0; i < pis.length; i++) skp('pdf_svg', typeof pis[i] === 'number' ? self.buildSvg(pis[i]) : pis[i].svg);
                         skp('pdf_save', '');
                     } catch (err) {
                         skp('pdf_error', String(err && err.message || err));
@@ -1675,40 +1602,17 @@
                     self.exporting = false;
                 }, 30);
             },
-            updatePageStyle: function () {
-                var st = document.getElementById('it-print');
-                if (!st) {
-                    st = document.createElement('style');
-                    st.id = 'it-print';
-                    document.head.appendChild(st);
-                }
-                var kr = this.settings.kho_tem_rong || 60;
-                var kc = this.settings.kho_tem_cao || 40;
-                st.textContent = '@page { size: ' + kr + 'mm ' + kc + 'mm; margin: 0; }';
-            },
             normPoly: function (p, sheet) {
-                var sw = sheet.h > sheet.w;
-                var sW = sheet.w;
-                var mapPt = function (pt) { return sw ? [pt[1], sW - pt[0]] : [pt[0], pt[1]]; };
-                var outerM = (p.poly[0] || []).map(mapPt);
-                var bbM = bboxOf(outerM);
+                var sw = sheet.h > sheet.w, mapPt = function (pt) { return sw ? [pt[1], sheet.w - pt[0]] : [pt[0], pt[1]]; };
+                var bbM = bboxOf((p.poly[0] || []).map(mapPt));
                 var vertical = (this.settings.tu_dong_xoay !== false) && (bbM.h > bbM.w + 1e-6);
-                var cx = bbM.x + bbM.w / 2, cy = bbM.y + bbM.h / 2;
-                var xf = function (pt) {
+                var cx = bbM.x + bbM.w / 2, cy = bbM.y + bbM.h / 2, xf = function (pt) {
                     var q = rotPt(mapPt(pt), 180, cx, cy);
                     return vertical ? rotPt(q, -90, cx, cy) : q;
                 };
                 var loops = p.poly.map(function (lp) { return lp.map(xf); });
-                var drills = p.drills.map(function (d) {
-                    var row = [d[0], d[1]];
-                    for (var i = 2; i < d.length; i++) row.push(xf(d[i]));
-                    return row;
-                });
-                var ebs = p.ebs.map(function (e) {
-                    var a = xf([e[0], e[1]]);
-                    var b = xf([e[2], e[3]]);
-                    return [a[0], a[1], b[0], b[1], e[4]].concat(e.slice(5));
-                });
+                var drills = p.drills.map(function (d) { return [d[0], d[1]].concat(d.slice(2).map(xf)); });
+                var ebs = p.ebs.map(function (e) { return xf([e[0], e[1]]).concat(xf([e[2], e[3]]), [e[4]], e.slice(5)); });
                 var cups = (p.cups || []).map(function (c) { return [c[0], xf(c[1]), (c[2] || []).map(xf)]; });
                 var grooves = (p.grooves || []).map(function (g) { return g.map(xf); });
                 return { loops: loops, drills: drills, ebs: ebs, cups: cups, grooves: grooves, bb: bboxOf(loops[0]), vertical: vertical };
@@ -1716,11 +1620,9 @@
             invalidateSvg: function () {
                 this._svgCache = {};
                 this._mapCache = {};
-                if (!this.lazyEnabled || !this._io || !this.$refs.scroll) return;
+                if (!this._io) return;
                 var rb = this.$refs.scroll.getBoundingClientRect();
-                var top = rb.top - 400, bot = rb.bottom + 400;
-                var io = this._io;
-                var ns = {};
+                var top = rb.top - 400, bot = rb.bottom + 400, io = this._io, ns = {};
                 (this._lazyEls || []).forEach(function (el) {
                     var r = el.getBoundingClientRect();
                     if (r.bottom >= top && r.top <= bot) {
@@ -1733,453 +1635,306 @@
                 this.shown = ns;
             },
             temSvg: function (pi) {
-                if (!this._svgCache) this._svgCache = {};
                 if (this._svgCache[pi] !== undefined) return this._svgCache[pi];
-                var out = this.buildSvg(pi);
-                this._svgCache[pi] = out;
-                return out;
+                return (this._svgCache[pi] = this.buildSvg(pi, true));
             },
-            buildSvg: function (pi) {
-                return this.settings.kieu_tem === 'tem02' ? this.buildSvg02(pi) : this.buildSvg01(pi);
+            buildSvg: function (pi, hit) {
+                var p = this.parts[pi];
+                if (!p) return '';
+                var sheet = this.sheets[p.sheet] || { w: 0, h: 0, parts: [] };
+                return this.settings.kieu_tem === 'tem02' ? this.buildSvg02(p, sheet, pi, hit) : this.buildSvg01(p, sheet, pi, hit);
             },
-            ebNamesOf: function (n) {
-                var meIdx = this.ebIndex;
-                var ebSeen = {}, ebNames = [], ebDashOf = {};
-                var self = this;
+            ebFit: function (n, def, avail, maxH, tem02) {
+                var self = this, meIdx = this.ebIndex, markOn = this.ebMarkOn;
+                var seen = {}, names = [], dashOf = {};
                 if (this.settings.ma_dan_canh !== false) {
                     n.ebs.forEach(function (e) {
                         var nm = self.ebName(e);
-                        if (!nm || ebSeen[nm]) return;
-                        ebSeen[nm] = true;
-                        if (ebDash(e)) ebDashOf[nm] = true;
-                        ebNames.push(nm);
+                        if (!nm || seen[nm] || self.ebOff[nm]) return;
+                        seen[nm] = true;
+                        if (ebDash(e)) dashOf[nm] = true;
+                        names.push(nm);
                     });
-                    ebNames.sort(function (a, b) { return (meIdx[a] || 0) - (meIdx[b] || 0); });
+                    names.sort(function (a, b) { return (meIdx[a] || 0) - (meIdx[b] || 0); });
                 }
-                return { names: ebNames, dashOf: ebDashOf };
+                var sz = this.fontMm('co_chu_ky_hieu', def) / 0.72, gap = 2.5, cg = 1, pad = 0.7;
+                var rows = [], lineH = 0, wide = 0, guard = 0, sideOf = function (nm) {
+                    if (dashOf[nm] || (markOn && Number(meIdx[nm]) <= 6)) return sz * 0.72 + pad;
+                    return tem02 ? textW(String(meIdx[nm] || '') + '.', sz) : Math.max(sz * 0.72, textW(String(meIdx[nm] || ''), sz)) + pad;
+                };
+                var layout = function () {
+                    var rs = [], cur = [], cw = 0;
+                    names.forEach(function (nm) {
+                        var iw = sideOf(nm) + cg + textW(nm, sz);
+                        if (cur.length && cw + gap + iw > avail) { rs.push({ items: cur, w: cw }); cur = []; cw = 0; }
+                        cw += (cur.length ? gap : 0) + iw;
+                        cur.push(nm);
+                    });
+                    if (cur.length) rs.push({ items: cur, w: cw });
+                    wide = rs.reduce(function (m, r) { return r.w > m ? r.w : m; }, 0);
+                    lineH = sz * 0.72 + pad + (rs.length > 1 ? 0.55 : 1.2);
+                    return rs;
+                };
+                if (names.length) {
+                    rows = layout();
+                    while ((rows.length * lineH > maxH || wide > avail) && sz > 0.45 && guard++ < 80) {
+                        sz *= 0.94; gap *= 0.94; cg *= 0.94; pad *= 0.94;
+                        rows = layout();
+                    }
+                }
+                return {
+                    h: rows.length ? rows.length * lineH + sz * 0.4 : 0,
+                    draw: function (out, top, cx, hit) {
+                        var y = top + lineH / 2, x0 = cx - (tem02 ? wide : avail) / 2;
+                        rows.forEach(function (row) {
+                            var x = cx - (tem02 ? row.w : avail) / 2;
+                            row.items.forEach(function (nm) {
+                                var side = sideOf(nm), c = x + side / 2;
+                                if (side) {
+                                    if (dashOf[nm]) out.push(ebTri(c, y, sz * 0.72));
+                                    else if (markOn) out.push(ebMark(meIdx[nm], c, y, sz * 0.72));
+                                    else if (tem02) out.push(textStr(String(meIdx[nm] || '') + '.', x, y + sz * 0.36, sz, false, 'start'));
+                                    else out.push('<rect x="' + x.toFixed(2) + '" y="' + (y - side / 2).toFixed(2) +
+                                        '" width="' + side.toFixed(2) + '" height="' + side.toFixed(2) + '" fill="none" stroke="#000" stroke-width="0.12"/>' +
+                                        textStr(String(meIdx[nm] || ''), c, y + sz * 0.36, sz, false));
+                                }
+                                var tx = x + side + cg;
+                                out.push(textStr(nm, tx, y + sz * 0.36, sz, false, 'start'));
+                                x = tx + textW(nm, sz) + gap;
+                            });
+                            y += lineH;
+                        });
+                        if (hit && rows.length) out.push('<rect class="it-ebl" x="' + (x0 - 0.5).toFixed(2) + '" y="' + top.toFixed(2) + '" width="' + (wide + 1).toFixed(2) +
+                            '" height="' + (rows.length * lineH).toFixed(2) + '" fill="transparent"/>');
+                    }
+                };
             },
             nowStr: function () {
                 if (!this._nowCache) {
-                    var d = new Date();
-                    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+                    var d = new Date(), p = function (n) { return (n < 10 ? '0' : '') + n; };
                     this._nowCache = p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() +
                         '   ' + p(d.getHours()) + ':' + p(d.getMinutes());
                 }
                 return this._nowCache;
             },
-            buildSvg01: function (pi) {
-                var p = this.parts[pi];
-                if (!p) return '';
-                var sheet = this.sheets[p.sheet] || { w: 0, h: 0, parts: [] };
-                var W = this.temW, H = this.temH;
-                var extraNote2 = String(this.settings.ghi_chu_them_2 || '').trim();
-                var bx = 0.75;
-                var noteMm = this.fontMm('co_chu_ghi_chu', 1.8);
-                var rowH = Math.max(3.25, noteMm + 1.45);
-                var FR = bx + rowH * (extraNote2 ? 2 : 1);
-                var SQ = Math.min(W - 2 * bx, H - FR - 10);
-                var BR = H - FR - SQ;
-                var CELL = (BR - bx) / 2;
-                var LW = CELL + bx;
-                var n = this.normPoly(p, sheet);
-                var s = [];
-                var g2 = [];
-                s.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" xml:space="preserve" font-family="Arial, sans-serif" fill="#000">');
-                s.push('<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#fff"/>');
-                s.push('<rect x="' + bx + '" y="' + bx + '" width="' + (W - 2 * bx) + '" height="' + (H - 2 * bx) + '" fill="none" stroke="#000" stroke-width="0.15"/>');
+            coverDraw: function (edit) {
+                var W = this.temW, H = this.temH, st = this.settings, bx = 0.75, pad = 1.6, aw = W - 2 * bx - 2 * pad, x0 = bx + pad;
+                var top = bx, g = [], box = {}, self = this, idx = this.ebIndex, t02 = st.kieu_tem === 'tem02', head = 'GHI CHÚ';
+                var nm = this.fontMm('co_chu_ghi_chu', t02 ? 2 : 1.8), rh = Math.max(3.25, nm + 1.45), ls0 = this.fontMm('co_chu_thong_tin', 2) / 0.72;
+                var sz0 = this.logoSize, logo = st.bia_logo && sz0 ? st.bia_logo : '', qr = !!(logo || edit);
+                var note = String(st.bia_noi_dung || '').trim(), lines = note ? note.split(/\r?\n/) : [], legend = [], seen = {};
+                if (st.ma_dan_canh !== false) {
+                    this.visible.forEach(function (pi) {
+                        self.parts[pi].ebs.forEach(function (e) {
+                            var nm = self.ebName(e);
+                            if (nm && !seen[nm] && !self.ebOff[nm]) { seen[nm] = true; legend.push([nm, ebDash(e) ? 1 : 0]); }
+                        });
+                    });
+                    legend.sort(function (a, b) { return (a[1] - b[1]) || ((idx[a[0]] || 0) - (idx[b[0]] || 0)) || a[0].localeCompare(b[0], 'vi'); });
+                }
+                var n1 = String(st.ghi_chu_them || '').trim(), n2 = String(st.ghi_chu_them_2 || '').trim();
+                (t02 ? [n1, n2] : [n1 || this.nowStr(), n2]).forEach(function (t) {
+                    if (!t) return;
+                    var sz = fitText(t, nm / 0.72, W - 4);
+                    g.push(textStr(t, W / 2, top + rh / 2 + sz * 0.36, sz, false));
+                    top += rh;
+                    g.push(lineStr(bx, top, W - bx, top));
+                });
+                var qs, qx, tl, tr, tf, bh, ty, mid, foot;
+                if (t02) {
+                    var MT = H - bx - Math.min((H - 2 * bx) * 0.4, (W - 2 * bx) * 0.5), AV = MT - top, TZmax = AV * (qr ? 0.5 : 0.35);
+                    qs = qr ? Math.min(aw * 0.5, Math.max(12, Math.min((W - 2 * bx) * 0.4, AV * 0.25))) : 0;
+                    qx = bx;
+                    tl = qs > 5 ? bx + qs + 1 : bx + 2;
+                    tr = W - bx - 2;
+                    tf = fitTitle(head, this.fontMm('co_chu_tieu_de', 2) / 0.72, tr - tl, Math.max(0, TZmax - 2));
+                    bh = (tf.lines.length - 1) * tf.size * 1.4 + tf.size * 0.72;
+                    var TZ = Math.max(qs, Math.min(TZmax, bh + 2));
+                    ty = top + Math.max(0, TZ - bh) / 2 + tf.size * 0.72;
+                    tf.lines.forEach(function (t, i) { g.push(textStr(t, qs > 5 ? tl : W / 2, ty + i * tf.size * 1.4, tf.size, true, qs > 5 ? 'start' : 'middle')); });
+                    mid = top + TZ;
+                    foot = MT;
+                } else {
+                    var SQ = Math.min(W - 2 * bx, H - top - 10);
+                    qs = qr ? this.coverQr : 0;
+                    var THmax = qr ? qs : SQ * 0.55;
+                    qx = W / 2 - SQ / 2;
+                    tl = qs > 5 ? qx + qs + 1 : qx + 2;
+                    tr = W / 2 + SQ / 2 - 2;
+                    tf = fitTitle(head, this.fontMm('co_chu_tieu_de', 3) / 0.72, tr - tl, Math.max(0, THmax - 1.2));
+                    bh = (tf.lines.length - 1) * tf.size * 1.4 + tf.size * 0.72;
+                    var TH = qr ? THmax : Math.min(THmax, tf.lines.length * tf.size * 1.4 + 1.2);
+                    ty = top + Math.max(0, TH - bh) * 0.42 + tf.size * 0.72;
+                    tf.lines.forEach(function (t, i) { g.push(textStr(t, (tl + tr) / 2, ty + i * tf.size * 1.4, tf.size, true)); });
+                    mid = top + TH;
+                    foot = top + SQ;
+                }
+                var qi = qs * 0.07, qd = qs - 2 * qi;
+                if (logo) {
+                    var lw = qd * Math.min(1, sz0.w / sz0.h), lh = qd * Math.min(1, sz0.h / sz0.w);
+                    g.push('<image x="' + (qx + qi + (qd - lw) / 2).toFixed(2) + '" y="' + (top + qi + (qd - lh) / 2).toFixed(2) + '" width="' + lw.toFixed(2) +
+                        '" height="' + lh.toFixed(2) + '" preserveAspectRatio="none" href="' + logo + '"/>');
+                }
+                if (edit) box.logo = { x: qx + qi, y: top + qi, w: qd, h: qd, size: qd * 0.4 };
+                g.push(lineStr(bx, mid, W - bx, mid));
+                g.push(lineStr(bx, foot, W - bx, foot));
+                if (edit) box.eb = { x: bx + 0.5, y: mid + 0.5, w: W - 2 * bx - 1, h: foot - mid - 1, size: 0 };
+                if (legend.length) {
+                    var ls = ls0, lav = foot - mid - pad;
+                    while (legend.length * ls * 1.5 > lav && ls > 0.8) ls -= 0.05;
+                    var ll = ls * 1.5, ms = ls * 0.72, markOn = this.ebMarkOn, y = mid + pad / 2;
+                    var sideOf = function (en) { return en[1] || (markOn && idx[en[0]] <= 6) ? ms : Math.max(ms, textW(String(idx[en[0]]), ls)) + ls * 0.25; };
+                    var col = legend.reduce(function (m, en) { return Math.max(m, sideOf(en)); }, 0), cx = x0 + col / 2, tx = x0 + col + ls * 0.5;
+                    legend.forEach(function (en) {
+                        var id = idx[en[0]], cy = y + ll / 2, side = sideOf(en);
+                        if (en[1]) g.push(ebTri(cx, cy, ms));
+                        else if (markOn && id <= 6) g.push(ebMark(id, cx, cy, ms));
+                        else g.push('<rect x="' + (cx - side / 2).toFixed(2) + '" y="' + (cy - side / 2).toFixed(2) + '" width="' + side.toFixed(2) + '" height="' + side.toFixed(2) +
+                            '" fill="none" stroke="#000" stroke-width="0.12"/>' + textStr(String(id), cx, cy + ls * 0.36, ls, false));
+                        g.push(textStr(en[0], tx, cy + ls * 0.36, fitText(en[0], ls, W - bx - pad - tx), false, 'start'));
+                        y += ll;
+                    });
+                }
+                var fs = nm / 0.72 + 0.05, ah = H - bx - foot - 2 * pad, rows;
+                do {
+                    fs -= 0.05;
+                    rows = [];
+                    lines.forEach(function (t) { var w = wrapText(t, fs, aw); Array.prototype.push.apply(rows, w.length ? w : ['']); });
+                } while (fs > 0.8 && (rows.length * fs * 1.45 > ah || rows.some(function (t) { return textW(t, fs) > aw; })));
+                var fl = fs * 1.45;
+                if (edit) box.note = { x: bx + 0.5, y: foot + 0.5, w: W - 2 * bx - 1, h: H - bx - foot - 1, size: fs, line: fl, pad: pad - 0.5 };
+                else rows.forEach(function (t, i) { if (t) g.push(textStr(t, x0, foot + pad + i * fl + fl / 2 + fs * 0.36, fitText(t, fs, aw), false, 'start')); });
+                return { svg: svgHead(W, H, bx) + g.join('') + '</svg>', box: box };
+            },
+            buildSvg01: function (p, sheet, pi, hit) {
+                var W = this.temW, H = this.temH, extraNote2 = String(this.settings.ghi_chu_them_2 || '').trim(), bx = 0.75;
+                var noteMm = this.fontMm('co_chu_ghi_chu', 1.8), rowH = Math.max(3.25, noteMm + 1.45), FR = bx + rowH * (extraNote2 ? 2 : 1);
+                var SQ = Math.min(W - 2 * bx, H - FR - 10), BR = H - FR - SQ, CELL = (BR - bx) / 2;
+                var LW = CELL + bx, n = this.normPoly(p, sheet), s = [svgHead(W, H, bx)], g2 = [];
                 var line = function (x1, y1, x2, y2) { s.push(lineStr(x1, y1, x2, y2)); };
                 line(bx, FR, W - bx, FR);
                 line(bx, FR + SQ, W - bx, FR + SQ);
                 line(LW, FR + SQ, LW, H - bx);
                 line(bx, FR + SQ + CELL, LW, FR + SQ + CELL);
                 var text = function (str, x, y, size, bold, anchor, color) { s.push(textStr(str, x, y, size, bold, anchor, color)); };
-                var matName = String(p.mat || '').toUpperCase();
-                var szStr = fmtMm(Math.min(n.bb.w, n.bb.h)) + 'x' + fmtMm(Math.max(n.bb.w, n.bb.h));
-                var rowCy = bx + rowH / 2;
-                var infoParts = [];
-                if (this.settings.hien_kich_thuoc !== false) infoParts.push(szStr);
+                var matName = this.matText(p, sheet), infoParts = [];
+                if (this.settings.hien_kich_thuoc !== false) infoParts.push(fmtMm(Math.min(n.bb.w, n.bb.h)) + 'x' + fmtMm(Math.max(n.bb.w, n.bb.h)));
                 if (this.settings.hien_vat_lieu !== false && matName) infoParts.push(matName);
-                var info = infoParts.join('  —  ');
-                var meIdx = this.ebIndex;
-                var ebInfo = this.ebNamesOf(n);
-                var ebNames = ebInfo.names, ebDashOf = ebInfo.dashOf;
-                var extraNote = String(this.settings.ghi_chu_them || '').trim();
-                if (!extraNote) extraNote = this.nowStr();
-                var noteParts = [];
-                if (p.hinge && String(p.hinge).trim()) noteParts.push(String(p.hinge).trim());
-                if (p.gname && String(p.gname).trim()) noteParts.push(String(p.gname).trim());
-                var hasHinge = noteParts.length > 0;
-                var rsz = fitText(extraNote, noteMm / 0.72, W - 4);
-                text(extraNote, W / 2, rowCy + rsz * 0.36, rsz, false);
+                var info = infoParts.join('  —  '), extraNote = String(this.settings.ghi_chu_them || '').trim() || this.nowStr();
+                var hStr = hingeOf(p), rsz = fitText(extraNote, noteMm / 0.72, W - 4);
+                text(extraNote, W / 2, bx + rowH / 2 + rsz * 0.36, rsz, false);
                 if (extraNote2) {
                     line(bx, bx + rowH, W - bx, bx + rowH);
                     var rsz2 = fitText(extraNote2, noteMm / 0.72, W - 4);
                     text(extraNote2, W / 2, bx + rowH * 1.5 + rsz2 * 0.36, rsz2, false);
                 }
-                var hgH = hasHinge ? 2.6 : 0;
-                var markOn = this.ebMarkOn;
-                var nSz = this.fontMm('co_chu_ky_hieu', 1.5) / 0.72;
-                var nGap = 2.5, nCG = 1, bPad = 0.7;
-                var availNote = SQ - 3;
-                var ebRows = [], ebLineH = 0, ebWide = 0;
-                var sideOf = function (nm) {
-                    if (ebDashOf[nm]) return nSz * 0.72 + bPad;
-                    if (markOn && Number(meIdx[nm]) <= EB_MARKS) return nSz * 0.72 + bPad;
-                    return Math.max(nSz * 0.72, textW(String(meIdx[nm] || ''), nSz)) + bPad;
-                };
-                var ebLayout = function () {
-                    var rows = [], cur = [], cw = 0;
-                    ebWide = 0;
-                    ebNames.forEach(function (nm) {
-                        var iw = sideOf(nm) + nCG + textW(nm, nSz);
-                        if (cur.length && cw + nGap + iw > availNote) { rows.push({ items: cur, w: cw }); cur = []; cw = 0; }
-                        cw += (cur.length ? nGap : 0) + iw;
-                        cur.push(nm);
-                    });
-                    if (cur.length) rows.push({ items: cur, w: cw });
-                    rows.forEach(function (r) { if (r.w > ebWide) ebWide = r.w; });
-                    ebLineH = nSz * 0.72 + bPad + (rows.length > 1 ? 0.55 : 1.2);
-                    return rows;
-                };
-                if (ebNames.length) {
-                    var ebMaxH = Math.max(0, (SQ - hgH) * 0.4);
-                    var ebGuard = 0;
-                    ebRows = ebLayout();
-                    while ((ebRows.length * ebLineH > ebMaxH || ebWide > availNote) && nSz > 0.45 && ebGuard++ < 80) {
-                        nSz *= 0.94; nGap *= 0.94; nCG *= 0.94; bPad *= 0.94;
-                        ebRows = ebLayout();
-                    }
+                var hgH = hStr ? 2.6 : 0, eb = this.ebFit(n, 1.5, SQ - 3, Math.max(0, (SQ - hgH) * 0.4), false);
+                var qrOn = this.qrOn, THfix = (SQ - eb.h - hgH) * 0.4;
+                var THmax = qrOn ? THfix : (SQ - eb.h - hgH) * 0.55, infoMm = this.fontMm('co_chu_thong_tin', 1.5);
+                var topZone = info ? Math.min(infoMm + 1.1, THmax) : 0, tRight = W / 2 + SQ / 2 - 2;
+                var qs = qrOn ? THfix : 0, tLeft = qs > 5 ? (W / 2 - SQ / 2) + qs + 1 : W / 2 - SQ / 2 + 2, availW = tRight - tLeft;
+                var tFit = fitTitle(String(p.name || '').toUpperCase(), this.fontMm('co_chu_tieu_de', 3) / 0.72, availW, Math.max(0, THmax - topZone - 1.2));
+                var tLines = tFit.lines, tSize = tFit.size, lh = tSize * 1.4;
+                var TH = qrOn ? THfix : Math.min(THmax, topZone + tLines.length * lh + 1.2);
+                var midY = FR + TH, pTop = FR + TH + hgH, pBot = FR + SQ - eb.h, qr = qs > 5 ? qrRuns(this.qrData(p), qs) : null;
+                g2.push(n.vertical ? lineStr(W / 2 - SQ / 2, midY, W / 2 + SQ / 2, midY) : lineStr(bx, midY, W - bx, midY));
+                if (qr) {
+                    var qx0 = W / 2 - SQ / 2;
+                    g2.push('<g shape-rendering="crispEdges">' + qr.runs.map(function (u) {
+                        return '<rect x="' + (qx0 + (u[1] + 2) * qr.cell).toFixed(3) + '" y="' + (FR + (u[0] + 2) * qr.cell).toFixed(3) + '" width="' + ((u[2] - u[1]) * qr.cell).toFixed(3) + '" height="' + qr.cell.toFixed(3) + '" fill="#000"/>';
+                    }).join('') + '</g>');
                 }
-                var bnEb = ebRows.length ? ebRows.length * ebLineH + nSz * 0.4 : 0;
-                var qrOn = this.settings.them_ma_qr && window.KSUQR;
-                var THfix = (SQ - bnEb - hgH) * 0.4;
-                var THmax = qrOn ? THfix : (SQ - bnEb - hgH) * 0.55;
-                var infoMm = this.fontMm('co_chu_thong_tin', 1.5);
-                var topZone = info ? Math.min(infoMm + 1.1, THmax) : 0;
-                var titlePad = 1.2;
-                var title = String(p.name || '').toUpperCase();
-                var tRight = W / 2 + SQ / 2 - 2;
-                var qs = qrOn ? THfix : 0;
-                var tLeft = qs > 5 ? (W / 2 - SQ / 2) + qs + 1 : W / 2 - SQ / 2 + 2;
-                var availW = tRight - tLeft;
-                var maxTitleH = Math.max(0, THmax - topZone - titlePad);
-                var tFit = fitTitle(title, this.fontMm('co_chu_tieu_de', 3) / 0.72, availW, maxTitleH);
-                var tLines = tFit.lines, tSize = tFit.size;
-                var lh = tSize * 1.4;
-                var TH = qrOn ? THfix : Math.min(THmax, topZone + tLines.length * lh + titlePad);
-                var midY = FR + TH;
-                var pTop = FR + TH + hgH, pBot = FR + SQ - bnEb, notesTop = pBot;
-                if (n.vertical) {
-                    g2.push(lineStr(W / 2 - SQ / 2, midY, W / 2 + SQ / 2, midY));
-                } else {
-                    g2.push(lineStr(bx, midY, W - bx, midY));
-                }
-                if (qrOn && qs > 5) {
-                    var qrData = String(p.id) + '.' + String(p.name || '') + ',' + String(p.code1 || '') + ',' + String(p.code2 || '') + ',' + String(p.code3 || '');
-                    var qm = null;
-                    try { qm = KSUQR.matrix(qrData); } catch (e) { qm = null; }
-                    if (qm) {
-                        var qt = qm.length + 4;
-                        var qcell = qs / qt;
-                        var qx0 = W / 2 - SQ / 2;
-                        var qy0 = FR;
-                        g2.push('<g shape-rendering="crispEdges">');
-                        for (var qr = 0; qr < qm.length; qr++) {
-                            var qc = 0;
-                            while (qc < qm.length) {
-                                if (!qm[qr][qc]) { qc++; continue; }
-                                var q0 = qc;
-                                while (qc < qm.length && qm[qr][qc]) qc++;
-                                g2.push('<rect x="' + (qx0 + (q0 + 2) * qcell).toFixed(3) + '" y="' + (qy0 + (qr + 2) * qcell).toFixed(3) + '" width="' + ((qc - q0) * qcell).toFixed(3) + '" height="' + qcell.toFixed(3) + '" fill="#000"/>');
-                            }
-                        }
-                        g2.push('</g>');
-                    }
-                }
-                var tcx = (tLeft + tRight) / 2;
-                var titleTop = FR + topZone;
-                var blockH = (tLines.length - 1) * lh + tSize * 0.72;
+                var tcx = (tLeft + tRight) / 2, titleTop = FR + topZone, blockH = (tLines.length - 1) * lh + tSize * 0.72;
                 var ty0 = titleTop + Math.max(0, (FR + TH) - titleTop - blockH) * 0.42 + tSize * 0.72;
-                for (var i = 0; i < tLines.length; i++) {
-                    g2.push(textStr(tLines[i], tcx, ty0 + i * lh, tSize, true));
-                }
+                for (var i = 0; i < tLines.length; i++) g2.push(textStr(tLines[i], tcx, ty0 + i * lh, tSize, true));
                 if (info) {
                     var isz2 = fitText(info, infoMm / 0.72, availW);
                     g2.push(textStr(info, tcx, FR + topZone / 2 + isz2 * 0.36, isz2, false));
                 }
-                var nY = notesTop + ebLineH / 2;
-                ebRows.forEach(function (row) {
-                    var nx = W / 2 - availNote / 2;
-                    row.items.forEach(function (nm) {
-                        var side = sideOf(nm);
-                        if (side) {
-                            var cx = nx + side / 2;
-                            if (ebDashOf[nm]) {
-                                g2.push(ebTri(cx, nY, nSz * 0.72));
-                            } else if (markOn) {
-                                g2.push(ebMark(meIdx[nm], cx, nY, nSz * 0.72));
-                            } else {
-                                g2.push('<rect x="' + nx.toFixed(2) + '" y="' + (nY - side / 2).toFixed(2) + '" width="' + side.toFixed(2) + '" height="' + side.toFixed(2) + '" fill="none" stroke="#000" stroke-width="0.12"/>');
-                                g2.push(textStr(String(meIdx[nm] || ''), cx, nY + nSz * 0.36, nSz, false));
-                            }
-                        }
-                        var tx = nx + side + nCG;
-                        g2.push(textStr(nm, tx, nY + nSz * 0.36, nSz, false, 'start'));
-                        nx = tx + textW(nm, nSz) + nGap;
-                    });
-                    nY += ebLineH;
-                });
-                if (hasHinge) {
-                    var hStr = noteParts.join(' - ');
+                eb.draw(g2, pBot, W / 2, hit);
+                if (hStr) {
                     var hSz = fitText(hStr, infoMm / 0.72, SQ - 2);
-                    var hgY = FR + TH + hgH / 2 + 0.3;
-                    g2.push(textStr(hStr, W / 2, hgY + hSz * 0.36, hSz, false));
+                    g2.push(textStr(hStr, W / 2, FR + TH + hgH / 2 + 0.3 + hSz * 0.36, hSz, false));
                 }
                 g2.push(this.previewSvg(n, W, pTop, pBot, 1.5, false));
-                if (n.vertical) {
-                    s.push('<g transform="rotate(-90 ' + (W / 2) + ' ' + (FR + SQ / 2) + ')">' + g2.join('') + '</g>');
-                } else {
-                    s.push(g2.join(''));
-                }
+                s.push(n.vertical ? '<g transform="rotate(-90 ' + (W / 2) + ' ' + (FR + SQ / 2) + ')">' + g2.join('') + '</g>' : g2.join(''));
                 s.push('<rect x="' + bx + '" y="' + (FR + SQ) + '" width="' + CELL + '" height="' + CELL + '" fill="#000"/>');
-                var idStr = String(p.id);
-                var idMm = this.fontMm('co_chu_id', 3) / 0.72;
-                var isz = fitText(idStr, idMm, LW - 1.5, true);
+                var idStr = String(p.id), idMm = this.fontMm('co_chu_id', 3) / 0.72, isz = fitText(idStr, idMm, LW - 1.5, true);
                 text(idStr, (bx + LW) / 2, FR + SQ + CELL / 2 + isz * 0.36, isz, true, 'middle', '#fff');
-                var shStr = String(p.sheet);
-                var shsz = fitText(shStr, idMm, LW - 1.5, true);
+                var shStr = String(p.sheet), shsz = fitText(shStr, idMm, LW - 1.5, true);
                 text(shStr, (bx + LW) / 2, FR + SQ + CELL * 1.5 + shsz * 0.36, shsz, true);
-                s.push(this.mapSvg01(sheet, pi, LW, W, FR, SQ, BR, bx));
-                s.push('</svg>');
-                return s.join('');
-            },
-            mapSvg01: function (sheet, pi, LW, W, FR, SQ, BR, bx) {
-                if (!sheet.w || !sheet.h) return '';
-                var pad = 1.4;
-                var ax = LW + pad;
-                var ay = FR + SQ + pad;
-                var aw = W - bx - LW - 2 * pad;
-                var ah = BR - bx - 2 * pad;
-                if (aw <= 0 || ah <= 0) return '';
-                var swap = sheet.h > sheet.w;
-                var mw = swap ? sheet.h : sheet.w;
-                var mh = swap ? sheet.w : sheet.h;
-                var sc = Math.min(aw / mw, ah / mh);
-                var ox = ax + (aw - mw * sc) / 2;
-                var oy = ay + (ah - mh * sc) / 2;
-                var pt = function (x, y) {
-                    var u = swap ? y : x;
-                    var v = swap ? sheet.w - x : y;
-                    return [(ox + (mw - u) * sc).toFixed(2), (oy + v * sc).toFixed(2)];
-                };
-                var s = [];
-                s.push('<rect x="' + ox.toFixed(2) + '" y="' + oy.toFixed(2) +
-                    '" width="' + (mw * sc).toFixed(2) + '" height="' + (mh * sc).toFixed(2) +
-                    '" fill="none" stroke="#000" stroke-width="0.12"/>');
-                for (var i = 0; i < sheet.parts.length; i++) {
-                    var q = this.parts[sheet.parts[i]];
-                    if (!q || !q.poly[0]) continue;
-                    var pts = q.poly[0];
-                    var d = '';
-                    for (var j = 0; j < pts.length; j++) {
-                        var xy = pt(pts[j][0], pts[j][1]);
-                        d += (j ? 'L' : 'M') + xy[0] + ' ' + xy[1];
+                var mf = mapFrame(sheet, LW + 1.4, FR + SQ + 1.4, W - bx - LW - 2 * 1.4, BR - bx - 2 * 1.4);
+                if (mf) {
+                    s.push(mf.rect);
+                    for (var k = 0; k < sheet.parts.length; k++) {
+                        var q = this.parts[sheet.parts[k]];
+                        if (q && q.poly[0]) s.push('<path d="' + mf.path(q.poly[0]) + '" fill="' + (sheet.parts[k] === pi ? '#000' : 'none') +
+                            '" stroke="#000" stroke-width="0.08"/>');
                     }
-                    d += 'Z';
-                    var cur = sheet.parts[i] === pi;
-                    s.push('<path d="' + d + '" fill="' + (cur ? '#000' : 'none') +
-                        '" stroke="#000" stroke-width="0.08"/>');
                 }
-                return s.join('');
+                return s.join('') + '</svg>';
             },
-            buildSvg02: function (pi) {
-                var p = this.parts[pi];
-                if (!p) return '';
-                var sheet = this.sheets[p.sheet] || { w: 0, h: 0, parts: [] };
-                var W = this.temW, H = this.temH;
-                var extraNote2 = String(this.settings.ghi_chu_them_2 || '').trim();
-                var bx = 0.75;
-                var noteMm = this.fontMm('co_chu_ghi_chu', 2);
-                var rowH = Math.max(3.25, noteMm + 1.45);
-                var infoMm = this.fontMm('co_chu_thong_tin', 2);
-                var RW = W - 2 * bx;
-                var n = this.normPoly(p, sheet);
+            buildSvg02: function (p, sheet, pi, hit) {
+                var W = this.temW, H = this.temH, bx = 0.75;
+                var noteMm = this.fontMm('co_chu_ghi_chu', 2), rowH = Math.max(3.25, noteMm + 1.45);
+                var infoMm = this.fontMm('co_chu_thong_tin', 2), RW = W - 2 * bx, n = this.normPoly(p, sheet);
                 var mapW = Math.max(sheet.w, sheet.h), mapH = Math.min(sheet.w, sheet.h);
                 var MH = mapW > 0 ? Math.min((H - 2 * bx) * 0.4, RW * mapH / mapW) : 0;
-                var MT = H - bx - MH;
-                var UH = MT - bx;
-                var BW = n.vertical ? UH : RW;
-                var BH = n.vertical ? RW : UH;
-                var BL = W / 2 - BW / 2;
-                var BT = bx + UH / 2 - BH / 2;
-                var BC = BL + BW / 2;
-                var s = [];
-                var g2 = [];
-                s.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" xml:space="preserve" font-family="Arial, sans-serif" fill="#000">');
-                s.push('<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#fff"/>');
-                s.push('<rect x="' + bx + '" y="' + bx + '" width="' + (W - 2 * bx) + '" height="' + (H - 2 * bx) + '" fill="none" stroke="#000" stroke-width="0.15"/>');
+                var MT = H - bx - MH, UH = MT - bx, BW = n.vertical ? UH : RW;
+                var BH = n.vertical ? RW : UH, BL = W / 2 - BW / 2, BT = bx + UH / 2 - BH / 2;
+                var BC = BL + BW / 2, FR = BT, s = [svgHead(W, H, bx)], g2 = [];
                 var line = function (x1, y1, x2, y2) { g2.push(lineStr(x1, y1, x2, y2)); };
-                var text = function (str, x, y, size, bold, anchor, color) { g2.push(textStr(str, x, y, size, bold, anchor, color)); };
-                var meIdx = this.ebIndex;
-                var ebInfo = this.ebNamesOf(n);
-                var ebNames = ebInfo.names, ebDashOf = ebInfo.dashOf;
-                var matStr = String(p.mat || '').toUpperCase();
-                var thVal = Number(sheet.th) || 0;
-                if (thVal) matStr += ' - ' + fmtMm(thVal);
-                var matOn = this.settings.hien_vat_lieu !== false && matStr;
-                var matRow = matOn ? noteMm + 2 : 0;
-                var extraNote = String(this.settings.ghi_chu_them || '').trim();
-                var noteParts = [];
-                if (p.hinge && String(p.hinge).trim()) noteParts.push(String(p.hinge).trim());
-                if (p.gname && String(p.gname).trim()) noteParts.push(String(p.gname).trim());
-                var hasHinge = noteParts.length > 0;
-                var notes = [];
-                if (extraNote) notes.push([extraNote, noteMm]);
-                if (extraNote2) notes.push([extraNote2, noteMm]);
-                var FR = BT;
+                var text = function (str, x, y, size, bold, anchor) { g2.push(textStr(str, x, y, size, bold, anchor)); };
+                var matStr = this.matText(p, sheet);
+                var matOn = this.settings.hien_vat_lieu !== false && matStr, hStr = hingeOf(p);
                 if (matOn) {
                     var matSz = fitText(matStr, noteMm / 0.72, BW - 3);
-                    text(matStr, BC, BT + matRow / 2 + matSz * 0.36, matSz, false);
-                    FR += matRow;
+                    text(matStr, BC, BT + (noteMm + 2) / 2 + matSz * 0.36, matSz, false);
+                    FR += noteMm + 2;
                     line(BL, FR, BL + BW, FR);
                 }
-                notes.forEach(function (nt) {
-                    var rsz = fitText(nt[0], nt[1] / 0.72, BW - 3);
-                    text(nt[0], BC, FR + rowH / 2 + rsz * 0.36, rsz, false);
+                [String(this.settings.ghi_chu_them || '').trim(), String(this.settings.ghi_chu_them_2 || '').trim()].forEach(function (nt) {
+                    if (!nt) return;
+                    var rsz = fitText(nt, noteMm / 0.72, BW - 3);
+                    text(nt, BC, FR + rowH / 2 + rsz * 0.36, rsz, false);
                     FR += rowH;
                     line(BL, FR, BL + BW, FR);
                 });
-                var AV = BT + BH - FR;
-                var qrOn = this.settings.them_ma_qr && window.KSUQR;
+                var AV = BT + BH - FR, qrOn = this.qrOn;
                 var qs = qrOn ? Math.min(BW * 0.5, Math.max(12, Math.min(BW * 0.4, AV * 0.25))) : 0;
-                var titlePad = 1;
-                var title = String(p.name || '').toUpperCase();
-                var tRight = BL + BW - 2;
-                var tLeft = qs > 5 ? BL + qs + 1 : BL + 2;
-                var availW = tRight - tLeft;
-                var TZmax = AV * (qrOn ? 0.5 : 0.35);
-                var maxTitleH = Math.max(0, TZmax - 2 * titlePad);
-                var tFit = fitTitle(title, this.fontMm('co_chu_tieu_de', 2) / 0.72, availW, maxTitleH);
-                var tLines = tFit.lines, tSize = tFit.size;
-                var lh = tSize * 1.4;
-                var blockH = (tLines.length - 1) * lh + tSize * 0.72;
-                var TZ = Math.max(qs, Math.min(TZmax, blockH + 2 * titlePad));
-                if (qrOn && qs > 5) {
-                    var qrData = String(p.id) + '.' + String(p.name || '') + ',' + String(p.code1 || '') + ',' + String(p.code2 || '') + ',' + String(p.code3 || '');
-                    var qm = null;
-                    try { qm = KSUQR.matrix(qrData); } catch (e) { qm = null; }
-                    if (qm) {
-                        var qt = qm.length + 4;
-                        var qcell = qs / qt;
-                        var qd = '';
-                        for (var qr = 0; qr < qm.length; qr++) {
-                            var qc = 0;
-                            var qy0 = (FR + (qr + 2) * qcell).toFixed(3), qy1 = (FR + (qr + 3) * qcell).toFixed(3);
-                            while (qc < qm.length) {
-                                if (!qm[qr][qc]) { qc++; continue; }
-                                var q0 = qc;
-                                while (qc < qm.length && qm[qr][qc]) qc++;
-                                var qx0 = (BL + (q0 + 2) * qcell).toFixed(3), qx1 = (BL + (qc + 2) * qcell).toFixed(3);
-                                qd += 'M' + qx0 + ' ' + qy0 + 'L' + qx1 + ' ' + qy0 + 'L' + qx1 + ' ' + qy1 + 'L' + qx0 + ' ' + qy1 + 'Z';
-                            }
-                        }
-                        g2.push('<path d="' + qd + '" fill="#000" shape-rendering="crispEdges"/>');
-                    }
+                var tRight = BL + BW - 2, tLeft = qs > 5 ? BL + qs + 1 : BL + 2, TZmax = AV * (qrOn ? 0.5 : 0.35);
+                var tFit = fitTitle(String(p.name || '').toUpperCase(),this.fontMm('co_chu_tieu_de', 2) / 0.72, tRight - tLeft, Math.max(0, TZmax - 2));
+                var tLines = tFit.lines, tSize = tFit.size, lh = tSize * 1.4, blockH = (tLines.length - 1) * lh + tSize * 0.72;
+                var TZ = Math.max(qs, Math.min(TZmax, blockH + 2)), qr = qs > 5 ? qrRuns(this.qrData(p), qs) : null;
+                if (qr) {
+                    g2.push('<path d="' + qr.runs.map(function (u) {
+                        var x0 = (BL + (u[1] + 2) * qr.cell).toFixed(3), x1 = (BL + (u[2] + 2) * qr.cell).toFixed(3);
+                        var y0 = (FR + (u[0] + 2) * qr.cell).toFixed(3), y1 = (FR + (u[0] + 3) * qr.cell).toFixed(3);
+                        return 'M' + x0 + ' ' + y0 + 'L' + x1 + ' ' + y0 + 'L' + x1 + ' ' + y1 + 'L' + x0 + ' ' + y1 + 'Z';
+                    }).join('') + '" fill="#000" shape-rendering="crispEdges"/>');
                 }
-                var ty0 = FR + Math.max(0, TZ - blockH) / 2 + tSize * 0.72;
-                var tAnchor = qs > 5 ? 'start' : 'middle';
-                var tX = qs > 5 ? tLeft : (tLeft + tRight) / 2;
-                for (var i = 0; i < tLines.length; i++) {
-                    text(tLines[i], tX, ty0 + i * lh, tSize, true, tAnchor);
-                }
-                var BY = FR + TZ;
+                var ty0 = FR + Math.max(0, TZ - blockH) / 2 + tSize * 0.72, tX = qs > 5 ? tLeft : (tLeft + tRight) / 2;
+                for (var i = 0; i < tLines.length; i++) text(tLines[i], tX, ty0 + i * lh, tSize, true, qs > 5 ? 'start' : 'middle');
+                var BY = FR + TZ, hgH = 0;
                 line(BL, BY, BL + BW, BY);
-                var hgH = 0;
-                if (hasHinge) {
-                    var hStr = noteParts.join(' - ');
+                if (hStr) {
                     var hSz = fitText(hStr, infoMm / 0.72, BW - 3);
                     hgH = infoMm + 2;
                     text(hStr, BC, BY + 1.2 + hSz * 0.72, hSz, false);
                 }
-                var PH = BT + BH - BY - hgH;
-                var markOn = this.ebMarkOn;
-                var nSz = this.fontMm('co_chu_ky_hieu', 2) / 0.72;
-                var nGap = 2.5, nCG = 1, bPad = 0.7;
-                var availNote = BW - 3;
-                var ebRows = [], ebLineH = 0, ebWide = 0;
-                var sideOf = function (nm) {
-                    if (ebDashOf[nm]) return nSz * 0.72 + bPad;
-                    if (markOn && Number(meIdx[nm]) <= EB_MARKS) return nSz * 0.72 + bPad;
-                    return textW(String(meIdx[nm] || '') + '.', nSz);
-                };
-                var ebLayout = function () {
-                    var rows = [], cur = [], cw = 0;
-                    ebWide = 0;
-                    ebNames.forEach(function (nm) {
-                        var iw = sideOf(nm) + nCG + textW(nm, nSz);
-                        if (cur.length && cw + nGap + iw > availNote) { rows.push({ items: cur, w: cw }); cur = []; cw = 0; }
-                        cw += (cur.length ? nGap : 0) + iw;
-                        cur.push(nm);
-                    });
-                    if (cur.length) rows.push({ items: cur, w: cw });
-                    rows.forEach(function (r) { if (r.w > ebWide) ebWide = r.w; });
-                    ebLineH = nSz * 0.72 + bPad + (rows.length > 1 ? 0.55 : 1.2);
-                    return rows;
-                };
-                if (ebNames.length) {
-                    var ebMaxH = Math.max(0, PH * 0.4);
-                    var ebGuard = 0;
-                    ebRows = ebLayout();
-                    while ((ebRows.length * ebLineH > ebMaxH || ebWide > availNote) && nSz > 0.45 && ebGuard++ < 80) {
-                        nSz *= 0.94; nGap *= 0.94; nCG *= 0.94; bPad *= 0.94;
-                        ebRows = ebLayout();
-                    }
-                }
-                var bnEb = ebRows.length ? ebRows.length * ebLineH + nSz * 0.4 : 0;
-                var pTop = BY + hgH, pBot = BT + BH - bnEb;
-                var nY = pBot + ebLineH / 2;
-                ebRows.forEach(function (row) {
-                    var nx = BC - row.w / 2;
-                    row.items.forEach(function (nm) {
-                        var side = sideOf(nm);
-                        if (side) {
-                            var cx = nx + side / 2;
-                            if (ebDashOf[nm]) {
-                                g2.push(ebTri(cx, nY, nSz * 0.72));
-                            } else if (markOn) {
-                                g2.push(ebMark(meIdx[nm], cx, nY, nSz * 0.72));
-                            } else {
-                                g2.push(textStr(String(meIdx[nm] || '') + '.', nx, nY + nSz * 0.36, nSz, false, 'start'));
-                            }
-                        }
-                        var tx = nx + side + nCG;
-                        g2.push(textStr(nm, tx, nY + nSz * 0.36, nSz, false, 'start'));
-                        nx = tx + textW(nm, nSz) + nGap;
-                    });
-                    nY += ebLineH;
-                });
+                var eb = this.ebFit(n, 2, BW - 3, Math.max(0, (BT + BH - BY - hgH) * 0.4), true);
+                var pTop = BY + hgH, pBot = BT + BH - eb.h;
+                eb.draw(g2, pBot, BC, hit);
                 g2.push('<g transform="translate(' + BL.toFixed(3) + ' 0)">' + this.previewSvg(n, BW, pTop, pBot, 2, true) + '</g>');
-                if (n.vertical) {
-                    s.push('<g transform="rotate(-90 ' + (W / 2) + ' ' + (bx + UH / 2) + ')">' + g2.join('') + '</g>');
-                } else {
-                    s.push(g2.join(''));
-                }
+                s.push(n.vertical ? '<g transform="rotate(-90 ' + (W / 2) + ' ' + (bx + UH / 2) + ')">' + g2.join('') + '</g>' : g2.join(''));
                 if (MH > 0) s.push(lineStr(bx, MT, W - bx, MT));
-                s.push(this.mapSvg(p, sheet, pi, bx, W, MT, 0, MH + bx, bx));
-                s.push('</svg>');
-                return s.join('');
+                s.push(this.mapSvg(p, sheet, pi, mapFrame(sheet, bx, MT, W - bx - bx, MH + bx - bx)));
+                return s.join('') + '</svg>';
             },
             previewSvg: function (n, W, pTop, pBot, defSz, sizeLabel) {
-                var padX = 2, padY = Math.min(3, (pBot - pTop) * 0.28);
-                var ax = padX;
-                var ay = pTop + padY;
-                var aw = W - 2 * padX;
-                var ah = (pBot - pTop) - 2 * padY;
+                var padX = 2, padY = Math.min(3, (pBot - pTop) * 0.28), aw = W - 2 * padX, ah = (pBot - pTop) - 2 * padY;
                 if (aw <= 0 || ah <= 0 || !n.bb.w || !n.bb.h) return '';
-                var drillDraws = [];
-                var obs = [];
-                var faceHoles = [];
-                var edgeDrills = [[], [], [], []];
+                var drillDraws = [], obs = [], faceHoles = [], edgeDrills = [[], [], [], []];
                 var showDrillDim = this.settings.moc_khoan_ngang !== false;
                 for (var di = 0; di < n.drills.length; di++) {
                     var d = n.drills[di];
@@ -2187,30 +1942,17 @@
                         if (d.length === 3 && d[0] > 0) faceHoles.push([d[2], d[0]]);
                         continue;
                     }
-                    var dp = d.slice(2);
-                    var mx = (dp[0][0] + dp[3][0]) / 2, my = (dp[0][1] + dp[3][1]) / 2;
+                    var dp = d.slice(2), mx = (dp[0][0] + dp[3][0]) / 2, my = (dp[0][1] + dp[3][1]) / 2;
                     var qx = (dp[1][0] + dp[2][0]) / 2, qy = (dp[1][1] + dp[2][1]) / 2;
                     drillDraws.push(dp);
                     if (!showDrillDim) continue;
-                    var ovx = mx - qx, ovy = my - qy;
-                    var ex2;
-                    if (Math.abs(ovx) > Math.abs(ovy)) ex2 = ovx > 0 ? 3 : 1;
-                    else ex2 = ovy > 0 ? 2 : 0;
-                    var pv2;
-                    if (ex2 === 0) pv2 = n.bb.x + n.bb.w - mx;
-                    else if (ex2 === 1) pv2 = my - n.bb.y;
-                    else if (ex2 === 2) pv2 = mx - n.bb.x;
-                    else pv2 = n.bb.y + n.bb.h - my;
-                    edgeDrills[ex2].push(Math.round(pv2));
+                    var ovx = mx - qx, ovy = my - qy, ex2 = Math.abs(ovx) > Math.abs(ovy) ? (ovx > 0 ? 3 : 1) : (ovy > 0 ? 2 : 0);
+                    edgeDrills[ex2].push(Math.round([n.bb.x + n.bb.w - mx, my - n.bb.y, mx - n.bb.x, n.bb.y + n.bb.h - my][ex2]));
                 }
-                var dsz = this.fontMm('co_chu_ky_hieu', defSz) / 0.72;
-                var dlh = dsz * 1.3;
-                var edgeLines = [[], [], [], []];
+                var dsz = this.fontMm('co_chu_ky_hieu', defSz) / 0.72, dlh = dsz * 1.3, edgeLines = [[], [], [], []];
                 for (var ew = 0; ew < 4; ew++) {
-                    if (!edgeDrills[ew].length) continue;
                     edgeDrills[ew].sort(function (a, b) { return a - b; });
-                    var edMaxW = (ew === 0 || ew === 2 ? aw : ah) - 2;
-                    var curLn = '';
+                    var edMaxW = (ew === 0 || ew === 2 ? aw : ah) - 2, curLn = '';
                     for (var ti = 0; ti < edgeDrills[ew].length; ti++) {
                         var cand = curLn ? curLn + '  ' + edgeDrills[ew][ti] : String(edgeDrills[ew][ti]);
                         if (!curLn || textW(cand, dsz) <= edMaxW) curLn = cand;
@@ -2222,68 +1964,48 @@
                 var exm = function (ei2) { return edgeLines[ei2].length > 1 ? (edgeLines[ei2].length - 1) * dlh : 0; };
                 var mBot = NM + exm(0), mLeft = NM + exm(1), mTop = NM + exm(2), mRight = NM + exm(3);
                 var aw2 = aw - mLeft - mRight, ah2 = ah - mTop - mBot;
-                if (aw2 <= 0 || ah2 <= 0) { mLeft = mRight = mTop = mBot = 0; aw2 = aw; ah2 = ah; }
+                if (aw2 <= 0 || ah2 <= 0) { mLeft = mTop = 0; aw2 = aw; ah2 = ah; }
                 var sc = Math.min(aw2 / n.bb.w, ah2 / n.bb.h);
-                var ox = ax + mLeft + (aw2 - n.bb.w * sc) / 2;
-                var oy = ay + mTop + (ah2 - n.bb.h * sc) / 2;
+                var ox = padX + mLeft + (aw2 - n.bb.w * sc) / 2, oy = pTop + padY + mTop + (ah2 - n.bb.h * sc) / 2;
                 var px = function (v) { return ox + (v - n.bb.x) * sc; };
                 var py = function (v) { return oy + (n.bb.y + n.bb.h - v) * sc; };
-                var s = [];
-                var path = function (pts, fill, sw) {
-                    var d = '';
-                    for (var i = 0; i < pts.length; i++) {
-                        d += (i ? 'L' : 'M') + px(pts[i][0]).toFixed(2) + ' ' + py(pts[i][1]).toFixed(2);
-                    }
-                    d += 'Z';
-                    s.push('<path d="' + d + '" fill="' + fill + '" stroke="#000" stroke-width="' + sw + '"/>');
+                var s = [], path = function (pts, fill, sw) {
+                    s.push('<path d="' + pts.map(function (q, i) {
+                        return (i ? 'L' : 'M') + px(q[0]).toFixed(2) + ' ' + py(q[1]).toFixed(2);
+                    }).join('') + 'Z" fill="' + fill + '" stroke="#000" stroke-width="' + sw + '"/>');
                 };
-                for (var li = 0; li < n.loops.length; li++) {
-                    path(n.loops[li], li ? '#fff' : 'none', 0.15);
-                }
-                for (var gi = 0; gi < (n.grooves || []).length; gi++) {
-                    if (n.grooves[gi].length > 1) path(n.grooves[gi], 'none', 0.1);
-                }
+                n.loops.forEach(function (lp, li) { path(lp, li ? '#fff' : 'none', 0.15); });
+                n.grooves.forEach(function (g) { if (g.length > 1) path(g, 'none', 0.1); });
                 if (Number(this.settings.do_dam_canh) > 1) {
-                    var bw = Math.round(Number(this.settings.do_dam_canh) * 0.15 * 100) / 100;
-                    var TH = 55, LENR = 3;
+                    var bw = Math.round(Number(this.settings.do_dam_canh) * 0.15 * 100) / 100, marks = {};
                     var dirOf = function (lp, i, sn) { var a = lp[i], b = lp[(i + 1) % sn]; return [b[0] - a[0], b[1] - a[1]]; };
                     var lenOf = function (lp, i, sn) { var d = dirOf(lp, i, sn); return Math.sqrt(d[0] * d[0] + d[1] * d[1]); };
                     var angOf = function (u, v) {
-                        var du = Math.sqrt(u[0] * u[0] + u[1] * u[1]) || 1;
-                        var dv = Math.sqrt(v[0] * v[0] + v[1] * v[1]) || 1;
+                        var du = Math.sqrt(u[0] * u[0] + u[1] * u[1]) || 1, dv = Math.sqrt(v[0] * v[0] + v[1] * v[1]) || 1;
                         var c = (u[0] * v[0] + u[1] * v[1]) / (du * dv);
                         return Math.acos(Math.max(-1, Math.min(1, c))) * 180 / Math.PI;
                     };
-                    var marks = {};
                     var markSet = function (li, si, dash) { var key = li + ':' + si; marks[key] = !!marks[key] || dash; };
                     n.ebs.forEach(function (eb) {
-                        var ebc = [eb[0], eb[1]];
-                        var dash = ebDash(eb);
-                        var bl = -1, bs = -1, bD = Infinity;
+                        var dash = ebDash(eb), bl = -1, bs = -1, bD = Infinity;
                         for (var li = 0; li < n.loops.length; li++) {
                             var lp = n.loops[li], sn = lp.length - 1;
                             if (sn < 1) continue;
                             for (var k = 0; k < sn; k++) {
-                                var d2 = distToSeg(ebc, lp[k], lp[(k + 1) % sn]);
+                                var d2 = distToSeg(eb, lp[k], lp[(k + 1) % sn]);
                                 if (d2 < bD) { bD = d2; bl = li; bs = k; }
                             }
                         }
                         if (bl < 0) return;
-                        var lp = n.loops[bl], sn = lp.length - 1;
+                        var lp = n.loops[bl], sn = lp.length - 1, len0 = lenOf(lp, bs, sn) || 0.001;
                         markSet(bl, bs, dash);
-                        var len0 = lenOf(lp, bs, sn) || 0.001;
-                        var ci = bs;
-                        for (var st = 0; st < sn; st++) {
-                            var nx2 = (ci + 1) % sn;
-                            if (nx2 === bs || angOf(dirOf(lp, ci, sn), dirOf(lp, nx2, sn)) >= TH || lenOf(lp, nx2, sn) > LENR * len0) break;
-                            markSet(bl, nx2, dash); ci = nx2;
-                        }
-                        ci = bs;
-                        for (var st2 = 0; st2 < sn; st2++) {
-                            var pv = (ci - 1 + sn) % sn;
-                            if (pv === bs || angOf(dirOf(lp, pv, sn), dirOf(lp, ci, sn)) >= TH || lenOf(lp, pv, sn) > LENR * len0) break;
-                            markSet(bl, pv, dash); ci = pv;
-                        }
+                        [1, -1].forEach(function (dir) {
+                            for (var st = 0, ci = bs; st < sn; st++) {
+                                var nx = (ci + dir + sn) % sn;
+                                if (nx === bs || angOf(dirOf(lp, ci, sn), dirOf(lp, nx, sn)) >= 55 || lenOf(lp, nx, sn) > 3 * len0) break;
+                                markSet(bl, nx, dash); ci = nx;
+                            }
+                        });
                     });
                     var dashArr = (bw * 2).toFixed(2) + ' ' + (bw * 1.5).toFixed(2);
                     Object.keys(marks).forEach(function (key) {
@@ -2295,50 +2017,31 @@
                             (marks[key] ? ' stroke-dasharray="' + dashArr + '"' : '') + '/>');
                     });
                 }
-                var cups = [];
-                for (var di2 = 0; di2 < drillDraws.length; di2++) {
-                    path(drillDraws[di2], '#000', 0.1);
-                }
-                var atCup = function (pt) {
-                    for (var cq = 0; cq < n.cups.length; cq++) {
-                        if (n.cups[cq][0] < 15) continue;
-                        var cdx = n.cups[cq][1][0] - pt[0], cdy = n.cups[cq][1][1] - pt[1];
-                        if (cdx * cdx + cdy * cdy < 1) return true;
-                    }
-                    return false;
-                };
-                for (var fh = 0; fh < faceHoles.length; fh++) {
-                    var fp = faceHoles[fh][0];
-                    if (atCup(fp)) continue;
+                drillDraws.forEach(function (dp) { path(dp, '#000', 0.1); });
+                var cups = n.cups.filter(function (cu) { return !(cu[0] < 15); });
+                faceHoles.forEach(function (fh) {
+                    var fp = fh[0];
+                    if (cups.some(function (cu) { var cdx = cu[1][0] - fp[0], cdy = cu[1][1] - fp[1]; return cdx * cdx + cdy * cdy < 1; })) return;
                     s.push('<circle cx="' + px(fp[0]).toFixed(2) + '" cy="' + py(fp[1]).toFixed(2) +
-                        '" r="' + (faceHoles[fh][1] * 0.5 * sc).toFixed(2) + '" fill="#fff" stroke="#000" stroke-width="0.1"/>');
-                }
+                        '" r="' + (fh[1] * 0.5 * sc).toFixed(2) + '" fill="#fff" stroke="#000" stroke-width="0.1"/>');
+                });
                 for (var ed = 0; ed < 4; ed++) {
                     var lns = edgeLines[ed];
                     for (var li2 = 0; li2 < lns.length; li2++) {
-                        var off2 = 2.0 + (ed === 0 ? li2 : lns.length - 1 - li2) * dlh;
-                        var tx2, ty2, rot2 = 0;
+                        var off2 = 2.0 + (ed === 0 ? li2 : lns.length - 1 - li2) * dlh, tx2, ty2, rot2 = 0;
                         if (ed === 0) { tx2 = px(n.bb.x + n.bb.w / 2); ty2 = py(n.bb.y) + off2; }
                         else if (ed === 2) { tx2 = px(n.bb.x + n.bb.w / 2); ty2 = py(n.bb.y + n.bb.h) - off2; }
                         else if (ed === 1) { tx2 = px(n.bb.x) - off2; ty2 = py(n.bb.y + n.bb.h / 2); rot2 = -90; }
                         else { tx2 = px(n.bb.x + n.bb.w) + off2; ty2 = py(n.bb.y + n.bb.h / 2); rot2 = 90; }
                         var dw2 = textW(lns[li2], dsz) / 2, dh2 = dsz * 0.4;
                         obs.push(rot2 ? [tx2 - dh2, ty2 - dw2, tx2 + dh2, ty2 + dw2] : [tx2 - dw2, ty2 - dh2, tx2 + dw2, ty2 + dh2]);
-                        s.push('<text x="' + tx2.toFixed(2) + '" y="' + (ty2 + dsz * 0.36).toFixed(2) +
-                            '" font-size="' + dsz.toFixed(3) + '" text-anchor="middle"' +
-                            (rot2 ? ' transform="rotate(' + rot2 + ' ' + tx2.toFixed(2) + ' ' + ty2.toFixed(2) + ')"' : '') +
-                            '>' + esc(lns[li2]) + '</text>');
+                        s.push(ctext(lns[li2], tx2, ty2, dsz, '',
+                            rot2 ? ' transform="rotate(' + rot2 + ' ' + tx2.toFixed(2) + ' ' + ty2.toFixed(2) + ')"' : ''));
                     }
                 }
-                for (var ci = 0; ci < n.cups.length; ci++) {
-                    var cu = n.cups[ci];
-                    if (cu[0] < 15) continue;
-                    cups.push(cu[1]);
-                    if (cu[2] && cu[2].length > 1) path(cu[2], 'none', 0.12);
-                }
+                cups.forEach(function (cu) { if (cu[2] && cu[2].length > 1) path(cu[2], 'none', 0.12); });
                 if (cups.length) {
-                    var vOuter = n.loops[0] || [];
-                    var nearestVert = function (pt) {
+                    var vOuter = n.loops[0], nearestVert = function (pt) {
                         var best = pt, bd = Infinity;
                         for (var vi = 0; vi < vOuter.length; vi++) {
                             var dx = vOuter[vi][0] - pt[0], dy = vOuter[vi][1] - pt[1], dd = dx * dx + dy * dy;
@@ -2348,60 +2051,38 @@
                     };
                     var bx0 = n.bb.x, by0 = n.bb.y, bx1 = n.bb.x + n.bb.w, by1 = n.bb.y + n.bb.h;
                     var cax = 0, cay = 0;
-                    cups.forEach(function (c) { cax += c[0]; cay += c[1]; });
+                    cups.forEach(function (c) { cax += c[1][0]; cay += c[1][1]; });
                     cax /= cups.length; cay /= cups.length;
                     var dL = cax - bx0, dR = bx1 - cax, dB = cay - by0, dT = by1 - cay;
-                    var mn = Math.min(dL, dR, dB, dT);
-                    var mxc = (bx0 + bx1) / 2, myc = (by0 + by1) / 2;
-                    var apex, cw1, cw2;
+                    var mn = Math.min(dL, dR, dB, dT), mxc = (bx0 + bx1) / 2, myc = (by0 + by1) / 2, apex, cw1, cw2;
                     if (mn === dL) { apex = [bx0, myc]; cw1 = [bx1, by0]; cw2 = [bx1, by1]; }
                     else if (mn === dR) { apex = [bx1, myc]; cw1 = [bx0, by0]; cw2 = [bx0, by1]; }
                     else if (mn === dB) { apex = [mxc, by0]; cw1 = [bx0, by1]; cw2 = [bx1, by1]; }
                     else { apex = [mxc, by1]; cw1 = [bx0, by0]; cw2 = [bx1, by0]; }
-                    cw1 = nearestVert(cw1);
-                    cw2 = nearestVert(cw2);
-                    [[apex, cw1], [apex, cw2]].forEach(function (sg) {
+                    [[apex, nearestVert(cw1)], [apex, nearestVert(cw2)]].forEach(function (sg) {
                         s.push('<line x1="' + px(sg[0][0]).toFixed(2) + '" y1="' + py(sg[0][1]).toFixed(2) +
                             '" x2="' + px(sg[1][0]).toFixed(2) + '" y2="' + py(sg[1][1]).toFixed(2) +
                             '" stroke="#000" stroke-width="0.1" stroke-dasharray="0.5 0.4"/>');
                     });
                 }
-                var enSz = this.fontMm('co_chu_ky_hieu', defSz) / 0.72;
-                var enMark = this.ebMarkOn;
                 var ebN = this.settings.ma_dan_canh !== false ? n.ebs.length : 0;
                 for (var ei = 0; ei < ebN; ei++) {
-                    var e = n.ebs[ei];
-                    var vx = e[2] - e[0], vy = e[3] - e[1];
-                    var vl = Math.sqrt(vx * vx + vy * vy) || 1;
-                    var tx = px(e[0]) + (vx / vl) * 1.6;
-                    var ty = py(e[1]) - (vy / vl) * 1.6;
-                    obs.push([tx - enSz * 0.45, ty - enSz * 0.45, tx + enSz * 0.45, ty + enSz * 0.45]);
-                    var idx = this.ebIndex[this.ebName(e)] || '';
-                    if (ebDash(e)) {
-                        s.push(ebTri(tx, ty, enSz * 0.72, Math.atan2(vy, -vx) * 180 / Math.PI));
-                    } else if (enMark) {
-                        s.push(ebMark(idx, tx, ty, enSz * 0.72));
-                    } else {
-                        s.push('<text x="' + tx.toFixed(2) + '" y="' + (ty + enSz * 0.36).toFixed(2) +
-                            '" font-size="' + enSz.toFixed(3) + '" text-anchor="middle">' + esc(idx) + '</text>');
-                    }
+                    if (this.ebOff[this.ebName(n.ebs[ei])]) continue;
+                    var e = n.ebs[ei], vx = e[2] - e[0], vy = e[3] - e[1], vl = Math.sqrt(vx * vx + vy * vy) || 1;
+                    var tx = px(e[0]) + (vx / vl) * 1.6, ty = py(e[1]) - (vy / vl) * 1.6, idx = this.ebIndex[this.ebName(e)] || '';
+                    obs.push([tx - dsz * 0.45, ty - dsz * 0.45, tx + dsz * 0.45, ty + dsz * 0.45]);
+                    s.push(ebDash(e) ? ebTri(tx, ty, dsz * 0.72, Math.atan2(vy, -vx) * 180 / Math.PI)
+                        : this.ebMarkOn ? ebMark(idx, tx, ty, dsz * 0.72) : ctext(idx, tx, ty, dsz));
                 }
                 if (!sizeLabel || this.settings.hien_kich_thuoc === false) return s.join('');
                 var szStr = fmtMm(Math.min(n.bb.w, n.bb.h)) + ' × ' + fmtMm(Math.max(n.bb.w, n.bb.h));
-                var szSz = this.fontMm('co_chu_thong_tin', 2) / 0.72;
-                var szW = textW(szStr, szSz), szH = szSz * 0.72;
+                var szSz = this.fontMm('co_chu_thong_tin', 2) / 0.72, szW = textW(szStr, szSz), szH = szSz * 0.72;
                 var dcx = n.bb.x + n.bb.w / 2, dcy = n.bb.y + n.bb.h / 2;
-                var szIn = pointInPoly([dcx, dcy], n.loops[0]);
-                for (var hi = 1; hi < n.loops.length && szIn; hi++) {
-                    if (pointInPoly([dcx, dcy], n.loops[hi])) szIn = false;
-                }
-                var szText = function (x, y) {
-                    return '<text x="' + x.toFixed(2) + '" y="' + (y + szSz * 0.36).toFixed(2) + '" font-size="' + szSz.toFixed(3) + '" text-anchor="middle">' + esc(szStr) + '</text>';
-                };
+                var szIn = pointInPoly([dcx, dcy], n.loops[0]) && !n.loops.slice(1).some(function (h) { return pointInPoly([dcx, dcy], h); });
                 if (szIn && szW + 1 <= n.bb.w * sc && szH + 1 <= n.bb.h * sc) {
                     var scx = px(dcx), scy = py(dcy);
                     s.push('<rect x="' + (scx - szW / 2 - 0.3).toFixed(2) + '" y="' + (scy - szH / 2 - 0.2).toFixed(2) + '" width="' + (szW + 0.6).toFixed(2) + '" height="' + (szH + 0.4).toFixed(2) + '" fill="#fff"/>');
-                    s.push(szText(scx, scy));
+                    s.push(ctext(szStr, scx, scy, szSz));
                 } else {
                     var lw2 = szW / 2 + 0.5, lh2 = szH / 2 + 0.4;
                     obs.push([px(n.bb.x), py(n.bb.y + n.bb.h), px(n.bb.x + n.bb.w), py(n.bb.y)]);
@@ -2409,121 +2090,68 @@
                         { x0: padX, x1: W - padX, y0: pTop + 0.5, y1: pBot - 0.5 }, lw2, lh2, obs, true);
                     if (ld) {
                         s.push('<rect x="' + (ld.x - lw2).toFixed(2) + '" y="' + (ld.y - lh2).toFixed(2) + '" width="' + (lw2 * 2).toFixed(2) + '" height="' + (lh2 * 2).toFixed(2) + '" fill="#fff" stroke="#000" stroke-width="0.08"/>');
-                        s.push(szText(ld.x, ld.y));
+                        s.push(ctext(szStr, ld.x, ld.y, szSz));
                     }
                 }
                 return s.join('');
             },
-            mapSvg: function (p, sheet, pi, LW, W, FR, SQ, BR, bx) {
-                if (!sheet.w || !sheet.h) return '';
-                var pad = 0;
-                var ax = LW + pad;
-                var ay = FR + SQ + pad;
-                var aw = W - bx - LW - 2 * pad;
-                var ah = BR - bx - 2 * pad;
-                if (aw <= 0 || ah <= 0) return '';
-                var swap = sheet.h > sheet.w;
-                var mw = swap ? sheet.h : sheet.w;
-                var mh = swap ? sheet.w : sheet.h;
-                var sc = Math.min(aw / mw, ah / mh);
-                var ox = ax + (aw - mw * sc) / 2;
-                var oy = ay + (ah - mh * sc) / 2;
-                var pt = function (x, y) {
-                    var u = swap ? y : x;
-                    var v = swap ? sheet.w - x : y;
-                    return [(ox + (mw - u) * sc).toFixed(2), (oy + v * sc).toFixed(2)];
-                };
-                var s = [];
-                s.push('<rect x="' + ox.toFixed(2) + '" y="' + oy.toFixed(2) +
-                    '" width="' + (mw * sc).toFixed(2) + '" height="' + (mh * sc).toFixed(2) +
-                    '" fill="none" stroke="#000" stroke-width="0.12"/>');
-                var mkey = p.sheet + '|' + ox.toFixed(3) + '|' + oy.toFixed(3) + '|' + sc.toFixed(6) + '|' + (swap ? 1 : 0);
-                if (!this._mapCache) this._mapCache = {};
-                var mc = this._mapCache[mkey];
+            mapSvg: function (p, sheet, pi, f) {
+                if (!f) return '';
+                var ox = f.ox, oy = f.oy, sc = f.sc, mw = f.mw, mh = f.mh, s = [f.rect];
+                var mkey = p.sheet + '|' + ox.toFixed(3) + '|' + oy.toFixed(3) + '|' + sc.toFixed(6) + '|' + (f.swap ? 1 : 0);
+                var mc = this._mapCache[mkey], curPts = null;
                 if (!mc) {
                     mc = { d: {}, all: '' };
                     for (var i = 0; i < sheet.parts.length; i++) {
                         var q = this.parts[sheet.parts[i]];
                         if (!q || !q.poly[0]) continue;
-                        var pts = q.poly[0];
-                        var d = '';
-                        for (var j = 0; j < pts.length; j++) {
-                            var xy = pt(pts[j][0], pts[j][1]);
-                            d += (j ? 'L' : 'M') + xy[0] + ' ' + xy[1];
-                        }
-                        d += 'Z';
-                        mc.d[sheet.parts[i]] = d;
-                        mc.all += d;
+                        mc.d[sheet.parts[i]] = f.path(q.poly[0]);
+                        mc.all += mc.d[sheet.parts[i]];
                     }
                     this._mapCache[mkey] = mc;
                 }
-                var curPts = null;
                 if (mc.all) s.push('<path d="' + mc.all + '" fill="none" stroke="#000" stroke-width="0.08"/>');
                 if (mc.d[pi]) {
                     s.push('<path d="' + mc.d[pi] + '" fill="#000" stroke="#000" stroke-width="0.08"/>');
                     curPts = [];
                     mc.d[pi].replace(/[ML]([\d.\-]+) ([\d.\-]+)/g, function (a, x, y) { curPts.push([+x, +y]); });
                 }
-                var avoid = [];
-                var idX = ox + mw * sc;
+                var avoid = [], idX = ox + mw * sc, sSz = this.fontMm('co_chu_id', 2) / 0.72;
                 if (curPts && curPts.length > 2) {
-                    var shStr = String(p.id);
-                    var shSz = this.fontMm('co_chu_id', 2) / 0.72;
-                    var tw = textW(shStr, shSz, true), th = shSz * 0.72;
-                    var cb = bboxOf(curPts);
-                    var cx = cb.x + cb.w / 2, cy = cb.y + cb.h / 2;
-                    var label = function (x, y, color) {
-                        return '<text x="' + x.toFixed(2) + '" y="' + (y + shSz * 0.36).toFixed(2) + '" font-size="' + shSz.toFixed(3) +
-                            '" font-weight="bold" fill="' + color + '" text-anchor="middle">' + esc(shStr) + '</text>';
-                    };
+                    var shStr = String(p.id), tw = textW(shStr, sSz, true), th = sSz * 0.72;
+                    var cb = bboxOf(curPts), cx = cb.x + cb.w / 2, cy = cb.y + cb.h / 2;
                     avoid.push([cb.x, cb.y, cb.x + cb.w, cb.y + cb.h]);
                     idX = cx;
                     if (tw + 0.6 <= cb.w && th + 0.6 <= cb.h && pointInPoly([cx, cy], curPts)) {
-                        s.push(label(cx, cy, '#fff'));
+                        s.push(ctext(shStr, cx, cy, sSz, ' font-weight="bold" fill="#fff"'));
                     } else {
-                        var lw2 = tw / 2 + 0.8, lh2 = th / 2 + 0.6;
-                        var im = 1;
+                        var lw2 = tw / 2 + 0.8, lh2 = th / 2 + 0.6, im = 1;
                         var ld = leaderTo(cb, { x0: ox + im, x1: ox + mw * sc - im, y0: oy + im, y1: oy + mh * sc - im }, lw2, lh2);
-                        var pick = [ld.x, ld.y];
                         s.push(ld.svg);
-                        s.push('<rect x="' + (pick[0] - lw2).toFixed(2) + '" y="' + (pick[1] - lh2).toFixed(2) + '" width="' + (lw2 * 2).toFixed(2) + '" height="' + (lh2 * 2).toFixed(2) + '" fill="#000"/>');
-                        s.push(label(pick[0], pick[1], '#fff'));
-                        avoid.push([pick[0] - lw2, pick[1] - lh2, pick[0] + lw2, pick[1] + lh2]);
-                        idX = pick[0];
+                        s.push('<rect x="' + (ld.x - lw2).toFixed(2) + '" y="' + (ld.y - lh2).toFixed(2) + '" width="' + (lw2 * 2).toFixed(2) + '" height="' + (lh2 * 2).toFixed(2) + '" fill="#000"/>');
+                        s.push(ctext(shStr, ld.x, ld.y, sSz, ' font-weight="bold" fill="#fff"'));
+                        avoid.push([ld.x - lw2, ld.y - lh2, ld.x + lw2, ld.y + lh2]);
+                        idX = ld.x;
                     }
                 }
-                var sStr = 'S' + String(p.sheet);
-                var sSz = this.fontMm('co_chu_id', 2) / 0.72;
-                var sw = textW(sStr, sSz, true) + 1.6, sh = sSz * 0.72 + 1.2;
-                var sm = 0;
-                var sx0 = ox + sm, sx1 = ox + mw * sc - sm, sy0 = oy + sm, sy1 = oy + mh * sc - sm;
-                var idLeft = idX < ox + mw * sc / 2;
-                var corners = idLeft
+                var sStr = 'S' + String(p.sheet), sw = textW(sStr, sSz, true) + 1.6, sh = sSz * 0.72 + 1.2;
+                var sx0 = ox, sx1 = ox + mw * sc, sy0 = oy, sy1 = oy + mh * sc;
+                var corners = idX < ox + mw * sc / 2
                     ? [[sx1 - sw, sy1 - sh], [sx0, sy1 - sh], [sx1 - sw, sy0], [sx0, sy0]]
                     : [[sx0, sy1 - sh], [sx1 - sw, sy1 - sh], [sx0, sy0], [sx1 - sw, sy0]];
-                var hit = function (r) {
-                    for (var ai = 0; ai < avoid.length; ai++) {
-                        var a = avoid[ai];
-                        if (r[0] < a[2] + 0.3 && r[0] + sw > a[0] - 0.3 && r[1] < a[3] + 0.3 && r[1] + sh > a[1] - 0.3) return true;
-                    }
-                    return false;
-                };
-                var spot = corners[0];
-                for (var ki = 0; ki < corners.length; ki++) {
-                    if (!hit(corners[ki])) { spot = corners[ki]; break; }
-                }
+                var spot = corners.filter(function (r) {
+                    return !avoid.some(function (a) { return r[0] < a[2] + 0.3 && r[0] + sw > a[0] - 0.3 && r[1] < a[3] + 0.3 && r[1] + sh > a[1] - 0.3; });
+                })[0] || corners[0];
                 s.push('<rect x="' + spot[0].toFixed(2) + '" y="' + spot[1].toFixed(2) + '" width="' + sw.toFixed(2) + '" height="' + sh.toFixed(2) + '" fill="#fff" stroke="#000" stroke-width="0.12"/>');
-                s.push('<text x="' + (spot[0] + sw / 2).toFixed(2) + '" y="' + (spot[1] + sh / 2 + sSz * 0.36).toFixed(2) + '" font-size="' + sSz.toFixed(3) + '" font-weight="bold" text-anchor="middle">' + esc(sStr) + '</text>');
+                s.push(ctext(sStr, spot[0] + sw / 2, spot[1] + sh / 2, sSz, ' font-weight="bold"'));
                 return s.join('');
             }
         },
         mounted: function () {
             var self = this;
             ZSU_LEGACY_COLOR = true;
-            document.addEventListener('mousedown', function () {
-                self.closeNotePop();
-            });
-            if (window.IntersectionObserver && this.$refs.scroll) {
+            document.addEventListener('mousedown', this.closeNotePop);
+            if (window.IntersectionObserver) {
                 this._io = new IntersectionObserver(function (entries) {
                     entries.forEach(function (en) {
                         if (!en.isIntersecting) return;
@@ -2536,6 +2164,7 @@
                 this.lazyEnabled = false;
             }
             window.intemDoExport = function (fmt) { if (fmt === 'pdf') self.exportPdf(); else self.exportImages(fmt); };
+            window.intemLogo = function (src) { self.setLogo(src); };
             window.intemLoad = function (data) {
                 self._svgCache = {};
                 self._mapCache = {};
@@ -2543,6 +2172,9 @@
                 self._searchCache = {};
                 var st = data.settings || {};
                 self.loadSettings(st);
+                ['ghi_chu_them', 'ghi_chu_them_2', 'bia_noi_dung'].forEach(function (k) {
+                    if (st[k] != null) self.settings[k] = String(st[k]);
+                });
                 self.notePop = null;
                 self.notePresets = {
                     ghi_chu_them: (st.ghi_chu_preset || []).map(String),
@@ -2553,35 +2185,25 @@
                 self.applyMatOrder(data.mat_order);
                 self.sheets = data.sheets || {};
                 self.parts = data.parts || [];
-                var offMap = {};
-                self.parts.forEach(function (p, pi) { offMap[pi] = false; });
-                self.off = offMap;
-                self.sel = { mat: null, part: null };
+                var eb = data.eb_cfg || {};
+                self.ebCfg = { order: (eb.order || []).map(String), off: (eb.off || []).map(String) };
+                self.ebOpen = false;
+                self.off = self.parts.reduce(function (m, p, pi) { m[pi] = false; return m; }, {});
                 self.selSet = {};
-                self.expandedSheets = {};
+                self.anchor = null;
             };
             window.addEventListener('keydown', function (e) {
-                if (e.ctrlKey || e.metaKey || e.altKey) return;
-                var t = e.target;
-                if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT')) return;
-                if (!self.visible.length) return;
-                if (e.key === 'Tab') {
-                    e.preventDefault();
-                    self.rotCCW();
-                } else if (e.key === '+' || e.key === '=') {
-                    e.preventDefault();
-                    self.zoomStep(1);
-                } else if (e.key === '-' || e.key === '_') {
-                    e.preventDefault();
-                    self.zoomStep(-1);
+                if (self.ebOpen) {
+                    if (e.key === 'Escape') self.closeEb();
+                    return;
                 }
+                if (e.ctrlKey || e.metaKey || e.altKey || isTypingTarget(e.target)) return;
+                var d = e.key === '+' || e.key === '=' ? 1 : e.key === '-' || e.key === '_' ? -1 : 0;
+                if (!d || !self.visible.length) return;
+                e.preventDefault();
+                self.zoomStep(d);
             });
-            window.addEventListener('message', function (e) {
-                if (!e.data || e.data.action !== 'tab_shown') return;
-                if (self._loaded && !e.data.reload) return;
-                self._loaded = true;
-                skp('load_data', '');
-            });
+            ksuOnShown(self, skp);
         }
     });
 </script>

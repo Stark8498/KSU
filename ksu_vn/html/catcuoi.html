@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Cắt cuối</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/vue.min.js"></script>
+    <script src="js/setting.js"></script>
+    <script src="js/preload.js"></script>
+    <script>document.addEventListener('contextmenu',function(e){e.preventDefault();},false);</script>
+</head>
+<body>
+
+<div id="app" class="container">
+    <div class="col2">
+
+        <div class="switch-stacked">
+            <div class="switch">
+                <span>Chiều rộng tối thiểu</span>
+                <div class="number-input-group">
+                    <button class="spinner-btn"
+                            @click="decrementValue('chieu_rong_toi_thieu', 10, 0)"
+                            :disabled="settings.chieu_rong_toi_thieu <= 0">−
+                    </button>
+                    <input type="number"
+                           v-model.number="settings.chieu_rong_toi_thieu"
+                           @change="saveSetting('chieu_rong_toi_thieu')"
+                           @blur="validateMinWidth"
+                           @keyup.enter="validateMinWidth"
+                           min="0" max="10000" step="10">
+                    <button class="spinner-btn"
+                            @click="incrementValue('chieu_rong_toi_thieu', 10)"
+                            :disabled="settings.chieu_rong_toi_thieu >= 10000">+
+                    </button>
+                </div>
+            </div>
+        </div>
+        <p class="switch-stacked-hint">Chiều rộng tối thiểu cho vùng cắt cuối.</p>
+
+    </div>
+
+    <div id="preset-panel"></div>
+</div>
+
+<script>
+    document.body.spellcheck = false;
+
+    new Vue({
+        el: '#app',
+        mixins: [SettingsMixin('net_cat_cuoi')],
+        data: {
+            settings: {
+                chieu_rong_toi_thieu: 300
+            }
+        },
+        methods: {
+            validateMinWidth() {
+                let n = parseFloat(this.settings.chieu_rong_toi_thieu);
+                if (isNaN(n) || n < 0) n = 0;
+                if (n > 10000) n = 10000;
+                this.settings.chieu_rong_toi_thieu = parseFloat(n.toFixed(2));
+                this.saveSetting('chieu_rong_toi_thieu');
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
