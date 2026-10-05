@@ -159,7 +159,7 @@ module KSU
         return failure("bad_radius") unless r
         rows = elems.map { |h| Util.dup_array_values(h) }
         return failure("few_segments") if rows.length < 3
-        return failure("open_loop") unless elements_joined?(rows)
+        return failure("open_loop") unless elements_closed?(rows)
         rows.each do |h|
           next unless h[:type] == :arc
           h[:skip_mend] = true unless [h[:s], h[:e]].all? { |pt| (Calc.distance(pt, h[:c]) - r).abs <= 0.06 }
@@ -170,7 +170,7 @@ module KSU
         rows, arr2 = rejoin_arcs(rows, r, arr.map { |h| h[:arc_origin_mm] })
         rows = find_arc_seam(rows)
         rows &&= find_arc_seam(arc_segment(rows))
-        return failure("open_loop") unless rows && elements_joined?(rows)
+        return failure("open_loop") unless rows && elements_closed?(rows)
         success(rows, bridge_mend_count: arr.length, bridge_mends: arr.freeze, tangent_mends: arr2.freeze)
       end
       def offset_shape(source_elems, radius_mm:, cut_side:)
@@ -250,7 +250,7 @@ module KSU
         result.delete(:src_vertex)
         result.freeze
       end
-      def elements_joined?(rows)
+      def elements_closed?(rows)
         return false if rows.length < 2
         rows.each_index.all? { |idx| Calc.distance(rows[idx][:e], rows[(idx + 1) % rows.length][:s]) <= JOINT_SNAP_MM }
       end
@@ -573,7 +573,7 @@ module KSU
           [arr[idx][:s], arr[idx][:e]].any? { |pt| Calc.distance_to_line(pt, arr6[:first], arr6[:last]) > 1.0e-8 }
         end
         return failure("line_drift") if flag
-        return failure("open_loop") unless elements_joined?(arr)
+        return failure("open_loop") unless elements_closed?(arr)
         sampled = flatten_loop(arr)
         return failure("self_intersect") if elements_cross?(dedupe_ring(sampled))
         return failure("refit_drift") unless within?(sampled, ring(dedupe_ring(sampled_pts)), 0.052) <= 0.052

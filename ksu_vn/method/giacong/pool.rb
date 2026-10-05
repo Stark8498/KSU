@@ -153,7 +153,7 @@ module KSU
         return abort_run(@one_group) if @one_group
         reap_dead
         dispatch
-        finish_run
+        flush_batch
         last_ix if at - @num2.to_f > 30.0 && !labelling
       rescue StandardError => err
         abort_run("#{err.class}: #{err.message}")
@@ -399,7 +399,7 @@ module KSU
         failed[job[:id]] = true
         nil
       end
-      def finish_run
+      def flush_batch
         return unless (state = @run_state)
         entries = state[:keys].uniq
         arr = plan(entries) || []

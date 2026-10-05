@@ -743,7 +743,7 @@ module KSU
           flag = false
           result = [rows.first]
           rows[1...-1].each_with_index do |pt, idx|
-            next flag = true if turn_sign(result.last, pt, rows[idx + 2])
+            next flag = true if continues_straight?(result.last, pt, rows[idx + 2])
             result << pt
           end
           result << rows.last
@@ -757,7 +757,7 @@ module KSU
           rows << [pt[0], pt[1]] unless rows.last && Calc.distance(rows.last, pt) <= POINT_TOL_MM
         end
       end
-      def turn_sign(arr, b, arr2)
+      def continues_straight?(arr, b, arr2)
         _ef672dce = b[0] - arr[0]
         _73792f97 = b[1] - arr[1]
         _6fff5dd9 = arr2[0] - b[0]

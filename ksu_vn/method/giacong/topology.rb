@@ -599,7 +599,7 @@ module KSU
         _6dd27878 = arr2 + [arr2.first.dup]
         runs = arc_candidates(_6dd27878)
         return failure("no_arc_found") if runs.empty?
-        elems = arc_segment(rebuild_elements(_6dd27878, runs))
+        elems = arc_segment(elements_from_runs(_6dd27878, runs))
         flag = elems.each_with_index.all? do |arr, idx|
           Calc.distance(arr[:e], elems[(idx + 1) % elems.length][:s]) <= GAPLESS_MM
         end
@@ -693,7 +693,7 @@ module KSU
           radius_mm: r, clockwise: num2.negative?, sweep_deg: num, max_radial_mm: arr3[:max_radial_mm],
           max_bulge_mm: bulge }
       end
-      def rebuild_elements(arr, runs)
+      def elements_from_runs(arr, runs)
         arr2 = runs.to_h { |start2| [start2[:start_index], start2] }
         elems = []
         edge = 0

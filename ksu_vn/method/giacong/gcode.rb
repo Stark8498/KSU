@@ -149,7 +149,7 @@ module KSU
           elsif num2
             write_elements(lines, post, vars, elems, tool["feed"])
           else
-            write_polyline(lines, post, vars, num, tool, key)
+            cut_path(lines, post, vars, num, tool, key)
           end
           index_paths[key] ||= lines[num3..]
           rapid(lines, post, vars, z: z(tool))
@@ -284,7 +284,7 @@ module KSU
           num += length
         end
       end
-      def write_polyline(lines, post, vars, out, tool, slow_len)
+      def cut_path(lines, post, vars, out, tool, slow_len)
         rows = out.map { |pt| [pt[0].to_f, pt[1].to_f] }
         return if rows.length < 2
         arr2 = rows.each_cons(2).map { |row0, last_rect| Calc.distance(last_rect, row0) }

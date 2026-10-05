@@ -169,7 +169,7 @@ module KSU
           _8d02513d = { shape_tol_mm: 0.01, sample_tol_mm: RESCUE_SAMPLE_MM }
           _b7d2a364 = Locked.align(lock[:elems], path, align_tol_mm: 0.0025, **_8d02513d)
           return nil unless _b7d2a364.ok
-          _c3a7bc03 = rotate_to_start(path, _b7d2a364.start_point)
+          _c3a7bc03 = pin_ends_to(path, _b7d2a364.start_point)
           return nil unless same_shape?(_c3a7bc03, path) && !self_intersects?(_c3a7bc03)
           _15768a95 = Locked.align(_b7d2a364.elems, _c3a7bc03, align_tol_mm: 1.0e-6, **_8d02513d)
           return nil unless _15768a95.ok
@@ -408,7 +408,7 @@ module KSU
         end
         lock = lock.merge(elems: _b7d2a364.elems, align_tol_mm: 1.0e-6, sample_tol_mm: RESCUE_SAMPLE_MM,
                                 final_check: arr, final_aligned: true)
-        [rotate_to_start(path, _b7d2a364.start_point), lock]
+        [pin_ends_to(path, _b7d2a364.start_point), lock]
       end
       def drift_check(path_xy, base_xy, r, tolerance_mm: 0.05)
         fail = { ok: false, error: "check_unmeasured" }
@@ -482,7 +482,7 @@ module KSU
       def near_marker?(arr2, pt)
         arr2.any? { |arr| Calc.distance(pt, arr[:point]) <= arr[:radius_mm] }
       end
-      def rotate_to_start(path, start)
+      def pin_ends_to(path, start)
         arr = path.map { |pt| [pt[0].to_f, pt[1].to_f] }
         arr[0] = start.dup
         arr[-1] = start.dup
@@ -646,14 +646,14 @@ module KSU
       end
       def link_clear?(row0, last_rect, boundary, limit, idx)
         mid_pt = [(row0[0] + last_rect[0]) * 0.5, (row0[1] + last_rect[1]) * 0.5]
-        return false unless point_inside?(row0, boundary, idx) && point_inside?(mid_pt, boundary, idx) &&
-                            point_inside?(last_rect, boundary, idx)
+        return false unless inside_cached?(row0, boundary, idx) && inside_cached?(mid_pt, boundary, idx) &&
+                            inside_cached?(last_rect, boundary, idx)
         snap_edges = cells_between(idx, row0, last_rect, limit)
         free_at = Calc::NATIVE ? Native.gap_clear(row0, last_rect, boundary, snap_edges, limit, NODE_TOLERANCE_MM * 2.0) : nil
         return free_at unless free_at.nil?
         (snap_edges || (0...boundary.length)).none? { |edge| Calc.segment_gap(row0, last_rect, boundary[edge], boundary[(edge + 1) % boundary.length]) < limit }
       end
-      def point_inside?(pt, boundary, idx)
+      def inside_cached?(pt, boundary, idx)
         h6 = idx && idx[:inside]
         return Calc.in_polygon?(pt[0], pt[1], boundary) unless h6
         h6.clear if h6.length > 200_000

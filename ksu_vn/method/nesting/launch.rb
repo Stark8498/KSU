@@ -142,7 +142,7 @@ module KSU::Launch
     return name unless name.empty?
     entity.respond_to?(:definition) && entity.definition ? entity.definition.name.to_s.strip : ""
   end
-  def group_by_material(nesting)
+  def group_by_label(nesting)
     h2 = Hash.new { |elem, k| elem[k] = [] }
     h = Hash.new { |elem, k| elem[k] = [] }
     queue = Sketchup.active_model.entities.to_a.map { |grp| [grp, 0] }
@@ -166,7 +166,7 @@ module KSU::Launch
       return KSU::Settings.send_to_dialog(dlg, "nesting", "nestingSynced", {}.to_json)
     end
     @arr31 = []
-    arr2, arr = group_by_material(nesting)
+    arr2, arr = group_by_label(nesting)
     done, arr28, fail = 0, [], []
     KSU.start(false)
     nesting.definition.entities.to_a.each do |sheet|

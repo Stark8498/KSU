@@ -286,7 +286,6 @@ ten:
   _6802a8e9: block_sheet
   _a2a33d59: check_back_face
   _8b6613a1: back_mismatch_note
-  _19d809ef: front_of
   _50261b95: add_warning
   _5df76d9c: final_notes
   _903a3d50: repair_notes
@@ -494,7 +493,6 @@ ten:
   _e1a04585: slow_feed
   _d4340593: slow_length       # tu_dong_giam_toc -> khoang_cach_giam_toc
   _94c5a531: write_path        # nen thanh cung tron roi ghi, co memo
-  _68197930: write_polyline    # ban du phong: chi G01, cat doan tai moc giam toc
   # kiem tra dau ra
   _ede6561b: assert_closed
   _29c5c0c6: pass_start_point
@@ -852,13 +850,10 @@ ten:
   _dfb03515: angle_within?
   # KSU::Cnc::Refit -- doc lai cung tron tu day diem
   _c48a4546: refit             # day diem -> [line, arc] khop lai
-  _aed65a4a: clean_points
   _537f8151: max_deviation
   _121d32be: max_min_distance
   _aef45959: arc_candidates
   _e7be845e: circle_at         # duong tron qua ba diem lien tiep
-  _ffaba150: fit_arc_run
-  _8f4b7626: rebuild_elements
   _de42dd31: sample_metric
   _ad64afa5: fit_circle_lsq
   _1ce3a0ec: total_sweep
@@ -893,14 +888,12 @@ ten:
   _7c9d0f80: drift_check_ruby
   _b67eb327: path_steps_ok?
   _37bcce8e: near_marker?
-  _5a457b62: rotate_to_start
   # khoan lo tron va kiem an toan
   _23c415c4: bore_plan
   _87b410a6: assert_safe
   _0e4d5729: paths_safe?
   _730150b8: inside_index      # chia o de hoi "diem nay co trong ban ve khong"
   _c5111617: link_clear?
-  _9fab9368: point_inside?
   _a02564d6: cells_between
   _fd650184: nested_outlines
   _ae7808cd: tool_fits?
@@ -960,7 +953,6 @@ ten:
   _ce312100: reap_dead
   _88399118: close_worker
   _13791cab: send_job
-  _f52f0098: finish_run
   _b684d176: abort_run
   _4569906d: swallow          # bo qua loi khi dong ong / xoa file
   _431a5720: touch
@@ -990,7 +982,6 @@ ten:
   _2967a894: dedupe_ring     # bao Calc.dedupe_loop, co ca phep loc diem hong
   _8737291d: ring
   _3ffbf83e: freeze_element
-  _a8dd4499: elements_joined?
   _99ad0504: elements_cross?
   _8192205b: polygon_self_cross?
   _4bb40c41: pair_crosses?
@@ -1081,7 +1072,6 @@ ten:
   _03810a3f: to_xy
   _3124cd41: closed_ring?
   _29dd5de9: open_points
-  _eea20c12: corner_target
   _ca64623d: corner_index
   _3aa58b24: assert_plan_ok
   _e8d5bf31: path_open?
@@ -1136,7 +1126,6 @@ ten:
   _9e8a3c6e: layer_tags
   _ba59e872: any_latched?
   _44c9f859: tag_for_layer
-  _7be5e7a4: entities_of
   _d96871e3: entities_in
   _46270fb4: highlight_layer
   _253bbf28: select_layer_entities
@@ -1223,7 +1212,6 @@ ten:
   _dba58ea8: panel_payload
   _b41ce6a0: nesting_payload
   _4569c334: entity_label
-  _4b50f34c: group_by_material
   _48a961b7: send_state
   _a5ca95d7: material_orders
   _f22a94c3: parse_keywords
@@ -1270,7 +1258,6 @@ ten:
   _1231866d: offset_with_border
   _0ef5e1cf: convex?
   _8f37b238: finite_points
-  _a7d5429e: turn_sign
   # ---- method/giacong/chain.rb (phan con lai) ----
   _9e395e9a: frozen_attributes
   _46cabae7: deep_dup
@@ -1610,6 +1597,53 @@ ten:
                                # bounds + dien tich cua hai ban ghi
 
 vai:
+
+  # Two methods in one build cannot share a word: the obfuscator mapped
+  # name -> hex once. Where one of the pair reads wrong, it is renamed from
+  # its body; where both read right, the weaker claim moves here and the
+  # better-evidenced one keeps `ten:`. None of these hexes is scoped in
+  # tenauto.yml, so moving them changes no other name.
+  _a7d5429e: continues_straight?
+  # returns a boolean, not a sign: small cross AND non-negative dot,
+  # i.e. the path runs on straight. The signed one is arc.rb, read
+  # `.negative?` at its call site
+  _a8dd4499: elements_closed?
+  # indexes with `(i + 1) % length`, so it tests a CLOSED ring;
+  # chain.rb's each_cons version tests an open chain
+  _7be5e7a4: all_entities
+  # flat_map over many records into one list; core.rb's takes ONE
+  # entity and answers with its entities collection
+  _f52f0098: flush_batch
+  # runs the pending batch early, or leaves it when it is under 20 s
+  # old; it ends nothing
+  _19d809ef: front_map
+  # returns the whole sheet -> front-sheet map; canvas.rb's takes one
+  # sheet and answers with its front
+  _68197930: cut_path
+  # emits feed moves along a point list, splitting at the slow-down
+  # mark. dxf.rb's writes the DXF LWPOLYLINE record, and says so in its
+  # own string
+  _4b50f34c: group_by_label
+  # groups by entity_label and by the `board-index` attribute, never by
+  # material; collect.rb's groups by material + thickness_mm
+  _8f4b7626: elements_from_runs
+  # builds a fresh element list out of a point array and its arc runs;
+  # clip.rb's reworks elements it is handed
+  _5a457b62: pin_ends_to
+  # assigns arr[0] and arr[-1] and rotates nothing; arc.rb's calls
+  # Array#rotate
+  _9fab9368: inside_cached?
+  # a memo in front of Calc.in_polygon?; topology.rb's is the ray-cast
+  # itself
+  _aed65a4a: clean_points
+  # apt, but arc.rb holds a second clean_points, so only one of the two
+  # can be the author's word
+  _eea20c12: corner_target
+  # apt, but motion.rb holds a second corner_target, and that one
+  # carries the author's own corner strings
+  _ffaba150: fit_arc_run
+  # apt, but arc.rb holds a second fit_arc_run, and nothing says which
+  # word is the author's
   # Nhung hex con lai duoc dung nhieu nhat. Ten o day noi bien GIU cai gi -- doc
   # ra tu cach dung, khong phai tu chu tac gia go, nen chung nam duoi `vai:`.
   # @ivar

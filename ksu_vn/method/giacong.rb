@@ -253,7 +253,7 @@ module KSU
         tag = Canvas.layer_of(::Sketchup.active_model, layer)
         tag unless tag.nil? || tag.name == "Layer0" || arr.any? { |rec| Latch.latched?(rec) }
       end
-      def entities_of(arr)
+      def all_entities(arr)
         arr.flat_map { |rec| entities_in(rec) }.select(&:valid?).uniq
       end
       def entities_in(rec)
@@ -266,7 +266,7 @@ module KSU
         return unless @reader
         _ed7038d7 = @reader.database.by_layer(layer)
         tag = tag_for_layer(layer, _ed7038d7)
-        arr = tag && !_f5d51bb8 ? [] : entities_of(_ed7038d7).select { |entity| entity.hidden? == _f5d51bb8 }
+        arr = tag && !_f5d51bb8 ? [] : all_entities(_ed7038d7).select { |entity| entity.hidden? == _f5d51bb8 }
         flag = tag && tag.visible? != _f5d51bb8
         return if arr.empty? && !flag
         ::KSU.start(false)
@@ -328,7 +328,7 @@ module KSU
           vectors = sheets[index][:vectors]
           Array(fld["v"]).filter_map { |val| vectors[val] if val.is_a?(Integer) && val >= 0 }
         end
-        entities_of(arr)
+        all_entities(arr)
       end
       def on_export_dxf(request)
         items = Array(request["items"]).select { |fld| fld.is_a?(Hash) && !Array(fld["v"]).empty? }

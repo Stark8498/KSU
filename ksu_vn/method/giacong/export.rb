@@ -43,7 +43,7 @@ module KSU
           layer_order: arr2["layer_order"].each_with_index.to_h { |name, idx| [name.to_s, idx] },
           post: post, extension: post["file_extension"].to_s.then { |text| text.empty? ? "nc" : text },
           thickness: thickness, thickness_issues: _53e651f8, sheets: sheets, total: sheets.length, layout: rects,
-          fronts: front_of(sheets, rects),
+          fronts: front_map(sheets, rects),
           group_count: rects.values.uniq { |arr3| arr3[:group_label] }.length,
           prefixes: {}, reserved: {}, skipped_layers: [], blocked_sheets: [], repair_stats: {}, pass_warnings: [], logs: {}
         )
@@ -338,7 +338,7 @@ module KSU
         arr2 << "..." if arr.length > 5
         Text.t(:mat_sau, :lech_mat_truoc, van: van, vi_tri: arr2.join(", "))
       end
-      def front_of(sheets, rects)
+      def front_map(sheets, rects)
         sheets.group_by { |arr| rects[arr.object_id].values_at(:group_label, :sheet_number) }.each_value.with_object({}) do |src, arr37|
           _05b497c8 = src.find { |arr| work_face(arr[:vectors]) == :front }
           src.each { |arr| arr37[arr.object_id] = _05b497c8 } if _05b497c8
