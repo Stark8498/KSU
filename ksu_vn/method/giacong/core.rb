@@ -638,14 +638,14 @@ module KSU
         end
         active_ix = []
         segments.sort_by { |arr2| arr2[3] }.each do |seg|
-          idx, arr, b, lx, _b0566a11, _2d7e228f, _897789b7 = seg
+          idx, arr, b, lx, _b0566a11, ly, _897789b7 = seg
           _fe479353 = lx - TOLERANCE_MM
           active_ix.reject! { |arr2| arr2[4] < _fe479353 }
           active_ix.each do |panel|
             num = (idx - panel[0]).abs
             next if num <= 1 || num == want - 1
             next unless _b0566a11 >= panel[3] - TOLERANCE_MM && panel[4] >= _fe479353 &&
-                        _897789b7 >= panel[5] - TOLERANCE_MM && panel[6] >= _2d7e228f - TOLERANCE_MM
+                        _897789b7 >= panel[5] - TOLERANCE_MM && panel[6] >= ly - TOLERANCE_MM
             pt = Calc.proper_crossing(arr, b, panel[1], panel[2])
             return { intersects: true, pair: [panel[0], idx], point: pt } if pt
           end

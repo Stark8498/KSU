@@ -18,9 +18,9 @@ module KSU::Group
     panel.get_attribute("KSU", "group-id")
   end
   def group_mates(panel)
-    _20cd1718 = group_id(panel)
-    return [] unless _20cd1718
-    all_panels.select { |pt3, _item, grp2| grp2 == _20cd1718 && pt3 != panel }.map { |arr| arr[0, 2] }
+    gid = group_id(panel)
+    return [] unless gid
+    all_panels.select { |pt3, _item, grp2| grp2 == gid && pt3 != panel }.map { |arr| arr[0, 2] }
   end
   def all_panels
     out = []
@@ -31,12 +31,12 @@ module KSU::Group
         next if KSU::Sheet.bottom_sheet?(node4)
         node4.definition.entities.each do |panel|
           next unless KSU::Sheet.part_group?(panel)
-          _20cd1718 = panel.get_attribute("KSU", "group-id")
-          out << [panel, node4, _20cd1718] if _20cd1718
+          gid = panel.get_attribute("KSU", "group-id")
+          out << [panel, node4, gid] if gid
         end
       else
-        _20cd1718 = node4.get_attribute("KSU", "group-id")
-        out << [node4, nil, _20cd1718] if _20cd1718
+        gid = node4.get_attribute("KSU", "group-id")
+        out << [node4, nil, gid] if gid
       end
     end
     out
@@ -45,16 +45,16 @@ module KSU::Group
     ids = @sel.map { |grp| group_id(grp) }.select { |grp2| grp2 }.to_h { |grp2| [grp2, true] }
     return if ids.empty?
     arr = @sel.select { |grp| grp && grp.valid? }.to_h { |grp| [grp.entityID, true] }
-    all_panels.each do |panel, sheet, _20cd1718|
-      next unless ids[_20cd1718]
+    all_panels.each do |panel, sheet, gid|
+      next unless ids[gid]
       next if arr[panel.entityID]
       @sel << panel
       @sel_sheets << sheet
     end
   end
   def remove_from_selection(panel)
-    _20cd1718 = group_id(panel)
-    arr = _20cd1718 ? @sel.select { |pt3| group_id(pt3) == _20cd1718 } : [panel]
+    gid = group_id(panel)
+    arr = gid ? @sel.select { |pt3| group_id(pt3) == gid } : [panel]
     arr.each do |pt3|
       ix = @sel.index(pt3)
       next unless ix
@@ -62,11 +62,11 @@ module KSU::Group
       @sel_sheets.delete_at(ix)
     end
   end
-  def group_selection(_20cd1718)
+  def group_selection(gid)
     KSU.start
     @sel.each do |grp|
       next unless grp && grp.valid?
-      _20cd1718 ? grp.set_attribute("KSU", "group-id", _20cd1718) : grp.delete_attribute("KSU", "group-id")
+      gid ? grp.set_attribute("KSU", "group-id", gid) : grp.delete_attribute("KSU", "group-id")
     end
     @flag13 = true
     KSU.commit

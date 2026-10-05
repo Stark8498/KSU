@@ -106,10 +106,10 @@ module KSU::Svg
     _8d7dd1b9, font_full, taken = arr2[tag.include?("font-weight=\"bold\"") ? 1 : 0]
     color, str = "", 0
     unescape(tag.sub(/^<text\s[^>]*>/, "").sub(/<\/text>$/, "")).each_codepoint do |cls2|
-      _20cd1718 = font_full[:cmap][cls2] || 0
-      taken[_20cd1718] = cls2
-      color << format("%04X", _20cd1718)
-      str += KSU::Ttf.glyph_width(font_full, _20cd1718).to_f * rsz / font_full[:upm]
+      glyph = font_full[:cmap][cls2] || 0
+      taken[glyph] = cls2
+      color << format("%04X", glyph)
+      str += KSU::Ttf.glyph_width(font_full, glyph).to_f * rsz / font_full[:upm]
     end
     tx = x - { "middle" => str / 2, "end" => str }.fetch(attr(tag, "text-anchor"), 0)
     ops = ["#{rgb(attr(tag, "fill"))} rg", "BT", "/#{_8d7dd1b9} #{n(rsz)} Tf", "1 0 0 -1 #{n(tx)} #{n(y)} Tm", "<#{color}> Tj", "ET"]

@@ -251,11 +251,11 @@ module KSU
       end
       def offset_marching(boundary, r)
         lx, arr4 = boundary.map(&:first).minmax
-        _2d7e228f, arr3 = boundary.map(&:last).minmax
-        return err_bad_path if arr4 - lx <= 0.000001 || arr3 - _2d7e228f <= 0.000001
+        ly, arr3 = boundary.map(&:last).minmax
+        return err_bad_path if arr4 - lx <= 0.000001 || arr3 - ly <= 0.000001
         cell = [[r / 32.0, 0.08].min, 0.035].max
         _95733ccb = (lx / cell).floor * cell - cell * 0.371
-        _1c631d5d = (_2d7e228f / cell).floor * cell - cell * 0.619
+        _1c631d5d = (ly / cell).floor * cell - cell * 0.619
         limit = [arr4 - _95733ccb, arr3 - _1c631d5d].max + cell
         depth = 0
         rsz = cell
@@ -604,9 +604,9 @@ module KSU
         grid = {}
         polygon.zip(polygon.rotate).each_with_index do |(row0, last_rect), idx|
           lx, _b0566a11 = [row0[0], last_rect[0]].minmax
-          _2d7e228f, _897789b7 = [row0[1], last_rect[1]].minmax
+          ly, _897789b7 = [row0[1], last_rect[1]].minmax
           arr = (lx / cell).floor..(_b0566a11 / cell).floor
-          arr2 = (_2d7e228f / cell).floor..(_897789b7 / cell).floor
+          arr2 = (ly / cell).floor..(_897789b7 / cell).floor
           arr.each { |_bade6541| arr2.each { |gap_y| ((grid[_bade6541] ||= {})[gap_y] ||= []) << idx } }
         end
         grid
@@ -757,9 +757,9 @@ module KSU
         entries.each_with_index do |arr, i|
           b = entries[(i + 1) % want]
           lx, _b0566a11 = [arr[0], b[0]].minmax
-          _2d7e228f, _897789b7 = [arr[1], b[1]].minmax
+          ly, _897789b7 = [arr[1], b[1]].minmax
           arr4 = (lx / cell).floor..(_b0566a11 / cell).floor
-          arr5 = (_2d7e228f / cell).floor..(_897789b7 / cell).floor
+          arr5 = (ly / cell).floor..(_897789b7 / cell).floor
           h = {}
           arr4.each { |_bade6541| arr5.each { |gap_y| grid.dig(_bade6541, gap_y)&.each { |num| h[num] = true } } }
           h.each_key do |num|

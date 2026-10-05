@@ -3,6 +3,7 @@
 # `ten:` noi TAC GIA GO tu nay -- co bang chung song: chuoi tac gia viet,
 #        khoa hash, ten thuoc tinh, chu ky ham con nguyen ten hang xom.
 # `vai:` chi noi bien GIU cai gi. Phep soat mot-ten-mot-hex bo qua phan nay.
+  # id out of `font_full[:cmap]` in the two font files
 # `bo:`  bac mot de xuat cua tu dien sinh ra, kem ly do ngay ben canh.
 #
 # Doc HANDOFF-giai-hex.md §3 truoc khi them.
@@ -1517,6 +1518,22 @@ ten:
   # same def line, and its dispatch arm reads "on_job_place"
 
 vai:
+
+  # Locals whose role holds across every use site, so one name fits the tree.
+  _ec0da59d: sha
+  # every assignment is `Digest::SHA256.new`, sometimes already fed its first
+  # chunk
+  _0944c678: len2
+  # always `(dx * dx) + (dy * dy)`, or that value compared against an epsilon:
+  # a SQUARED length, never a length
+  _2d7e228f: ly
+  # the running minimum y: seeded Float::INFINITY, narrowed by `= y if y < it`,
+  # and read beside the max as the third of [lx, hx, ly, hy]
+  _20cd1718:
+    "*": gid
+    ksu_vn/utils/pdf/svg.rb: glyph
+    ksu_vn/utils/pdf/ttf.rb: glyph
+  # `group_id(...)` and the "group-id" attribute almost everywhere, but a glyph
 
   # The last unnamed instance variables, read from their use sites.
   _6fbffdca: pending_nc

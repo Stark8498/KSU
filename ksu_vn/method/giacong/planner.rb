@@ -188,14 +188,14 @@ module KSU
           last_rect = rows[(idx + 1) % rows.length]
           dx = last_rect[0] - row0[0]
           dy = last_rect[1] - row0[1]
-          _0944c678 = dx * dx + dy * dy
-          next if _0944c678 <= 1.0e-18
-          t = [[((target[0] - row0[0]) * dx + (target[1] - row0[1]) * dy) / _0944c678, 0.0].max, 1.0].min
+          len2 = dx * dx + dy * dy
+          next if len2 <= 1.0e-18
+          t = [[((target[0] - row0[0]) * dx + (target[1] - row0[1]) * dy) / len2, 0.0].max, 1.0].min
           point = [row0[0] + dx * t, row0[1] + dy * t]
           _fbf0cf8d = point[0] - target[0]
           _7e1c7e1d = point[1] - target[1]
           distance = Math.hypot(_fbf0cf8d, _7e1c7e1d)
-          length = Math.sqrt(_0944c678)
+          length = Math.sqrt(len2)
           num2 = -1.0
           num2 = ((_fbf0cf8d / distance) * arr2[0] + (_7e1c7e1d / distance) * arr2[1]).abs if arr2 && distance > 1.0e-12
           arr3 << {
@@ -268,11 +268,11 @@ module KSU
         out.each_cons(2) do |(ax, ay), last_rect|
           dx = last_rect[0] - ax
           dy = last_rect[1] - ay
-          _0944c678 = dx * dx + dy * dy
-          next if _0944c678 <= 1.0e-18
-          _c8614638 = [[((arr[0] - ax) * dx + (arr[1] - ay) * dy) / _0944c678, 0.0].max, 1.0].min
+          len2 = dx * dx + dy * dy
+          next if len2 <= 1.0e-18
+          _c8614638 = [[((arr[0] - ax) * dx + (arr[1] - ay) * dy) / len2, 0.0].max, 1.0].min
           distance = Math.hypot(ax + dx * _c8614638 - arr[0], ay + dy * _c8614638 - arr[1])
-          _84a46043 = Math.sqrt(_0944c678)
+          _84a46043 = Math.sqrt(len2)
           return num + _84a46043 * _c8614638 if distance <= 0.02
           num += _84a46043
         end
@@ -289,12 +289,12 @@ module KSU
           bb2, bb = xy_columns(groups[boundary])
           next unless bb2
           lx, _b0566a11 = bb2.minmax
-          _2d7e228f, _897789b7 = bb.minmax
-          next if _b0566a11 - lx <= 0.001 || _897789b7 - _2d7e228f <= 0.001
+          ly, _897789b7 = bb.minmax
+          next if _b0566a11 - lx <= 0.001 || _897789b7 - ly <= 0.001
           bb5, flag = boundary == :part_border ? [bb2, bb] : xy_columns(groups[:part_border])
           return {
-            source: boundary, origin: [lx, _2d7e228f], global_bounds: [lx, _2d7e228f, _b0566a11, _897789b7],
-            width_mm: _b0566a11 - lx, height_mm: _897789b7 - _2d7e228f,
+            source: boundary, origin: [lx, ly], global_bounds: [lx, ly, _b0566a11, _897789b7],
+            width_mm: _b0566a11 - lx, height_mm: _897789b7 - ly,
             full_sheet: %i[sheet_border back_marker].include?(boundary),
             old_part_origin: bb5 && [bb5.min, flag.min]
           }
@@ -432,10 +432,10 @@ module KSU
         dx, dy = saved[0] - box2[:origin][0], saved[1] - box2[:origin][1]
         return [nc_text, id_str] if dx.abs <= 1.0 && dy.abs <= 1.0
         row_w, _bf071a8c = box2.values_at(:width_mm, :height_mm)
-        lx, _2d7e228f, _b0566a11, _897789b7 = id_str.values_at(:min_x, :min_y, :max_x, :max_y)
-        return [nc_text, id_str] unless lx && _2d7e228f &&
-                            (_b0566a11 - lx - row_w).abs <= 1.0 && (_897789b7 - _2d7e228f - _bf071a8c).abs <= 1.0 &&
-                            (lx + dx).abs <= 1.0 && (_2d7e228f + dy).abs <= 1.0 &&
+        lx, ly, _b0566a11, _897789b7 = id_str.values_at(:min_x, :min_y, :max_x, :max_y)
+        return [nc_text, id_str] unless lx && ly &&
+                            (_b0566a11 - lx - row_w).abs <= 1.0 && (_897789b7 - ly - _bf071a8c).abs <= 1.0 &&
+                            (lx + dx).abs <= 1.0 && (ly + dy).abs <= 1.0 &&
                             (_b0566a11 + dx - row_w).abs <= 1.0 && (_897789b7 + dy - _bf071a8c).abs <= 1.0
         _fc68f84f = shift_moves(nc_text, dx, dy)
         bbox = scan_moves(_fc68f84f)

@@ -107,8 +107,8 @@ module KSU::Collect
     rec = KSU::Cutting.cut_loops(grp2, face, world_tf2, max_eb[0], *KSU::Cutting.arrow_sizes(KSU::Cutting.short_side(face, tf)))
     return [nil, seen2] if rec[:loops].empty?
     bnds = rec[:loops].map { |arr| KSU::Simplify.simplify_poly(arr[:pts].map { |pt| [pt.x.to_f, pt.y.to_f] }, arr[:outer]) }
-    lx, _2d7e228f, _b0566a11 = KSU::Nesting.poly_bounds(bnds.flatten(1))
-    ax, ay = seen2 - _b0566a11, -_2d7e228f
+    lx, ly, _b0566a11 = KSU::Nesting.poly_bounds(bnds.flatten(1))
+    ax, ay = seen2 - _b0566a11, -ly
     seen2 -= (_b0566a11 - lx + 1)
     tr = Geom::Transformation.translation([ax, ay, 0])
     found = KSU::Cutting.side_drills(grp2, face, world_tf2)

@@ -408,11 +408,11 @@ module KSU
       end
       def cached_path(vec, out, tool, anchor, nested)
         return build_path(vec, out, tool, anchor, nested) if out.length < 2
-        _ec0da59d = ::Digest::SHA256.new
-        _ec0da59d << "#{nested ? 1 : 0}|#{anchor[0].to_f.round(6)},#{anchor[1].to_f.round(6)}|#{canonical(tool_cut_keys(tool)).inspect}|"
-        _ec0da59d << "#{vec.operation_type}|#{vec.closed ? 'closed' : "open"}|"
-        out.each { |pt| _ec0da59d << format("%.6f,%.6f;", pt[0], pt[1]) }
-        key = _ec0da59d.hexdigest
+        sha = ::Digest::SHA256.new
+        sha << "#{nested ? 1 : 0}|#{anchor[0].to_f.round(6)},#{anchor[1].to_f.round(6)}|#{canonical(tool_cut_keys(tool)).inspect}|"
+        sha << "#{vec.operation_type}|#{vec.closed ? 'closed' : "open"}|"
+        out.each { |pt| sha << format("%.6f,%.6f;", pt[0], pt[1]) }
+        key = sha.hexdigest
         cache = (@h31 ||= {})
         return cache[key] if cache.key?(key)
         ok = cache[key] = build_path(vec, out, tool, anchor, nested)

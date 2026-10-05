@@ -24,12 +24,12 @@ module KSU
         polygon = dedupe(outline)
         return [] if polygon.length < 3
         lx, arr2 = polygon.map(&:first).minmax
-        _2d7e228f, arr = polygon.map(&:last).minmax
+        ly, arr = polygon.map(&:last).minmax
         row_w = arr2 - lx
-        _bf071a8c = arr - _2d7e228f
+        _bf071a8c = arr - ly
         return [] if row_w <= 0.001 || _bf071a8c <= 0.001
         oy4 = _bf071a8c >= row_w
-        _fe479353, long_axis = oy4 ? [lx, row_w] : [_2d7e228f, _bf071a8c]
+        _fe479353, long_axis = oy4 ? [lx, row_w] : [ly, _bf071a8c]
         want = (long_axis / step).ceil
         return [] if want <= 1
         num = long_axis / want.to_f
@@ -641,14 +641,14 @@ module KSU
         outer_loop.zip(outer_loop.rotate).each_with_index do |(row0, last_rect), idx|
           dx = last_rect[0] - row0[0]
           dy = last_rect[1] - row0[1]
-          _0944c678 = dx * dx + dy * dy
-          next if _0944c678 <= 1.0e-18
-          t = [[((target[0] - row0[0]) * dx + (target[1] - row0[1]) * dy) / _0944c678, 0.0].max, 1.0].min
+          len2 = dx * dx + dy * dy
+          next if len2 <= 1.0e-18
+          t = [[((target[0] - row0[0]) * dx + (target[1] - row0[1]) * dy) / len2, 0.0].max, 1.0].min
           point = [row0[0] + dx * t, row0[1] + dy * t]
           _fbf0cf8d = point[0] - target[0]
           _7e1c7e1d = point[1] - target[1]
           distance = Math.hypot(_fbf0cf8d, _7e1c7e1d)
-          length = Math.sqrt(_0944c678)
+          length = Math.sqrt(len2)
           arr3 << {
             index: idx, t: t, point: point, distance: distance,
             tangent_align: _bd7bf87a ? (dx / length) * _bd7bf87a[0] + (dy / length) * _bd7bf87a[1] : -1.0,
@@ -705,8 +705,8 @@ module KSU
         outer_loop.zip(outer_loop.rotate).each_with_index do |(row0, last_rect), idx|
           dx = last_rect[0] - row0[0]
           dy = last_rect[1] - row0[1]
-          _0944c678 = dx * dx + dy * dy
-          t = _0944c678 <= 1.0e-18 ? 0.0 : ((target[0] - row0[0]) * dx + (target[1] - row0[1]) * dy) / _0944c678
+          len2 = dx * dx + dy * dy
+          t = len2 <= 1.0e-18 ? 0.0 : ((target[0] - row0[0]) * dx + (target[1] - row0[1]) * dy) / len2
           t = [[t, 0.0].max, 1.0].min
           point = [row0[0] + dx * t, row0[1] + dy * t]
           _5ae7f1e5 = (point[0] - target[0])**2 + (point[1] - target[1])**2

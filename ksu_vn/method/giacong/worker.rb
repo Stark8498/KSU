@@ -84,9 +84,9 @@ module KSU
         @code_stamp ||= stamp_of(clib_paths)
       end
       def stamp_of(clib_paths)
-        _ec0da59d = ::Digest::SHA256.new
-        (source_paths + clib_paths).each { |path| _ec0da59d << File.basename(path) << "|" << File.binread(path) << "|" }
-        _ec0da59d.hexdigest
+        sha = ::Digest::SHA256.new
+        (source_paths + clib_paths).each { |path| sha << File.basename(path) << "|" << File.binread(path) << "|" }
+        sha.hexdigest
       end
       def source_list
         entries = %w[worker text calc core topology clip arc library planner export chain profile rescue motion gcode canvas pool]

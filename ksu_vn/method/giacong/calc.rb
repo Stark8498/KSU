@@ -367,9 +367,9 @@ module KSU
           return [[[t, 0.0].max, 1.0].min]
         end
         return [] if ((_568a55ba * _9ff9e93b) - (_57277a24 * _78dcb2bf)).abs > eps
-        _0944c678 = (_78dcb2bf * _78dcb2bf) + (_9ff9e93b * _9ff9e93b)
-        return Math.hypot(ax - px, ay - py) <= eps ? [0.0] : [] if _0944c678 <= eps
-        _fe479353, _aae2b052 = [((px - ax) * _78dcb2bf + (py - ay) * _9ff9e93b) / _0944c678, ((dx - ax) * _78dcb2bf + (dy - ay) * _9ff9e93b) / _0944c678].minmax
+        len2 = (_78dcb2bf * _78dcb2bf) + (_9ff9e93b * _9ff9e93b)
+        return Math.hypot(ax - px, ay - py) <= eps ? [0.0] : [] if len2 <= eps
+        _fe479353, _aae2b052 = [((px - ax) * _78dcb2bf + (py - ay) * _9ff9e93b) / len2, ((dx - ax) * _78dcb2bf + (dy - ay) * _9ff9e93b) / len2].minmax
         _fe479353 = [_fe479353, 0.0].max
         _aae2b052 = [_aae2b052, 1.0].min
         return [] if _aae2b052 < _fe479353 - eps
@@ -414,11 +414,11 @@ module KSU
         (ax, ay), (bx2, by2), (px, py) = a, b, c
         dx = px - ax
         dy = py - ay
-        _0944c678 = (dx * dx) + (dy * dy)
-        return false if _0944c678 < 1.0e-9
-        return false if (((bx2 - ax) * dy) - ((by2 - ay) * dx)).abs / Math.sqrt(_0944c678) > 0.01
+        len2 = (dx * dx) + (dy * dy)
+        return false if len2 < 1.0e-9
+        return false if (((bx2 - ax) * dy) - ((by2 - ay) * dx)).abs / Math.sqrt(len2) > 0.01
         dot = ((bx2 - ax) * dx) + ((by2 - ay) * dy)
-        dot >= -1.0e-6 && dot <= _0944c678 + 1.0e-6
+        dot >= -1.0e-6 && dot <= len2 + 1.0e-6
       end
       def circumcircle_terms(a, b, c)
         (ax, ay), (bx2, by2), (px, py) = a, b, c
@@ -487,18 +487,18 @@ module KSU
       def point_segment_distance(pt, arr, b, eps = 1.0e-18)
         dx = b[0] - arr[0]
         dy = b[1] - arr[1]
-        _0944c678 = (dx * dx) + (dy * dy)
-        return distance(pt, arr) if _0944c678 <= eps
-        t = (((pt[0] - arr[0]) * dx) + ((pt[1] - arr[1]) * dy)) / _0944c678
+        len2 = (dx * dx) + (dy * dy)
+        return distance(pt, arr) if len2 <= eps
+        t = (((pt[0] - arr[0]) * dx) + ((pt[1] - arr[1]) * dy)) / len2
         t = t < 0.0 ? 0.0 : (t > 1.0 ? 1.0 : t)
         Math.hypot(pt[0] - (arr[0] + (dx * t)), pt[1] - (arr[1] + (dy * t)))
       end
       def segment_distance(pt, arr, b)
         dx = b[0] - arr[0]
         dy = b[1] - arr[1]
-        _0944c678 = (dx * dx) + (dy * dy)
-        return Math.hypot(pt[0] - arr[0], pt[1] - arr[1]) if _0944c678 < 1.0e-12
-        t = (((pt[0] - arr[0]) * dx) + ((pt[1] - arr[1]) * dy)) / _0944c678
+        len2 = (dx * dx) + (dy * dy)
+        return Math.hypot(pt[0] - arr[0], pt[1] - arr[1]) if len2 < 1.0e-12
+        t = (((pt[0] - arr[0]) * dx) + ((pt[1] - arr[1]) * dy)) / len2
         t = t < 0.0 ? 0.0 : (t > 1.0 ? 1.0 : t)
         Math.hypot(pt[0] - (arr[0] + (t * dx)), pt[1] - (arr[1] + (t * dy)))
       end
@@ -508,9 +508,9 @@ module KSU
         [arr[0], arr[1], dx, dy, (dx * dx) + (dy * dy)]
       end
       def packed_distance(trai, duoi, packed)
-        ax, ay, dx, dy, _0944c678 = packed
-        return Math.hypot(trai - ax, duoi - ay) if _0944c678 < 1.0e-12
-        t = (((trai - ax) * dx) + ((duoi - ay) * dy)) / _0944c678
+        ax, ay, dx, dy, len2 = packed
+        return Math.hypot(trai - ax, duoi - ay) if len2 < 1.0e-12
+        t = (((trai - ax) * dx) + ((duoi - ay) * dy)) / len2
         t = t < 0.0 ? 0.0 : (t > 1.0 ? 1.0 : t)
         Math.hypot(trai - (ax + (t * dx)), duoi - (ay + (t * dy)))
       end
@@ -628,17 +628,17 @@ module KSU
         dx * dx + dy * dy
       end
       def bounds_of(out)
-        lx = _2d7e228f = Float::INFINITY
+        lx = ly = Float::INFINITY
         _b0566a11 = _897789b7 = -Float::INFINITY
         out.each do |pt|
           x = pt.x.to_f
           y = pt.y.to_f
           lx = x if x < lx
           _b0566a11 = x if x > _b0566a11
-          _2d7e228f = y if y < _2d7e228f
+          ly = y if y < ly
           _897789b7 = y if y > _897789b7
         end
-        lx.finite? ? [lx, _b0566a11, _2d7e228f, _897789b7] : [0.0, 0.0, 0.0, 0.0]
+        lx.finite? ? [lx, _b0566a11, ly, _897789b7] : [0.0, 0.0, 0.0, 0.0]
       end
       def bounds_area(out)
         screen_box = bounds_of(out)

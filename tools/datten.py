@@ -626,8 +626,10 @@ def main() -> int:
         print(f"doi {retag(*args.retag)} cho")
         return 0
 
+    # The dictionary is read and checked BEFORE restore() touches anything.
+    # Restoring first and failing afterwards leaves the whole tree back in hex,
+    # which looks like every name was lost rather than like a typo in a .yml.
     if args.lam_lai:
-        print(f"dung lai {restore()} file tu moc {BASELINE}, da go XSU_NOTICE")
         args.apply = True
 
     mapping = load_dicts()
@@ -643,6 +645,8 @@ def main() -> int:
     print("kiem tra: OK")
     if args.check:
         return 0
+    if args.lam_lai:
+        print(f"dung lai {restore()} file tu moc {BASELINE}, da go XSU_NOTICE")
     total, touched = apply(mapping, dry_run=args.dry_run)
     print(f"{'se doi' if args.dry_run else 'da doi'} {total} luot tren {touched} file")
     return 0

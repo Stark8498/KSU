@@ -99,9 +99,9 @@ module KSU
       def slot_key_now(sheet, meta)
         saved_sel = sheet_scope(sheet, meta)
         tools = meta[:tools_base] ||= begin
-          _ec0da59d = Digest::SHA256.new
-          hash_value(_ec0da59d, meta[:tool_index].transform_values { |tool| Export.tool_cut_keys(tool) })
-          _ec0da59d.hexdigest
+          sha = Digest::SHA256.new
+          hash_value(sha, meta[:tool_index].transform_values { |tool| Export.tool_cut_keys(tool) })
+          sha.hexdigest
         end
         vars = [geometry_key(sheet), tools, saved_sel[:do_day_van], saved_sel[:reason], saved_sel[:back], meta[:settings]["goc_cao_do"]]
         Digest::SHA256.hexdigest(vars.join("|"))
@@ -157,34 +157,34 @@ module KSU
       end
       def geometry_key(arr)
         (@h16 ||= {}.compare_by_identity)[arr] ||= begin
-          _ec0da59d = Digest::SHA256.new << "ksu_cnc_geometry_v7|#{arr[:path_key]}|#{arr[:name]}|#{arr[:nesting_name]}|"
+          sha = Digest::SHA256.new << "ksu_cnc_geometry_v7|#{arr[:path_key]}|#{arr[:name]}|#{arr[:nesting_name]}|"
           arr[:vectors].each do |bb|
-            _ec0da59d << %i[
+            sha << %i[
               nesting_id sheet_id board_id part_id board_name part_name layer_name vector_type operation_type closed
               work_face root_sheet_id root_sheet_name latch_side latch_seq latch_row diameter_mm
             ].map { |name| "#{name}=#{bb.public_send(name)}|" }.join
-            _ec0da59d << "path=#{bb.source_path.map(&:to_s).join('/')}|radius=#{format("%.9f", bb.radius.to_f)}|"
+            sha << "path=#{bb.source_path.map(&:to_s).join('/')}|radius=#{format("%.9f", bb.radius.to_f)}|"
             out = bb.center ? [bb.center, *bb.points] : bb.points
             out.each_slice(256) do |grp|
               vars = grp.flat_map { |pt| [pt.x.to_f, pt.y.to_f, pt.z.to_f] }
-              _ec0da59d << format("%.7f,%.7f,%.7f,;" * grp.length, *vars)
+              sha << format("%.7f,%.7f,%.7f,;" * grp.length, *vars)
             end
-            _ec0da59d << "#"
+            sha << "#"
           end
-          _ec0da59d.hexdigest
+          sha.hexdigest
         end
       end
       def sheet_cache_key(sheet, meta)
         saved_sel = sheet_scope(sheet, meta)
         tools = Export.tool_index_for(meta, saved_sel[:do_day_van], saved_sel[:back])
-        _ec0da59d = Digest::SHA256.new << "ksu_cnc_simulation_sheet_cache_v7|"
-        hash_value(_ec0da59d, saved_sel[:map])
-        hash_value(_ec0da59d, saved_sel[:skip])
-        hash_value(_ec0da59d, rank_keys(saved_sel[:ids], meta[:tool_order]))
-        hash_value(_ec0da59d, rank_keys(saved_sel[:names], meta[:layer_order]))
-        hash_value(_ec0da59d, saved_sel[:ids].to_h { |id| [id, Export.tool_cut_keys(tools[id])] })
-        hash_value(_ec0da59d, [saved_sel[:do_day_van], saved_sel[:reason], meta[:settings]["goc_cao_do"]])
-        _ec0da59d.hexdigest
+        sha = Digest::SHA256.new << "ksu_cnc_simulation_sheet_cache_v7|"
+        hash_value(sha, saved_sel[:map])
+        hash_value(sha, saved_sel[:skip])
+        hash_value(sha, rank_keys(saved_sel[:ids], meta[:tool_order]))
+        hash_value(sha, rank_keys(saved_sel[:names], meta[:layer_order]))
+        hash_value(sha, saved_sel[:ids].to_h { |id| [id, Export.tool_cut_keys(tools[id])] })
+        hash_value(sha, [saved_sel[:do_day_van], saved_sel[:reason], meta[:settings]["goc_cao_do"]])
+        sha.hexdigest
       end
       def tool_names(sheet, meta)
         sheet_scope(sheet, meta)[:ids].map do |id|
@@ -211,23 +211,23 @@ module KSU
         arr = vars.uniq.sort
         keys.each_with_index.to_h { |key, idx| [key, arr.index(vars[idx])] }
       end
-      def hash_value(_ec0da59d, val)
+      def hash_value(sha, val)
         case val
         when Hash
-          _ec0da59d << "{"
-          val.keys.sort_by(&:to_s).each { |key| hash_value(_ec0da59d << key.to_s << ":", val[key]) << ";" }
-          _ec0da59d << "}"
+          sha << "{"
+          val.keys.sort_by(&:to_s).each { |key| hash_value(sha << key.to_s << ":", val[key]) << ";" }
+          sha << "}"
         when Array
-          _ec0da59d << "["
-          val.each { |fld| hash_value(_ec0da59d, fld) << "," }
-          _ec0da59d << "]"
+          sha << "["
+          val.each { |fld| hash_value(sha, fld) << "," }
+          sha << "]"
         when Numeric
           number = val.to_f
-          _ec0da59d << (number.finite? ? format("%.9f", number) : val.to_s)
+          sha << (number.finite? ? format("%.9f", number) : val.to_s)
         when TrueClass, FalseClass, NilClass, Symbol
-          _ec0da59d << val.inspect
+          sha << val.inspect
         else
-          _ec0da59d << val.to_s
+          sha << val.to_s
         end
       end
       def build_slot(arr, meta, with_toolpaths, prev_key = nil)

@@ -40,8 +40,8 @@ module KSU::Ttf
       (screen..edge).each { |c| arr[c] = seg + (c - screen) }
     end
   end
-  def glyph_width(font_full, _20cd1718)
+  def glyph_width(font_full, glyph)
     n = font_full[:num_hm]
-    font_full[:data][font_full[:hmtx_off] + (_20cd1718 < n ? _20cd1718 : n - 1) * 4, 2].unpack1("n")
+    font_full[:data][font_full[:hmtx_off] + (glyph < n ? glyph : n - 1) * 4, 2].unpack1("n")
   end
 end

@@ -198,9 +198,9 @@ module KSU::Engine
     groups = {}
     out = []
     arr29.each do |segs_for_ray|
-      _20cd1718 = group_id_of(segs_for_ray)
-      flag = _20cd1718 ? origin_mm(segs_for_ray) : nil
-      _20cd1718 && flag ? (groups[_20cd1718] ||= []) << [segs_for_ray, flag] : out << segs_for_ray
+      gid = group_id_of(segs_for_ray)
+      flag = gid ? origin_mm(segs_for_ray) : nil
+      gid && flag ? (groups[gid] ||= []) << [segs_for_ray, flag] : out << segs_for_ray
     end
     return arr29 if groups.empty?
     groups.each_value { |members| out << (members.length < 2 ? members[0][0] : merge_members(members)) }
@@ -306,8 +306,8 @@ module KSU::Engine
   end
   def placed_bbox(_4fa7c1a8, ox2, oy2, deg2)
     arr = rot_poly(_4fa7c1a8, deg2).map { |x, y| [x + ox2, y + oy2] }
-    lx, _2d7e228f, _b0566a11, _897789b7 = KSU::Nesting.poly_bounds(arr)
-    { lx: lx / 25.4, ly: _2d7e228f / 25.4, w: (_b0566a11 - lx) / 25.4, h: (_897789b7 - _2d7e228f) / 25.4 }
+    lx, ly, _b0566a11, _897789b7 = KSU::Nesting.poly_bounds(arr)
+    { lx: lx / 25.4, ly: ly / 25.4, w: (_b0566a11 - lx) / 25.4, h: (_897789b7 - ly) / 25.4 }
   end
 end
 KSU::Toiuu.include(KSU::Engine)
