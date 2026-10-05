@@ -66,8 +66,16 @@ module KSUDoiSanh
     end
 
     side ||= "khong-ro"
+    # KSU::Cnc::Calc dispatches to the native extension where it is loaded and
+    # falls back to Ruby where it is not, so a side without the extension runs
+    # different code for dedupe_loop, signed_area and anything built on them.
+    # The flag goes BELOW the header, among the compared lines: a mismatch here
+    # has to be read before any difference in those cases is called a rename
+    # bug. The header lines above differ by design and hide nothing else.
+    native = defined?(KSU::Cnc::Calc::NATIVE) ? KSU::Cnc::Calc::NATIVE : "khong-nap"
     head = ["SketchUp #{Sketchup.version}  Ruby #{RUBY_VERSION}  #{Time.now}",
-            "ban: #{side}   (#{CASES.length} truong hop, #{bad} loi)", ""]
+            "ban: #{side}   (#{CASES.length} truong hop, #{bad} loi)", "",
+            "cnc-native: #{native}", ""]
     text = (head + lines).join("\n") + "\n"
     path = File.join(HERE, "doisanh_#{side}.txt")
     File.open(path, "w:UTF-8") { |f| f.write(text) }

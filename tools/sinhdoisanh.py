@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate tools/doisanh.rb: the same inputs through both copies of KSU.
+"""Generate tools/doisanh_cases.rb: the same inputs through both copies of KSU.
 
 Loading proves the tree loads. Resolving proves every call finds a method. What
 neither proves is that a method still COMPUTES what it did -- a rename cannot
@@ -52,6 +52,22 @@ BOX_C = { min_x: 300.0, max_x: 400.0, min_y: 0.0, max_y: 10.0 }
 BB = Geom::BoundingBox.new
 BB.add(pt(0, 0, 0))
 BB.add(pt(90, 80, 0))
+
+# KSU::Cnc speaks plain [x, y] millimetre pairs rather than Geom::Point3d, and
+# describes a path as a list of element hashes keyed :s, :e, :c. Every CNC case
+# below is built from these. The circle carries 24 points because
+# Export.circle_from_points rejects anything under 12 and anything whose steps
+# exceed 35 degrees.
+SQ = [[0.0, 0.0], [10.0, 0.0], [10.0, 10.0], [0.0, 10.0]]
+CIRC = (0...24).map { |i|
+  a = i * 2.0 * Math::PI / 24.0
+  [10.0 * Math.cos(a), 10.0 * Math.sin(a)]
+}
+LINE_E = { type: :line, s: [0.0, 0.0], e: [10.0, 0.0] }
+LINE_UP = { type: :line, s: [10.0, 0.0], e: [10.0, 15.0] }
+LINE_ON = { type: :line, s: [10.0, 0.0], e: [25.0, 0.0] }
+ARC_E = { type: :arc, s: [10.0, 0.0], e: [0.0, 10.0], c: [0.0, 0.0],
+          radius_mm: 10.0, ccw: true, full_circle: false }
 """
 
 # (module, method, file it is defined in, Ruby for the arguments)
@@ -90,6 +106,89 @@ CASES = [
     ("KSU::Sheet", "to_point", "ksu_vn/utils/sheet.rb", "pt(1, 2, 3)"),
     ("KSU::Sheet", "to_point", "ksu_vn/utils/sheet.rb", "[pt(1, 2, 3)]"),
     ("KSU::Sheet", "to_point", "ksu_vn/utils/sheet.rb", "nil"),
+
+    ("KSU::Cnc::Calc", "distance", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], [3.0, 4.0]'),
+    ("KSU::Cnc::Calc", "deg4", "ksu_vn/method/giacong/calc.rb",
+     '[1.0, 1.0], [0.0, 0.0]'),
+    ("KSU::Cnc::Calc", "cross", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], [10.0, 0.0], [10.0, 10.0]'),
+    ("KSU::Cnc::Calc", "lerp", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], [10.0, 20.0], 0.25'),
+    ("KSU::Cnc::Calc", "unit_vector", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], [3.0, 4.0]'),
+    ("KSU::Cnc::Calc", "sweep_between", "ksu_vn/method/giacong/calc.rb",
+     '0.0, Math::PI / 2.0, true'),
+    ("KSU::Cnc::Calc", "sweep_between", "ksu_vn/method/giacong/calc.rb",
+     '0.0, Math::PI / 2.0, false'),
+    ("KSU::Cnc::Calc", "wrap_pi", "ksu_vn/method/giacong/calc.rb", '7.0'),
+    ("KSU::Cnc::Calc", "normalize_sweep", "ksu_vn/method/giacong/calc.rb",
+     '-1.0, true'),
+    ("KSU::Cnc::Calc", "angle_between", "ksu_vn/method/giacong/calc.rb",
+     '[1.0, 0.0], [0.0, 1.0], [0.0, 0.0]'),
+    ("KSU::Cnc::Calc", "corner_angle_deg", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], [10.0, 0.0], [10.0, 10.0], 1.0e-9'),
+    ("KSU::Cnc::Calc", "corner_dir", "ksu_vn/method/giacong/calc.rb", '"top_left"'),
+    ("KSU::Cnc::Calc", "pt", "ksu_vn/method/giacong/calc.rb", '[1.5, 2.5, 9.0]'),
+    ("KSU::Cnc::Calc", "positive_float", "ksu_vn/method/giacong/calc.rb", '"3.5"'),
+    ("KSU::Cnc::Calc", "positive_float", "ksu_vn/method/giacong/calc.rb", '"-1"'),
+    ("KSU::Cnc::Calc", "positive_float", "ksu_vn/method/giacong/calc.rb",
+     '"khong phai so"'),
+    ("KSU::Cnc::Calc", "round2", "ksu_vn/method/giacong/calc.rb", '1.005'),
+    ("KSU::Cnc::Calc", "round_to", "ksu_vn/method/giacong/calc.rb", '1.23456, 3'),
+    ("KSU::Cnc::Calc", "kahan_sum", "ksu_vn/method/giacong/calc.rb",
+     '[1.0e16, 1.0, -1.0e16]'),
+    ("KSU::Cnc::Calc", "shoelace_area", "ksu_vn/method/giacong/calc.rb", 'SQ'),
+    ("KSU::Cnc::Calc", "arc_sweep", "ksu_vn/method/giacong/calc.rb", 'ARC_E'),
+    ("KSU::Cnc::Calc", "path_area", "ksu_vn/method/giacong/calc.rb", '[LINE_E, ARC_E]'),
+    ("KSU::Cnc::Calc", "tangent_at", "ksu_vn/method/giacong/calc.rb", 'ARC_E, :start'),
+    ("KSU::Cnc::Calc", "tangent_at", "ksu_vn/method/giacong/calc.rb", 'ARC_E, :end'),
+    ("KSU::Cnc::Calc", "project_to_radius", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], [3.0, 4.0], 10.0'),
+    ("KSU::Cnc::Calc", "arc_points", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], 10.0, 0.0, Math::PI, 4'),
+    ("KSU::Cnc::Calc", "arc_polyline", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], [10.0, 0.0], [0.0, 10.0], 10.0, 1.0'),
+    ("KSU::Cnc::Calc", "param_on_segment", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], [10.0, 0.0], [3.0, 4.0], 1.0e-9'),
+    ("KSU::Cnc::Calc", "project_on_line", "ksu_vn/method/giacong/calc.rb",
+     '[3.0, 4.0], [0.0, 0.0], [10.0, 0.0]'),
+    ("KSU::Cnc::Calc", "distance_to_line", "ksu_vn/method/giacong/calc.rb",
+     '[3.0, 4.0], [0.0, 0.0], [10.0, 0.0]'),
+    ("KSU::Cnc::Calc", "along_axis", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], [10.0, 0.0], [3.0, 4.0], [0.0, 0.0]'),
+    ("KSU::Cnc::Calc", "line_intersection", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], [10.0, 10.0], [0.0, 10.0], [10.0, 0.0], 1.0e-9'),
+    ("KSU::Cnc::Calc", "line_cross", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], [10.0, 10.0], [0.0, 10.0], [10.0, 0.0]'),
+    ("KSU::Cnc::Calc", "segment_circle_hits", "ksu_vn/method/giacong/calc.rb",
+     '[-20.0, 0.0], [20.0, 0.0], [0.0, 0.0], 10.0'),
+    ("KSU::Cnc::Calc", "circle_circle_hits", "ksu_vn/method/giacong/calc.rb",
+     '[10.0, 0.0], 8.0, [0.0, 10.0], 8.0'),
+    ("KSU::Cnc::Calc", "segments_cross?", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], [10.0, 10.0], [0.0, 10.0], [10.0, 0.0]'),
+    ("KSU::Cnc::Calc", "collinear_within?", "ksu_vn/method/giacong/calc.rb",
+     '[0.0, 0.0], [5.0, 0.0], [10.0, 0.0]'),
+    ("KSU::Cnc::Calc", "fit_circle", "ksu_vn/method/giacong/calc.rb", 'CIRC'),
+    ("KSU::Cnc::Calc", "dedupe_loop", "ksu_vn/method/giacong/calc.rb",
+     'SQ + [[10.0, 10.0]], 0.001'),
+    ("KSU::Cnc::Calc", "signed_area", "ksu_vn/method/giacong/calc.rb", 'SQ'),
+    ("KSU::Cnc::Calc", "bounds_of", "ksu_vn/method/giacong/calc.rb", 'L'),
+    ("KSU::Cnc::Arc", "turn_sign", "ksu_vn/method/giacong/arc.rb",
+     'LINE_E, LINE_UP, [5.0, 0.0]'),
+    ("KSU::Cnc::Arc", "turn_sign_arc", "ksu_vn/method/giacong/arc.rb",
+     'ARC_E, LINE_UP'),
+    ("KSU::Cnc::Arc", "collapse_point", "ksu_vn/method/giacong/arc.rb", 'ARC_E, 8.0'),
+    ("KSU::Cnc::Arc", "on_element?", "ksu_vn/method/giacong/arc.rb",
+     'LINE_E, [7.0, 0.0], :end'),
+    ("KSU::Cnc::Canonicalizer", "collinear_lines?", "ksu_vn/method/giacong/topology.rb",
+     'LINE_E, LINE_ON'),
+    ("KSU::Cnc::Canonicalizer", "collinear_lines?", "ksu_vn/method/giacong/topology.rb",
+     'LINE_E, LINE_UP'),
+    ("KSU::Cnc::Canonicalizer", "arc_weight", "ksu_vn/method/giacong/topology.rb",
+     'ARC_E, Math::PI / 2.0'),
+    ("KSU::Cnc::Export", "circle_from_points", "ksu_vn/method/giacong/chain.rb",
+     'CIRC'),
 ]
 
 
