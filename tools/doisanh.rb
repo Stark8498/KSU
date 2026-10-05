@@ -23,8 +23,27 @@ module KSUDoiSanh
     # Nothing loaded yet means this is a SketchUp without the plugin, so the
     # readable tree is what we want here. Where the plugin IS loaded, leave it
     # alone: overwriting it would compare a copy with itself.
-    loaded_now = !defined?(KSU::Geom)
-    if loaded_now
+    # Sketchup.require is a no-op once KSU is in memory, so a second run in the
+    # same SketchUp would measure whatever the first one loaded. Where the copy
+    # in memory came from THIS tree, KSU.reload -- the author's own, which
+    # `load`s every file in layer order -- brings it up to the current source.
+    # Where it is the installed release, leave it alone: reloading it would
+    # only re-read the release, and that side is meant to stay as shipped.
+    how = "nap moi"
+    if defined?(KSU::Geom)
+      from_here = begin
+        src = KSU.respond_to?(:reload) && KSU.method(:reload).source_location
+        src && File.expand_path(src[0]).start_with?(File.expand_path(ROOT))
+      rescue StandardError
+        false
+      end
+      if from_here
+        KSU.reload
+        how = "nap lai"
+      else
+        how = "DA NAP SAN -- khoi dong lai neu cay da doi"
+      end
+    else
       $LOAD_PATH.unshift(ROOT) unless $LOAD_PATH.include?(ROOT)
       Sketchup.require "ksu_vn/main"
     end
@@ -74,11 +93,6 @@ module KSUDoiSanh
     # has to be read before any difference in those cases is called a rename
     # bug. The header lines above differ by design and hide nothing else.
     native = defined?(KSU::Cnc::Calc::NATIVE) ? KSU::Cnc::Calc::NATIVE : "khong-nap"
-    # Where KSU was already in memory, Sketchup.require is a no-op and this run
-    # measured whatever the last one loaded. A method renamed since then is
-    # then missing here and present in the release -- which reads like a defect
-    # in the tree and is really a stale VM. Restart that SketchUp.
-    how = loaded_now ? "nap moi" : "DA NAP SAN -- khoi dong lai neu cay da doi"
     head = ["SketchUp #{Sketchup.version}  Ruby #{RUBY_VERSION}  #{Time.now}",
             "ban: #{side}   (#{CASES.length} truong hop, #{bad} loi)  [#{how}]", "",
             "cnc-native: #{native}", ""]
