@@ -23,7 +23,8 @@ module KSUDoiSanh
     # Nothing loaded yet means this is a SketchUp without the plugin, so the
     # readable tree is what we want here. Where the plugin IS loaded, leave it
     # alone: overwriting it would compare a copy with itself.
-    unless defined?(KSU::Geom)
+    loaded_now = !defined?(KSU::Geom)
+    if loaded_now
       $LOAD_PATH.unshift(ROOT) unless $LOAD_PATH.include?(ROOT)
       Sketchup.require "ksu_vn/main"
     end
@@ -73,8 +74,13 @@ module KSUDoiSanh
     # has to be read before any difference in those cases is called a rename
     # bug. The header lines above differ by design and hide nothing else.
     native = defined?(KSU::Cnc::Calc::NATIVE) ? KSU::Cnc::Calc::NATIVE : "khong-nap"
+    # Where KSU was already in memory, Sketchup.require is a no-op and this run
+    # measured whatever the last one loaded. A method renamed since then is
+    # then missing here and present in the release -- which reads like a defect
+    # in the tree and is really a stale VM. Restart that SketchUp.
+    how = loaded_now ? "nap moi" : "DA NAP SAN -- khoi dong lai neu cay da doi"
     head = ["SketchUp #{Sketchup.version}  Ruby #{RUBY_VERSION}  #{Time.now}",
-            "ban: #{side}   (#{CASES.length} truong hop, #{bad} loi)", "",
+            "ban: #{side}   (#{CASES.length} truong hop, #{bad} loi)  [#{how}]", "",
             "cnc-native: #{native}", ""]
     text = (head + lines).join("\n") + "\n"
     path = File.join(HERE, "doisanh_#{side}.txt")

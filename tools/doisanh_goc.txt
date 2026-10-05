@@ -1,5 +1,5 @@
-SketchUp 25.0.571  Ruby 3.2.2  2026-10-05 18:59:31 +0700
-ban: goc   (79 truong hop, 0 loi)
+SketchUp 25.0.571  Ruby 3.2.2  2026-10-05 20:06:46 +0700
+ban: goc   (99 truong hop, 0 loi)
 
 cnc-native: true
 
@@ -42,7 +42,7 @@ cnc-native: true
 36  KSU::Cnc::Calc.sweep_between = -4.71238898
 37  KSU::Cnc::Calc.wrap_pi = 0.716814693
 38  KSU::Cnc::Calc.normalize_sweep = 5.28318531
-39  KSU::Cnc::Calc.angle_between = 1.57079633
+39  KSU::Cnc::Calc.subtended_angle = 1.57079633
 40  KSU::Cnc::Calc.corner_angle_deg = 90
 41  KSU::Cnc::Calc.corner_dir = [-0.707106781, 0.707106781]
 42  KSU::Cnc::Calc.pt = [1.5, 2.5]
@@ -82,3 +82,23 @@ cnc-native: true
 76  KSU::Cnc::Canonicalizer.collinear_lines? = false
 77  KSU::Cnc::Canonicalizer.arc_weight = 1.57079633
 78  KSU::Cnc::Export.circle_from_points = {center: [2.93098879e-16, -3.57491814e-16], radius: 10}
+79  KSU::Cnc::Export.canonical = {a: ["x", {c: 3, d: 2}], b: 1}
+80  KSU::Cnc::Export.slow_feed = 300
+81  KSU::Cnc::Export.slow_feed = 1200
+82  KSU::Cnc::Export.slow_length = 25
+83  KSU::Cnc::Export.slow_length = 0
+84  KSU::Cnc::Library.tool_id = "KSU-07"
+85  KSU::Cnc::Library.cutter_type = "v_bit"
+86  KSU::Cnc::Library.cutter_type = "end_mill"
+87  KSU::Cnc::Library.latch_role = "latch_left"
+88  KSU::Cnc::Library.latch_role = ""
+89  KSU::Cnc::Library.hex_color = "#abcdef"
+90  KSU::Cnc::Library.hex_color = "#e53935"
+91  KSU::Cnc::Library.clamp_int = 999
+92  KSU::Cnc::Library.choice = "a"
+93  KSU::Cnc::Library.normalize_cutter = {angle: 90, color: "#e53935", diameter: 6, diameter_2: 0, feed: 1200, id: "KSU-FIXED", name: "Dao T3", number: 3, pass_depth: 3, plunge: 900, rpm: 18000, step_pct: 60, type: "v_bit"}
+94  KSU::Cnc::Review.open_points = [[0, 0], [10, 0], [10, 10], [0, 10]]
+95  KSU::Cnc::Review.corner_target = [0, 10]
+96  KSU::Cnc::Review.corner_index = {distance: 0, index: 2, point: [0, 10], t: 1}
+97  KSU::Cnc::Check.turn_total = 7
+98  KSU::Cnc::Check.turn_total = nil
