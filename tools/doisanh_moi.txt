@@ -1,5 +1,5 @@
-SketchUp 24.0.484  Ruby 3.2.2  2026-10-05 20:09:52 +0700
-ban: moi   (99 truong hop, 1 loi)  [DA NAP SAN -- khoi dong lai neu cay da doi]
+SketchUp 24.0.484  Ruby 3.2.2  2026-10-05 20:12:46 +0700
+ban: moi   (99 truong hop, 0 loi)  [nap lai]
 
 cnc-native: false
 
@@ -42,7 +42,7 @@ cnc-native: false
 36  KSU::Cnc::Calc.sweep_between = -4.71238898
 37  KSU::Cnc::Calc.wrap_pi = 0.716814693
 38  KSU::Cnc::Calc.normalize_sweep = 5.28318531
-39  KSU::Cnc::Calc.subtended_angle  -- KHONG CO METHOD
+39  KSU::Cnc::Calc.subtended_angle = 1.57079633
 40  KSU::Cnc::Calc.corner_angle_deg = 90
 41  KSU::Cnc::Calc.corner_dir = [-0.707106781, 0.707106781]
 42  KSU::Cnc::Calc.pt = [1.5, 2.5]

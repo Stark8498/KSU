@@ -1,5 +1,5 @@
-SketchUp 25.0.571  Ruby 3.2.2  2026-10-05 20:06:46 +0700
-ban: goc   (99 truong hop, 0 loi)
+SketchUp 25.0.571  Ruby 3.2.2  2026-10-05 20:12:48 +0700
+ban: goc   (99 truong hop, 0 loi)  [DA NAP SAN -- khoi dong lai neu cay da doi]
 
 cnc-native: true
 

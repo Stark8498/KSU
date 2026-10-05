@@ -389,7 +389,7 @@ mới của đợt này.
 | Nạp cả cây | `ruby tools/napthu.rb .` | **NAP OK** — 74 hằng `KSU::*` |
 | Một-tên-một-hex | `python tools/trahex.py --soat` | 579 bắc cầu hai đợt (OK) · **0 cùng đợt** |
 | Đoán kiểu trong `tenauto.yml` | `python tools/soatkieu.py` | **0 mâu thuẫn** trên 3.969 mục (ban đầu 17) |
-| Đối sánh hành vi | `ruby tools/doisanh.rb` | 79/79 giống nhau từng byte, **nhưng bộ ca đã lên 99 và chưa chạy lại** (§8) |
+| Đối sánh hành vi | `ruby tools/doisanh.rb` | **99/99 giống nhau từng byte** — 79 method, 10 module, 18,5 % (§8) |
 
 Chạy mọi lệnh Python với `PYTHONIOENCODING=utf-8`: console cp1252 của Windows
 ném `UnicodeEncodeError` ngay khi gặp chữ Việt.
@@ -400,36 +400,29 @@ ném `UnicodeEncodeError` ngay khi gặp chữ Việt.
 
 Xếp theo mức quan trọng, cao xuống thấp.
 
-1. **Phải chạy lại `doisanh.rb` — bộ ca đã đổi.** Lần chạy gần nhất là **79/79
-   giống nhau từng byte** (bản phát hành trên SketchUp 25, cây đọc được trên
-   SketchUp 24), nhưng từ đó bộ ca đã lên **99 ca · 79 method · 10 module**,
-   thêm đường xuất G-code và kho dao (`Export.canonical`, `slow_feed`,
-   `slow_length`, `Library.normalize_cutter`, `hex_color`, `latch_role`,
-   `Review.corner_target`, `Check.turn_total`…). `doisanh_goc.txt` và
-   `doisanh_moi.txt` trong repo vẫn là của 79 ca cũ — **so chúng với nhau bây
-   giờ là vô nghĩa**. Cả 99 ca đã tra được hex và chạy sạch ngoài SketchUp, nên
-   lần chạy tới chỉ còn hỏi về hành vi.
+1. **Đối sánh hành vi phủ 18,5 %.** `doisanh.rb` đã chạy **99/99 giống nhau
+   từng byte**: bản phát hành trên SketchUp 25, cây đọc được trên SketchUp 24.
+   Chỉ hai dòng đầu và cờ `cnc-native` được phép khác.
 
-   Độ phủ vẫn mỏng: **544 trên 2.943 method** nằm trong 10 module đó, và không
-   ca nào đụng UI, đụng model hay đụng ghi file. Thêm ca ở
-   `tools/sinhdoisanh.py`, **đừng sửa tay `doisanh_cases.rb`**.
+   Độ phủ vẫn mỏng và cần nói thẳng: 99 ca chạm **79 method trong 10 module**,
+   tức **544 trên 2.943** method, và đều là hàm thuần — không ca nào đụng UI,
+   đụng model hay đụng ghi file. Thêm ca ở `tools/sinhdoisanh.py`, **đừng sửa
+   tay `doisanh_cases.rb`**.
 
-   Khi đổi tên một method đã có ca thử, phải sửa tên trong `sinhdoisanh.py`:
-   `angle_between` thành `subtended_angle` làm ca đó im lặng rơi khỏi bộ, bộ
-   sinh chỉ in một dòng `BO QUA`.
+   Ba điều phải đọc trước khi kết luận gì từ một lần chạy:
 
-   Cách chạy: mở bản phát hành ở một SketchUp và cây đọc được ở một SketchUp
-   khác (bản thứ hai **không được cài plugin** — `doisanh.rb` chọn bên bằng
-   `defined?(KSU::Geom)`), `load` nó ở cả hai, rồi so `doisanh_goc.txt` với
-   `doisanh_moi.txt`. Chỉ hai dòng đầu được phép khác.
-
-   Đọc dòng `cnc-native:` trước đã. `KSU::Cnc::Calc` gọi sang phần mở rộng
-   native khi có và lùi về Ruby khi không, mà cây này không kèm `.so`/`.dll`
-   nào — nên lần chạy vừa rồi là `true` bên bản phát hành, `false` bên cây đọc
-   được. `dedupe_loop`, `signed_area` và `circle_from_points` vì thế chạy hai
-   nhánh mã khác nhau; chúng vẫn ra cùng kết quả, nghĩa là nhánh Ruby khớp với
-   native trên các ca này. Nếu sau này chúng lệch nhau, đọc cờ này trước khi
-   quy cho việc đổi tên.
+   - **Dòng `[nap moi]` / `[nap lai]` / `[DA NAP SAN]`.** `Sketchup.require`
+     không làm gì khi KSU đã ở trong bộ nhớ, nên lần chạy thứ hai trong cùng
+     một SketchUp đo lại đúng cái lần trước nạp. Nếu bản trong bộ nhớ chính là
+     cây này, `doisanh.rb` gọi `KSU.reload` (của chính tác giả, trong
+     `main.rb`) và báo `nap lai`. Bên bản phát hành thì cố ý **không** nạp lại.
+   - **Dòng `cnc-native:`.** `KSU::Cnc::Calc` gọi sang phần mở rộng native khi
+     có, cây này thì không kèm `.so`/`.dll` — nên `dedupe_loop`, `signed_area`
+     và `circle_from_points` chạy hai nhánh mã khác nhau mà vẫn ra cùng kết
+     quả. Nếu sau này chúng lệch, đọc cờ này trước.
+   - **Đổi tên một method đã có ca thử thì phải sửa cả `sinhdoisanh.py`.**
+     `angle_between` thành `subtended_angle` từng làm ca đó im lặng rơi khỏi
+     bộ; bộ sinh chỉ in một dòng `BO QUA`.
 2. **589 biến cục bộ + 17 `@ivar` còn hex** (5 % số lượt). `dexuat.py` nói
    "không đủ bằng chứng" cho 661 hex — chúng xuất hiện quá ít hoặc không có
    method nào gọi lên để suy ra kiểu.
