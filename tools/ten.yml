@@ -43,7 +43,6 @@ ten:
   _4d5b2140: post   # 9 phieu, nhan-hash ksu_vn/method/giacong/export.rb:44
   _6925c553: paths   # 8 phieu, nhan-hash ksu_vn/method/giacong/canvas.rb:90
   _f4581382: pts   # 8 phieu, nhan-hash ksu_vn/method/giacong/scan.rb:78
-  _607c5494: layer   # 7 phieu, nhan-hash ksu_vn/method/giacong/scan.rb:78
   _6b46392e: z   # 6 phieu, nhan-hash ksu_vn/method/giacong/gcode.rb:101
   _6af38b2c: point   # 5 phieu, nhan-hash ksu_vn/method/giacong/calc.rb:588
   _896c4eb5: gr   # 5 phieu, nhan-hash ksu_vn/method/giacong/scan.rb:7
@@ -53,7 +52,6 @@ ten:
   _fd94fc8e: ten   # 5 phieu, nhan-hash ksu_vn/method/giacong/chain.rb:603
   _2970dc1f: warnings   # 4 phieu, nhan-hash ksu_vn/method/giacong/canvas.rb:259
   _419b0a72: id   # 4 phieu, nhan-hash ksu_vn/method/giacong/scan.rb:7
-  _47b4bac5: reason   # 4 phieu, nhan-hash ksu_vn/method/giacong/canvas.rb:205
   _5dc41444: group_start   # 4 phieu, nhan-hash ksu_vn/utils/preset/field.rb:419
   _ba792234: distance   # 4 phieu, nhan-hash ksu_vn/method/giacong/calc.rb:588
   _2def036f: folder   # 3 phieu, nhan-hash ksu_vn/method/giacong/export.rb:14
@@ -69,19 +67,15 @@ ten:
   _0cfd7c2b: y   # 2 phieu, nhan-hash ksu_vn/method/giacong/gcode.rb:206
   _1c3ee2ac: kind   # 2 phieu, khoa-hash ksu_vn/method/giacong/canvas.rb:326
   _1d3fe3d0: reversed   # 2 phieu, nhan-hash ksu_vn/method/giacong/arc.rb:619
-  _1e59517f: file   # 2 phieu, nhan-hash ksu_vn/method/giacong/export.rb:703
-  _1e78b863: percent   # 2 phieu, nhan-hash ksu_vn/method/giacong/export.rb:361
   _22a7607e: excluded   # 2 phieu, nhan-hash ksu_vn/method/giacong.rb:489
   _288d8690: cycle   # 2 phieu, nhan-hash ksu_vn/method/giacong/profile.rb:451
   _29fd9c65: shape_tol_mm   # 2 phieu, nhan-hash ksu_vn/method/giacong/rescue.rb:187
   _2fab8ac1: ok   # 2 phieu, nhan-hash ksu_vn/method/giacong/clip.rb:385
   _30c4d2df: polygons   # 2 phieu, nhan-hash ksu_vn/method/giacong/clip.rb:101
   _366debc9: e   # 2 phieu, khoa-hash ksu_vn/method/giacong/clip.rb:560
-  _40b84de7: path   # 2 phieu, nhan-hash ksu_vn/method/giacong/rescue.rb:124
   _40de2708: radius_mm   # 2 phieu, nhan-hash ksu_vn/method/giacong/arc.rb:89
   _41f82561: pts   # 2 phieu, nhan-hash ksu_vn/method/giacong/scan.rb:160
   _43c970b4: points   # 2 phieu, nhan-hash ksu_vn/method/catcuoi.rb:336
-  _46cf995f: center   # 2 phieu, nhan-hash ksu_vn/method/catcuoi/resize.rb:114
   _48a8a14b: tangent_in   # 2 phieu, khoa-hash ksu_vn/method/giacong/chain.rb:639
   _4b983665: ly_do   # 2 phieu, nhan-hash ksu_vn/method/giacong/text.rb:154
   _4c406b6f: cell   # 2 phieu, nhan-hash ksu_vn/method/giacong/rescue.rb:645
@@ -90,7 +84,6 @@ ten:
   _64868c52: sampled   # 2 phieu, nhan-hash ksu_vn/method/giacong/clip.rb:155
   _6849e728: ramp_point   # 2 phieu, khoa-hash ksu_vn/method/giacong/chain.rb:680
   _779a0078: length   # 2 phieu, nhan-hash ksu_vn/method/giacong/arc.rb:575
-  _8a15fd29: materials   # 2 phieu, nhan-hash ksu_vn/method/intem/scan.rb:38
   _95bc0527: u   # 2 phieu, nhan-hash ksu_vn/method/giacong/calc.rb:342
   _9710d820: v   # 2 phieu, nhan-hash ksu_vn/method/netcatcuoi.rb:302
   _9bfd28e0: end_index   # 2 phieu, nhan-hash ksu_vn/method/giacong/arc.rb:448
@@ -98,7 +91,6 @@ ten:
   _9f1d1de9: index   # 2 phieu, nhan-hash ksu_vn/method/giacong/pool.rb:119
   _a3f626c2: sample_tol_mm   # 2 phieu, nhan-hash ksu_vn/method/giacong/rescue.rb:188
   _ad5570ce: block   # 2 phieu, nhan-hash ksu_vn/method/giacong/gcode.rb:357
-  _ae3d7015: cells   # 2 phieu, nhan-hash ksu_vn/method/thongke/export.rb:42
   _b0565266: metrics   # 2 phieu, khoa-hash ksu_vn/method/giacong/rescue.rb:248
   _c4453a68: end_i   # 2 phieu, nhan-hash ksu_vn/method/giacong/geom.rb:116
   _cdf88032: tones   # 2 phieu, nhan-hash ksu_vn/method/nesting/launch.rb:136
@@ -130,7 +122,6 @@ ten:
   _054095f6: layer_stats       # total + board_count moi layer
   _ccf42d76: reset_cache       # xoa ba bo nho memo
   _4a00b12b: group_key         # id, khong co thi NAME:<ten>, khong co thi fallback
-  _1afe4717: sheets
   _30b0f9f6: layer_stats_cache
   # KSU::Cnc::Naming
   _a0fc433d: squish            # gop \s_- thanh mot dau cach roi strip
@@ -141,7 +132,6 @@ ten:
   _8a195d82: sheet_number      # so sau "sheet"/"tam"/"tam", < 10000
   _d8e9cec1: label_fingerprint
   # KSU::Cnc::Latch
-  _931e7e4b: reset
   _27014431: side_names        # tren/duoi/trai/phai/chung -> ten da cau hinh
   _15812d09: setting           # preset truoc, roi Settings.get_raw
   _c2c34c86: preset_settings
@@ -153,7 +143,6 @@ ten:
   _0f6ff53e: cached            # @cache[kind].fetch(key) { yield }
   _993453bc: nesting_roots     # __ABF_Nesting / is-nesting o goc model
   _4ebd669c: assert_not_editing # raise Abf::EditActive neu con nest_edit_offset
-  _a2e83e02: walk              # de quy qua group/component, gom edge
   _dadff81c: read_edge
   _aea0ef07: matrix_id         # so hieu cho mot ma tran bien doi, co memo
   _2a60e2f3: read_curve        # ArcCurve -> circle/arc, con lai -> polyline
@@ -178,20 +167,16 @@ ten:
   _6a9fe2c9: unify_sheets      # gom vector cung tam, chot work_face
   _86e5b1a0: last_matrix
   # bien dung chung trong core.rb
-  _402c4083: meta
   _3c3d6309: rec
-  _fe1219a1: layer
   _9e4c01c6: chain
   _c5645098: in_cut
   _57e34b83: groove
-  _b50c5695: closed
   _c713676e: fallback
 
   # ---- method/giacong/export.rb : ghi file NC cho tung tam (doc tay) ----
   # mot luot xuat: dung ngu canh -> tung tam -> chot
   _08faec3a: prepare_job       # dung ca hash ngu canh: dao, layer, post, tam
   _6d24eced: export_sheet      # mot tam -> mot file .nc trong temp_root
-  _452810e1: commit            # don file cu, mv tu temp, doi chieu SHA256
   _902801ca: rollback          # xoa file da commit, tra lai ban backup
   _5cb498c3: stash_existing    # chuyen file cu vao .previous_outputs
   _6009e5a2: set_aside_excluded
@@ -428,10 +413,7 @@ ten:
   _95ad7e68: preview_text      # dung mot chuong trinh mau de xem thu post
   _000ea193: token_format_memo
   # bien dung chung trong library.rb
-  _58f5ece7: post
-  _3c9642ff: entries
   _117e404f: source_name
-  _f436dfda: digits
   _27736aa0: cut_depth
   _3d4ed7d2: cut_side
   _c09c1fa1: cut_direction
@@ -452,7 +434,6 @@ ten:
   # ---- method/giacong/gcode.rb : sinh chuong trinh NC (doc tay) ----
   # `_6bdde958` giu CAC DONG: dong chuong trinh o gcode.rb, dong canh bao o
   # export.rb. 2.1.5 doc thanh `count_by_length`, khong hop ca hai cho.
-  _6bdde958: lines
   _29445b79: render_program    # ca mot tam -> ca chuong trinh NC
   _ffebb3e1: canonical         # chuan hoa hash/array de so sanh hai dao
   # sinh tung kieu duong chay dao
@@ -514,7 +495,6 @@ ten:
   _d446ae9d: job_name
   _4f36edc4: last_layer
   _96105031: material
-  _ef9a5921: plan
   _7fb61931: last_tool_no
   _eaa9d633: pass_starts
   _82801e5a: last_feed
@@ -572,9 +552,7 @@ ten:
   _27faf240: simplify_points
   _d76060be: layer_slug_cache
   # bien dung chung trong chain.rb
-  _894df99e: inner
   _9bf16c59: a_vec
-  _ca2a3ea5: border
   _ae8faec7: seg
   _b74c7550: out_rec
   _c0cd57ba: elem_state
@@ -640,7 +618,6 @@ ten:
   _c9215ff2: offset_sign
   _d60cb15d: at_index
   _2d9dac79: mid
-  _e96f9419: outline
   _aa12ccb7: offset_pts
   _871201b4: area_sign
   _1c007a77: last_ix
@@ -694,7 +671,6 @@ ten:
   _2a61deb2: to_pairs
   _cfb2b7a7: dedupe
   _162caa31: same_xy?
-  _4b6705e5: ring              # them diem dau vao cuoi neu chua kin
   _6417a5e5: self_intersects?
   _27690781: polygon_contains?
   # kiem duong co hop le khong
@@ -727,7 +703,6 @@ ten:
   _b665e4d4: base_r
   _ec8b1809: guide
   _b3aabc41: packed_outline
-  _78b50597: nested
 
   # ---- method/giacong/motion.rb : pha hoc, duong vao, do sau tung luot ----
   # pha hoc (pocket): quet hang ngang roi vien dan vao trong
@@ -783,7 +758,6 @@ ten:
   _b4ddf04a: write_ramp_entry
   _6a3229fb: write_zigzag_entry
   # bien dung chung trong motion.rb
-  _903ec1fd: outline
   _fbc0b550: boundary
   _3b287d9c: step
   _63ce65db: region
@@ -792,7 +766,6 @@ ten:
   _42cd2985: first_loop
   _bf96ea9f: loop_a
   _6151f578: loop_b
-  _9764d6bd: limit
   _86ce7ac5: lo
   _d1a7699f: hi
   _79cb22ba: loop_pts
@@ -844,7 +817,6 @@ ten:
   _1ce3a0ec: total_sweep
   # bien dung chung trong topology.rb
   _a33cb71c: seg
-  _7d557405: loops
   _531da582: expect_ccw
   _d6c74e4e: expected_side
   _078e82d9: segs
@@ -905,7 +877,6 @@ ten:
   _8407e274: entry_path
   # KSU::Cnc::Pool -- chay mo phong o tien trinh rieng
   _81abc305: workers
-  _e7e60b70: queue
   _95686d4f: failed
   _ce14eb5d: retries
   _0cebe008: parallel?        # cai dat bat, va may co tu 2 nhan ro ranh
@@ -945,7 +916,6 @@ ten:
   _cb870412: exe_path
   _4015eff0: exe_args
   _cb123edd: dll_name
-  _0cd73701: state
 
   # ---- method/giacong/clip.rb : bu bang Clipper, noi lai cung tiep tuyen ----
   # KSU::Cnc::Rail -- xet duong co phai dai hep khong
@@ -962,7 +932,6 @@ ten:
   _9b456468: offset_candidates
   _5cfbb5cc: success
   _2967a894: dedupe_ring     # bao Calc.dedupe_loop, co ca phep loc diem hong
-  _8737291d: ring
   _3ffbf83e: freeze_element
   _99ad0504: elements_cross?
   _8192205b: polygon_self_cross?
@@ -992,9 +961,7 @@ ten:
   _5ba6b2e6: refit_check     # vua la method o Clip vua la bien cuc bo o rescue.rb,
                              # nen ten khong duoc ket thuc bang `?`
   # bien dung chung trong clip.rb
-  _7300fcad: delta
   _91f6c057: source_elems
-  _e1a098aa: eligible
   _43ed7936: tol_mm
   _8cbf6029: limit_mm
   _4eb032a0: at_start
@@ -1037,7 +1004,6 @@ ten:
   _67f1c0b9: tool_shape        # drill | vbit | endmill
   _b034d5af: with_toolpaths
   _270f289e: entry_style
-  _18360ba5: depths
   # ---- method/giacong/planner.rb : gom net thanh ke hoach chay dao ----
   _5b6d8552: build_groups
   _0bdb43e9: build_group
@@ -1081,7 +1047,6 @@ ten:
   _1ef99af4: shutdown
   _0830130b: send_to_page      # window.xncReceive(name, data)
   _40ca75af: show_error
-  _481ccbec: setting
   _a95f4663: save_settings
   _521f73bc: normalized_settings
   _cd59e690: preview_settings
@@ -1144,7 +1109,6 @@ ten:
 
   # ---- method/toiuu/postproc.rb ----
   # sinhban.yml chuyen `stop_timer` cho ca hai; chi _e55eb9b0 dung tai nghia do.
-  _8ccb71e5: finish          # goi stop_timer roi ban callback @on_done
 
   # ---- method/nesting.rb : chay nesting va ve ket qua ----
   _226540f0: request_finish    # dat co roi hen Nest.finish o lan ve sau
@@ -1163,7 +1127,6 @@ ten:
   _56cab938: layout_hash       # bam vi tri moi container de biet da doi chua
   _f32e2019: on_group_changed
   _333ed5ee: set_active_sheet
-  _7e4812b3: refresh           # co tiet che theo thoi gian
   _fb5e0b76: pending
   _e74c240d: rotate_by_name
   _3d19a088: show_progress     # bat dau hien tien do cho mot job
@@ -1224,7 +1187,6 @@ ten:
   _31530737: polygon_ok?
   _9c803354: offset_ring
   _1231866d: offset_with_border
-  _0ef5e1cf: convex?
   _8f37b238: finite_points
   # ---- method/giacong/chain.rb (phan con lai) ----
   _9e395e9a: frozen_attributes
@@ -1563,6 +1525,89 @@ ten:
                                # bounds + dien tich cua hai ban ghi
 
 vai:
+
+  # Round three: the 62 single words two identifiers were both claiming.
+  # Two read wrong against their own bodies:
+  _452810e1: write_staged
+  # writes the staged files out; the word belongs to other.rb's, which
+  # is a wrapper over Sketchup's own commit_operation. `staged` is the
+  # author's key here
+  _607c5494: resolved_layer
+  # answers with a layer NAME, falling back to the author's own
+  # "Layer0"; cutting.rb's layer finds or adds the Layer object itself
+
+  # The rest are apt wherever they appear -- `reset` really resets, `walk`
+  # really walks -- so the tree keeps every word and only the claim steps
+  # back. One hex per build keeps `ten:`, preferring the one carrying a
+  # 2.1.5 reading and, among those, a method over a local. `groups`
+  # (_fd9906f4) is deliberately NOT here: tenauto.yml scopes it per body,
+  # so demoting it would hand those bodies back `arr` and `arr2`.
+  _e8a5bba6: attr
+  _c7e8ecb5: board
+  _ca2a3ea5: border
+  _ae3d7015: cells
+  _46cf995f: center
+  _b50c5695: closed
+  _635b32eb: color
+  _0ef5e1cf: convex?
+  _7300fcad: delta
+  _18360ba5: depths
+  _85b17e6a: dest
+  _f436dfda: digits
+  _3773cacb: dist
+  _c1c12e08: dist
+  _a94d146f: edge
+  _e1a098aa: eligible
+  _3c9642ff: entries
+  _1e59517f: file
+  _8ccb71e5: finish
+  _fdc4214f: found
+  _8e3c51b1: group
+  _10d77b2c: groups
+  _ef8e93b0: half
+  _f88cef6a: half
+  _d083d401: horiz
+  _af4f9ada: hull
+  _894df99e: inner
+  _a28353f7: labelling
+  _fe1219a1: layer
+  _9764d6bd: limit
+  _6bdde958: lines
+  _7d557405: loops
+  _8a15fd29: materials
+  _402c4083: meta
+  _78b50597: nested
+  _c586141b: normal
+  _547bf028: offset
+  _903ec1fd: outline
+  _e96f9419: outline
+  _40b84de7: path
+  _1e78b863: percent
+  _ef9a5921: plan
+  _cb784e7e: pname2
+  _ba969b17: poly
+  _992232bd: poly
+  _58f5ece7: post
+  _573ebd53: pressed
+  _e7e60b70: queue
+  _47b4bac5: reason
+  _fd8d63f5: rects
+  _7e4812b3: refresh
+  _931e7e4b: reset
+  _4b6705e5: ring
+  _8737291d: ring
+  _ee94079d: rows
+  _481ccbec: setting
+  _73dc38ac: sheet
+  _1afe4717: sheets
+  _e412bec9: side
+  _0cd73701: state
+  _c845d24c: steps
+  _a0162297: text
+  _d01fee87: tf3d
+  _04360901: view
+  _a2e83e02: walk
+  _91e78506: want
 
   # Locals. A name here says what the variable HOLDS, which is all the code
   # can show. Four of these read wrong against their own use sites:

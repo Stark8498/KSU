@@ -16,7 +16,7 @@ module KSU
           prepare_job(db, arr)
           set_aside_excluded(arr, excluded) unless excluded.empty?
           arr[:sheets].each_with_index { |sheet, idx| export_sheet(arr, sheet, idx) }
-          ok = commit(arr)
+          ok = write_staged(arr)
         rescue StandardError => err
           progress&.call(stage: "error", percent: 100)
           flag = [UnsafeCutError, Post::PostFileError, Library::ConfigError].any? { |kind| err.is_a?(kind) }
@@ -126,7 +126,7 @@ module KSU
         (arr[:logs][str] ||= []) << [sheet_label(arr, arr2, font, false), lines] unless lines.empty?
         report(arr, "sheet_end", 5 + ((idx + 1).to_f / arr[:total] * 88.0).floor, idx + 1)
       end
-      def commit(arr)
+      def write_staged(arr)
         arr3 = arr[:blocked_sheets]
         raise UnsafeCutError, Text.t(:xuat, :van_loi, danh_sach: arr3.uniq.join("\n")) unless arr3.empty?
         raise UnsafeCutError, Text.t(:van, :khong_duong_dao) if arr[:staged].empty?

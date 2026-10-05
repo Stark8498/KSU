@@ -49,7 +49,7 @@ module KSU::Giacong
     end
     ents
   end
-  def layer(entity, normal)
+  def resolved_layer(entity, normal)
     name = entity ? entity.layer.name.to_s : ""
     name = "Layer0" if info_layer?(name)
     return name unless name.empty? || name == "Layer0"
@@ -67,7 +67,7 @@ module KSU::Giacong
     _31db2d43 = gr.get_attribute("ABF", "is-intersect")
     obj = KSU.entities_in(gr)
     return unless obj
-    normal = layer(gr, _e6398f51)
+    normal = resolved_layer(gr, _e6398f51)
     if _ea2023f0
       h = {}
       arr = []
@@ -75,13 +75,13 @@ module KSU::Giacong
         if edge2.curve
           next if h[edge2.curve.entityID]
           h[edge2.curve.entityID] = true
-          ents << { layer: layer(edge2, normal), pts: pts(edge2.curve.vertices, _a17fc600),
+          ents << { layer: resolved_layer(edge2, normal), pts: pts(edge2.curve.vertices, _a17fc600),
                        closed: true, via_module: true, bulge: true, pid: pid, sect: false, src: edge2 }
         else
           arr << edge2
         end
       end
-      flag = arr.first ? layer(arr.first, normal) : "0"
+      flag = arr.first ? resolved_layer(arr.first, normal) : "0"
       build_loops(arr).each do |_99b739cb|
         ents << { layer: flag, pts: pts(_99b739cb, _a17fc600),
                      closed: true, via_module: true, bulge: true, pid: pid, sect: false, src: arr.first }
@@ -89,28 +89,28 @@ module KSU::Giacong
     elsif is_border || _b2169942
       edge = obj.grep(Sketchup::Edge).first
       if edge && edge.curve
-        ents << { layer: layer(edge, normal), pts: pts(edge.curve.vertices, _a17fc600),
+        ents << { layer: resolved_layer(edge, normal), pts: pts(edge.curve.vertices, _a17fc600),
                      closed: is_border, via_module: false, bulge: false, pid: pid, sect: false,
                      border: is_border, src: edge }
       end
     elsif _31db2d43
       taken = {}
       obj.grep(Sketchup::Face).each do |f|
-        ents << { layer: layer(f, normal), pts: pts(f.outer_loop.vertices, _a17fc600),
+        ents << { layer: resolved_layer(f, normal), pts: pts(f.outer_loop.vertices, _a17fc600),
                      closed: true, via_module: true, bulge: true, pid: pid, sect: true, src: f.outer_loop.edges[0] }
         f.outer_loop.edges.each { |edge2| taken[edge2.entityID] = true }
       end
       obj.grep(Sketchup::Edge).each do |edge2|
         next if edge2.curve
         next if taken[edge2.entityID]
-        ents << { layer: layer(edge2, normal), pts: pts([edge2.start, edge2.end], _a17fc600),
+        ents << { layer: resolved_layer(edge2, normal), pts: pts([edge2.start, edge2.end], _a17fc600),
                      closed: false, via_module: false, bulge: false, pid: pid, sect: true, src: edge2 }
       end
     else
       taken = {}
       obj.grep(Sketchup::Face).each do |f|
         f.loops.each do |face|
-          ents << { layer: layer(face.edges[0], normal), pts: pts(face.vertices, _a17fc600),
+          ents << { layer: resolved_layer(face.edges[0], normal), pts: pts(face.vertices, _a17fc600),
                        closed: true, via_module: true, bulge: true, pid: pid, sect: true, src: face.edges[0] }
           face.edges.each { |edge2| taken[edge2.entityID] = true }
         end
@@ -123,10 +123,10 @@ module KSU::Giacong
           h[edge2.curve.entityID] = true
           arr2 = edge2.curve.vertices
           closed = arr2.first.position == arr2.last.position
-          ents << { layer: layer(edge2.curve.edges[0], normal), pts: pts(arr2, _a17fc600),
+          ents << { layer: resolved_layer(edge2.curve.edges[0], normal), pts: pts(arr2, _a17fc600),
                        closed: closed, via_module: true, bulge: true, pid: pid, sect: true, src: edge2 }
         else
-          ents << { layer: layer(edge2, normal), pts: pts([edge2.start, edge2.end], _a17fc600),
+          ents << { layer: resolved_layer(edge2, normal), pts: pts([edge2.start, edge2.end], _a17fc600),
                        closed: false, via_module: false, bulge: false, pid: pid, sect: true, src: edge2 }
         end
       end
