@@ -68,6 +68,20 @@ LINE_UP = { type: :line, s: [10.0, 0.0], e: [10.0, 15.0] }
 LINE_ON = { type: :line, s: [10.0, 0.0], e: [25.0, 0.0] }
 ARC_E = { type: :arc, s: [10.0, 0.0], e: [0.0, 10.0], c: [0.0, 0.0],
           radius_mm: 10.0, ccw: true, full_circle: false }
+
+# The export side speaks tool hashes with the author's own Vietnamese keys, and
+# a cutter record normalize_cutter fills in. CUTTER carries an "id": without
+# one that method reaches for SecureRandom.uuid, and the two copies would then
+# disagree for a reason that has nothing to do with naming.
+TOOL_SLOW = { "feed" => 1200.0, "toc_do_giam_toc" => 300.0,
+              "tu_dong_giam_toc" => true, "khoang_cach_giam_toc" => 25.0 }
+TOOL_FAST = { "feed" => 1200.0, "toc_do_giam_toc" => 0.0,
+              "tu_dong_giam_toc" => false, "khoang_cach_giam_toc" => 25.0 }
+CUTTER = { "id" => "KSU-FIXED", "number" => 3, "name" => "", "diameter" => 6.0,
+           "type" => "v_bit", "angle" => 90.0, "rpm" => 18_000, "feed" => 1200.0,
+           "plunge" => 900.0, "color" => "abc", "pass_depth" => 3.0,
+           "step_pct" => 60.0, "diameter_2" => 0.0 }
+NEST = { a: [:x, { d: 2, c: 3 }], b: 1 }
 """
 
 # (module, method, file it is defined in, Ruby for the arguments)
@@ -124,7 +138,7 @@ CASES = [
     ("KSU::Cnc::Calc", "wrap_pi", "ksu_vn/method/giacong/calc.rb", '7.0'),
     ("KSU::Cnc::Calc", "normalize_sweep", "ksu_vn/method/giacong/calc.rb",
      '-1.0, true'),
-    ("KSU::Cnc::Calc", "angle_between", "ksu_vn/method/giacong/calc.rb",
+    ("KSU::Cnc::Calc", "subtended_angle", "ksu_vn/method/giacong/calc.rb",
      '[1.0, 0.0], [0.0, 1.0], [0.0, 0.0]'),
     ("KSU::Cnc::Calc", "corner_angle_deg", "ksu_vn/method/giacong/calc.rb",
      '[0.0, 0.0], [10.0, 0.0], [10.0, 10.0], 1.0e-9'),
@@ -189,6 +203,26 @@ CASES = [
      'ARC_E, Math::PI / 2.0'),
     ("KSU::Cnc::Export", "circle_from_points", "ksu_vn/method/giacong/chain.rb",
      'CIRC'),
+    ("KSU::Cnc::Export", "canonical", "ksu_vn/method/giacong/gcode.rb", 'NEST'),
+    ("KSU::Cnc::Export", "slow_feed", "ksu_vn/method/giacong/gcode.rb", 'TOOL_SLOW'),
+    ("KSU::Cnc::Export", "slow_feed", "ksu_vn/method/giacong/gcode.rb", 'TOOL_FAST'),
+    ("KSU::Cnc::Export", "slow_length", "ksu_vn/method/giacong/gcode.rb", 'TOOL_SLOW'),
+    ("KSU::Cnc::Export", "slow_length", "ksu_vn/method/giacong/gcode.rb", 'TOOL_FAST'),
+    ("KSU::Cnc::Library", "tool_id", "ksu_vn/method/giacong/library.rb", '7'),
+    ("KSU::Cnc::Library", "cutter_type", "ksu_vn/method/giacong/library.rb", '"v_bit"'),
+    ("KSU::Cnc::Library", "cutter_type", "ksu_vn/method/giacong/library.rb", '"khong co"'),
+    ("KSU::Cnc::Library", "latch_role", "ksu_vn/method/giacong/library.rb", '"trai"'),
+    ("KSU::Cnc::Library", "latch_role", "ksu_vn/method/giacong/library.rb", '"khong co"'),
+    ("KSU::Cnc::Library", "hex_color", "ksu_vn/method/giacong/library.rb", '"ABCDEF"'),
+    ("KSU::Cnc::Library", "hex_color", "ksu_vn/method/giacong/library.rb", '"zz"'),
+    ("KSU::Cnc::Library", "clamp_int", "ksu_vn/method/giacong/library.rb", '1.0e9, 999, 1'),
+    ("KSU::Cnc::Library", "choice", "ksu_vn/method/giacong/library.rb", '"a", %w[a b], "b"'),
+    ("KSU::Cnc::Library", "normalize_cutter", "ksu_vn/method/giacong/library.rb", 'CUTTER'),
+    ("KSU::Cnc::Review", "open_points", "ksu_vn/method/giacong/planner.rb", 'SQ + [[0.0, 0.0]]'),
+    ("KSU::Cnc::Review", "corner_target", "ksu_vn/method/giacong/planner.rb", 'SQ, "top_left"'),
+    ("KSU::Cnc::Review", "corner_index", "ksu_vn/method/giacong/planner.rb", 'SQ, [0.0, 10.0], "top_left"'),
+    ("KSU::Cnc::Check", "turn_total", "ksu_vn/method/giacong/planner.rb", 'SQ, [7.0, 0.0]'),
+    ("KSU::Cnc::Check", "turn_total", "ksu_vn/method/giacong/planner.rb", 'SQ, [5.0, 5.0]'),
 ]
 
 

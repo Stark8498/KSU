@@ -389,7 +389,7 @@ mới của đợt này.
 | Nạp cả cây | `ruby tools/napthu.rb .` | **NAP OK** — 74 hằng `KSU::*` |
 | Một-tên-một-hex | `python tools/trahex.py --soat` | 579 bắc cầu hai đợt (OK) · **0 cùng đợt** |
 | Đoán kiểu trong `tenauto.yml` | `python tools/soatkieu.py` | **0 mâu thuẫn** trên 3.969 mục (ban đầu 17) |
-| Đối sánh hành vi | `ruby tools/doisanh.rb` | **79/79 giống nhau từng byte** — phủ 17,1 % số method (§8) |
+| Đối sánh hành vi | `ruby tools/doisanh.rb` | 79/79 giống nhau từng byte, **nhưng bộ ca đã lên 99 và chưa chạy lại** (§8) |
 
 Chạy mọi lệnh Python với `PYTHONIOENCODING=utf-8`: console cp1252 của Windows
 ném `UnicodeEncodeError` ngay khi gặp chữ Việt.
@@ -400,12 +400,23 @@ ném `UnicodeEncodeError` ngay khi gặp chữ Việt.
 
 Xếp theo mức quan trọng, cao xuống thấp.
 
-1. **Đối sánh hành vi mới phủ 17,1 %.** `doisanh.rb` đã chạy hai bên: bản phát
-   hành trên SketchUp 25 và cây đọc được trên SketchUp 24. **79/79 trường hợp
-   giống nhau từng byte**, kể cả 49 ca trong `method/giacong/`. Nhưng 79 ca chỉ
-   chạm 7 module — **504 trên 2.943 method** — và đều là hàm thuần: không ca nào
-   đụng UI, đụng model, hay đụng đường xuất DXF/G-code. Thêm ca ở
+1. **Phải chạy lại `doisanh.rb` — bộ ca đã đổi.** Lần chạy gần nhất là **79/79
+   giống nhau từng byte** (bản phát hành trên SketchUp 25, cây đọc được trên
+   SketchUp 24), nhưng từ đó bộ ca đã lên **99 ca · 79 method · 10 module**,
+   thêm đường xuất G-code và kho dao (`Export.canonical`, `slow_feed`,
+   `slow_length`, `Library.normalize_cutter`, `hex_color`, `latch_role`,
+   `Review.corner_target`, `Check.turn_total`…). `doisanh_goc.txt` và
+   `doisanh_moi.txt` trong repo vẫn là của 79 ca cũ — **so chúng với nhau bây
+   giờ là vô nghĩa**. Cả 99 ca đã tra được hex và chạy sạch ngoài SketchUp, nên
+   lần chạy tới chỉ còn hỏi về hành vi.
+
+   Độ phủ vẫn mỏng: **544 trên 2.943 method** nằm trong 10 module đó, và không
+   ca nào đụng UI, đụng model hay đụng ghi file. Thêm ca ở
    `tools/sinhdoisanh.py`, **đừng sửa tay `doisanh_cases.rb`**.
+
+   Khi đổi tên một method đã có ca thử, phải sửa tên trong `sinhdoisanh.py`:
+   `angle_between` thành `subtended_angle` làm ca đó im lặng rơi khỏi bộ, bộ
+   sinh chỉ in một dòng `BO QUA`.
 
    Cách chạy: mở bản phát hành ở một SketchUp và cây đọc được ở một SketchUp
    khác (bản thứ hai **không được cài plugin** — `doisanh.rb` chọn bên bằng

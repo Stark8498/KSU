@@ -34,6 +34,20 @@ LINE_ON = { type: :line, s: [10.0, 0.0], e: [25.0, 0.0] }
 ARC_E = { type: :arc, s: [10.0, 0.0], e: [0.0, 10.0], c: [0.0, 0.0],
           radius_mm: 10.0, ccw: true, full_circle: false }
 
+# The export side speaks tool hashes with the author's own Vietnamese keys, and
+# a cutter record normalize_cutter fills in. CUTTER carries an "id": without
+# one that method reaches for SecureRandom.uuid, and the two copies would then
+# disagree for a reason that has nothing to do with naming.
+TOOL_SLOW = { "feed" => 1200.0, "toc_do_giam_toc" => 300.0,
+              "tu_dong_giam_toc" => true, "khoang_cach_giam_toc" => 25.0 }
+TOOL_FAST = { "feed" => 1200.0, "toc_do_giam_toc" => 0.0,
+              "tu_dong_giam_toc" => false, "khoang_cach_giam_toc" => 25.0 }
+CUTTER = { "id" => "KSU-FIXED", "number" => 3, "name" => "", "diameter" => 6.0,
+           "type" => "v_bit", "angle" => 90.0, "rpm" => 18_000, "feed" => 1200.0,
+           "plunge" => 900.0, "color" => "abc", "pass_depth" => 3.0,
+           "step_pct" => 60.0, "diameter_2" => 0.0 }
+NEST = { a: [:x, { d: 2, c: 3 }], b: 1 }
+
 CASES = [
   ["KSU::Geom", "convex_hull", "_9b714c95", lambda { [SCATTER] }],
   ["KSU::Geom", "bounds", "_14940fd8", lambda { [L] }],
@@ -74,7 +88,7 @@ CASES = [
   ["KSU::Cnc::Calc", "sweep_between", "_95438bf9", lambda { [0.0, Math::PI / 2.0, false] }],
   ["KSU::Cnc::Calc", "wrap_pi", "_4cbb6ec4", lambda { [7.0] }],
   ["KSU::Cnc::Calc", "normalize_sweep", "_30b5a118", lambda { [-1.0, true] }],
-  ["KSU::Cnc::Calc", "angle_between", "_17cb980a", lambda { [[1.0, 0.0], [0.0, 1.0], [0.0, 0.0]] }],
+  ["KSU::Cnc::Calc", "subtended_angle", "_17cb980a", lambda { [[1.0, 0.0], [0.0, 1.0], [0.0, 0.0]] }],
   ["KSU::Cnc::Calc", "corner_angle_deg", "_2c8bbe3e", lambda { [[0.0, 0.0], [10.0, 0.0], [10.0, 10.0], 1.0e-9] }],
   ["KSU::Cnc::Calc", "corner_dir", "_76a26ebe", lambda { ["top_left"] }],
   ["KSU::Cnc::Calc", "pt", "_70e8f17a", lambda { [[1.5, 2.5, 9.0]] }],
@@ -114,4 +128,24 @@ CASES = [
   ["KSU::Cnc::Canonicalizer", "collinear_lines?", "_2b661ff9", lambda { [LINE_E, LINE_UP] }],
   ["KSU::Cnc::Canonicalizer", "arc_weight", "_06c97851", lambda { [ARC_E, Math::PI / 2.0] }],
   ["KSU::Cnc::Export", "circle_from_points", "_123fc1fa", lambda { [CIRC] }],
+  ["KSU::Cnc::Export", "canonical", "_ffebb3e1", lambda { [NEST] }],
+  ["KSU::Cnc::Export", "slow_feed", "_e1a04585", lambda { [TOOL_SLOW] }],
+  ["KSU::Cnc::Export", "slow_feed", "_e1a04585", lambda { [TOOL_FAST] }],
+  ["KSU::Cnc::Export", "slow_length", "_d4340593", lambda { [TOOL_SLOW] }],
+  ["KSU::Cnc::Export", "slow_length", "_d4340593", lambda { [TOOL_FAST] }],
+  ["KSU::Cnc::Library", "tool_id", "_93d13d21", lambda { [7] }],
+  ["KSU::Cnc::Library", "cutter_type", "_9a04d9fc", lambda { ["v_bit"] }],
+  ["KSU::Cnc::Library", "cutter_type", "_9a04d9fc", lambda { ["khong co"] }],
+  ["KSU::Cnc::Library", "latch_role", "_6db30623", lambda { ["trai"] }],
+  ["KSU::Cnc::Library", "latch_role", "_6db30623", lambda { ["khong co"] }],
+  ["KSU::Cnc::Library", "hex_color", "_e56909d2", lambda { ["ABCDEF"] }],
+  ["KSU::Cnc::Library", "hex_color", "_e56909d2", lambda { ["zz"] }],
+  ["KSU::Cnc::Library", "clamp_int", "_a70ad7db", lambda { [1.0e9, 999, 1] }],
+  ["KSU::Cnc::Library", "choice", "_06c10425", lambda { ["a", %w[a b], "b"] }],
+  ["KSU::Cnc::Library", "normalize_cutter", "_d0c016ee", lambda { [CUTTER] }],
+  ["KSU::Cnc::Review", "open_points", "_29dd5de9", lambda { [SQ + [[0.0, 0.0]]] }],
+  ["KSU::Cnc::Review", "corner_target", "_eea20c12", lambda { [SQ, "top_left"] }],
+  ["KSU::Cnc::Review", "corner_index", "_ca64623d", lambda { [SQ, [0.0, 10.0], "top_left"] }],
+  ["KSU::Cnc::Check", "turn_total", "_cdf2a158", lambda { [SQ, [7.0, 0.0]] }],
+  ["KSU::Cnc::Check", "turn_total", "_cdf2a158", lambda { [SQ, [5.0, 5.0]] }],
 ]
