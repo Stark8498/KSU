@@ -372,7 +372,7 @@ mới của đợt này.
 | Lời gọi treo | `codegraph.py` rồi `verify_graph.py` | **0** |
 | Nạp cả cây | `ruby tools/napthu.rb .` | **NAP OK** — 74 hằng `KSU::*` |
 | Một-tên-một-hex | `python tools/trahex.py --soat` | 497 bắc cầu hai đợt (OK) · **158 cùng đợt (nợ)** |
-| Đối sánh hành vi | `ruby tools/doisanh.rb` | **chưa chạy** (§8) |
+| Đối sánh hành vi | `ruby tools/doisanh.rb` | **30/30 giống nhau từng byte** — phủ 1,7 % số method (§8) |
 
 Chạy mọi lệnh Python với `PYTHONIOENCODING=utf-8`: console cp1252 của Windows
 ném `UnicodeEncodeError` ngay khi gặp chữ Việt.
@@ -383,12 +383,18 @@ ném `UnicodeEncodeError` ngay khi gặp chữ Việt.
 
 Xếp theo mức quan trọng, cao xuống thấp.
 
-1. **Chưa chạy trong SketchUp.** `napthu.rb` chứng minh cây *nạp được*, không
-   chứng minh nó *chạy đúng*. `tools/doisanh_cases.rb` đã sinh lại theo hex của
-   2.3.2 (30 trường hợp) nhưng `doisanh.rb` **chỉ chạy trong Ruby Console của
-   SketchUp** — nó cần `Geom::Point3d` và `Sketchup.require`. Việc còn lại: mở
-   bản phát hành ở một SketchUp và cây đọc được ở một SketchUp khác, chạy
-   `doisanh.rb` ở cả hai, rồi so `doisanh_goc.txt` với `doisanh_moi.txt`.
+1. **Đối sánh hành vi mới phủ 1,7 %.** `doisanh.rb` đã chạy hai bên: bản phát
+   hành trên SketchUp 25 và cây đọc được trên SketchUp 24. 30/30 trường hợp cho
+   kết quả giống nhau từng byte, nên lớp này không còn là ẩn số hoàn toàn. Nhưng
+   30 trường hợp chỉ chạm `KSU::Geom`, `KSU::Nfp`, `KSU::Sheet` — **51 trên
+   2.943 method**, đều là hàm hình học thuần. Lỗ hổng lớn nhất là
+   `method/giacong/` (24 file, ~12.700 dòng): mới hoàn toàn ở 2.3.2 nên tên ở đó
+   không có bản sinh đôi 2.1.5 làm chứng, mà cũng chưa chạy thử lần nào.
+   `KSU::Cnc::Calc` là `module_function` toàn hàm thuần số, thêm ca thử được
+   ngay. Cách chạy: mở bản phát hành ở một SketchUp và cây đọc được ở một
+   SketchUp khác (bản thứ hai **không được cài plugin** — `doisanh.rb` chọn bên
+   bằng `defined?(KSU::Geom)`), `load` nó ở cả hai, rồi so `doisanh_goc.txt` với
+   `doisanh_moi.txt`.
 2. **158 tên nói quá.** `trahex.py --soat` chỉ ra 158 chỗ hai hex **cùng một
    đợt** mang một tên. Mỗi dòng nghĩa là: tác giả dùng hai từ khác nhau, mà từ
    điển gộp lại thành một. Không chỗ nào làm sai hành vi (rào cùng-module đã
