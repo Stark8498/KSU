@@ -1505,7 +1505,56 @@ ten:
   _1c9f01a6: outline_unchanged? # duong cuu co giu nguyen hinh khong; _e4738962 so
                                # bounds + dien tich cua hai ban ghi
 
+
+  # The last unnamed instance variables.
+  _37d21147: on_job_done
+  # `@_37d21147 = on_job_done` -- keyword names survive the obfuscator,
+  # and @on_job_progress beside it is already named this way
+  _4e1b7521: on_job_place_progress
+  # same def line, and the dispatch arm that calls it reads
+  # "on_job_place_progress"
+  _5a009025: on_job_place
+  # same def line, and its dispatch arm reads "on_job_place"
+
 vai:
+
+  # The last unnamed instance variables, read from their use sites.
+  _6fbffdca: pending_nc
+  # the request parked between the "export_nc" callback and
+  # "export_nc_go"; its page messages are ncFolderPicked and ncDone
+  _87436521: pending_dxf
+  # the same slot for "export_dxf", with dxfFolderPicked and dxfDone
+  _21b8a1e1: pdf_path
+  # the `.pdf` arm of `entity == ".pdf" ? ... : ...`, consumed by
+  # save_pdf
+  _e1bb75d3: img_path
+  # the other arm of that ternary, so a .jpg/.jpeg/.png path
+  _02410c50: pdf_opts
+  # the JSON of "pdf_begin", read for kr, kc, rot, w and h
+  _93fea7ff: found_parts
+  # `grp ? @found_parts << grp : @missing_ids << part_id(...)` -- the
+  # groups that resolved
+  _43fe5d35: missing_ids
+  # the other arm of that same line: the part ids that did not
+  _7cdc0010: slots_used
+  # starts at 0, `+= job[:slots]`, and sets the vertical offset of the
+  # next sheet
+  _d94dd3d6: last_refresh
+  # holds a CLOCK_MONOTONIC reading and gates the next refresh on `at -
+  # it < 0.25`
+  _433ed8bf: sheet_changed_cb
+  # holds `lambda { |sheet| KSU::Nest.on_group_changed(sheet) }`; the
+  # method it calls already owns that word
+  _a4b96af4: cut_rows
+  # `parse_rows(["ABF_cuttingLines"])`
+  _904e338e: kept_job_cfg
+  # `@... , @... = job_cfg, saved_sel` and read back the same way; the
+  # words themselves belong to those two hexes
+  _3a91e949: kept_sel
+  # the second half of that pair
+  _2ce31471: js_host
+  # compared with `.equal?(host)`, and a mismatch is what makes the
+  # engine resend ENGINE_JS
 
   # Round four: the short words, one to three characters. Nothing in a body
   # can show that the author's letter for a coordinate was `x` rather than

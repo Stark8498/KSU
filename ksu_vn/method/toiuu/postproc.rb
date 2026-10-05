@@ -182,7 +182,7 @@ module KSU::Postproc
     reset_try_cache
   end
   def next_src
-    @_433ed8bf.call(@postpass_rows[@row_ix][@src_ix]) if @_433ed8bf
+    @sheet_changed_cb.call(@postpass_rows[@row_ix][@src_ix]) if @sheet_changed_cb
     @done_count += 1
     @src_ix += 1
     @flag47 = false

@@ -12,7 +12,7 @@ module KSU::Intem
     when "export_request" then export_request(dlg, payload)
     when "pick_logo" then pick_logo(dlg)
     when "save_eb" then save_edge_order(payload)
-    when "pdf_begin" then @_02410c50, @str3 = (JSON.parse(payload.to_s) rescue nil), []
+    when "pdf_begin" then @pdf_opts, @str3 = (JSON.parse(payload.to_s) rescue nil), []
     when "pdf_svg" then (@str3 ||= []) << payload.to_s
     when "pdf_save" then save_pdf
     when "img_begin" then @arr12, @arr14 = [], String.new
@@ -22,7 +22,7 @@ module KSU::Intem
       @arr14 = String.new
     when "img_save" then reset_scan
     when "pdf_error"
-      @str3 = @_21b8a1e1 = @arr12 = @arr14 = @_e1bb75d3 = nil
+      @str3 = @pdf_path = @arr12 = @arr14 = @img_path = nil
       UI.messagebox("Không xuất được dữ liệu: #{payload}")
     end
   end
@@ -34,7 +34,7 @@ module KSU::Intem
     return unless path
     entity = File.extname(path).downcase
     path += (entity = str) unless [".jpg", ".jpeg", ".png", ".pdf"].include?(entity)
-    entity == ".pdf" ? (@_21b8a1e1 = path) : (@_e1bb75d3 = path)
+    entity == ".pdf" ? (@pdf_path = path) : (@img_path = path)
     KSU::Settings.send_to_dialog(dlg, "in_tem", "intemDoExport", entity == ".pdf" ? "'pdf'" : entity == ".png" ? "'png'" : "'jpg'")
   end
   def self.pick_logo(dlg)
@@ -56,8 +56,8 @@ module KSU::Intem
     KSU.abort_op
   end
   def self.save_pdf
-    arr2, arr, path = @str3, @_02410c50, @_21b8a1e1
-    @str3 = @_02410c50 = @_21b8a1e1 = nil
+    arr2, arr, path = @str3, @pdf_opts, @pdf_path
+    @str3 = @pdf_opts = @pdf_path = nil
     return if !arr2 || arr2.empty? || !path || !arr
     _73aefde1, _1bba0f00 = KSU::Ttf.import("C:/Windows/Fonts/arial.ttf"), KSU::Ttf.import("C:/Windows/Fonts/arialbd.ttf")
     group_rgb = { pw: arr["kr"].to_f, ph: arr["kc"].to_f, rot: arr["rot"], w: arr["w"].to_f, h: arr["h"].to_f }
@@ -66,8 +66,8 @@ module KSU::Intem
     UI.messagebox("Lỗi ghi PDF: #{e.message}")
   end
   def self.reset_scan
-    arr, path = @arr12, @_e1bb75d3
-    @arr12 = @arr14 = @_e1bb75d3 = nil
+    arr, path = @arr12, @img_path
+    @arr12 = @arr14 = @img_path = nil
     return if !arr || arr.empty? || !path
     entity = File.extname(path)
     arr.each { |group_rgb| File.open(arr.size > 1 ? "#{path.delete_suffix(entity)}_#{group_rgb[:id]}#{entity}" : path, "wb") { |f| f.write(group_rgb[:data].unpack1("m0")) } }

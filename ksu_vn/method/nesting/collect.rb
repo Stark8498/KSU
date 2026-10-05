@@ -5,7 +5,7 @@ module KSU::Collect
     ents = collect_parts(saved_sel || model.entities)
     return collect_failed(:empty, job_cfg, ask, saved_sel) if ents.empty?
     @collect_cfg, @collect_ids, @collect_opts, @boards = job_cfg, ask, saved_sel, ents
-    @_93fea7ff, @seen_ids, @_43fe5d35, @done_n, @total_area, @arr4 = [], {}, [], 0, 0.0, {}
+    @found_parts, @seen_ids, @missing_ids, @done_n, @total_area, @arr4 = [], {}, [], 0, 0.0, {}
     @collecting, @progress, @str = true, 0, "Đang chuẩn bị"
     KSU.select_tool(KSU::Nest::Progress) unless model.tools.active_tool.instance_of?(KSU::Nest::Progress)
     model.active_view.invalidate
@@ -24,7 +24,7 @@ module KSU::Collect
       @seen_ids[id] = true if id
       grp, @total_area = part_of(grp2, @collect_cfg, @total_area)
       next if grp == :skip
-      grp ? @_93fea7ff << grp : @_43fe5d35 << part_id(grp2)
+      grp ? @found_parts << grp : @missing_ids << part_id(grp2)
     end
     @progress = (@done_n * 100.0 / total).round
     set_status(status_text)
@@ -32,7 +32,7 @@ module KSU::Collect
     one_group(e)
   end
   def collect_done
-    arr29, arr = @_93fea7ff, @_43fe5d35
+    arr29, arr = @found_parts, @missing_ids
     job_cfg, ask, saved_sel = restart_collect
     notify("Cảnh báo: có vấn đề khi tạo đường biên với tấm #{tail_pt(arr.uniq)}.", arr.uniq, false) unless arr.empty?
     return collect_failed(:empty, job_cfg, ask, saved_sel) if arr29.empty?
@@ -51,7 +51,7 @@ module KSU::Collect
     UI.stop_timer(@collect_timer) if @collect_timer
     _e2fd4a2e = [@collect_cfg, @collect_ids, @collect_opts]
     @collect_timer = @collect_cfg = @collect_ids = @collect_opts = @boards = nil
-    @_93fea7ff = @seen_ids = @_43fe5d35 = @done_n = @total_area = @arr4 = @collecting = nil
+    @found_parts = @seen_ids = @missing_ids = @done_n = @total_area = @arr4 = @collecting = nil
     _e2fd4a2e
   end
   def stop_collect

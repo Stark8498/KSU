@@ -14,7 +14,7 @@ module KSU::Draw
       @root.set_attribute("ABF", "shift-origin", @job_cfg[:margin])
       @root.hidden = true
     end
-    _f3202297 = -(@_7cdc0010 + job[:slots]) * (@elem + KSU::Const::SHEET_V_PADDING)
+    _f3202297 = -(@slots_used + job[:slots]) * (@elem + KSU::Const::SHEET_V_PADDING)
     KSU::Sheet.add_row_label(@root.entities, job[:type][:name], _f3202297, @elem)
     @drawn_panels = []
     arr26 = sheets.each_with_index.map do |items, fill|
@@ -23,8 +23,8 @@ module KSU::Draw
       gr.set_attribute("KSU", "two-sided-sheet", true) if bottom
       [gr, bottom]
     end
-    @_7cdc0010 += job[:slots]
-    @_7cdc0010 += 1 if arr26.any?(&:last) && job[:slots] == 1
+    @slots_used += job[:slots]
+    @slots_used += 1 if arr26.any?(&:last) && job[:slots] == 1
     @drawn_panels.select(&:valid?).each do |grp|
       grp.transformation = grp.transformation * Geom::Transformation.rotation(ORIGIN, Y_AXIS.transform(KSU::Cutting.tf_of(grp)), 180.degrees)
     end

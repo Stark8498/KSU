@@ -37,7 +37,7 @@ module KSU::Nest
       arr3 = arr2 && !arr2.empty? ? arr2 : @sheets.map { |i| i[:instance] }
       @sel = arr3.select { |s| s && s.valid? && !KSU::Sheet.hidden?(s) }
       return request_finish if @sel.empty?
-      @_433ed8bf = lambda { |sheet| KSU::Nest.on_group_changed(sheet) }
+      @sheet_changed_cb = lambda { |sheet| KSU::Nest.on_group_changed(sheet) }
       @on_done = lambda { cancel }
       start_postpass
       KSU::View.view.invalidate
@@ -159,7 +159,7 @@ module KSU::Nest
     nil
   end
   def place(job, ix, s, items)
-    to_json_row = { tmp: "#{ix}-#{s}", job: ix, key: job[:type][:name], paper: sheet_frame(ix, s), layers: ["ABF_cuttingLines"], colors: @_a4b96af4 || [""] }
+    to_json_row = { tmp: "#{ix}-#{s}", job: ix, key: job[:type][:name], paper: sheet_frame(ix, s), layers: ["ABF_cuttingLines"], colors: @cut_rows || [""] }
     num = @arr13[to_json_row[:tmp]] = items && (@arr13[to_json_row[:tmp]] || items.any? { |arr2| job[:parts].dig(arr2[0].to_i, :two_sided) })
     return to_json_row.merge(clear: true) unless items
     to_json_row[:parts] = items.filter_map { |fld| place_part(job, ix, s, fld, num) }
@@ -247,8 +247,8 @@ module KSU::Nest
   def refresh(flag = false)
     return unless @root && @root.valid? && @h4
     at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    return if !flag && @_d94dd3d6 && at - @_d94dd3d6 < 0.25
-    @_d94dd3d6 = at
+    return if !flag && @last_refresh && at - @last_refresh < 0.25
+    @last_refresh = at
     place_parts(@root.definition.entities.select { |gr| KSU::Sheet.sheet?(gr) && @h4[gr.entityID] != layout_hash(gr) })
   end
   def set_status(text)
@@ -289,8 +289,8 @@ module KSU::Nest
     job_list = @arr36.map { |job| pack_area(job) || break }
     return stop_labelling unless job_list&.any?
     @w, @elem, @m_left, @m_bottom = (@job_cfg.values_at(:sheet_w, :sheet_h) + margins_of(@job_cfg).values_at(0, 3)).map(&:mm)
-    @arr9, @sheet_ix, @_7cdc0010, @root, @h4, @h2, @arr13 = [], 0, 0, nil, {}, {}, {}
-    @_a4b96af4 = parse_rows(["ABF_cuttingLines"])
+    @arr9, @sheet_ix, @slots_used, @root, @h4, @h2, @arr13 = [], 0, 0, nil, {}, {}, {}
+    @cut_rows = parse_rows(["ABF_cuttingLines"])
     @active_id = nil
     send_to_page("nestingLive", reset: true, pp: !!@job_cfg[:hau_ky], tones: tones, extent: sheet_layout, keys: @arr36.map { |arr2| arr2[:type][:name] })
     start_run(job_list)
@@ -437,7 +437,7 @@ module KSU::Nest
   end
   def restore_selection
     @arr36 = @h18 = @job_ix = @pending = @refining = @flag41 = nil
-    @job_name = @job_cfg = @arr32 = @arr21 = @made = @root = @progress = @str = @arr26 = @h4 = @_d94dd3d6 = @_a4b96af4 = @h2 = @arr13 = nil
+    @job_name = @job_cfg = @arr32 = @arr21 = @made = @root = @progress = @str = @arr26 = @h4 = @last_refresh = @cut_rows = @h2 = @arr13 = nil
     set_status(nil)
   end
   def stop_labelling
@@ -563,7 +563,7 @@ module KSU::Nest
       letter_case: KSU::Settings.get("kieu_tieu_de", "upper", "gan_nhan"),
       center: !_8ab67ce9, renumber: renumber[:renumber]
     }
-    @_904e338e, @_3a91e949, @jobs, @layer2 = job_cfg, saved_sel, renumber[:jobs], renumber[:layer]
+    @kept_job_cfg, @kept_sel, @jobs, @layer2 = job_cfg, saved_sel, renumber[:jobs], renumber[:layer]
     @label_total, @label_done, @labelling = @jobs.size, 0, true
     KSU.select_tool(Progress) unless Sketchup.active_model.tools.active_tool.instance_of?(Progress)
     KSU::View.view.invalidate
@@ -583,7 +583,7 @@ module KSU::Nest
     clear_status
   end
   def label_finish2
-    job_cfg, saved_sel = @_904e338e, @_3a91e949
+    job_cfg, saved_sel = @kept_job_cfg, @kept_sel
     end_label_timer
     KSU::View.view.invalidate
     start_collect(job_cfg, false, saved_sel)
@@ -593,7 +593,7 @@ module KSU::Nest
   def end_label_timer
     UI.stop_timer(@label_timer) if @label_timer
     @labelling = false
-    @label_timer = @_904e338e = @_3a91e949 = @jobs = @layer2 = @label_ctx = nil
+    @label_timer = @kept_job_cfg = @kept_sel = @jobs = @layer2 = @label_ctx = nil
   end
   def abort_labelling
     return unless @labelling

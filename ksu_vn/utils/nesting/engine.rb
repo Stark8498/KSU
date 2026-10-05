@@ -20,10 +20,10 @@ module KSU::Nesting
       run_pending
     end
     def start_jobs(jobs:, on_job_done:, on_job_progress: nil, on_job_place_progress: nil, on_job_place: nil)
-      @_37d21147 = on_job_done
+      @on_job_done = on_job_done
       @on_job_progress = on_job_progress
-      @_4e1b7521 = on_job_place_progress
-      @_5a009025 = on_job_place
+      @on_job_place_progress = on_job_place_progress
+      @on_job_place = on_job_place
       @keep_existing = true
       @h19 = {}
       entries = jobs.map do |arr|
@@ -51,7 +51,7 @@ module KSU::Nesting
       when "need_js"
         host = KSU::Settings.tool_windows
         if host && @prev_jobs
-          @pending, @_2ce31471 = @prev_jobs, nil
+          @pending, @js_host = @prev_jobs, nil
           start_engine(host)
         end
       else on_engine_event(name, str)
@@ -67,7 +67,7 @@ module KSU::Nesting
       end
       @keep_existing = false
       @num7 = 0
-      @on_done = @on_progress = @on_place_progress = @_37d21147 = @on_job_progress = @_4e1b7521 = @_5a009025 = @prev_jobs = nil
+      @on_done = @on_progress = @on_place_progress = @on_job_done = @on_job_progress = @on_job_place_progress = @on_job_place = @prev_jobs = nil
       @h19 = {}
       drain_queue
     rescue StandardError
@@ -81,11 +81,11 @@ module KSU::Nesting
     def on_engine_event(name, arr, meet0 = false)
       case name
       when "on_job_progress" then @on_job_progress&.call(arr[0].to_i, arr[1].to_i)
-      when "on_job_place_progress" then @_4e1b7521&.call(arr[0].to_i, arr[1].to_i, arr[2].to_i)
-      when "on_job_place" then @_5a009025&.call(arr[0].to_i, arr[1].to_i, arr[2].to_s)
+      when "on_job_place_progress" then @on_job_place_progress&.call(arr[0].to_i, arr[1].to_i, arr[2].to_i)
+      when "on_job_place" then @on_job_place&.call(arr[0].to_i, arr[1].to_i, arr[2].to_s)
       when "on_job_fail" then @h19[arr[0].to_i] = arr[1]
       when "on_job_nested"
-        cb = @_37d21147
+        cb = @on_job_done
         @num7 -= 1
         close_later if meet0 && @num7 <= 0
         cb.call(arr[0].to_i, arr[1], @h19.delete(arr[0].to_i)) if cb
@@ -95,9 +95,9 @@ module KSU::Nesting
       @flag45 = true
       @prev_jobs = @pending
       to_json_row = { start: @pending }
-      unless @_2ce31471.equal?(host)
+      unless @js_host.equal?(host)
         to_json_row[:js] = ENGINE_JS
-        @_2ce31471 = host
+        @js_host = host
       end
       @pending = nil
       KSU::Settings.send_to_dialog(host, "nesting", "nestingEngine", to_json_row.to_json)

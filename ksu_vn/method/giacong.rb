@@ -471,7 +471,7 @@ module KSU
           send_to_page("postSampled", { ok: false, message: error }, dlg2)
         end
         dlg2.add_action_callback("export_nc") do |_943f1db3, str|
-          @_6fbffdca = nil
+          @pending_nc = nil
           next ::UI.messagebox(Text.t(:quet, :khong_du_lieu)) unless @reader && @reader.database.count.positive?
           request = parse_request(str)
           begin
@@ -486,14 +486,14 @@ module KSU
           folder = ::UI.select_directory(title: Text.t(:giao_dien, :chon_thu_muc))
           next unless folder
           th_txt = [Process.pid, Time.now.to_f, rand(1_000_000_000)].join("-")
-          @_6fbffdca = { token: th_txt, folder: folder, reader: @reader, excluded: excluded }
+          @pending_nc = { token: th_txt, folder: folder, reader: @reader, excluded: excluded }
           send_to_page("ncFolderPicked", { token: th_txt }, dlg2)
         rescue StandardError => err
           show_error(Text.t(:xuat, :khong_xuat_duoc), err)
         end
         dlg2.add_action_callback("export_nc_go") do |_943f1db3, str|
           arr = parse_request(str)
-          pending, @_6fbffdca = @_6fbffdca, nil
+          pending, @pending_nc = @pending_nc, nil
           next send_to_page("ncDone", { ok: false }, dlg2) unless pending && arr["token"] == pending[:token]
           request = arr["request"] || {}
           model = ::Sketchup.active_model
@@ -515,7 +515,7 @@ module KSU
           show_error(Text.t(:xuat, :khong_xuat_duoc), err)
         end
         dlg2.add_action_callback("export_dxf") do |_943f1db3, str|
-          @_87436521 = nil
+          @pending_dxf = nil
           next ::UI.messagebox(Text.t(:quet, :khong_du_lieu)) unless @reader && @reader.database.count.positive?
           request = parse_request(str)
           begin
@@ -533,14 +533,14 @@ module KSU
           folder = ::UI.select_directory(**_e625691b)
           next unless folder
           th_txt = [Process.pid, Time.now.to_f, rand(1_000_000_000)].join("-")
-          @_87436521 = { token: th_txt, folder: folder, reader: @reader, excluded: excluded, off: table_off, found: partner }
+          @pending_dxf = { token: th_txt, folder: folder, reader: @reader, excluded: excluded, off: table_off, found: partner }
           send_to_page("dxfFolderPicked", { token: th_txt }, dlg2)
         rescue StandardError => err
           show_error(Text.t(:xuat, :khong_xuat_duoc), err)
         end
         dlg2.add_action_callback("export_dxf_go") do |_943f1db3, str|
           arr = parse_request(str)
-          pending, @_87436521 = @_87436521, nil
+          pending, @pending_dxf = @pending_dxf, nil
           next send_to_page("dxfDone", { ok: false }, dlg2) unless pending && arr["token"] == pending[:token]
           progress = proc { |percent| send_to_page("dxfProgress", { percent: percent }, dlg2) }
           ok = ::KSU::Giacong.export_dxf(pending[:folder], pending[:reader].database, pending[:excluded], pending[:off],
