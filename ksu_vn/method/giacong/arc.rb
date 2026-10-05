@@ -238,25 +238,25 @@ module KSU
             consecutive: rows[idx - 1][:folded_arc] || rows[(idx + 1) % rows.length][:folded_arc] }
         end
       end
-      def reconcile_folds(rows, arr4, _5adc787e, base_area, r, side)
+      def reconcile_folds(rows, arr4, _5adc787e, base_elems, r, side)
         return false if rows.length < 2
         arr4.all? do |arr3|
           idx = arr3[:index]
           next false if arr3[:consecutive]
-          next true unless ([(idx - 1) % base_area.length, idx] & _5adc787e).empty?
+          next true unless ([(idx - 1) % base_elems.length, idx] & _5adc787e).empty?
           arr, arr2 = arr3.values_at(:left, :right)
           flag = rows.index { |row| row.equal?(arr) }
           next false unless arr && arr2 && flag && rows[(flag + 1) % rows.length].equal?(arr2)
           gap2 = Calc.distance(arr[:e], arr2[:s])
           next true if gap2 <= JOIN_TOL_MM
           next false if gap2 > COLLAPSE_JOIN_MM + HIT_EPS_MM
-          pt = reconcile_pair(arr, arr2, base_area, r, side)
+          pt = reconcile_pair(arr, arr2, base_elems, r, side)
           next false unless pt
           arr[:e], arr2[:s] = pt.dup, pt.dup
           true
         end
       end
-      def reconcile_pair(arr2, arr3, base_area, r, side)
+      def reconcile_pair(arr2, arr3, base_elems, r, side)
         tol = COLLAPSE_JOIN_MM + HIT_EPS_MM
         per_row = [[1.0, r * 0.30].min, COLLAPSE_JOIN_MM].max + HIT_EPS_MM
         rows = tangent_gap(arr2, arr3).map do |pt|
@@ -275,7 +275,7 @@ module KSU
         fallback = rows.select { |arr| arr[:fallback] }
         return fallback.first[:point] if fallback.length == 1
         out = rows.filter_map { |arr| arr[:point] if arr[:boundary] }
-        Clip.offset_candidates(base_area, out, r, side) if out.any?
+        Clip.offset_candidates(base_elems, out, r, side) if out.any?
       end
       def clamp_to_element(arr, pt, at)
         return Calc.arc_sweep(arr).abs > HIT_EPS_MM if arr[:type] == :arc

@@ -371,7 +371,7 @@ mới của đợt này.
 | Def bị đè | rào cùng-module trong `--check` | **0** (2.936 def riêng biệt, bằng mốc) |
 | Lời gọi treo | `codegraph.py` rồi `verify_graph.py` | **0** |
 | Nạp cả cây | `ruby tools/napthu.rb .` | **NAP OK** — 74 hằng `KSU::*` |
-| Một-tên-một-hex | `python tools/trahex.py --soat` | 497 bắc cầu hai đợt (OK) · **158 cùng đợt (nợ)** |
+| Một-tên-một-hex | `python tools/trahex.py --soat` | 511 bắc cầu hai đợt (OK) · **107 cùng đợt (nợ)** |
 | Đối sánh hành vi | `ruby tools/doisanh.rb` | **79/79 giống nhau từng byte** — phủ 17,1 % số method (§8) |
 
 Chạy mọi lệnh Python với `PYTHONIOENCODING=utf-8`: console cp1252 của Windows
@@ -402,12 +402,23 @@ Xếp theo mức quan trọng, cao xuống thấp.
    nhánh mã khác nhau; chúng vẫn ra cùng kết quả, nghĩa là nhánh Ruby khớp với
    native trên các ca này. Nếu sau này chúng lệch nhau, đọc cờ này trước khi
    quy cho việc đổi tên.
-2. **158 tên nói quá.** `trahex.py --soat` chỉ ra 158 chỗ hai hex **cùng một
+2. **107 tên nói quá.** `trahex.py --soat` chỉ ra 107 chỗ hai hex **cùng một
    đợt** mang một tên. Mỗi dòng nghĩa là: tác giả dùng hai từ khác nhau, mà từ
    điển gộp lại thành một. Không chỗ nào làm sai hành vi (rào cùng-module đã
-   bảo đảm), nhưng người đọc bị dẫn sai. Khoảng 103 chỗ có ít nhất một bên là
-   tên đọc tay của đợt này — đổi bên đó là xong; 56 chỗ còn lại là hai tên
-   *chuyển sang* đụng nhau, phải đọc mới tách được.
+   bảo đảm), nhưng người đọc bị dẫn sai.
+
+   51 tên **có dấu gạch dưới** đã xử lý xong — đó là nhóm dễ gây hiểu nhầm
+   nhất, vì tên mô tả hành vi mà gán nhầm thì người đọc tin vào một việc không
+   có thật. Cách làm, dùng lại được cho phần còn lại: đọc thân hàm của cả hai
+   bên; **đổi tên** bên nào thân hàm nói ngược lại cái tên (trả boolean mà tên
+   là danh từ, duyệt vòng mà tên nói chuỗi hở, `.length` mà tên nói diện tích);
+   **hạ xuống `vai:`** khi cả hai bên đều hợp — khi đó cây giữ nguyên từ, chỉ
+   lời khẳng định lùi lại. Hạ mức chỉ an toàn vì không hex nào trong số này
+   được `tenauto.yml` gán theo phạm vi (xem cảnh báo trong `load_dicts`); kiểm
+   lại điều đó trước khi hạ bất kỳ hex nào khác.
+
+   107 cái còn lại đều là **từ đơn**: 21 cái ≤2 ký tự, 24 cái 3 ký tự, 62 cái
+   dài hơn. Chúng ít dẫn sai hơn hẳn, nhưng cũng ít bằng chứng hơn để tách.
 3. **589 biến cục bộ + 17 `@ivar` còn hex** (5 % số lượt). `dexuat.py` nói
    "không đủ bằng chứng" cho 661 hex — chúng xuất hiện quá ít hoặc không có
    method nào gọi lên để suy ra kiểu.

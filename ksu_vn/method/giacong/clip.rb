@@ -454,7 +454,7 @@ module KSU
         return false if _45b54bd9 <= EDGE_MIN_MM || _f125bb43 <= EDGE_MIN_MM
         (ax * by2 - ay * bx2).abs / (_45b54bd9 * _f125bb43) <= 1.0e-6 && (ax * bx2 + ay * by2) / (_45b54bd9 * _f125bb43) > 0.999999
       end
-      def rejoin_arcs(rows, r, on_change = nil)
+      def rejoin_arcs(rows, r, anchors = nil)
         arr3 = []
         rows.each_with_index do |arr, idx|
           b2 = rows[(idx + 1) % rows.length]
@@ -468,7 +468,7 @@ module KSU
           e = arc[_e7513c77]
           next if Calc.distance(e, axis[_b658f3bf]) > JOINT_SNAP_MM
           center = arc[:c]
-          next if on_change && on_change.none? { |path| Calc.distance(center, path) <= JOINT_SNAP_MM }
+          next if anchors && anchors.none? { |path| Calc.distance(center, path) <= JOINT_SNAP_MM }
           next unless Calc.distance(axis[:s], axis[:e]) >= 1.0
           arr2 = Calc.project_on_line(center, axis[:s], axis[:e])
           _ae61224b = Calc.distance(center, arr2)
@@ -612,7 +612,7 @@ module KSU
         arr3[:e] = pt.dup
         arr5[:s] = pt.dup
       end
-      def shrink_to_fit(arr, base_area, r)
+      def shrink_to_fit(arr, base_elems, r)
         num = 0
         16.times do
           want = arr.length
@@ -622,9 +622,9 @@ module KSU
             last_rect = (idx + 2) % want
             _434c9c97 = [arr[idx][:type], arr[_42cd5245][:type], arr[last_rect][:type]]
             ok = if _434c9c97 == %i[line line arc]
-                tangent_pair(arr[idx], arr[_42cd5245], arr[last_rect], base_area, r, true)
+                tangent_pair(arr[idx], arr[_42cd5245], arr[last_rect], base_elems, r, true)
               elsif _434c9c97 == %i[arc line line]
-                tangent_pair(arr[last_rect], arr[_42cd5245], arr[idx], base_area, r, false)
+                tangent_pair(arr[last_rect], arr[_42cd5245], arr[idx], base_elems, r, false)
               end
             next false unless ok
             arr.delete_at(_42cd5245)
@@ -635,7 +635,7 @@ module KSU
         end
         num
       end
-      def tangent_pair(arr5, arr6, arc, base_area, r, at_start)
+      def tangent_pair(arr5, arr6, arc, base_elems, r, at_start)
         _e48bf237, _9a26378e = arr5[:s], arr5[:e]
         arr3, arr4 = arr6[:s], arr6[:e]
         center = arc[:c]
@@ -650,7 +650,7 @@ module KSU
         head_off, tail_pt = at_start ? [_9a26378e, _a173c4a4] : [_a173c4a4, _e48bf237]
         return nil if Calc.distance(head_off, arr3) > JOINT_SNAP_MM
         return nil if Calc.distance(arr4, tail_pt) > JOINT_SNAP_MM
-        arr = tangent_triple(arr5, base_area, [center], r)
+        arr = tangent_triple(arr5, base_elems, [center], r)
         return nil unless arr
         arr2 = Calc.project_on_line(center, arr[:first], arr[:last])
         return nil if (Calc.distance(center, arr2) - r).abs > 1.0e-8
@@ -663,17 +663,17 @@ module KSU
         return nil unless _73335f17 <= TANGENT_SHIFT_MM
         sweep_delta(arr5, arc, arr, arr2, at_start)
       end
-      def tangent_triple(arr5, base_area, on_change, r)
+      def tangent_triple(arr5, base_elems, anchors, r)
         _631641ca, _f8187aa6 = arr5[:s], arr5[:e]
         return nil unless Calc.distance(_f8187aa6, _631641ca) >= TANGENT_MIN_LINE_MM
         _1d740702, _b67c602d = Calc.unit_vector(_631641ca, _f8187aa6)
         arr8 = Math.cos(2.0 * Math::PI / 180.0)
         arr6 = []
-        base_area.each_with_index do |boundary, _5a11d110|
+        base_elems.each_with_index do |boundary, _5a11d110|
           next unless boundary[:type] == :line
           arr, arr2 = boundary[:s], boundary[:e]
           next unless Calc.distance(arr2, arr) >= TANGENT_MIN_LINE_MM
-          next unless on_change.all? { |center| [Calc.distance(center, arr), Calc.distance(center, arr2)].min <= 0.005 }
+          next unless anchors.all? { |center| [Calc.distance(center, arr), Calc.distance(center, arr2)].min <= 0.005 }
           _fa631170, _98aa547e = Calc.unit_vector(arr, arr2)
           num = (_fa631170 * _1d740702) + (_98aa547e * _b67c602d)
           next unless num.abs >= arr8
@@ -684,7 +684,7 @@ module KSU
             row0, last_rect = last_rect, row0 if num.negative?
             arr3 = [_631641ca, _f8187aa6].map { |pt| Calc.distance_to_line(pt, row0, last_rect) }.max
             next unless arr3 <= 0.052
-            arr4 = on_change.map do |center|
+            arr4 = anchors.map do |center|
               _cb1cc64c = Calc.project_on_line(center, row0, last_rect)
               [Calc.distance(_631641ca, _cb1cc64c), Calc.distance(_f8187aa6, _cb1cc64c)].min
             end

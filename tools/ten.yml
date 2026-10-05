@@ -89,7 +89,6 @@ ten:
   _5464881e: material_key   # 2 phieu, nhan-hash ksu_vn/method/giacong/canvas.rb:22
   _64868c52: sampled   # 2 phieu, nhan-hash ksu_vn/method/giacong/clip.rb:155
   _6849e728: ramp_point   # 2 phieu, khoa-hash ksu_vn/method/giacong/chain.rb:680
-  _6f0173f7: lead_shift_mm   # 2 phieu, nhan-hash ksu_vn/method/giacong/planner.rb:115
   _779a0078: length   # 2 phieu, nhan-hash ksu_vn/method/giacong/arc.rb:575
   _8a15fd29: materials   # 2 phieu, nhan-hash ksu_vn/method/intem/scan.rb:38
   _95bc0527: u   # 2 phieu, nhan-hash ksu_vn/method/giacong/calc.rb:342
@@ -431,7 +430,6 @@ ten:
   # bien dung chung trong library.rb
   _58f5ece7: post
   _3c9642ff: entries
-  _a61bbbba: layer_map
   _117e404f: source_name
   _f436dfda: digits
   _27736aa0: cut_depth
@@ -893,7 +891,6 @@ ten:
   _14986b43: base_pts
   _ad0760fd: outline_a
   _168a3dc3: outline_b
-  _7da8beae: tol_mm
   _3abb1c92: mid_pt
   _90778091: outer_rec
   _fca3d62c: inner_rec
@@ -1003,8 +1000,6 @@ ten:
   _4eb032a0: at_start
   _5583c58b: sampled_pts
   _09dfcac7: want_side
-  _5f342353: on_change
-  _e1dc3206: base_area
 
   # ---- method/giacong/canvas.rb : du lieu cho cua so mo phong ----
   _73997ff8: sheet_index
@@ -1568,6 +1563,31 @@ ten:
                                # bounds + dien tich cua hai ban ghi
 
 vai:
+
+  # Locals. A name here says what the variable HOLDS, which is all the code
+  # can show. Four of these read wrong against their own use sites:
+  _e1dc3206: base_elems
+  # an element array, not an area: it is read for `.length` and handed
+  # to shrink_to_fit and offset_candidates, whose own callers pass what
+  # they call source_elems
+  _ca7b7566: dim_ents
+  # holds `ents.grep(Sketchup::DimensionLinear)` and is then erased
+  # wholesale -- dimension entities, not a point. Inherited from the
+  # 2.1.5 reading
+  _7da8beae: markers
+  # asked `.empty?` and passed to near_marker?, so it is a collection
+  # of markers rather than a tolerance; the real tol_mm is the number
+  # clip.rb compares a Hausdorff distance against
+  _5f342353: anchors
+  # a list of points measured with Calc.distance, not a callback;
+  # view.rb's on_change is the one that takes a block
+
+  # Apt on both sides; the word stays and only the claim steps back.
+  _08cbc5c3: inv_tf
+  _a61bbbba: layer_map
+  _6f0173f7: lead_shift_mm
+  _48a39ca3: off_x
+  _24c1c69b: off_y
 
   # Round two. Same rule: one word, one hex, per build.
   _17cb980a: subtended_angle

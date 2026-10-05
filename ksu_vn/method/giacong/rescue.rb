@@ -428,24 +428,24 @@ module KSU
         end
         want && want < 50_000 ? { ok: true } : fail
       end
-      def drift_check_ruby(path_pts, base_pts, r, tol_mm)
+      def drift_check_ruby(path_pts, base_pts, r, markers)
         fail = { ok: false, error: "check_unmeasured" }
         path = ring(dedupe(path_pts))
         boundary = ring(dedupe(base_pts))
-        return fail if path.length < 4 || boundary.length < 4 || tol_mm.empty?
+        return fail if path.length < 4 || boundary.length < 4 || markers.empty?
         idx = pack_outline(boundary)
         tol = RESCUE_SOURCE_MM + (Clip::QUANT_MM * 2.0)
         num = 0
         want = path_steps_ok?(path) do |pt|
           num2 = (packed_distance_at(pt, idx) - r).abs
           return fail unless num2.finite?
-          next if near_marker?(tol_mm, pt)
+          next if near_marker?(markers, pt)
           num += 1
           return { ok: false, error: "check_drift" } if num2 > tol
         end
         want && num.positive? ? { ok: true } : fail
       end
-      def outline_unchanged?(outline_a, outline_b, tol_mm)
+      def outline_unchanged?(outline_a, outline_b, markers)
         arr = ring(dedupe(outline_a))
         arr2 = ring(dedupe(outline_b))
         return false if arr.length < 4 || arr2.length < 4
@@ -453,7 +453,7 @@ module KSU
         [[arr, arr2], [arr2, arr]].all? do |a, b|
           idx = pack_outline(b)
           want = path_steps_ok?(a, want) do |pt|
-            tol = near_marker?(tol_mm, pt) ? RESCUE_CHANGE_MM : 0.012
+            tol = near_marker?(markers, pt) ? RESCUE_CHANGE_MM : 0.012
             return false unless packed_distance_at(pt, idx) <= tol
           end
         end
