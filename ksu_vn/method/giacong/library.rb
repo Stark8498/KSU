@@ -430,8 +430,8 @@ module KSU
         end
         FORMAT_TOKENS.each do |th_txt, _8776d6f1|
           next if %w[T TOOL_NUMBER SPINDLE_SPEED].include?(th_txt) || !text.match?(/\[#{th_txt}\]/i)
-          job = post.dig("formats", _8776d6f1)
-          next if job.is_a?(Hash) && !job["format"].to_s.strip.empty?
+          fmt_spec = post.dig("formats", _8776d6f1)
+          next if fmt_spec.is_a?(Hash) && !fmt_spec["format"].to_s.strip.empty?
           raise PostFileError, Text.t(:post, :thieu_var, post: name, token: th_txt, var: _8776d6f1)
         end
         post.update(
@@ -556,9 +556,9 @@ module KSU
       end
       def token_format(post, th_txt)
         _b71f2fbe = FORMAT_TOKENS[th_txt]
-        job = _b71f2fbe && post.dig("formats", _b71f2fbe)
-        prefix = job ? job["prefix"].to_s : (%w[X Y Z I J F S N].include?(th_txt) ? th_txt : '')
-        digits = job && job["format"].to_s[/\.(\d+)\z/, 1]&.to_i
+        fmt_spec = _b71f2fbe && post.dig("formats", _b71f2fbe)
+        prefix = fmt_spec ? fmt_spec["prefix"].to_s : (%w[X Y Z I J F S N].include?(th_txt) ? th_txt : '')
+        digits = fmt_spec && fmt_spec["format"].to_s[/\.(\d+)\z/, 1]&.to_i
         digits ||= %w[X Y Z I J XH YH ZH SAFEZ].include?(th_txt) ? 4 : (th_txt == "F" ? 1 : 0)
         [prefix, 0.5 * (10.0**(-digits)), digits.zero? ? nil : "%.#{digits}f"]
       end

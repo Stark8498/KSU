@@ -42,8 +42,6 @@ ten:
   _bc0dc9c4: key   # 10 phieu, nhan-hash ksu_vn/method/giacong/canvas.rb:90
   _4d5b2140: post   # 9 phieu, nhan-hash ksu_vn/method/giacong/export.rb:44
   _6925c553: paths   # 8 phieu, nhan-hash ksu_vn/method/giacong/canvas.rb:90
-  _f4581382: pts   # 8 phieu, nhan-hash ksu_vn/method/giacong/scan.rb:78
-  _6b46392e: z   # 6 phieu, nhan-hash ksu_vn/method/giacong/gcode.rb:101
   _6af38b2c: point   # 5 phieu, nhan-hash ksu_vn/method/giacong/calc.rb:588
   _896c4eb5: gr   # 5 phieu, nhan-hash ksu_vn/method/giacong/scan.rb:7
   _a8cd15b1: error   # 5 phieu, nhan-hash ksu_vn/method/giacong/arc.rb:66
@@ -60,32 +58,26 @@ ten:
   _59a71570: lead_shift_mm   # 3 phieu, nhan-hash ksu_vn/method/giacong/profile.rb:193
   _a40afc07: x1   # 3 phieu, nhan-hash ksu_vn/method/catcuoi/resize.rb:30
   _d0e2f6ec: first   # 3 phieu, nhan-hash ksu_vn/method/giacong/gcode.rb:254
-  _da7a2fa2: ok   # 3 phieu, khoa-hash ksu_vn/method/giacong.rb:189
   _fa7290d0: metadata   # 3 phieu, nhan-hash ksu_vn/method/giacong/arc.rb:66
   _0488319a: pts   # 2 phieu, nhan-hash ksu_vn/method/nesting/launch.rb:113
   _0ba78b93: van   # 2 phieu, nhan-hash ksu_vn/method/giacong/export.rb:329
-  _0cfd7c2b: y   # 2 phieu, nhan-hash ksu_vn/method/giacong/gcode.rb:206
   _1c3ee2ac: kind   # 2 phieu, khoa-hash ksu_vn/method/giacong/canvas.rb:326
   _1d3fe3d0: reversed   # 2 phieu, nhan-hash ksu_vn/method/giacong/arc.rb:619
   _22a7607e: excluded   # 2 phieu, nhan-hash ksu_vn/method/giacong.rb:489
   _288d8690: cycle   # 2 phieu, nhan-hash ksu_vn/method/giacong/profile.rb:451
   _29fd9c65: shape_tol_mm   # 2 phieu, nhan-hash ksu_vn/method/giacong/rescue.rb:187
-  _2fab8ac1: ok   # 2 phieu, nhan-hash ksu_vn/method/giacong/clip.rb:385
   _30c4d2df: polygons   # 2 phieu, nhan-hash ksu_vn/method/giacong/clip.rb:101
   _366debc9: e   # 2 phieu, khoa-hash ksu_vn/method/giacong/clip.rb:560
   _40de2708: radius_mm   # 2 phieu, nhan-hash ksu_vn/method/giacong/arc.rb:89
-  _41f82561: pts   # 2 phieu, nhan-hash ksu_vn/method/giacong/scan.rb:160
   _43c970b4: points   # 2 phieu, nhan-hash ksu_vn/method/catcuoi.rb:336
   _48a8a14b: tangent_in   # 2 phieu, khoa-hash ksu_vn/method/giacong/chain.rb:639
   _4b983665: ly_do   # 2 phieu, nhan-hash ksu_vn/method/giacong/text.rb:154
   _4c406b6f: cell   # 2 phieu, nhan-hash ksu_vn/method/giacong/rescue.rb:645
-  _531c2ab3: x   # 2 phieu, nhan-hash ksu_vn/method/giacong/gcode.rb:206
   _5464881e: material_key   # 2 phieu, nhan-hash ksu_vn/method/giacong/canvas.rb:22
   _64868c52: sampled   # 2 phieu, nhan-hash ksu_vn/method/giacong/clip.rb:155
   _6849e728: ramp_point   # 2 phieu, khoa-hash ksu_vn/method/giacong/chain.rb:680
   _779a0078: length   # 2 phieu, nhan-hash ksu_vn/method/giacong/arc.rb:575
   _95bc0527: u   # 2 phieu, nhan-hash ksu_vn/method/giacong/calc.rb:342
-  _9710d820: v   # 2 phieu, nhan-hash ksu_vn/method/netcatcuoi.rb:302
   _9bfd28e0: end_index   # 2 phieu, nhan-hash ksu_vn/method/giacong/arc.rb:448
   _9ccdb468: place   # 2 phieu, nhan-hash ksu_vn/method/nesting.rb:157
   _9f1d1de9: index   # 2 phieu, nhan-hash ksu_vn/method/giacong/pool.rb:119
@@ -97,7 +89,6 @@ ten:
   _d68d6453: y1   # 2 phieu, nhan-hash ksu_vn/method/catcuoi/resize.rb:30
   _dfe2f35b: additive   # 2 phieu, nhan-hash ksu_vn/method/toiuu.rb:208
   _e7ccbe04: start_i   # 2 phieu, nhan-hash ksu_vn/method/giacong/geom.rb:116
-  _f67efdcd: van   # 2 phieu, nhan-hash ksu_vn/method/giacong/export.rb:243
 
   # ---- method/giacong/core.rb : nen cua module Cnc (doc tay) ----
   # KSU::Cnc
@@ -115,7 +106,6 @@ ten:
   _46c1867b: dup_array_values
   _ac6f0ea6: freeze_rows       # to_f + freeze tung hang
   _04c5f1f6: fake_closed?      # doc @fake_closed
-  _509ed3f1: now               # CLOCK_MONOTONIC
   # KSU::Cnc::Database
   _012d733e: by_layer
   _8a4ad175: each_layer
@@ -167,7 +157,6 @@ ten:
   _6a9fe2c9: unify_sheets      # gom vector cung tam, chot work_face
   _86e5b1a0: last_matrix
   # bien dung chung trong core.rb
-  _3c3d6309: rec
   _9e4c01c6: chain
   _c5645098: in_cut
   _57e34b83: groove
@@ -347,12 +336,8 @@ ten:
   _b02b4635: bounds_inside?
   _d30b7b46: bounds_same_size?
   # bien dung chung trong calc.rb
-  _8553ef34: tol
-  _d6a8b0c1: eps
   _15cf3d7e: cw
   _ff8cda6d: corner
-  _fc2e8df6: at
-  _db3654a4: a0
   _cf9f52d8: sweep
   _c8f31c82: packed
 
@@ -553,7 +538,6 @@ ten:
   _d76060be: layer_slug_cache
   # bien dung chung trong chain.rb
   _9bf16c59: a_vec
-  _ae8faec7: seg
   _b74c7550: out_rec
   _c0cd57ba: elem_state
   _3465c332: taken
@@ -617,7 +601,6 @@ ten:
   _7a14dd80: collapse
   _c9215ff2: offset_sign
   _d60cb15d: at_index
-  _2d9dac79: mid
   _aa12ccb7: offset_pts
   _871201b4: area_sign
   _1c007a77: last_ix
@@ -766,8 +749,6 @@ ten:
   _42cd2985: first_loop
   _bf96ea9f: loop_a
   _6151f578: loop_b
-  _86ce7ac5: lo
-  _d1a7699f: hi
   _79cb22ba: loop_pts
   _b58bbcea: spiral
   _eb96b475: approach
@@ -1525,6 +1506,71 @@ ten:
                                # bounds + dien tich cua hai ban ghi
 
 vai:
+
+  # Round four: the short words, one to three characters. Nothing in a body
+  # can show that the author's letter for a coordinate was `x` rather than
+  # `u`, so these are role names by nature -- which is what the example at
+  # the head of this section already says. The tree keeps each word; one hex
+  # per build stays under `ten:`, and a hex tenauto.yml scopes per body is
+  # always that one, because a plain role name would hand those bodies back
+  # to the generated guesses.
+  _8e47a150: a
+  _db3654a4: a0
+  _ed77d228: ang
+  _fc2e8df6: at
+  _a7159cec: b
+  _2e925442: bot
+  _a1e44f60: bx1
+  _c5292bf6: by1
+  _2ae35bad: ccw
+  _dfc21ba3: cur
+  _5dd201e5: dot
+  _8a2f0dcc: dot
+  _d6a8b0c1: eps
+  _cefe7468: h
+  _d1a7699f: hi
+  _d989eefc: ix
+  _fb072f1a: ix
+  # Never a job: library.rb reads `post.dig("formats", ...)` off it and then
+  # its "format" and "prefix" keys, while font.rb takes it as a packed byte and
+  # picks it apart with `& 0x80`, `>> 4` and `& 0x0F`. Two roles, so two names.
+  _2f9ede84:
+    "*": fmt_spec
+    ksu_vn/utils/font.rb: arc_flags
+  _b4f05934: len
+  _cf571108: len
+  _86ce7ac5: lo
+  _b871c780: lx
+  _2d9dac79: mid
+  _5f2b530c: mx
+  _fdfa7f82: my
+  _509ed3f1: now
+  _2fab8ac1: ok
+  _da7a2fa2: ok
+  _20106731: pt
+  _41f82561: pts
+  _f4581382: pts
+  _b786d4b9: rad
+  _3c3d6309: rec
+  _ebffc3f1: rx
+  _98995933: rx1
+  _aba4cfb8: rx2
+  _5317f9bd: ry
+  _aa54303e: ry1
+  _f657ca75: ry2
+  _ae8faec7: seg
+  _aec66722: sub
+  _facbe376: tag
+  _d0b76f0f: tag
+  _8553ef34: tol
+  _f856e8dd: ty
+  _609b042f: u1
+  _9710d820: v
+  _f67efdcd: van
+  _531c2ab3: x
+  _0cfd7c2b: y
+  _ff485cbf: y
+  _6b46392e: z
 
   # Round three: the 62 single words two identifiers were both claiming.
   # Two read wrong against their own bodies:

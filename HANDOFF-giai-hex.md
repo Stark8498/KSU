@@ -352,6 +352,16 @@ mới của đợt này.
     chỉ được **ngắn đi**, không bao giờ dài ra.
 16. **Thà để trống còn hơn đoán.** Một tên sai tệ hơn một hex: hex nói "chưa
     biết", tên sai nói dối.
+17. **Hạ `ten:` xuống `vai:` KHÔNG trung tính nếu `tenauto.yml` gán hex đó theo
+    phạm vi.** Một tên vai trò trần vào làm `*` mặc định và nhường lại từng
+    thân hàm cho tên sinh tự động, nên `groups` tụt về `arr2`. `load_dicts`
+    có ghi cảnh báo này. Luật: hex nào `tenauto.yml` gán theo phạm vi thì
+    **buộc phải giữ** `ten:`, hạ bên kia của cặp. Kiểm bằng máy trước khi hạ.
+18. **Mục `mau_thuan:` của `sinhban.yml` có giá trị TRỐNG, theo sau là chú
+    thích.** `_2f9ede84:   # {...}` — regex `(_[0-9a-f]{8}): *(\S+)` bắt `#`
+    làm tên rồi ghi ra `_2f9ede84: #`, mà YAML đọc lại thành rỗng, nên hex
+    lặng lẽ rơi về tên của từ điển trước đó. Đọc các `.yml` này bằng `yaml`,
+    đừng bằng regex.
 
 ---
 
@@ -371,7 +381,7 @@ mới của đợt này.
 | Def bị đè | rào cùng-module trong `--check` | **0** (2.936 def riêng biệt, bằng mốc) |
 | Lời gọi treo | `codegraph.py` rồi `verify_graph.py` | **0** |
 | Nạp cả cây | `ruby tools/napthu.rb .` | **NAP OK** — 74 hằng `KSU::*` |
-| Một-tên-một-hex | `python tools/trahex.py --soat` | 511 bắc cầu hai đợt (OK) · **107 cùng đợt (nợ)** |
+| Một-tên-một-hex | `python tools/trahex.py --soat` | 579 bắc cầu hai đợt (OK) · **0 cùng đợt** |
 | Đối sánh hành vi | `ruby tools/doisanh.rb` | **79/79 giống nhau từng byte** — phủ 17,1 % số method (§8) |
 
 Chạy mọi lệnh Python với `PYTHONIOENCODING=utf-8`: console cp1252 của Windows
@@ -402,33 +412,22 @@ Xếp theo mức quan trọng, cao xuống thấp.
    nhánh mã khác nhau; chúng vẫn ra cùng kết quả, nghĩa là nhánh Ruby khớp với
    native trên các ca này. Nếu sau này chúng lệch nhau, đọc cờ này trước khi
    quy cho việc đổi tên.
-2. **107 tên nói quá.** `trahex.py --soat` chỉ ra 107 chỗ hai hex **cùng một
-   đợt** mang một tên. Mỗi dòng nghĩa là: tác giả dùng hai từ khác nhau, mà từ
-   điển gộp lại thành một. Không chỗ nào làm sai hành vi (rào cùng-module đã
-   bảo đảm), nhưng người đọc bị dẫn sai.
-
-   51 tên **có dấu gạch dưới** đã xử lý xong — đó là nhóm dễ gây hiểu nhầm
-   nhất, vì tên mô tả hành vi mà gán nhầm thì người đọc tin vào một việc không
-   có thật. Cách làm, dùng lại được cho phần còn lại: đọc thân hàm của cả hai
-   bên; **đổi tên** bên nào thân hàm nói ngược lại cái tên (trả boolean mà tên
-   là danh từ, duyệt vòng mà tên nói chuỗi hở, `.length` mà tên nói diện tích);
-   **hạ xuống `vai:`** khi cả hai bên đều hợp — khi đó cây giữ nguyên từ, chỉ
-   lời khẳng định lùi lại. Hạ mức chỉ an toàn vì không hex nào trong số này
-   được `tenauto.yml` gán theo phạm vi (xem cảnh báo trong `load_dicts`); kiểm
-   lại điều đó trước khi hạ bất kỳ hex nào khác.
-
-   107 cái còn lại đều là **từ đơn**: 21 cái ≤2 ký tự, 24 cái 3 ký tự, 62 cái
-   dài hơn. Chúng ít dẫn sai hơn hẳn, nhưng cũng ít bằng chứng hơn để tách.
-3. **589 biến cục bộ + 17 `@ivar` còn hex** (5 % số lượt). `dexuat.py` nói
+2. **589 biến cục bộ + 17 `@ivar` còn hex** (5 % số lượt). `dexuat.py` nói
    "không đủ bằng chứng" cho 661 hex — chúng xuất hiện quá ít hoặc không có
    method nào gọi lên để suy ra kiểu.
-4. **Soát lại `tenauto.yml`** (1.549 mục theo phạm vi): chúng chỉ khẳng định
+3. **Soát lại `tenauto.yml`** (1.549 mục theo phạm vi): chúng chỉ khẳng định
    kiểu dữ liệu, nhưng kiểu đoán sai thì tên cũng sai.
-5. **Ba đơn vị tiếng Việt đã chết.** `danhsovan.rb`, `netcatcuoi*`, `toiuuvan*`
+4. **Ba đơn vị tiếng Việt đã chết.** `danhsovan.rb`, `netcatcuoi*`, `toiuuvan*`
    gọi hai method không tồn tại trong cả bản phát hành (§6.15) và đã có bản viết
    lại bên cạnh. Xoá chúng sẽ gỡ luôn 160 cái đuôi `_v1` và làm `KNOWN_MISSING`
    rỗng — nhưng **phải kiểm trong SketchUp trước**, vì chưa chắc chắn cái gì còn
    nạp chúng.
+
+`--soat` nay **sạch**: không còn chỗ nào hai hex cùng một đợt mang một tên.
+Cách đã làm, dùng lại được cho bản sau: đọc thân hàm cả hai bên; **đổi tên**
+bên nào thân hàm nói ngược lại cái tên (trả boolean mà tên là danh từ, duyệt
+vòng mà tên nói chuỗi hở, `.length` mà tên nói diện tích); **hạ xuống `vai:`**
+khi cả hai bên đều hợp — khi đó cây giữ nguyên từ, chỉ lời khẳng định lùi lại.
 
 Giới hạn thật sự, không đổi so với 2.1.5: **thay hết hex ≠ đúng hết.** Chỉ tên
 có bằng chứng sống — chuỗi tác giả viết, khoá hash, tên thuộc tính, hàng xóm

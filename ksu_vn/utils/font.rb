@@ -166,12 +166,12 @@ module KSU::Font
     end
     [snap_edges, x]
   end
-  def arc_octant(snap_edges, x, y, r, job, upm, pen)
+  def arc_octant(snap_edges, x, y, r, arc_flags, upm, pen)
     half = r * upm
     return [x, y] if half <= 0
-    ccw = (job & 0x80) != 0
-    start = (job >> 4) & 0x07
-    num = job & 0x0F
+    ccw = (arc_flags & 0x80) != 0
+    start = (arc_flags >> 4) & 0x07
+    num = arc_flags & 0x0F
     num = 8 if num == 0
     a0 = start * (Math::PI / 4.0)
     px = x - half * Math.cos(a0)

@@ -52,9 +52,9 @@ module KSU::Store
   def apply_settings(s)
     return unless @field_defs
     @field_defs.each_value do |keys|
-      keys.each do |key, job|
+      keys.each do |key, fmt_spec|
         next if KSU::Preset.global_key?(key)
-        fmt = job.is_a?(Array) ? job.first : job
+        fmt = fmt_spec.is_a?(Array) ? fmt_spec.first : fmt_spec
         conv2 = case fmt
                when :mm then ->(v) { v.to_f.mm }
                when nil

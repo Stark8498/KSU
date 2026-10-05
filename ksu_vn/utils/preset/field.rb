@@ -405,8 +405,8 @@ module KSU::Field
     items = []
     @field_defs.each do |sec3, keys|
       group_start = true
-      keys.each do |key, job|
-        row = job.is_a?(Array) ? job : [job, key.to_s.tr("_", " ")]
+      keys.each do |key, fmt_spec|
+        row = fmt_spec.is_a?(Array) ? fmt_spec : [fmt_spec, key.to_s.tr("_", " ")]
         fmt, title, cond, v_min, max = row
         ivar = "@#{key}"
         next unless instance_variable_defined?(ivar)
