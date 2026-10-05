@@ -130,17 +130,17 @@ module KSU::Edit
   def walk_entities(ents3, _ac3b3b9d, out, limit, layer_name, _4c11a852 = nil, _86048f49 = nil)
     ents = KSU.entities_in(ents3)
     return unless ents
-    ents.each do |grp|
-      if grp.is_a?(Sketchup::Edge)
-        next unless grp.layer == layer_name
-        lp = grp.curve
-        next unless lp && grp == lp.first_edge
+    ents.each do |ent|
+      if ent.is_a?(Sketchup::Edge)
+        next unless ent.layer == layer_name
+        lp = ent.curve
+        next unless lp && ent == lp.first_edge
         num = out.length
         sharp_pts(lp, _ac3b3b9d, out, limit)
         _4c11a852 << _86048f49 if _4c11a852 && _86048f49 && out.length > num
-      elsif KSU.container?(grp)
-        id = grp.get_attribute("ABF", "board-index")
-        walk_entities(grp, _ac3b3b9d * grp.transformation, out, limit, layer_name, _4c11a852, id.nil? ? _86048f49 : id.to_s)
+      elsif KSU.container?(ent)
+        id = ent.get_attribute("ABF", "board-index")
+        walk_entities(ent, _ac3b3b9d * ent.transformation, out, limit, layer_name, _4c11a852, id.nil? ? _86048f49 : id.to_s)
       end
     end
   end

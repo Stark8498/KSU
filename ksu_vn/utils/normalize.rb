@@ -63,31 +63,31 @@ module KSU::Chuanhoa
     return nil if snap_edges.empty? || arr.nil?
     lbl = container.find { |grp| KSU.container?(grp) && (grp.get_attribute("ABF", "is-label") || grp.name == "_ABF_Label") }
     if lbl
-      pt = lbl.transformation.xaxis
+      ref_dir = lbl.transformation.xaxis
     else
       edge = snap_edges.max_by { |grp| grp.length }
-      pt = edge.start.position.vector_to(edge.end.position)
+      ref_dir = edge.start.position.vector_to(edge.end.position)
     end
     tr2 = grp2.transformation
-    grp = pt.transform(tr2)
-    pt2 = arr.max_by do |f|
+    grp = ref_dir.transform(tr2)
+    normal = arr.max_by do |f|
       n = f.normal.transform(tr2)
       [f.area.round(4), (n * grp).z.round(4), n.z.round(4), n.y.round(4), n.x.round(4)]
     end.normal
-    dot = pt.dot(pt2)
+    dot = ref_dir.dot(normal)
     vec = Geom::Vector3d.new(
-      pt.x - dot * pt2.x,
-      pt.y - dot * pt2.y,
-      pt.z - dot * pt2.z
+      ref_dir.x - dot * normal.x,
+      ref_dir.y - dot * normal.y,
+      ref_dir.z - dot * normal.z
     )
-    vec = pt if vec.length < 0.001
+    vec = ref_dir if vec.length < 0.001
     vec.normalize!
-    vec2 = pt2.cross(vec)
+    vec2 = normal.cross(vec)
     vec2.normalize!
-    box2 = Geom::Transformation.axes(ORIGIN, vec, vec2, pt2)
+    box2 = Geom::Transformation.axes(ORIGIN, vec, vec2, normal)
     failed = snap_edges.flat_map(&:vertices).uniq.map { |v| v.position.transform(box2.inverse) }
     anchor = Geom::Point3d.new(failed.map(&:x).min, failed.map(&:y).min, failed.map(&:z).min).transform(box2)
-    tr = Geom::Transformation.axes(anchor, vec, vec2, pt2)
+    tr = Geom::Transformation.axes(anchor, vec, vec2, normal)
     container.transform_entities(tr.inverse, container.to_a)
     grp3.instances.each do |i|
       i.transformation *= tr

@@ -362,9 +362,9 @@ module KSU
         end
         arr3 = arr.flat_map { |arr2| arr2.scan(/\[[A-Z0-9_]+\]/i) }.uniq
         if arr3.include?("[N]")
-          arr4 = post["blocks"][block].map { |arr2| arr2.scan("[N]").length }.inject(0, :+)
+          n_marks = post["blocks"][block].map { |arr2| arr2.scan("[N]").length }.inject(0, :+)
           partner = arr.map { |arr2| arr2.scan("[N]").length }.inject(0, :+)
-          arr3.delete("[N]") if arr4.positive? && partner <= arr4
+          arr3.delete("[N]") if n_marks.positive? && partner <= n_marks
         end
         unless arr3.empty?
           raise UnsafeCutError, Text.t(:post, :bien_chua_thay, post: post["post_name"], block: block, bien: arr3.join(", "))

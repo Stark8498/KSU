@@ -119,9 +119,9 @@ module KSU::Cutting
     tf = tf_of(grp2)
     b2 = board_faces(grp2, tf)
     return nil unless b2
-    bb2 = b2[0].bounds.center.transform(tf)
+    pt = b2[0].bounds.center.transform(tf)
     bb = b2[1].bounds.center.transform(tf)
-    bb2.distance_to_plane([bb, b2[0].normal.transform(tf)]).to_f * 25.4
+    pt.distance_to_plane([bb, b2[0].normal.transform(tf)]).to_f * 25.4
   rescue StandardError
     nil
   end

@@ -211,19 +211,19 @@ module KSU::Label
     tr = Geom::Transformation.new(tr2.inverse)
     tr = tr * arr[:tf_axes]
     ang = tr.xaxis.transform(tr2).angle_between(arr[:line_vec])
-    pt = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), ang)
-    tr = tr * pt
+    rot_tf = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), ang)
+    tr = tr * rot_tf
     unless tr.xaxis.transform(tr2).parallel?(arr[:line_vec])
-      tr = tr * pt.inverse
+      tr = tr * rot_tf.inverse
       ang = Math::PI - ang
-      pt = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), ang)
-      tr = tr * pt
+      rot_tf = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), ang)
+      tr = tr * rot_tf
     end
     if tr.yaxis.transform(tr2).z < 0
-      tr = tr * pt.inverse
+      tr = tr * rot_tf.inverse
       ang = ang + Math::PI
-      pt = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), ang)
-      tr = tr * pt
+      rot_tf = Geom::Transformation.rotation(Geom::Point3d.new(0, 0, 0), Geom::Vector3d.new(0, 0, 1), ang)
+      tr = tr * rot_tf
     end
     tr = tr * pt2
     tr = tr * tr3
@@ -293,15 +293,15 @@ module KSU::Label
     else
       ax = arr5[:ax]
     end
-    pt = n.cross(ax)
-    return nil unless pt.length > 1e-9
-    pt.normalize!
+    vec = n.cross(ax)
+    return nil unless vec.length > 1e-9
+    vec.normalize!
     outer = font.outer_loop
     return nil unless outer
     to_2d = lambda do |face|
       face.vertices.map do |v|
         len2d = v.position.transform(tf) - arr10
-        [len2d.dot(ax), len2d.dot(pt)]
+        [len2d.dot(ax), len2d.dot(vec)]
       end
     end
     opac = to_2d.call(outer)
@@ -385,9 +385,9 @@ module KSU::Label
     large = best[1] - best[0]
     small = best[3] - best[2]
     mid = arr10 + Geom::Vector3d.new(
-      ax.x * cu + pt.x * cv,
-      ax.y * cu + pt.y * cv,
-      ax.z * cu + pt.z * cv
+      ax.x * cu + vec.x * cv,
+      ax.y * cu + vec.y * cv,
+      ax.z * cu + vec.z * cv
     )
     { large: large, small: small, center: mid }
   end

@@ -219,10 +219,10 @@ module KSU::Loop
     end
   end
   def new_label_group
-    model = Sketchup.active_model.entities.add_group
-    model.name = "_ABF_Label"
-    model.layer = layer("ABF_Label")
-    model
+    grp = Sketchup.active_model.entities.add_group
+    grp.name = "_ABF_Label"
+    grp.layer = layer("ABF_Label")
+    grp
   end
   def index_of(panel)
     return nil unless panel && panel.valid? && panel.respond_to?(:get_attribute)

@@ -472,9 +472,9 @@ module KSU
         spiral = style_ix == "spiral"
         num2 = spiral && !(path.length > 2 && same_xy?(path.first, path.last))
         raise UnsafeCutError, Text.t(:dao, :xoan_bien_can_kin, ten: lbl) if num2
-        num = spiral ? path : split_ramp(path, tool["ramp_len_mm"].to_f).first
-        raise UnsafeCutError, _744d6cbf if num.length < 2
-        total = Calc.kahan_sum(num.each_cons(2).map { |a, b| Calc.distance(b, a) })
+        pts = spiral ? path : split_ramp(path, tool["ramp_len_mm"].to_f).first
+        raise UnsafeCutError, _744d6cbf if pts.length < 2
+        total = Calc.kahan_sum(pts.each_cons(2).map { |a, b| Calc.distance(b, a) })
         raise UnsafeCutError, _744d6cbf unless total.finite? && total > 1.0e-9
         return unless spiral || style_ix == "zigzag"
         arr.each { |delta| ramp_passes(tool, spiral, delta, total) }

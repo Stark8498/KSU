@@ -44,11 +44,11 @@ module KSU::Thongke::Quet
     font, back = KSU::Cutting.board_faces(grp, tf)
     return unless font
     labels = KSU::Cutting.kids_with_attr(grp, "is-label")
-    tr = labels ? labels[0].transformation.xaxis.transform(tf) : KSU::Cutting.box_axes(font.bounds, tf)[2][1]
+    vec = labels ? labels[0].transformation.xaxis.transform(tf) : KSU::Cutting.box_axes(font.bounds, tf)[2][1]
     ref_p2 = font.normal.transform(tf)
     pt = font.outer_loop.vertices.map { |v| v.position.transform(tf) }
     thickness = back.outer_loop.vertices[0].position.transform(tf).distance_to_plane([pt[0], ref_p2])
-    axes = [long_axis(pt, tr), long_axis(pt, tr.cross(ref_p2))]
+    axes = [long_axis(pt, vec), long_axis(pt, vec.cross(ref_p2))]
     rec = { edgeband_lengths: {}, edgeband_thickness: {}, edgeband_base: {} }
     fill_edgeband(rec, grp, tf, font.normal, thickness.to_f * 25.4)
     idx = grp.get_attribute("ABF", "board-index") || 0

@@ -58,12 +58,12 @@ module KSU::Back
       drop_from_sheet_v1(vec, sheet3)
       return move_onto_sheet_v1(sheet3, vec)
     end
-    flag = (back_sheet && back_sheet.valid?) ? back_sheet : KSU::Sheet.first_bottom(@nesting)
-    return back_sheet unless flag && flag.valid?
-    flag2 = (back_sheet && back_sheet.valid?) ? sheet2 : KSU::Sheet.top_of(flag, @nesting)
+    bottom = (back_sheet && back_sheet.valid?) ? back_sheet : KSU::Sheet.first_bottom(@nesting)
+    return back_sheet unless bottom && bottom.valid?
+    flag2 = (back_sheet && back_sheet.valid?) ? sheet2 : KSU::Sheet.top_of(bottom, @nesting)
     return back_sheet unless flag2 && flag2.valid?
     bb4 = KSU::Sheet.world_bbox(flag2, @nesting)
-    bb = KSU::Sheet.world_bbox(flag, @nesting)
+    bb = KSU::Sheet.world_bbox(bottom, @nesting)
     bb3 = KSU::Sheet.world_bbox(sheet3, @nesting)
     return back_sheet unless bb4 && bb && bb3
     str = KSU::Sheet.sheet_no(sheet3.name.to_s)
@@ -72,7 +72,7 @@ module KSU::Back
       bb3.center.y + (bb.center.y - bb4.center.y),
       bb.center.z
     )
-    grp = KSU::Sheet.clone_sheet_shell(flag, flag.transformation, @nesting)
+    grp = KSU::Sheet.clone_sheet_shell(bottom, bottom.transformation, @nesting)
     return back_sheet unless grp && grp.valid?
     grp.set_attribute("ABF", "is-bottom-sheet", true)
     bb2 = KSU::Sheet.world_bbox(grp, @nesting)

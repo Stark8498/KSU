@@ -137,10 +137,10 @@ module KSU::Detail
     grp = cutting_group(back)
     return unless grp && grp.valid? && grp.respond_to?(:definition) && grp.definition
     tr = grp.transformation
-    pt = Geom::Transformation.axes(tr.origin, tr.xaxis.normalize, tr.yaxis.normalize, tr.zaxis.normalize)
+    axes_tf = Geom::Transformation.axes(tr.origin, tr.xaxis.normalize, tr.yaxis.normalize, tr.zaxis.normalize)
     grp2, tr2 = build_lines_group(back, grp, tr, loops, "ABF_partBorder")
     return unless grp2
-    inv_tf = part_tf || pt.inverse
+    inv_tf = part_tf || axes_tf.inverse
     draw_bands(back, bands, tr2 * inv_tf)
     draw_holes(back, tr2 * inv_tf, holes, true) if holes
   end

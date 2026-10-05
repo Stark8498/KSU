@@ -1519,6 +1519,73 @@ ten:
 
 vai:
 
+  # Corrections to tenauto.yml, which is generated and overwritten, so they
+  # have to live here. Each of these claimed a TYPE the body contradicts: the
+  # check is to read back the methods actually called on the variable, after
+  # dropping the ones several Ruby types answer. 17 of 3969 scoped guesses.
+  _89897823: e
+  # NOT renamed in norm_board, though one line there holds a vector rather than
+  # a group: the same hex is also the block variable of `container.find` and
+  # `snap_edges.max_by` in that body, where `grp` is right. datten scopes by
+  # method body, so a hex that changes role INSIDE one body cannot be split,
+  # and three right beats one wrong.
+  _0da67863:
+    "ksu_vn/method/toiuuvan/back.rb#_7a34db91": bottom
+  # a sheet group: back_sheet, or KSU::Sheet.first_bottom, and then
+  # asked for .transformation
+  _5f46361b:
+    "ksu_vn/method/toiuu/back.rb#_000bbcf7": bottom
+  # the same body in the unit this one replaced
+  _124c7bd3:
+    "ksu_vn/utils/cutting/loop.rb#_8803a55d": grp
+  # `entities.add_group`, then given a .name and a .layer
+  _135c33d5:
+    "ksu_vn/utils/label.rb#_125efe52": vec
+  # `n.cross(ax)`, then .normalize!
+  _16a30eab:
+    "ksu_vn/utils/normalize.rb#_73747000": ref_dir
+  # a transformation xaxis, or `vector_to` between two positions
+  _bc39bb8e:
+    "ksu_vn/utils/normalize.rb#_73747000": normal
+  # the axis picked by max_by, the other side of `vec.dot(it)`
+  _5e1807c9:
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": ref_dir
+  # the same two vectors in the unit that replaced normalize.rb
+  _79d7983e:
+    "ksu_vn/utils/chuanhoa.rb#_f341d1ac": normal
+  # the max_by one, matching normalize.rb
+  _25d57fd1:
+    "ksu_vn/utils/nesting/edit.rb#_0bdd382b": ent
+  # whatever `ents.each` yields: tested `is_a?(Sketchup::Edge)` on
+  # one branch and KSU.container? on the other
+  _2b2f7e5d:
+    "*": pts2
+    "ksu_vn/method/giacong/motion.rb#_d23ef3fc": pts
+  # a path: `.length < 2` guards it and `.each_cons(2)` walks it
+  _4230ad5c:
+    "ksu_vn/method/thongke/summary.rb#_ea302816": roots
+  # `Quet.all_roots` or the selection, then flat_map-ed over
+  _71fbc725:
+    "ksu_vn/method/thongke/scan.rb#_41054d47": vec
+  # `transformation.xaxis.transform(tf)`, then `.cross(...)`
+  _80333e4c:
+    "ksu_vn/utils/cutting.rb#_57f278d6": pt
+  # `bounds.center.transform(tf)`, then .distance_to_plane
+  _b062e6c0:
+    "ksu_vn/utils/label.rb#_90645354": rot_tf
+  # `Geom::Transformation.rotation(...)`, multiplied into tr and then
+  # .inverse
+  _bdc2e9a6:
+    "ksu_vn/method/giacong/gcode.rb#_9c876630": n_marks
+  # how many "[N]" the block holds: a map of .scan(...).length
+  # summed, then asked .positive?
+  _cf87de7d:
+    "ksu_vn/method/giacong/planner.rb#_d389848f": str
+  # .gsub on a regexp and .split(";", 2)
+  _f6a3e49f:
+    "ksu_vn/utils/cutting/detail.rb#_98d14afa": axes_tf
+  # `Geom::Transformation.axes(...)`, read back as .inverse
+
   # Locals whose role holds across every use site, so one name fits the tree.
   _ec0da59d: sha
   # every assignment is `Digest::SHA256.new`, sometimes already fed its first
@@ -1872,14 +1939,12 @@ vai:
   _880b24bd: ix
   _c9d1d25d: k
   _ee118252: val
-  _89897823: e
   _e79b121e: tf
   _f4fdae1f: pt3
   _bc61432c: row
   _bf36edc7: err
   _be579aac: db           # Cnc::Database
   _1e20ae8e: y2
-  _2b2f7e5d: pts2
   _77fee308: layer_name
   _bfd42dae: grp2
   _77a9e121: dlg

@@ -475,8 +475,8 @@ module KSU
           raise Export::UnsafeCutError, Text.t(:van, :nc_ngoai_khung, dong: _9e7c1068)
         end
       end
-      def strip_comment(arr)
-        (arr.include?("(") ? arr.gsub(/\([^)]*\)/, '') : arr).split(";", 2).first.to_s.upcase.strip
+      def strip_comment(str)
+        (str.include?("(") ? str.gsub(/\([^)]*\)/, '') : str).split(";", 2).first.to_s.upcase.strip
       end
     end
   end

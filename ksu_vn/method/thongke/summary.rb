@@ -51,16 +51,16 @@ module KSU::Thongke::Tonghop
   end
   def self.summary_rows
     arr = KSU.selection.select { |e| KSU.container?(e) }
-    flag = arr.empty? ? KSU::Thongke::Quet.all_roots : arr
-    KSU::Thongke::Phukien.make_shared_unique(flag)
-    _b72afbe5 = KSU::Thongke::Quet.list_boards(flag)
+    roots = arr.empty? ? KSU::Thongke::Quet.all_roots : arr
+    KSU::Thongke::Phukien.make_shared_unique(roots)
+    _b72afbe5 = KSU::Thongke::Quet.list_boards(roots)
     {
       sum_data: {
-        list_connector: KSU::Thongke::Phukien.list_intersect(flag) + KSU::Thongke::Phukien.list_minifix(flag),
-        list_intersect: KSU::Thongke::Phukien.group_by_name(flag.flat_map { |gr| KSU::Cutting.kids_with_attr(gr, "is-intersect") || [] }),
-        list_statistical_object: KSU::Thongke::Phukien.list_statistical(flag),
+        list_connector: KSU::Thongke::Phukien.list_intersect(roots) + KSU::Thongke::Phukien.list_minifix(roots),
+        list_intersect: KSU::Thongke::Phukien.group_by_name(roots.flat_map { |gr| KSU::Cutting.kids_with_attr(gr, "is-intersect") || [] }),
+        list_statistical_object: KSU::Thongke::Phukien.list_statistical(roots),
         list_edgeband: list_edgeband(_b72afbe5),
-        list_sheet: list_sheet(flag),
+        list_sheet: list_sheet(roots),
       },
       part_data: part_data(_b72afbe5),
     }
