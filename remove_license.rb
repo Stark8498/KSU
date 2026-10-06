@@ -84,8 +84,8 @@ end
 p1 = File.join(ROOT, "main.rb")
 s1 = read(p1)
 raise "main.rb not found" unless s1.include?("def self.with_license")
-s1.sub!(/def self\.with_license\(&run_blk)\n.*?\n\s*end\n/m,
-        "def self.with_license(&run_blk)\n    run_blk&.call\n  end\n")
+WL_RE = Regexp.new("def self\\.with_license\\(&run_blk\\)\\n.*?\\n  end\\n", Regexp::MULTILINE)
+s1.sub!(WL_RE, "def self.with_license(&run_blk)\n    run_blk&.call\n  end\n")
 write(p1, s1)
 
 # utils/other.rb: bo chan trong select_tool
